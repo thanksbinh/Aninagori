@@ -1,10 +1,9 @@
-import firebase from "firebase/compat/app";
-import 'firebase/compat/firestore';
-import "firebase/compat/auth";
+import { getApps, getApp, initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 import firebaseConfig from "./firebase-config";
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-export {firebase, auth}
+const db = getFirestore();
+
+export { app, db }

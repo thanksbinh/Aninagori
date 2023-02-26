@@ -34,3 +34,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+aninagori-0-firebase-adminsdk-cezw2-ca5cd7f532.json
