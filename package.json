@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.12",
     "@next-auth/firebase-adapter": "^2.0.1",
     "@types/node": "18.14.1",
     "@types/react": "18.0.28",

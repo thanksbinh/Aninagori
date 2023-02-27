@@ -1,14 +1,19 @@
 'use client'
 import { signIn } from "next-auth/react"
 import { useState } from 'react'
+import SignupPopup from "./SignupPopup";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [userInfo, setUserInfo] = useState({ email: '', password: '' })
+  const [openSignupPopup, setOpenSignupPopup] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // handle email and password authentication using Firebase
+    const res = await signIn('credentials', {
+      email: userInfo.email,
+      password: userInfo.password,
+    });
+    console.log(res);
   };
 
   return (
@@ -23,8 +28,8 @@ const Login = () => {
             id="email"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={userInfo.email}
+            onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
           />
         </div>
         <div className="mb-6">
@@ -36,23 +41,35 @@ const Login = () => {
             id="password"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={userInfo.password}
+            onChange={(e) => setUserInfo({ ...userInfo, password: e.target.value })}
           />
         </div>
+        <div>
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            Login
+          </button>
+        </div>
+      </form>
+      <div>
         <button
-          type="submit"
+          onClick={() => setOpenSignupPopup(!openSignupPopup)}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         >
-          Login
+          Sign Up
         </button>
-      </form>
+      </div>
       <button
         onClick={() => signIn("google")}
         className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4"
       >
         Login with Google
       </button>
+      
+      <SignupPopup isOpen={openSignupPopup} onClose={() => setOpenSignupPopup(false)}/>
     </div>
   );
 };

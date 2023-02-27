@@ -1,6 +1,9 @@
-import NextAuth from "next-auth"
+import NextAuth, { NextAuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
+import CredentialsProvider from "next-auth/providers/credentials"
 import { FirestoreAdapter } from "@next-auth/firebase-adapter"
+import { signInWithEmailAndPassword } from "firebase/auth"
+import { auth } from "@/firebase/firebase-app"
 
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -12,15 +15,39 @@ const firebaseConfig = {
     messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
 }
 
-export const authOptions = {
-    // Configure one or more authentication providers
+export const authOptions: NextAuthOptions = {
     providers: [
+        CredentialsProvider({
+            type: 'credentials',
+            credentials: {
+                email: { label: "Email", type: "email", placeholder: "admin@aninagori.com" },
+                password: { label: "Password", type: "password" }
+            },
+            async authorize(credentials) {
+                try {
+                    const data = await signInWithEmailAndPassword(auth, credentials?.email || '', credentials?.password || '')
+                    console.log(data)
+                    return ({
+                        ...data.user,
+                        id: data.user.uid
+                    })
+                } catch (error) {
+                    return null
+                }
+            }
+        }),
         GoogleProvider({
             clientId: process.env.GOOGLE_ID!,
             clientSecret: process.env.GOOGLE_SECRET!,
         }),
         // ...add more providers here
     ],
-    adapter: FirestoreAdapter(firebaseConfig)
+    pages: {
+        signIn: '/'
+    },
+    adapter: FirestoreAdapter(firebaseConfig),
+    session: {
+        strategy: "jwt"
+    }
 }
 export default NextAuth(authOptions)
