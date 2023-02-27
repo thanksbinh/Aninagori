@@ -11,7 +11,7 @@ const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
         confirmPassword: "",
         name: "",
         id: "",
-    });
+    }); 
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
