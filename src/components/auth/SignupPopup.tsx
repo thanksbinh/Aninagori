@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { auth } from "@/firebase/firebase-app"
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import Modal from "@/components/ui/Modal";
+import Modal from "@/components/auth/Modal";
+import { updateProfile } from "firebase/auth";
 
 const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
 
@@ -11,7 +12,7 @@ const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
         confirmPassword: "",
         name: "",
         id: "",
-    }); 
+    });
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
@@ -25,14 +26,13 @@ const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
             // TODO: Show error message
             return;
         }
-        createUserWithEmailAndPassword(auth, formData.email, formData.password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                console.log(user)
-            })
-            .catch((error) => {
-                console.log(error)
-            });
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
+            await updateProfile(userCredential.user, { displayName: formData.name })
+        } catch (error) {
+            console.log(error)
+        }
 
         onClose();
     };
@@ -73,7 +73,7 @@ const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 font-bold mb-2">
-                            Password
+                            Confirm password
                         </label>
                         <input
                             type="password"
@@ -96,19 +96,7 @@ const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             value={formData.name}
                             onChange={handleInputChange}
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-bold mb-2">
-                            ID
-                        </label>
-                        <input
-                            type="text"
-                            id="id"
-                            name="id"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            value={formData.id}
-                            onChange={handleInputChange}
+                            required
                         />
                     </div>
                     <div>

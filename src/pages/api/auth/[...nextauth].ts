@@ -26,9 +26,10 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials) {
                 try {
                     const data = await signInWithEmailAndPassword(auth, credentials?.email || '', credentials?.password || '')
-                    console.log(data)
+                    
                     return ({
                         ...data.user,
+                        name: auth.currentUser?.displayName,
                         id: data.user.uid
                     })
                 } catch (error) {
