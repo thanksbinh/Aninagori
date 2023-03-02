@@ -1,116 +1,161 @@
-import { useState } from "react";
-import { auth } from "@/firebase/firebase-app"
+import { auth, db } from "@/firebase/firebase-app"
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import Modal from "@/components/auth/Modal";
 import { updateProfile } from "firebase/auth";
+import * as Yup from 'yup';
+import { useFormik, FormikConfig } from "formik";
+import { collection, getDoc, getDocs, query, where } from "firebase/firestore";
 
 const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+	const formik = useFormik({
+		initialValues: {
+			username: "",
+			email: "",
+			password: "",
+			confirm_password: ""
+		},
+		validationSchema: Yup.object({
+			username: Yup.string()
+				.min(2, "Mininum 2 characters")
+				.max(15, "Maximum 15 characters")
+				.required("Required!"),
+			email: Yup.string()
+				.email("Invalid email format")
+				.required("Required!"),
+			password: Yup.string()
+				.min(8, "Minimum 8 characters")
+				.required("Required!"),
+			confirm_password: Yup.string()
+				.oneOf([Yup.ref("password")], "Password's not match")
+				.required("Required!")
+		}),
+		onSubmit: async values => {
+			// const userRef = collection(db, "users");
+			// const q = query(userRef, where("email", "==", values.email));
 
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-        confirmPassword: "",
-        name: "",
-        id: "",
-    });
+			// const querySnapshot = await getDocs(q);
+			// console.log(querySnapshot.docs.length)
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setFormData({ ...formData, [name]: value });
-    };
+			try {
+				const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password)
+				await updateProfile(userCredential.user, { displayName: values.username })
 
-    const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        // TODO: Add form validation
-        if (formData.password !== formData.confirmPassword) {
-            // TODO: Show error message
-            return;
-        }
+				onClose();
+			} catch (error) {
+				// Todo: Show error to frontend
+				console.log(error)
+			}
+		},
+	} as FormikConfig<{
+		username: string;
+		email: string;
+		password: string;
+		confirm_password: string;
+	}>
+	);
 
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
-            await updateProfile(userCredential.user, { displayName: formData.name })
-        } catch (error) {
-            console.log(error)
-        }
+	return (
+		<Modal isOpen={isOpen} onClose={onClose} title={""}>
+			<div className="flex flex-col p-6 w-[500px]">
+				<h2 className="text-2xl font-bold mb-4">Sign up</h2>
+				<form className="flex flex-col" onSubmit={formik.handleSubmit}>
+					<div className="mb-4">
+						<label className="block text-gray-700 font-bold mb-2">
+							Username
+						</label>
+						<input
+							type="text"
+							id="username"
+							name="username"
+							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+							value={formik.values.username}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							required
+						/>
 
-        onClose();
-    };
+						{formik.errors.username && formik.touched.username && (
+							<p className="text-red-500 text-sm">{formik.errors.username}</p>
+						)}
 
-    return (
-        <Modal isOpen={isOpen} onClose={onClose} title={""}>
-            <div className="flex flex-col p-6">
-                <h2 className="text-2xl font-bold mb-4">Sign up</h2>
-                <form className="flex flex-col" onSubmit={handleSignup}>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-bold mb-2">
-                            Email
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            placeholder="guess@aninagori.com"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            required
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-bold mb-2">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            required
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-bold mb-2">
-                            Confirm password
-                        </label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            value={formData.confirmPassword}
-                            onChange={handleInputChange}
-                            required
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-bold mb-2">
-                            Name
-                        </label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <button
-                            type="submit"
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        >
-                            Sign up
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </Modal>
-    );
+					</div>
+
+					<div className="mb-4">
+						<label className="block text-gray-700 font-bold mb-2">
+							Email
+						</label>
+						<input
+							type="email"
+							id="email"
+							name="email"
+							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+							placeholder="guess@aninagori.com"
+							value={formik.values.email}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							required
+						/>
+
+						{formik.errors.email && formik.touched.email && (
+							<p className="text-red-500 text-sm">{formik.errors.email}</p>
+						)}
+
+					</div>
+
+					<div className="mb-4">
+						<label className="block text-gray-700 font-bold mb-2">
+							Password
+						</label>
+						<input
+							type="password"
+							id="password"
+							name="password"
+							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+							value={formik.values.password}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							required
+						/>
+
+						{formik.errors.password && formik.touched.password && (
+							<p className="text-red-500 text-sm">{formik.errors.password}</p>
+						)}
+
+					</div>
+
+					<div className="mb-4">
+						<label className="block text-gray-700 font-bold mb-2">
+							Confirm password
+						</label>
+						<input
+							type="password"
+							id="confirm_password"
+							name="confirm_password"
+							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+							value={formik.values.confirm_password}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							required
+						/>
+
+						{formik.errors.confirm_password && formik.touched.confirm_password && (
+							<p className="text-red-500 text-sm">{formik.errors.confirm_password}</p>
+						)}
+
+					</div>
+
+					<div>
+						<button
+							type="submit"
+							className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+						>
+							Sign up
+						</button>
+					</div>
+				</form>
+			</div>
+		</Modal>
+	);
 };
 
 export default SignupPopup;

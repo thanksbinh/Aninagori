@@ -3,7 +3,9 @@ import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { FirestoreAdapter } from "@next-auth/firebase-adapter"
 import { signInWithEmailAndPassword } from "firebase/auth"
-import { auth } from "@/firebase/firebase-app"
+import { auth, db } from "@/firebase/firebase-app"
+import { getAuth } from "firebase-admin/auth"
+import { doc, serverTimestamp, setDoc } from "firebase/firestore"
 
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -26,7 +28,7 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials) {
                 try {
                     const data = await signInWithEmailAndPassword(auth, credentials?.email || '', credentials?.password || '')
-                    
+
                     return ({
                         ...data.user,
                         name: auth.currentUser?.displayName,
@@ -49,6 +51,31 @@ export const authOptions: NextAuthOptions = {
     adapter: FirestoreAdapter(firebaseConfig),
     session: {
         strategy: "jwt"
+    },
+    callbacks: {
+        async jwt({ token, user, account, profile, isNewUser }) {
+            const adminAuth = getAuth()
+            if (isNewUser || user) {
+                const customToken = await adminAuth.createCustomToken(token.sub!)
+                token.customToken = customToken
+            }
+            if (isNewUser == true) {
+                try {
+                    const userRef = doc(db, 'users', token.sub!);
+                    setDoc(userRef, { joined_date: serverTimestamp() }, { merge: true });
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+            return token
+        },
+        async session({ session, token, user }) {
+            if (session?.user) {
+                (session.user as any).id = token.sub as any
+                (session as any).customToken = token.customToken
+            }
+            return session
+        }
     }
 }
 export default NextAuth(authOptions)

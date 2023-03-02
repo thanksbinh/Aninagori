@@ -20,9 +20,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <html lang='en'>
         <head />
         <body>
-          <Login />
-          {/* Todo: use favicon without children */}
-          <div className='hidden'>{children}</div>
+          <SessionProvider session={session}>
+            <Login />
+            {/* Todo: use favicon without children */}
+            <div className='hidden'>{children}</div>
+          </SessionProvider>
         </body>
       </html>
     )

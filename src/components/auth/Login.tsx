@@ -1,19 +1,33 @@
 'use client'
 import { signIn } from "next-auth/react"
+import { redirect, useRouter } from "next/navigation";
 import { useState } from 'react'
 import SignupPopup from "./SignupPopup";
 
 const Login = () => {
   const [userInfo, setUserInfo] = useState({ email: '', password: '' })
-  const [openSignupPopup, setOpenSignupPopup] = useState(false);
+  const [openSignupPopup, setOpenSignupPopup] = useState(false)
+  const [loginFail, setLoginFail] = useState(false)
+  const router = useRouter()
+
+  const handleSignInWithGoogle = async () => {
+    signIn("google");
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const res = await signIn('credentials', {
       email: userInfo.email,
       password: userInfo.password,
+      redirect: false
     });
-    console.log(res);
+
+    if (res?.ok) {
+      setLoginFail(false)
+      router.refresh()
+    } else {
+      setLoginFail(true)
+    }
   };
 
   return (
@@ -45,6 +59,9 @@ const Login = () => {
             onChange={(e) => setUserInfo({ ...userInfo, password: e.target.value })}
           />
         </div>
+
+        {loginFail ? <div className="text-red-500"><p>Email not exits or wrong password</p><br /></div> : null}
+
         <div>
           <button
             type="submit"
@@ -63,13 +80,13 @@ const Login = () => {
         </button>
       </div>
       <button
-        onClick={() => signIn("google")}
+        onClick={() => handleSignInWithGoogle()}
         className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4"
       >
         Login with Google
       </button>
-      
-      <SignupPopup isOpen={openSignupPopup} onClose={() => setOpenSignupPopup(false)}/>
+
+      <SignupPopup isOpen={openSignupPopup} onClose={() => setOpenSignupPopup(false)} />
     </div>
   );
 };

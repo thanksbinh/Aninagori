@@ -1,3 +1,4 @@
+import { auth } from '@/firebase/firebase-app';
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
@@ -13,6 +14,8 @@ const ProfilePopup: React.FC<Props> = ({ isOpen, onClose }) => {
   const handleLogout = async () => {
     try {
       await signOut();
+      if (auth.currentUser)
+        await auth.signOut();
     } catch (error) {
       console.error(error);
     }
