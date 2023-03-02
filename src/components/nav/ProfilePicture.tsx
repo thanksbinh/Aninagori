@@ -1,9 +1,15 @@
+'use client'
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 import ProfilePopup from './ProfilePopup';
 
-const ProfilePicture = () => {
+interface Props {
+    userimage: string;
+    username: string;
+}
+
+const ProfilePicture: React.FC<Props> = ({ userimage, username }) => {
     const { data: session } = useSession();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -12,12 +18,12 @@ const ProfilePicture = () => {
     return (
         <>
             <img
-                src={session.user?.image ?? '/images/default-profile-pic.png'}
+                src={userimage ?? '/images/default-profile-pic.png'}
                 alt="Profile"
                 className="w-10 h-10 rounded-full cursor-pointer"
                 onClick={() => setIsOpen(!isOpen)}
             />
-            <ProfilePopup isOpen={isOpen} onClose={() => setIsOpen(false)} />
+            <ProfilePopup isOpen={isOpen} onClose={() => setIsOpen(false)} username={username} />
         </>
     );
 };

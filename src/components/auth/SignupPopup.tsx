@@ -1,12 +1,45 @@
 import { auth, db } from "@/firebase/firebase-app"
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import Modal from "@/components/auth/Modal";
 import { updateProfile } from "firebase/auth";
 import * as Yup from 'yup';
-import { useFormik, FormikConfig } from "formik";
-import { collection, getDoc, getDocs, query, where } from "firebase/firestore";
+import { useFormik, FormikConfig, FormikErrors, FormikValues } from "formik";
+import { collection, doc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 
 const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+	const validate = async (values: FormikValues) => {
+		const errors: FormikErrors<FormikValues> = {};
+
+		const q = query(collection(db, "users"), where("email", "==", values.email));
+		const querySnapshot = await getDocs(q);
+		if (querySnapshot.docs.length) {
+			errors.email = 'Account exists, try different email!';
+		}
+		return errors;
+	};
+
+	const handleSubmit = async (values: FormikValues) => {
+		try {
+			const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password)
+			// Add user info to firebase
+			await updateProfile(userCredential.user, { displayName: values.username })
+			await setDoc(doc(db, "users", userCredential.user.uid), {
+				email: values.email,
+				emailVerified: null,
+				image: null,
+				joined_date: serverTimestamp(),
+				name: values.username
+			});
+			await sendEmailVerification(userCredential.user!, {
+				url: 'http://localhost:3000/?email=' + userCredential.user.email,
+			})
+
+			onClose();
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
 	const formik = useFormik({
 		initialValues: {
 			username: "",
@@ -29,23 +62,7 @@ const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
 				.oneOf([Yup.ref("password")], "Password's not match")
 				.required("Required!")
 		}),
-		onSubmit: async values => {
-			// const userRef = collection(db, "users");
-			// const q = query(userRef, where("email", "==", values.email));
-
-			// const querySnapshot = await getDocs(q);
-			// console.log(querySnapshot.docs.length)
-
-			try {
-				const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password)
-				await updateProfile(userCredential.user, { displayName: values.username })
-
-				onClose();
-			} catch (error) {
-				// Todo: Show error to frontend
-				console.log(error)
-			}
-		},
+		onSubmit: handleSubmit, validate
 	} as FormikConfig<{
 		username: string;
 		email: string;
@@ -147,6 +164,7 @@ const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
 					<div>
 						<button
 							type="submit"
+							disabled={formik.isSubmitting}
 							className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 						>
 							Sign up

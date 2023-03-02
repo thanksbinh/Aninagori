@@ -1,6 +1,6 @@
 'use client'
 import { signIn } from "next-auth/react"
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from 'react'
 import SignupPopup from "./SignupPopup";
 
