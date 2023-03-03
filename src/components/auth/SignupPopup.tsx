@@ -10,11 +10,20 @@ const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
 	const validate = async (values: FormikValues) => {
 		const errors: FormikErrors<FormikValues> = {};
 
-		const q = query(collection(db, "users"), where("email", "==", values.email));
-		const querySnapshot = await getDocs(q);
-		if (querySnapshot.docs.length) {
+		const usersRef = collection(db, "users")
+
+		const emailQuery = query(usersRef, where("email", "==", values.email));
+		const querySnapshot1 = await getDocs(emailQuery);
+		if (querySnapshot1.docs.length) {
 			errors.email = 'Account exists, try different email!';
 		}
+
+		const usernameQuery = query(usersRef, where("username", "==", values.username));
+		const querySnapshot2 = await getDocs(usernameQuery);
+		if (querySnapshot2.docs.length) {
+			errors.username = 'Username exists, try different name!';
+		}
+
 		return errors;
 	};
 
@@ -28,7 +37,8 @@ const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
 				emailVerified: null,
 				image: null,
 				joined_date: serverTimestamp(),
-				name: values.username
+				name: "",
+				username: values.username
 			});
 			await sendEmailVerification(userCredential.user!, {
 				url: 'http://localhost:3000/?email=' + userCredential.user.email,
