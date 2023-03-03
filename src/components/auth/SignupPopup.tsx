@@ -59,6 +59,7 @@ const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
 		},
 		validationSchema: Yup.object({
 			username: Yup.string()
+				.matches(/^[a-zA-Z0-9_]*$/, 'Username must not contain special characters')
 				.min(2, "Mininum 2 characters")
 				.max(15, "Maximum 15 characters")
 				.required("Required!"),
