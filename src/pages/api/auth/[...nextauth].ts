@@ -73,10 +73,10 @@ export const authOptions: NextAuthOptions = {
             if (session?.user) {
                 (session.user as any).id = token.sub as any
                 (session as any).customToken = token.customToken
-                await signInWithCustomToken(auth, token.customToken as string)
+                // await signInWithCustomToken(auth, token.customToken as string)
             }
             return session
-        }
-    }
+        },
+    },
 }
 export default NextAuth(authOptions)

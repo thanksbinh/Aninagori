@@ -9,7 +9,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import Login from '@/components/auth/Login';
 import ProfilePicture from '@/components/nav/ProfilePicture';
 import { db } from '@/firebase/firebase-app';
-import UsernamePopup from '@/components/auth/UsernamePopup';
+import UsernamePopup from '@/components/auth/SetUsername';
 
 export const metadata: Metadata = {
   title: 'Aninagori',
