@@ -1,3 +1,4 @@
+import { Navbar } from '@/components';
 import Link from 'next/link';
 import './globals.css';
 
@@ -16,11 +17,7 @@ export default function RootLayout({
       <head></head>
       <body>
         <main>
-          <nav>
-            <Link href="/">
-              Aninagori
-            </Link>
-          </nav>
+          <Navbar />
           {children}
         </main>
       </body>
