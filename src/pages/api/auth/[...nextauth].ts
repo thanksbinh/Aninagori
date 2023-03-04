@@ -54,10 +54,10 @@ export const authOptions: NextAuthOptions = {
     },
     callbacks: {
         async jwt({ token, user, account, profile, isNewUser }) {
-            const adminAuth = getAuth()
+            // const adminAuth = getAuth()
             if (isNewUser || user) {
-                const customToken = await adminAuth.createCustomToken(token.sub!)
-                token.customToken = customToken
+                // const customToken = await adminAuth.createCustomToken(token.sub!)
+                // token.customToken = customToken
             }
             if (isNewUser == true) {
                 try {
@@ -71,8 +71,8 @@ export const authOptions: NextAuthOptions = {
         },
         async session({ session, token, user }) {
             if (session?.user) {
-                (session.user as any).id = token.sub as any
-                (session as any).customToken = token.customToken
+                (session.user as any).id = token.sub;
+                // (session as any).customToken = token.customToken;
                 // await signInWithCustomToken(auth, token.customToken as string)
             }
             return session
