@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import './globals.css';
+import { Navbar } from '@/components';
 
 export const metadata = {
   title: 'Aninagori',
@@ -11,6 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head></head>
       <body>
+        <Navbar/>
         <main>{children}</main>
       </body>
     </html>

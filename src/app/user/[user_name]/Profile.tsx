@@ -3,7 +3,7 @@
 import classNames from 'classnames/bind';
 import styles from './Profile.module.scss';
 import { getAnimeList } from '@/app/api/apiServices/getServices';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -13,7 +13,12 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 const cx = classNames.bind(styles);
 
-function Profile() {
+function Profile({ user_name }: { user_name: string }) {
+  useEffect(() => {
+    handleConnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [search, setSearch] = useState('');
   const [image, setImage] = useState(
     'https://steamuserimages-a.akamaihd.net/ugc/884259456715792803/0BC095F5A9445C9A23F8C6E5AFDC915ACFF64DDC/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false',
@@ -28,8 +33,10 @@ function Profile() {
   };
 
   const handleConnect = async () => {
+    let userName = user_name;
+    if (search !== '') userName = search;
     setLoading(true);
-    let data = await get(`api/user/${search}`);
+    let data = await get(`api/user/${userName}`);
     data = data.data;
     console.log(data);
     setUserName(data.username);

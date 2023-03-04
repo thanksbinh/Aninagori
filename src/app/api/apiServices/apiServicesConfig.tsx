@@ -4,7 +4,7 @@ import axios from 'axios';
 export const MALRequest = axios.create({
   baseURL: process.env.NEXT_PUBLIC_MAL_API_URL,
   headers: {
-    'X-MAL-Client-ID': process.env.NEXT_PUBLIC_X_MAL_CLIENT_ID,
+    'X-MAL-Client-ID': process.env.X_MAL_CLIENT_ID,
   },
 });
 

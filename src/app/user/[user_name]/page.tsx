@@ -4,8 +4,7 @@ const MyClientComponent = dynamic(() => import('./Profile'), {
   ssr: false,
 });
 
-export default function MyServerComponent() {
-    
-  // code here
-  return <MyClientComponent/>;
+export default function MyServerComponent({params} : { params: any}) {
+  
+  return <MyClientComponent {...params}/>;
 }
