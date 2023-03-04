@@ -1,10 +1,13 @@
-import { Navbar, Post , Sidebar} from '../components'; 
+import { Navbar, Post , PostForm, Sidebar} from '../components'; 
 
 export default function Home() {
   return (
     <div className="flex item-center justify-between">
       <Sidebar />
       <div className="flex flex-col">
+        <PostForm
+          avatarUrl={''} authorName={'Nichan'} time={''} content={''} likes={0} comments={0}
+        />
         <Post
           authorName={'Nichan'}
           avatarUrl={''}

@@ -3,6 +3,7 @@ import Avatar from "../Avatar/Avatar";
 import Image from "next/image";
 import { AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { RiAddCircleLine } from "react-icons/ri";
+import { HiOutlineHeart } from "react-icons/hi2"
 
 type PostProps = {
   authorName: string;
@@ -24,29 +25,31 @@ const Post: FC<PostProps> = ({
   comments,
 }) => {
   return (
-    <div className="flex flex-col flex-1 bg-[#212833] border rounded-lg p-4 mb-4">
-      <div className="flex items-center space-x-4">
+    <div className="flex flex-col flex-1 bg-[#191c21] border rounded-2xl p-4 mb-4">
+      <div className="flex items-center space-x-4 mx-2">
         <Avatar imageUrl={avatarUrl} altText={authorName} size={12} />
         <div>
-          <p className="font-bold text-slate-200">{authorName}</p>
+          <p className="font-bold text-[#dddede]">{authorName}</p>
           <p className="text-gray-500 text-sm">{time}</p>
         </div>
       </div>
 
-      <p className="text-lg mt-4 text-slate-200">{content}</p>
+      <p className="text-lg mt-4 mb-2 text-[#dddede] mx-2">{content}</p>
       {imageUrl && (
-        <div className="mt-4">
-          <Image src={imageUrl} width={640} height={360} alt={""} className="rounded-lg"/>
+        <div className="mt-4 mx-2">
+          <Image src={imageUrl} width={640} height={360} alt={""} className="rounded-2xl"/>
         </div>
       )}
 
       <div className="flex item-center justify-between my-4"></div>
 
-      <div className="flex items-center justify-between border-t border-b py-2 mt-4">
-        <button className="flex items-center space-x-1 text-gray-400 hover:text-blue-600">
-          <AiOutlineLike className="w-5 h-5" />
-          <span>{likes}</span>
-        </button>
+      <div className="flex items-center justify-between border-t border-b border-[#212833] py-2 mt-4 mx-2">
+        <div className="flex">
+          <button className="flex items-center space-x-1 text-gray-400 hover:text-blue-600">
+            <HiOutlineHeart className="w-5 h-5" />
+            <span>{likes}</span>
+          </button>
+        </div>
         <button className="flex items-center space-x-1 text-gray-400 hover:text-blue-600">
           <AiOutlineComment className="w-5 h-5" />
           <span>{comments}</span>
@@ -57,11 +60,11 @@ const Post: FC<PostProps> = ({
         </button>
       </div>
       
-      <div className="flex items-center mt-4">
+      <div className="flex items-center mt-4 mx-2">
         <Avatar imageUrl={avatarUrl} altText={authorName} size={8} />
         <input
           type="text"
-          className="border rounded-full py-2 px-4 ml-2 w-full"
+          className="border rounded-2xl py-2 px-4 ml-2 w-full"
           placeholder="Write a comment..."
         />
       </div>
