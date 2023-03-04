@@ -50,7 +50,7 @@ const ProfilePicture: React.FC<Props> = ({ userInfo }) => {
                 onClick={() => setIsOpen(!isOpen)}
             />
             {isOpen ?
-                <div className="absolute top-14 right-1 z-50 w-56 py-2 mt-1 bg-white rounded-md shadow-lg">
+                <div className="absolute top-12 right-1 z-50 w-56 py-2 mt-1 bg-white rounded-md shadow-lg">
                     {userInfo?.username === "guess" ?
                         <button onClick={() => setOpenUsernamePopup(true)} className="px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left">Set username</button> :
                         <div className="px-4 py-2 text-gray-800">{userInfo?.username}</div>

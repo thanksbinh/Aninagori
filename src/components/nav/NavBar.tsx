@@ -4,6 +4,7 @@ import { Session } from "next-auth";
 import Link from "next/link";
 import ProfilePicture from "./ProfilePicture";
 import SearchBar from "./SearchBar";
+import NotificationButton from "./NotificationBtn";
 
 async function getUserInfo(userId: string) {
   const docRef = doc(db, "users", userId);
@@ -26,6 +27,7 @@ type Props = {
 export default async function NavBar({ session }: Props) {
   const userId = (session?.user as any).id
   const userInfo = await getUserInfo(userId)
+  
 
   return (
     <nav className="py-2 border-b-2 px-4 flex justify-between items-center">
@@ -35,7 +37,8 @@ export default async function NavBar({ session }: Props) {
         </Link>
         <SearchBar />
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center gap-2">
+        <NotificationButton />
         <ProfilePicture userInfo={userInfo as any} />
       </div>
     </nav>
