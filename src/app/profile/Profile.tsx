@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import MyAnimeList from './UserInformation';
 import { get } from '@/app/api/apiServices/httpRequest';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 const cx = classNames.bind(styles);
 
@@ -60,7 +61,7 @@ function Profile() {
                 setSearch(e.target.value);
               }}
             />
-            {!!loading && <FontAwesomeIcon icon={faSpinner} className={cx('spinner')}></FontAwesomeIcon>}
+            {!!loading && <FontAwesomeIcon icon={faSpinner as IconProp} className={cx('spinner')}></FontAwesomeIcon>}
             <button
               onClick={handleConnect}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
