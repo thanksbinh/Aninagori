@@ -9,6 +9,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import Login from '@/components/auth/Login';
 import ProfilePicture from '@/components/nav/ProfilePicture';
 import { db } from '@/firebase/firebase-app';
+import UsernamePopup from '@/components/auth/SetUsername';
 
 export const metadata: Metadata = {
   title: 'Aninagori',
@@ -34,17 +35,30 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </body>
       </html>
     )
+  }
+
+  const docRef = doc(db, "users", (session.user as any).id);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    userimage = docSnap.data().image
+    username = docSnap.data().username
   } else {
-    const docRef = doc(db, "users", (session.user as any).id);
-    const docSnap = await getDoc(docRef);
+    console.log("No such document!");
+  }
 
-    if (docSnap.exists()) {
-      userimage = docSnap.data().image
-      username = docSnap.data().name
-
-    } else {
-      console.log("No such document!");
-    }
+  if (username === "guess") {
+    return (
+      <html lang='en'>
+        <head />
+        <body>
+          <SessionProvider session={session}>
+            <UsernamePopup />
+            <div className='hidden'>{children}</div>
+          </SessionProvider>
+        </body>
+      </html>
+    )
   }
 
   return (
