@@ -5,6 +5,7 @@ import styles from './ProfileHeader.module.scss';
 import Button from '@/components/Button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlug, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 const cx = classNames.bind(styles);
 

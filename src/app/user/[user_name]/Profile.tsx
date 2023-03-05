@@ -7,10 +7,13 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import MyAnimeList from './profileComponent/UserInformation';
+import MyAnimeList from './UserInformation';
 import { get } from '@/app/api/apiServices/httpRequest';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import ProfileHeader from '@/app/user/[user_name]/profileComponent/ProfileHeader';
+import ProfileHeader from '@/app/user/[user_name]/profileComponent/ProfileHeader/ProfileHeader';
+import AnimeStatus from '@/app/user/[user_name]/profileComponent/AnimeStatus/AnimeStatus';
+import AnimeFavorite from '@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite';
+import AnimeUpdate from '@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate';
 
 const cx = classNames.bind(styles);
 
@@ -18,9 +21,14 @@ function Profile({ user_name }: { user_name: string }) {
   return (
     <div className={cx('profile-wrapper')}>
       <div className={cx('profile-content')}>
-        <ProfileHeader/>
+        <ProfileHeader />
         <div className={cx('profile-body-wrapper')}>
-            
+          <div className={cx('status-section')}>
+            <AnimeUpdate />
+            <AnimeStatus />
+            <AnimeFavorite />
+          </div>
+          <div className={cx('post-section')}>{/* Post here insert later */}</div>
         </div>
       </div>
     </div>

@@ -32,7 +32,7 @@ export async function GET(request: Request, { params }: { params: any }) {
       default:
         status = 'Unknow Status';
         break;
-    }
+    }    
     if (list_status.is_rewatching) {
       status = 'Re Watching';
     }
