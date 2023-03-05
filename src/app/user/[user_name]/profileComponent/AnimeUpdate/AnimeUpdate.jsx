@@ -3,6 +3,7 @@ import StatusWrapper from '../StatusWrapper/StatusWrapper';
 import Image from 'next/image';
 import classNames from 'classnames/bind';
 import styles from './AnimeUpdate.module.scss';
+import { ProgressChild } from '../AnimeStatus/AnimeStatus';
 const cx = classNames.bind(styles);
 
 function AnimeUpdate() {
@@ -15,7 +16,7 @@ function AnimeUpdate() {
           <div className={cx('more-detail')}>
             <h5 className={cx('anime-name')}>Saenai Kanojo no Sodatekata</h5>
             <div className={cx('progress-bar')}>
-              <div className={cx('progress-percent')}></div>
+              <ProgressChild className={cx('progress-percent')} percent="60"></ProgressChild>
             </div>
             <div className={cx('status-wrapper')}>
               Watching <span className={cx('highlight')}>20</span>/26 - Scored{' '}
@@ -31,7 +32,7 @@ function AnimeUpdate() {
           <div className={cx('more-detail')}>
             <h5 className={cx('anime-name')}>Saenai Kanojo no Sodatekata</h5>
             <div className={cx('progress-bar')}>
-              <div className={cx('progress-percent')}></div>
+              <ProgressChild className={cx('progress-percent')} percent="60"></ProgressChild>
             </div>
             <div className={cx('status-wrapper')}>
               Watching <span className={cx('highlight')}>20</span>/26 - Scored{' '}
@@ -47,7 +48,7 @@ function AnimeUpdate() {
           <div className={cx('more-detail')}>
             <h5 className={cx('anime-name')}>Saenai Kanojo no Sodatekata</h5>
             <div className={cx('progress-bar')}>
-              <div className={cx('progress-percent')}></div>
+              <ProgressChild className={cx('progress-percent')} percent="60"></ProgressChild>
             </div>
             <div className={cx('status-wrapper')}>
               Watching <span className={cx('highlight')}>20</span>/26 - Scored{' '}
