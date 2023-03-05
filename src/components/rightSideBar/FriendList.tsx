@@ -28,7 +28,7 @@ const FriendList = () => {
   useEffect(() => {
     if (session.status != 'authenticated') return;
 
-    const myUserId = (session as any).data.user?.id
+    const myUserId = (session as any).data?.user?.id
     const docRef = doc(db, "users", myUserId);
     const unsubscribe = onSnapshot(docRef, docSnap => {
       setFriendList(docSnap.data()?.friend_list)

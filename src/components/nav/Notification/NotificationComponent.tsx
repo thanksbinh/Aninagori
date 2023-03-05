@@ -1,12 +1,12 @@
-import { db } from "@/firebase/firebase-app";
-import { arrayRemove, arrayUnion, collection, doc, getDocs, query, Timestamp, updateDoc, where } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { UserInfo } from "../NavBar";
-import { makeFriendRequest, removeFriendRequest, beFriends } from "@/components/addFriend/friendRequest";
+import { removeFriendRequest, beFriends } from "@/components/addFriend/friendRequest";
 
 export interface Notification {
   notification_id: string;
   sender: {
+    id: string;
     username: string;
     image: string;
   };
@@ -27,10 +27,10 @@ interface Props {
 const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) => {
   const router = useRouter()
 
-  const handleAddFriend = async (e: React.MouseEvent) => {
+  const handleAcceptFriend = async (e: React.MouseEvent) => {
     e.stopPropagation()
 
-    beFriends(myUserInfo, notification)
+    beFriends(myUserInfo, {"id": notification.sender.id, "username": notification.sender.username, "image": notification.sender.image})
     removeFriendRequest(myUserInfo, notification)
   }
 
@@ -57,7 +57,7 @@ const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) =>
             {notification.sender.username} sent you a friend request.
           </p>
           <div>
-            <button onClick={handleAddFriend} className="inline-block px-4 py-2 mt-2 mr-2 font-medium text-white bg-blue-500 rounded hover:bg-blue-600">
+            <button onClick={handleAcceptFriend} className="inline-block px-4 py-2 mt-2 mr-2 font-medium text-white bg-blue-500 rounded hover:bg-blue-600">
               Confirm
             </button>
             <button onClick={handleReject} className="inline-block px-4 py-2 mt-2 font-medium text-gray-700 bg-gray-200 rounded hover:bg-gray-300">

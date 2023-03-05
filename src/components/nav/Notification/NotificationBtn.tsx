@@ -1,12 +1,14 @@
 'use client'
 
 import { useEffect, useRef, useState } from "react";
+import { UserInfo } from "../NavBar";
+import NotificationContainer from "./NotificationContainer";
 
 interface Props {
-  children: React.ReactNode
+  myUserInfo: UserInfo | undefined
 }
 
-const NotificationBtn: React.FC<Props> = ({ children }) => {
+const NotificationBtn: React.FC<Props> = ({ myUserInfo }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [showNotification, setShowNotification] = useState(false);
 
@@ -23,7 +25,6 @@ const NotificationBtn: React.FC<Props> = ({ children }) => {
     };
   }, []);
 
-
   const toggleNotification = () => {
     setShowNotification(!showNotification);
   };
@@ -34,7 +35,10 @@ const NotificationBtn: React.FC<Props> = ({ children }) => {
         <svg className="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />  <circle cx="16" cy="8" r="3" /></svg>
       </button>
       <div className={showNotification ? "" : "hidden"}>
-        {children}
+        {myUserInfo ?
+          <NotificationContainer myUserInfo={myUserInfo} />
+          : null
+        }
       </div>
     </div>
   );

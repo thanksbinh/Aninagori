@@ -1,10 +1,9 @@
-'use client'
-
+import { FriendRequestDoc } from "@/components/addFriend/friendRequest";
 import { db } from "@/firebase/firebase-app";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { UserInfo } from "../NavBar";
-import NotificationComponent from "./NotificationComponent"
+import NotificationComponent, { Notification } from "./NotificationComponent"
 
 interface Props {
   myUserInfo: UserInfo
@@ -19,10 +18,11 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo }) => {
 
     const docRef = doc(db, "users", myUserInfo.id);
     const unsubscribe = onSnapshot(docRef, docSnap => {
-      setUserNoti(docSnap.data()?.friend_request_list?.map((acc: any) => {
+      setUserNoti(docSnap.data()?.friend_request_list?.map((acc: FriendRequestDoc) => {
         return {
           notification_id: docSnap.id,
           sender: {
+            id: acc.id,
             username: acc.username,
             image: acc.image,
           },
@@ -43,14 +43,13 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo }) => {
         <h2 className="text-gray-800 font-semibold text-xl">Notification</h2>
         <div className="hover:cursor-pointer hover:bg-gray-200 rounded-full p-2"><svg className="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <circle cx="5" cy="12" r="1" />  <circle cx="12" cy="12" r="1" />  <circle cx="19" cy="12" r="1" /></svg></div>
       </div>
-      {userNoti?.length ?
-        userNoti.map((noti: any, i: number) =>
-          <NotificationComponent notification={noti} myUserInfo={myUserInfo} key={i} />
-        ) :
-        <div className="flex items-center bg-white rounded-lg px-4 py-4">
-          Empty!
-        </div>
-      }
+      <div>
+        {userNoti?.length ?
+          userNoti.map((noti: Notification, i: number) =>
+            <NotificationComponent notification={noti} myUserInfo={myUserInfo} key={i} />)
+          : <div className="flex items-center bg-white rounded-lg px-4 py-4"> Empty! </div>
+        }
+      </div>
     </div>
   )
 }

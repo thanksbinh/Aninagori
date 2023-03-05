@@ -71,7 +71,7 @@ export const authOptions: NextAuthOptions = {
         },
         async session({ session, token, user }) {
             if (session?.user) {
-                (session.user as any).id = token.sub;
+                (session as any).user.id = token.sub;
                 // (session as any).customToken = token.customToken;
                 // await signInWithCustomToken(auth, token.customToken as string)
             }

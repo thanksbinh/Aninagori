@@ -5,8 +5,9 @@ import { collection, getDocs, limit, query, where } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import AddFriendBtn from '../addFriend/AddFriendBtn';
+import { UserInfo } from './NavBar';
 
-interface UserInfo {
+interface SearchInfo {
   id: string,
   image: string,
   username: string,
@@ -14,13 +15,13 @@ interface UserInfo {
 }
 
 interface Props {
-  myUserInfo: any
+  myUserInfo: UserInfo
 }
 
 const SearchBar: React.FC<Props> = ({ myUserInfo }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [searchText, setSearchText] = useState('');
-  const [searchResults, setSearchResults] = useState<UserInfo[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchInfo[]>([]);
   const [showResults, setShowResults] = useState(false);
   const router = useRouter()
 
@@ -53,12 +54,12 @@ const SearchBar: React.FC<Props> = ({ myUserInfo }) => {
           let canAddFriend = !(doc.data().username === myUserInfo.username)
           // If requested
           if (canAddFriend && doc.data().friend_request_list)
-            doc.data().friend_request_list.forEach((acc: UserInfo) => {
+            doc.data().friend_request_list.forEach((acc: SearchInfo) => {
               if (acc.username === myUserInfo.username) canAddFriend = false;
             })
           // If is friend
           if (canAddFriend && doc.data().friend_list)
-            doc.data().friend_list.forEach((acc: UserInfo) => {
+            doc.data().friend_list.forEach((acc: SearchInfo) => {
               if (acc.username === myUserInfo.username) canAddFriend = false;
             })
 
@@ -115,7 +116,7 @@ const SearchBar: React.FC<Props> = ({ myUserInfo }) => {
                 {result.username}
               </div>
               {result.canAddFriend ?
-                <AddFriendBtn myUserInfo={myUserInfo} userInfo={{"username": result.username, "id": result.id}} onClick={() => {doSearch(result.username)}} /> : null
+                <AddFriendBtn myUserInfo={myUserInfo} userInfo={{"username": result.username, "id": result.id, "image": result.image}} onClick={() => {doSearch(result.username)}} /> : null
               }
             </div>)}
         </div>

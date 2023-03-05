@@ -1,9 +1,12 @@
 'use client'
 
+import { db } from "@/firebase/firebase-app";
+import { doc, getDoc } from "firebase/firestore";
 import { useState } from "react";
-import { makeFriendRequest } from "./friendRequest";
+import { UserInfo } from "../nav/NavBar";
+import { beFriends, FriendRequestDoc, makeFriendRequest, removeFriendRequestByRequest } from "./friendRequest";
 
-export default function AddFriendBtn({ myUserInfo, userInfo, onClick }: any) {
+export default function AddFriendBtn({ myUserInfo, userInfo, onClick }: { myUserInfo: UserInfo, userInfo: UserInfo, onClick: any }) {
   const [requesting, setRequesting] = useState(false)
 
   const handleAddFriend = async (e: React.MouseEvent) => {
@@ -11,7 +14,25 @@ export default function AddFriendBtn({ myUserInfo, userInfo, onClick }: any) {
     setRequesting(true)
 
     // Todo: check if userInfo.username in myUserInfo.request_list
-    makeFriendRequest(myUserInfo, userInfo.id)
+    const docRef = doc(db, "users", myUserInfo.id);
+    const docSnap = await getDoc(docRef)
+
+    if (docSnap.exists() && docSnap.data().friend_request_list?.map((doc: FriendRequestDoc) => doc.username).includes(userInfo.username)) {
+      beFriends(myUserInfo, userInfo)
+      docSnap.data().friend_request_list.forEach((doc: FriendRequestDoc) => {
+        if (doc.username === userInfo.username) {
+          removeFriendRequestByRequest(myUserInfo, {
+            id: doc.id,
+            username: doc.username,
+            image: doc.image,
+            timestamp: doc.timestamp,
+            read: doc.read,
+          })
+        }
+      })
+    } else {
+      makeFriendRequest(myUserInfo, userInfo.id)
+    }
 
     await onClick()
     setTimeout(() => {

@@ -1,4 +1,5 @@
 'use client'
+
 import { db } from "@/firebase/firebase-app";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { signIn } from "next-auth/react"
