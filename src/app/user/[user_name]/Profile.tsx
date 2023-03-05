@@ -18,6 +18,7 @@ import AnimeUpdate from '@/app/user/[user_name]/profileComponent/AnimeUpdate/Ani
 const cx = classNames.bind(styles);
 
 function Profile({ user_name }: { user_name: string }) {
+  //TODO: add loading effect when first time loading page
   return (
     <div className={cx('profile-wrapper')}>
       <div className={cx('profile-content')}>

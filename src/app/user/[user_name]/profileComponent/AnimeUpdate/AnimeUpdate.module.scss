@@ -23,10 +23,16 @@
   object-position: center;
   border-radius: 10px;
   margin-right: 14px;
+  cursor: pointer;
 }
 
 .anime-name {
   font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .more-detail {

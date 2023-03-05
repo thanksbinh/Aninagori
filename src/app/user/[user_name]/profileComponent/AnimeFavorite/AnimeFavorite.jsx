@@ -21,16 +21,30 @@ function FavoriteChild({ title, count }) {
         {title} {number}
       </p>
       <div className={cx('wrapper')}>
-        <img className={cx('image')} src="/animePic.jpg" alt="image"></img>
-        <img className={cx('image')} src="/animePic.jpg" alt="image"></img>
-        <img className={cx('image')} src="/animePic.jpg" alt="image"></img>
-        <img className={cx('image')} src="/animePic.jpg" alt="image"></img>
-        <img className={cx('image')} src="/animePic.jpg" alt="image"></img>
-        <img className={cx('image')} src="/animePic.jpg" alt="image"></img>
-        <img className={cx('image')} src="/animePic.jpg" alt="image"></img>
-        <img className={cx('image')} src="/animePic.jpg" alt="image"></img>
+        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
+        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
+        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
+        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
+        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
+        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
+        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
+        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
+        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
       </div>
     </>
+  );
+}
+
+export function Img({ href, className, src, alt}) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      onClick={() => {
+        window.location.href = href;
+      }}
+    ></img>
   );
 }
 

@@ -4,15 +4,70 @@ import classNames from 'classnames/bind';
 import styles from './ProfileHeader.module.scss';
 import Button from '@/components/Button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlug, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faImage, faPlug, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { useRef, useState } from 'react';
 
 const cx = classNames.bind(styles);
 
 function ProfileHeader() {
+  const [open, setOpen] = useState(false);
+  const [link, setLink] = useState('');
+  const [load, setLoad] = useState(true);
+  const [currentImage, setCurrentImage] = useState('/wallpaper.png');
+
   return (
     <div className={cx('wrapper')}>
-      <img src="/wallpaper.png" alt="wallpaper" className={cx('wallpaper')}></img>
+      <img
+        src={currentImage}
+        alt="wallpaper"
+        className={cx('wallpaper')}
+        onError={({ currentTarget }) => {
+          //TODO: show pop up notification when error
+          console.log('Error');
+          currentTarget.onerror = null;
+          currentTarget.src = '/wallpaper.png';
+        }}
+        onLoad={() => {
+          setLoad(false);
+        }}
+      ></img>
+      <Button
+        onClick={() => {
+          setOpen(!open);
+        }}
+        leftIcon={<FontAwesomeIcon icon={faImage} />}
+        small
+        primary
+        className={cx('change-wallpaper')}
+      >
+        Change your wallpaper
+      </Button>
+      {open && (
+        <div  className="px-2 absolute bottom-1/4 right-8 z-10 rounded-2xl overflow-hidden">
+          <input
+            type="text"
+            className="border border-gray-300 py-2 px-4 w-64 text-black outline-none"
+            placeholder="Enter wallpaper link here"
+            onChange={(e) => {
+              setLink(e.target.value);
+            }}
+            value = {link}
+          />
+          <button
+            onClick={() => {
+              if (!load) {
+                setCurrentImage(link);
+              }
+              setLink('');
+            }}
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4"
+          >
+            Save
+          </button>
+        </div>
+      )}
       <div className={cx('user-display')}>
         <div className={cx('avatar-wrapper')}>
           <img src="/bocchi.jpg" alt="avatar" className={cx('avatar')}></img>

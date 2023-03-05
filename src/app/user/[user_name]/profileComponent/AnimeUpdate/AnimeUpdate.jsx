@@ -4,6 +4,7 @@ import Image from 'next/image';
 import classNames from 'classnames/bind';
 import styles from './AnimeUpdate.module.scss';
 import { ProgressChild } from '../AnimeStatus/AnimeStatus';
+import { Img } from '../AnimeFavorite/AnimeFavorite';
 const cx = classNames.bind(styles);
 
 function AnimeUpdate() {
@@ -12,9 +13,12 @@ function AnimeUpdate() {
       <div className={cx('wrapper')}>
         <p className={cx('time-line')}>Yesterday, 10:14 AM</p>
         <div className={cx('update-information')}>
-          <img className={cx('anime-pic')} src="/animePic.jpg" alt="anime pic"></img>
+          <Img href="https://google.com" className={cx('anime-pic')} src="/animePic.jpg" alt="anime pic" />
+
           <div className={cx('more-detail')}>
-            <h5 className={cx('anime-name')}>Saenai Kanojo no Sodatekata</h5>
+            <a className={cx('anime-name')} href="">
+              Saenai Kanojo no Sodatekata
+            </a>
             <div className={cx('progress-bar')}>
               <ProgressChild className={cx('progress-percent')} percent="60"></ProgressChild>
             </div>
@@ -28,9 +32,9 @@ function AnimeUpdate() {
       <div className={cx('wrapper')}>
         <p className={cx('time-line')}>Yesterday, 10:14 AM</p>
         <div className={cx('update-information')}>
-          <img className={cx('anime-pic')} src="/animePic.jpg" alt="anime pic"></img>
+          <Img href="https://google.com" className={cx('anime-pic')} src="/animePic.jpg" alt="anime pic" />
           <div className={cx('more-detail')}>
-            <h5 className={cx('anime-name')}>Saenai Kanojo no Sodatekata</h5>
+            <a className={cx('anime-name')}>Saenai Kanojo no Sodatekata</a>
             <div className={cx('progress-bar')}>
               <ProgressChild className={cx('progress-percent')} percent="60"></ProgressChild>
             </div>
@@ -44,9 +48,10 @@ function AnimeUpdate() {
       <div className={cx('wrapper')}>
         <p className={cx('time-line')}>Yesterday, 10:14 AM</p>
         <div className={cx('update-information')}>
-          <img className={cx('anime-pic')} src="/animePic.jpg" alt="anime pic"></img>
+          <Img href="https://google.com" className={cx('anime-pic')} src="/animePic.jpg" alt="anime pic" />
+
           <div className={cx('more-detail')}>
-            <h5 className={cx('anime-name')}>Saenai Kanojo no Sodatekata</h5>
+            <a className={cx('anime-name')}>Saenai Kanojo no Sodatekata</a>
             <div className={cx('progress-bar')}>
               <ProgressChild className={cx('progress-percent')} percent="60"></ProgressChild>
             </div>
