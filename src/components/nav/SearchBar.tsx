@@ -1,8 +1,10 @@
 'use client'
+
 import { db } from '@/firebase/firebase-app';
-import { arrayUnion, collection, doc, getDocs, limit, query, serverTimestamp, updateDoc, where } from 'firebase/firestore';
+import { collection, getDocs, limit, query, where } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
+import AddFriendBtn from '../addFriend/AddFriendBtn';
 
 interface UserInfo {
   id: string,
@@ -12,16 +14,15 @@ interface UserInfo {
 }
 
 interface Props {
-  userInfo: { image: string, username: string }
+  myUserInfo: any
 }
 
-const SearchBar: React.FC<Props> = ({ userInfo: myUserInfo }) => {
+const SearchBar: React.FC<Props> = ({ myUserInfo }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState<UserInfo[]>([]);
   const [showResults, setShowResults] = useState(false);
   const router = useRouter()
-  const [requesting, setRequesting] = useState(false)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -92,25 +93,6 @@ const SearchBar: React.FC<Props> = ({ userInfo: myUserInfo }) => {
     router.push('/' + result);
   };
 
-  const handleAddFriend = async (e: React.MouseEvent, userId: string) => {
-    e.stopPropagation()
-
-    setRequesting(true)
-
-    const userRef = doc(db, 'users', userId);
-    await updateDoc(userRef, {
-      friend_request_list: arrayUnion({
-        username: myUserInfo.username,
-        image: myUserInfo.image,
-        timestamp: new Date(),
-        read: false,
-      })
-    });
-
-    await doSearch(searchText)
-    setRequesting(false)
-  }
-
   return (
     <div ref={ref} className="relative">
       <input
@@ -133,13 +115,7 @@ const SearchBar: React.FC<Props> = ({ userInfo: myUserInfo }) => {
                 {result.username}
               </div>
               {result.canAddFriend ?
-                <button onClick={(e) => handleAddFriend(e, result.id)} className="hover:cursor-pointer hover:bg-gray-200 rounded-full p-2">
-                  {
-                    !requesting ?
-                      <svg className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg> :
-                      <svg className="h-6 w-6 text-gray-500"  width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M5 12l5 5l10 -10" /></svg>
-                  }
-                </button> : null
+                <AddFriendBtn myUserInfo={myUserInfo} userInfo={{"username": result.username, "id": result.id}} onClick={() => {doSearch(result.username)}} /> : null
               }
             </div>)}
         </div>

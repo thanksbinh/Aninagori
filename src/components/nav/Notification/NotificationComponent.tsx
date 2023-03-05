@@ -1,49 +1,58 @@
+import { db } from "@/firebase/firebase-app";
+import { arrayRemove, arrayUnion, collection, doc, getDocs, query, Timestamp, updateDoc, where } from "firebase/firestore";
 import { useRouter } from "next/navigation";
+import { UserInfo } from "../NavBar";
+import { makeFriendRequest, removeFriendRequest, beFriends } from "@/components/addFriend/friendRequest";
 
 export interface Notification {
   notification_id: string;
   sender: {
     username: string;
-    avatarUrl: string;
+    image: string;
   };
   type: 'friend request' | 'like' | 'comment' | 'plan to watch';
   post: {
     id: string;
     title: string;
   };
-  timestamp: string;
+  timestamp: Timestamp;
   read: boolean;
 }
 
 interface Props {
   notification: Notification;
+  myUserInfo: UserInfo;
 }
 
-const NotificationComponent: React.FC<Props> = ({ notification }) => {
+const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) => {
   const router = useRouter()
+
+  const handleAddFriend = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+
+    beFriends(myUserInfo, notification)
+    removeFriendRequest(myUserInfo, notification)
+  }
+
+  const handleReject = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+
+    removeFriendRequest(myUserInfo, notification)
+  }
 
   const handleClickProfile = () => {
     router.push('/' + notification.sender.username)
   }
 
-  const handleAddFriend = (e: any) => {
-    e.stopPropagation()
-  }
-
-  const handleReject = (e: any) => {
-    e.stopPropagation()
-  }
-
   if (notification.type === 'friend request') {
     return (
-      <div className="flex items-center bg-white rounded-lg px-3 py-4 hover:cursor-pointer hover:bg-gray-100">
+      <div onClick={handleClickProfile} className="flex items-center bg-white rounded-lg px-3 py-4 hover:cursor-pointer hover:bg-gray-100">
         <img
-          className="h-10 w-10 rounded-full mr-4"
-          src={notification.sender.avatarUrl || '/images/default-profile-pic.png'}
+          src={notification.sender.image || '/images/default-profile-pic.png'}
           alt={`${notification.sender.username}'s avatar`}
-          onClick={handleClickProfile}
+          className="h-10 w-10 rounded-full mr-4"
         />
-        <div onClick={handleClickProfile}>
+        <div>
           <p className="text-sm font-medium text-gray-900">
             {notification.sender.username} sent you a friend request.
           </p>
@@ -56,7 +65,7 @@ const NotificationComponent: React.FC<Props> = ({ notification }) => {
             </button>
           </div>
           <p className="text-xs text-gray-500">
-            {notification.timestamp} - {notification.read ? "read" : "not read"}
+            {new Date().getTime() - notification.timestamp.toDate().getTime() + "s ago"} - {notification.read ? "read" : "not read"}
           </p>
         </div>
       </div>
@@ -67,7 +76,7 @@ const NotificationComponent: React.FC<Props> = ({ notification }) => {
     <div className="flex items-center bg-white rounded-lg px-3 py-4 hover:cursor-pointer hover:bg-gray-100">
       <img
         className="h-10 w-10 rounded-full mr-4"
-        src={notification.sender.avatarUrl || '/images/default-profile-pic.png'}
+        src={notification.sender.image || '/images/default-profile-pic.png'}
         alt={`${notification.sender.username}'s avatar`}
         onClick={handleClickProfile}
       />

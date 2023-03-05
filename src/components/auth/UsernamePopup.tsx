@@ -1,4 +1,5 @@
 'use client'
+
 import { db } from "@/firebase/firebase-app"
 import * as Yup from 'yup';
 import { useFormik, FormikConfig, FormikValues } from "formik";
@@ -52,7 +53,7 @@ const UsernamePopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
 	);
 
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} title={""}>
+		<Modal isOpen={isOpen} onClose={() => {}} title={""}>
 			<div className="flex flex-col p-6 w-[500px]">
 				<h2 className="text-2xl font-bold mb-4">Set username</h2>
 				<form className="flex flex-col" onSubmit={formik.handleSubmit}>

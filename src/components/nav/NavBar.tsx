@@ -4,68 +4,48 @@ import { Session } from "next-auth";
 import Link from "next/link";
 import ProfilePicture from "./ProfilePicture";
 import SearchBar from "./SearchBar";
-import NotificationBtn from "./NotificationBtn";
+import NotificationBtn from "./Notification/NotificationBtn";
+import NotificationContainer from "./Notification/NotificationContainer";
+import { userInfo } from "os";
 
-async function getUserInfo(userId: string) {
+export interface UserInfo {
+  "id": string,
+  "username": string,
+  "image": string,
+}
+
+async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
   const docRef = doc(db, "users", userId);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
     return {
-      "id": docSnap.data().id,
+      "id": docSnap.id,
       "username": docSnap.data().username,
       "image": docSnap.data().image,
     }
   } else {
-    console.log("No such document!");
+    console.log("No such document in NavBar/getUserInfo()!");
   }
 }
 
-// Todo: get post, ... notification
-async function getUserNoti(userId: string) {
-  const docRef = doc(db, "users", userId);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    console.log(docSnap.data())
-    if (!docSnap.data().friend_request_list) return []
-    return docSnap.data().friend_request_list.map((acc: any) => {
-      return {
-        notification_id: docSnap.id,
-        sender: {
-          username: acc.username,
-          avatarUrl: acc.image,
-        },
-        type: 'friend request',
-        timestamp: new Date().getTime() - acc.timestamp.toDate().getTime() + "s ago",
-        read: acc.read,
-      }
-    })
-  } else {
-    console.log("No such document!");
-  }
-}
-
-type Props = {
-  session: Session | null,
-}
-
-export default async function NavBar({ session }: Props) {
-  const userId = (session?.user as any).id
-  const userInfo = await getUserInfo(userId)
-  const userNoti = await getUserNoti(userId)
+export default async function NavBar({ session }: { session: Session | null }) {
+  const myUserId = (session?.user as any).id
+  const myUserInfo = await getUserInfo(myUserId)
 
   return (
-    <nav className="py-2 border-b-2 px-4 flex justify-between items-center">
+    <nav className="py-2 border-b-2 px-4 flex justify-between items-center sticky top-0 z-50 bg-white">
       <div className="flex items-center gap-2">
         <Link href="/" className="text-lg font-semibold">
           Aninagori
         </Link>
-        <SearchBar userInfo={userInfo as any} />
+        <SearchBar myUserInfo={myUserInfo} />
       </div>
       <div className="flex items-center gap-2">
-        <NotificationBtn userNoti={userNoti as Notification[]} />
-        <ProfilePicture userInfo={userInfo as any} />
+        <NotificationBtn>
+          {myUserInfo ? <NotificationContainer myUserInfo={myUserInfo} /> : null}
+        </NotificationBtn>
+        <ProfilePicture myUserInfo={myUserInfo} />
       </div>
     </nav>
   )
