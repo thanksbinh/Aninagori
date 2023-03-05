@@ -7,13 +7,27 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import MyAnimeList from './UserInformation';
+import MyAnimeList from './profileComponent/UserInformation';
 import { get } from '@/app/api/apiServices/httpRequest';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import ProfileHeader from '@/app/user/[user_name]/profileComponent/ProfileHeader';
 
 const cx = classNames.bind(styles);
 
 function Profile({ user_name }: { user_name: string }) {
+  return (
+    <div className={cx('profile-wrapper')}>
+      <div className={cx('profile-content')}>
+        <ProfileHeader/>
+        <div className={cx('profile-body-wrapper')}>
+            
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Profile2({ user_name }: { user_name: string }) {
   useEffect(() => {
     handleConnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps

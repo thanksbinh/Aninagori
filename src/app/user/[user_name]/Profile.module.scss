@@ -25,3 +25,21 @@
     }
   }
 }
+
+.profile-wrapper {
+  width: 100%;
+  display: flex;
+  background-color: var(--primary-color);
+  justify-content: center;
+}
+
+.profile-content {
+  width: 1044px;
+}
+
+.profile-body-wrapper {
+  width: 1000px;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
