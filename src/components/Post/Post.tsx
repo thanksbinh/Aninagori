@@ -1,9 +1,9 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import Avatar from "../Avatar/Avatar";
 import Image from "next/image";
-import { AiOutlineLike, AiOutlineComment } from "react-icons/ai";
+import { AiOutlineComment } from "react-icons/ai";
 import { RiAddCircleLine } from "react-icons/ri";
-import { HiOutlineHeart } from "react-icons/hi2"
+import { HiOutlineHeart, HiHeart } from "react-icons/hi2";
 
 type PostProps = {
   authorName: string;
@@ -24,6 +24,8 @@ const Post: FC<PostProps> = ({
   likes,
   comments,
 }) => {
+  const [ likeToggle, setLikeToggle ] = useState(false);
+
   return (
     <div className="flex flex-col flex-1 bg-[#191c21] border rounded-2xl p-4 mb-4">
       <div className="flex items-center space-x-4 mx-2">
@@ -45,16 +47,23 @@ const Post: FC<PostProps> = ({
 
       <div className="flex items-center justify-between border-t border-b border-[#212833] py-2 mt-4 mx-2">
         <div className="flex">
-          <button className="flex items-center space-x-1 text-gray-400 hover:text-blue-600">
-            <HiOutlineHeart className="w-5 h-5" />
-            <span>{likes}</span>
+          <button className="flex items-center space-x-1 text-gray-400 hover:text-[#F14141]">
+            {likeToggle 
+              ? <HiHeart className="w-5 h-5 fill-[#F14141]" onClick={() => setLikeToggle(false)} />
+              : <HiOutlineHeart className="w-5 h-5" onClick={() => setLikeToggle(true)} />
+            }
           </button>
+          <span className="text-gray-400 ml-2">{likes}</span>
         </div>
-        <button className="flex items-center space-x-1 text-gray-400 hover:text-blue-600">
-          <AiOutlineComment className="w-5 h-5" />
-          <span>{comments}</span>
-        </button>
-        <button className="flex items-center space-x-1 text-gray-400 hover:text-blue-600">
+
+        <div className="flex">
+          <button className="flex items-center space-x-1 text-gray-400 hover:text-[#3BC361]">
+            <AiOutlineComment className="w-5 h-5" />
+          </button>
+          <span className="text-gray-400 ml-2">{comments}</span>
+        </div>
+
+        <button className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]">
           <RiAddCircleLine className="w-5 h-5" />
           <span>Plan to Watch</span>
         </button>
@@ -64,7 +73,7 @@ const Post: FC<PostProps> = ({
         <Avatar imageUrl={avatarUrl} altText={authorName} size={8} />
         <input
           type="text"
-          className="border rounded-2xl py-2 px-4 ml-2 w-full"
+          className="border rounded-2xl py-2 px-4 ml-2 w-full focus:outline-none"
           placeholder="Write a comment..."
         />
       </div>

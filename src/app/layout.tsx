@@ -17,7 +17,7 @@ export default function RootLayout({
       <head></head>
       <body>
         <main>
-          <Navbar />
+          <Navbar logoSrc={''} avatarSrc={''} />
           {children}
         </main>
       </body>

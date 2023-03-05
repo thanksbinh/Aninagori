@@ -9,14 +9,6 @@
     --gradient-text: linear-gradient(89.97deg, #AE67FA 1.84%, #F49867 102.67%);
 }
 
-.section__padding {
-    padding: 2rem 3rem;
-}
-
-.section__margin {
-    margin: 4rem 6rem;
-}
-
 .gradient__text {
     background: var(--gradient-text);
     background-clip: text;
