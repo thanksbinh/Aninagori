@@ -24,6 +24,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/pages/api/auth/[...nextauth].ts", "src/app/signup"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/Navbar/Navbar.jsx", "src/components/Post/Post.tsx", "src/pages/api/auth/[...nextauth].ts", "src/app/signup"],
   "exclude": ["node_modules"]
 }

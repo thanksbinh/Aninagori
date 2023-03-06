@@ -1,12 +1,10 @@
-'use client'
+import { Post , PostForm, Sidebar } from '../components'; 
 
-import { Post , PostForm, Sidebar } from '../../components';
-import { useSession } from "next-auth/react"
 export default function Home() {
   return (
-    <div className='flex justify-center'>
+    <div className="flex item-center justify-between">
       <Sidebar />
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col">
         <PostForm
           avatarUrl={''} authorName={'Nichan'} time={''} content={''} likes={0} comments={0}
         />
