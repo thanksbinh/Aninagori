@@ -73,7 +73,7 @@ const Post: FC<PostProps> = ({
         <Avatar imageUrl={avatarUrl} altText={authorName} size={8} />
         <input
           type="text"
-          className="border rounded-2xl py-2 px-4 ml-2 w-full focus:outline-none"
+          className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] focus:outline-none caret-white"
           placeholder="Write a comment..."
         />
       </div>

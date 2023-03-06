@@ -1,4 +1,4 @@
-import { Navbar, Post , PostForm, Sidebar} from '../components'; 
+import { Post , PostForm, Sidebar } from '../components'; 
 
 export default function Home() {
   return (
