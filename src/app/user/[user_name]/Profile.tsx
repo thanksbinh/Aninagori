@@ -4,7 +4,6 @@ import classNames from 'classnames/bind';
 import styles from './Profile.module.scss';
 import { getAnimeList } from '@/app/api/apiServices/getServices';
 import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import MyAnimeList from './UserInformation';
@@ -14,25 +13,50 @@ import ProfileHeader from '@/app/user/[user_name]/profileComponent/ProfileHeader
 import AnimeStatus from '@/app/user/[user_name]/profileComponent/AnimeStatus/AnimeStatus';
 import AnimeFavorite from '@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite';
 import AnimeUpdate from '@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate';
+import { useSession } from 'next-auth/react';
+import {doc, getDoc} from 'firebase/firestore';
+import { db } from '@/firebase/firebase-app';
 
 const cx = classNames.bind(styles);
 
 function Profile({ user_name }: { user_name: string }) {
+  const { data: session } = useSession();
+  const [data, setData] = useState({});
+  const [animeData, setAnimeData] = useState({data: ''})
+  const userName = 'B_I_N_H';
+
+  useEffect(() => {
+    async function getUserID() {
+      if(session && session.user) {
+          const docRef = doc(db, "users", (session.user as any).id);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            console.log(docSnap.data());
+            setData(docSnap.data())
+            //TODO handle if docsnap have "connected_to_MAL"
+            const result = await get('api/user/B_I_N_H')
+            setAnimeData(result);
+          }
+      } 
+  }
+  getUserID();
+  }, [session])
+
   //TODO: add loading effect when first time loading page
   return (
-    <div className={cx('profile-wrapper')}>
-      <div className={cx('profile-content')}>
-        <ProfileHeader />
-        <div className={cx('profile-body-wrapper')}>
-          <div className={cx('status-section')}>
-            <AnimeUpdate />
-            <AnimeStatus />
-            <AnimeFavorite />
+      <div className={cx('profile-wrapper')}>
+        <div className={cx('profile-content')}>
+          <ProfileHeader data = {data}/>
+          <div className={cx('profile-body-wrapper')}>
+            <div className={cx('status-section')}>
+              <AnimeUpdate data = {animeData.data}/>
+              <AnimeStatus  data = {animeData.data}/>
+              <AnimeFavorite data = {animeData.data} />
+            </div>
+            <div className={cx('post-section')}>{/* Post here insert later */}</div>
           </div>
-          <div className={cx('post-section')}>{/* Post here insert later */}</div>
         </div>
       </div>
-    </div>
   );
 }
 

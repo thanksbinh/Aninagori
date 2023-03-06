@@ -2,18 +2,23 @@
 import StatusWrapper from '../StatusWrapper/StatusWrapper';
 import classNames from 'classnames/bind';
 import styles from './AnimeFavorite.module.scss';
+import { memo } from 'react';
 const cx = classNames.bind(styles);
 
-function AnimeFavorite() {
+function AnimeFavorite({ data }) {
   return (
     <StatusWrapper title="Favourite">
-      <FavoriteChild title="Anime" count="10" />
-      <FavoriteChild title="Character" count="20" />
+      {!!data.updates && (
+        <>
+          <FavoriteChild title="Anime" count={data.favorites.anime.length} data={data.favorites.anime} />
+          <FavoriteChild title="Character" count={data.favorites.characters.length} data={data.favorites.characters} />
+        </>
+      )}
     </StatusWrapper>
   );
 }
 
-function FavoriteChild({ title, count }) {
+function FavoriteChild({ title, count, data }) {
   const number = `(${count})`;
   return (
     <>
@@ -21,21 +26,16 @@ function FavoriteChild({ title, count }) {
         {title} {number}
       </p>
       <div className={cx('wrapper')}>
-        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
-        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
-        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
-        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
-        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
-        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
-        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
-        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
-        <Img className={cx('image')} src="/animePic.jpg" alt="image" href='https://google.com'/>
+        {!!data &&
+          data.map((fav, key) => {
+            return <Img key={key} className={cx('image')} src={fav.images.jpg.image_url} alt="image" href={fav.url} />;
+          })}
       </div>
     </>
   );
 }
 
-export function Img({ href, className, src, alt}) {
+export function Img({ href, className, src, alt }) {
   return (
     <img
       src={src}
@@ -48,4 +48,4 @@ export function Img({ href, className, src, alt}) {
   );
 }
 
-export default AnimeFavorite;
+export default memo(AnimeFavorite);

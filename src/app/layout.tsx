@@ -1,19 +1,89 @@
-import Link from 'next/link';
 import './globals.css';
-import { Navbar } from '@/components';
+import type { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
+import Link from 'next/link';
+import { doc, getDoc } from 'firebase/firestore';
+import React from 'react'
 
-export const metadata = {
+import { SessionProvider } from '@/components/auth/SessionProvider';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import Login from '@/components/auth/Login';
+import ProfilePicture from '@/components/nav/ProfilePicture';
+import { db } from '@/firebase/firebase-app';
+import UsernamePopup from '@/components/auth/SetUsername';
+import { renderToString } from 'react-dom/server';
+export const metadata: Metadata = {
   title: 'Aninagori',
-  description: 'Share your favorite Animemory with friends!',
+  description: 'Share your favourite Animemory with friends',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions);
+
+  let userimage = '';
+  let username = '';
+
+
+  if (!session) {
+
+    return (
+      <html lang="en">
+        <head />
+        <body>
+          <SessionProvider session={session}>
+            <Login />
+            {/* Todo: use favicon without children */}
+            <div className="hidden">{children}</div>
+          </SessionProvider>
+        </body>
+      </html>
+    );
+  }
+
+  console.log('have session hahahaha');
+
+  const docRef = doc(db, 'users', (session.user as any).id);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    userimage = docSnap.data().image;
+    username = docSnap.data().username;
+  } else {
+    console.log('No such document!');
+  }
+
+  if (username === 'guess') {
+    return (
+      <html lang="en">
+        <head />
+        <body>
+          <SessionProvider session={session}>
+            <UsernamePopup />
+            <div className="hidden">{children}</div>
+          </SessionProvider>
+        </body>
+      </html>
+    );
+  }
+
   return (
     <html lang="en">
-      <head></head>
+      <head />
       <body>
-        <Navbar logoSrc={'/logo.png'} avatarSrc={'/bocchi.jpg'} />
-        {children}
+        <SessionProvider session={session}>
+          <nav className="py-2 border-b-2 px-4 flex justify-between items-center">
+            <div className="flex items-center">
+              <Link href="/" className="text-lg font-semibold">
+                Aninagori
+              </Link>
+            </div>
+            <div className="flex items-center">
+              <ProfilePicture userimage={userimage} username={username} />
+            </div>
+          </nav>
+
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );

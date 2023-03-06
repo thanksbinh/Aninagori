@@ -53,7 +53,6 @@ export async function GET(request: Request, { params }: { params: any }) {
   ];
   result.map((a: any, key: any) => {
     userInformation.data.data.updates.anime[key].episodes_total = a.data.num_episodes;
-    console.log(a.data);
   });
 
   return NextResponse.json(userInformation.data);

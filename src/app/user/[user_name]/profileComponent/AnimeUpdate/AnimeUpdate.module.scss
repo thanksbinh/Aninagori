@@ -14,6 +14,7 @@
   display: flex;
   justify-content: flex-start;
   font-size: 1.4rem;
+  align-items: center;
 }
 
 .anime-pic {
@@ -39,6 +40,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
 }
 
 .progress-bar {
@@ -49,6 +51,7 @@
   background-color: #d9d9d9;
   display: flex;
   align-items: center;
+  margin: 12px 0;
 }
 
 .progress-percent {
