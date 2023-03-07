@@ -72,17 +72,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head />
       <body>
         <SessionProvider session={session}>
-          <nav className="py-2 border-b-2 px-4 flex justify-between items-center">
-            <div className="flex items-center">
-              <Link href="/" className="text-lg font-semibold">
-                Aninagori
-              </Link>
-            </div>
+          <Navbar logoSrc='/wallpaper.png' avatarSrc='/bocchi.jpg' userimage={userimage} username={username}>
             <div className="flex items-center">
               <ProfilePicture userimage={userimage} username={username} />
             </div>
-          </nav>
-
+          </Navbar>
           {children}
         </SessionProvider>
       </body>
