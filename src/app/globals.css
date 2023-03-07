@@ -15,6 +15,16 @@
   padding: 2rem 3rem;
 }
 
+.setBackground {
+  width: 100vw;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-clip: center;
+  background-position: center;
+  background-image: url(https://cdn.dribbble.com/users/1026512/screenshots/10130839/waifu_laifu_404_copia_4x.png);
+}
+
 html {
   font-size: 62.5%;
 }

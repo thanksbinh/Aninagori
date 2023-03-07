@@ -30,7 +30,7 @@
 .profile-body-wrapper {
   width: 1000px;
   display: flex;
-  height: 1500px; // for developer state
+  min-height: 2000px; // for developer state
   margin-top: 24px;
   box-sizing: border-box;
   margin-left: 24px;
@@ -38,14 +38,21 @@
   padding: 20px;
   background-color: #212833;
   border-radius: 12px;
+  position: relative;
 }
 
 .status-section {
   width: 44.5%;
   border-radius: 12px;
+  position: -webkit-sticky;
+  position: sticky;
+  // top: 0;
+  // z-index: 1;
 }
 
 .post-section {
+  // height: 5000px;
+  position: relative;
   background-color: var(--primary-color);
   border-radius: 12px;
   width: 53.5%;

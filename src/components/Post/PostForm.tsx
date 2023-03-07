@@ -23,7 +23,7 @@ const PostForm: FC<PostFormProps> = ({
   comments,
 }) => {
   return (
-    <div className="flex flex-col flex-1 bg-[#191c21] border rounded-2xl p-2 my-4">
+    <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-2 my-4">
       <div className="flex justify-between items-center mt-4">
         <Avatar imageUrl={avatarUrl} altText={authorName} size={8} />
         <input

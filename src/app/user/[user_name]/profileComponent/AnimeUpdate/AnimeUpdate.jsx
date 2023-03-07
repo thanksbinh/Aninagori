@@ -10,7 +10,6 @@ import { memo } from "react";
 const cx = classNames.bind(styles);
 
 function AnimeUpdate({data}) {
-  console.log(data);
   return (
     <StatusWrapper title="Last Anime Updates">
       {!!data.updates && data.updates.anime.map((anime, key) => {
@@ -64,7 +63,6 @@ function convertDateString(dateString) {
 
 
 export function convertToPercent(seen, total) {
-  console.log(seen, total);
     if(seen == 0) return 0;
     else {
       const percent = (seen / total).toFixed(6) * 100; 

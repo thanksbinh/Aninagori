@@ -4,27 +4,25 @@ import classNames from 'classnames/bind';
 import styles from './ProfileHeader.module.scss';
 import Button from '@/components/Button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImage, faPlug, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faImage, faPenToSquare, faPlug, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { setCookie } from 'cookies-next';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import {doc, getDoc} from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-app';
 
 const cx = classNames.bind(styles);
 
-function ProfileHeader({data}) {
+function ProfileHeader({ data, admin = false }) {
   const [open, setOpen] = useState(false);
   const [link, setLink] = useState('');
   const [load, setLoad] = useState(true);
   const [currentImage, setCurrentImage] = useState('/wallpaper.png');
 
-
-
   return (
     <div className={cx('wrapper')}>
-      <img  
+      <img
         src={currentImage}
         alt="wallpaper"
         className={cx('wallpaper')}
@@ -37,20 +35,22 @@ function ProfileHeader({data}) {
         onLoad={() => {
           setLoad(false);
         }}
-        width = {1044}
-        height = {281}
+        width={1044}
+        height={281}
       ></img>
-      <Button
-        onClick={() => {
-          setOpen(!open);
-        }}
-        leftIcon={<FontAwesomeIcon icon={faImage} />}
-        small
-        primary
-        className={cx('change-wallpaper')}
-      >
-        Change your wallpaper
-      </Button>
+      {admin && (
+        <Button
+          onClick={() => {
+            setOpen(!open);
+          }}
+          leftIcon={<FontAwesomeIcon icon={faImage} />}
+          small
+          primary
+          className={cx('change-wallpaper')}
+        >
+          Change your wallpaper
+        </Button>
+      )}
       {open && (
         <div className="px-2 absolute bottom-1/4 right-8 z-10 rounded-2xl overflow-hidden">
           <input
@@ -78,9 +78,9 @@ function ProfileHeader({data}) {
       )}
       <div className={cx('user-display')}>
         <div className={cx('avatar-wrapper')}>
-          <img src= {data.image} alt="avatar" className={cx('avatar')}></img>
+          <img src={data.image || '/bocchi.jpg'} alt="avatar" className={cx('avatar')}></img>
           <div className={cx('user-information')}>
-            <strong className={cx('user-name')}>{data.name || data.user }</strong>
+            <strong className={cx('user-name')}>{data.name || data.username}</strong>
             <div className={cx('friends-count')}>
               <span>5 </span> friends
             </div>
@@ -97,19 +97,39 @@ function ProfileHeader({data}) {
           {/* //TODO: 2 types of button for @me / another user */}
           {/* //TODO: make edit profile information feature */}
           {/* //TODO: handle myAnimeList connect feature */}
-          <Button
-            onClick={() => {
-              console.log('Login ');
-            }}
-            small
-            gradient
-            leftIcon={<FontAwesomeIcon icon={faPlug} />}
-          >
-            Connect with MAL
-          </Button>
-          <Button small primary leftIcon={<FontAwesomeIcon icon={faUserPlus} />}>
-            Add friend
-          </Button>
+          {admin ? (
+            <>
+              <Button
+                onClick={() => {
+                  console.log('Login ');
+                }}
+                small
+                gradient
+                leftIcon={<FontAwesomeIcon icon={faPlug} />}
+              >
+                Connect with MAL
+              </Button>
+              <Button small primary leftIcon={<FontAwesomeIcon icon={faPenToSquare} />}>
+                Edit profile
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                onClick={() => {
+                  console.log('Login ');
+                }}
+                small
+                gradient
+                leftIcon={<FontAwesomeIcon icon={faPlug} />}
+              >
+                Visit MAL profile
+              </Button>
+              <Button small primary leftIcon={<FontAwesomeIcon icon={faUserPlus} />}>
+                Add friend
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>

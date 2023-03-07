@@ -57,13 +57,13 @@ const ProfilePicture: React.FC<Props> = ({ userimage, username }) => {
                 <div className="absolute top-14 right-1 z-50 w-56 py-2 mt-1 bg-white rounded-md shadow-lg">
                     <div className="px-4 py-2 text-gray-800">{username}</div>
                     <div className="border-t border-gray-100"></div>
-                    <Link
+                    <a
                         className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
-                        href="/profile"
+                        href= {`/user/${username}`}
                         onClick={() => setIsOpen(false)}
                     >
                         View Profile
-                    </Link>
+                    </a>
                     <button
                         className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
                         onClick={handleLogout}
