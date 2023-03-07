@@ -1,26 +1,24 @@
-import {FC, useState} from 'react';
+import { FC, useState } from 'react';
 import Image from 'next/image';
-import { BsChatLeftDotsFill, BsBellFill } from "react-icons/bs";
+import { BsChatLeftDotsFill, BsBellFill } from 'react-icons/bs';
 
 interface NavbarProps {
   logoSrc: string;
   avatarSrc: string;
+  userimage: any;
+  username: any;
+  children: any;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ logoSrc, avatarSrc }) => {
-
+const Navbar: React.FC<NavbarProps> = ({ logoSrc, avatarSrc, userimage, username, children}) => {
   return (
-    <nav className="flex items-center justify-between bg-[#4e5d78] shadow-md">
+    <nav className="header-fixed flex items-center justify-between bg-[#4e5d78] shadow-md">
       <div className="flex flex-1 items-center px-4 py-3">
-        <Image src={logoSrc} alt="Logo" width={40} height={40} />
+        <Image src={logoSrc} alt="Logo" width={80} height={40} />
       </div>
 
       <div className="flex items-center flex-1 px-4 py-2 rounded-full bg-gray-100">
-        <input
-          type="text"
-          placeholder="Search"
-          className="w-full bg-transparent outline-none"
-        />
+        <input type="text" placeholder="Search" className="w-full bg-transparent outline-none" />
       </div>
 
       <div className="flex flex-1 justify-end items-center px-4 py-3">
@@ -32,10 +30,9 @@ const Navbar: React.FC<NavbarProps> = ({ logoSrc, avatarSrc }) => {
           <BsBellFill className="w-5 h-5" />
         </button>
 
-        <div className="w-10 h-10 relative mx-2">
-          <Image src={avatarSrc} alt="Avatar" width={20} height={20}/>
+        <div className="w-10 h-10 relative mx-2 my-2">
+           {children}
         </div>
-
       </div>
     </nav>
   );

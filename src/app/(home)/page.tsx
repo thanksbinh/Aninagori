@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className='flex justify-center'>
       <Sidebar />
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 bg-[#212833]">
         <PostForm
           avatarUrl={''} authorName={'Nichan'} time={''} content={''} likes={0} comments={0}
         />

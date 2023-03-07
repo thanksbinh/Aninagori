@@ -1,5 +1,5 @@
 import '../globals.css';
-import Sidebar from '@/components/Sidebar/Sidebar';
+// import Sidebar from '@/components/Sidebar/Sidebar';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     return (

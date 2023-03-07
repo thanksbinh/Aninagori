@@ -24,6 +24,26 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/Navbar/Navbar.jsx", "src/components/Post/Post.tsx", "src/pages/api/auth/[...nextauth].ts", "src/app/signup"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/pages/api/auth/[...nextauth].ts",
+    "src/app/signup",
+    "src/app/user/[user_name]/profileComponent/ProfileHeader/ProfileHeader.jsx",
+    "src/app/user/[user_name]/profileComponent/AnimeStatus/AnimeStatus.jsx",
+    "src/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate.jsx",
+    "src/components/Button/Button.jsx",
+    "src/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite.jsx",
+    "src/app/api/auth/[...nextauth].js",
+    "src/app/api/auth/route.ts",
+    "middleware.ts",
+    "src/app/route.js",
+    "src/components/Navbar/Navbar.jsx",
+    "src/components/Post/Post.tsx",
+    "src/app/profile/page.jsx",
+    "src/app/(home)/layout.tsx"
+  ],
   "exclude": ["node_modules"]
 }

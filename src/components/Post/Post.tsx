@@ -27,7 +27,7 @@ const Post: FC<PostProps> = ({
   const [ likeToggle, setLikeToggle ] = useState(false);
 
   return (
-    <div className="flex flex-col flex-1 bg-[#191c21] border rounded-2xl p-4 mb-4">
+    <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 mb-4">
       <div className="flex items-center space-x-4 mx-2">
         <Avatar imageUrl={avatarUrl} altText={authorName} size={12} />
         <div>
