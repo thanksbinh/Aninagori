@@ -1,7 +1,7 @@
 'use client'
 
 import { db } from '@/firebase/firebase-app';
-import { collection, endAt, getDocs, limit, orderBy, query, startAt, where } from 'firebase/firestore';
+import { collection, endAt, getDocs, limit, orderBy, query, startAt } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import AddFriendBtn from '../addFriend/AddFriendBtn';
@@ -43,36 +43,35 @@ const SearchBar: React.FC<Props> = ({ myUserInfo }) => {
   // Todo: Upgrate with algolia
   const doSearch = async (value: string) => {
     const realSearchText = value.trim()
-    if (realSearchText.length >= 4) {
-      const usersRef = collection(db, "users")
-      const usernameQuery = query(usersRef, orderBy('username'), startAt(realSearchText), endAt(realSearchText + '\uf8ff'), limit(5))
-      const querySnapshot = await getDocs(usernameQuery)
+    const usersRef = collection(db, "users")
+    const usernameQuery = query(usersRef, orderBy('username'), startAt(realSearchText), endAt(realSearchText + '\uf8ff'), limit(1))
+    const querySnapshot = await getDocs(usernameQuery)
 
-      if (querySnapshot.docs) {
-        setSearchResults(querySnapshot.docs.map(doc => {
-          // If self
-          let canAddFriend = !(doc.data().username === myUserInfo.username)
-          // If requested
-          if (canAddFriend && doc.data().friend_request_list)
-            doc.data().friend_request_list.forEach((acc: SearchInfo) => {
-              if (acc.username === myUserInfo.username) canAddFriend = false;
-            })
-          // If is friend
-          if (canAddFriend && doc.data().friend_list)
-            doc.data().friend_list.forEach((acc: SearchInfo) => {
-              if (acc.username === myUserInfo.username) canAddFriend = false;
-            })
+    if (querySnapshot.docs) {
+      setSearchResults(querySnapshot.docs.map(doc => {
+        let canAddFriend = true
+        // If not self
+        // let canAddFriend = !(doc.data().username === myUserInfo.username)
+        // If not requested
+        if (canAddFriend && doc.data().friend_request_list)
+          doc.data().friend_request_list.forEach((acc: SearchInfo) => {
+            if (acc.username === myUserInfo.username) canAddFriend = false;
+          })
+        // If not friend
+        if (canAddFriend && doc.data().friend_list)
+          doc.data().friend_list.forEach((acc: SearchInfo) => {
+            if (acc.username === myUserInfo.username) canAddFriend = false;
+          })
 
-          return {
-            id: doc.id,
-            username: doc.data().username,
-            image: doc.data().image,
-            canAddFriend: canAddFriend
-          }
-        }))
-      } else {
-        setSearchResults([])
-      }
+        return {
+          id: doc.id,
+          username: doc.data().username,
+          image: doc.data().image,
+          canAddFriend: canAddFriend
+        }
+      }))
+    } else {
+      setSearchResults([])
     }
   }
 
@@ -91,7 +90,7 @@ const SearchBar: React.FC<Props> = ({ myUserInfo }) => {
   const handleResultClick = (result: string) => {
     setSearchText(result);
     setShowResults(false);
-    router.push('/' + result);
+    router.push('/user/' + result);
   };
 
   return (

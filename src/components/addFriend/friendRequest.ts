@@ -1,7 +1,7 @@
 import { db } from "@/firebase/firebase-app";
 import { arrayRemove, arrayUnion, collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { UserInfo } from "../nav/NavBar";
-import { Notification } from "../nav/Notification/NotificationComponent";
+import { Notification } from "../nav/Notification/Notification";
 
 export interface FriendRequestDoc {
   id: string,
@@ -20,7 +20,6 @@ async function makeFriendRequest(myUserInfo: UserInfo, userId: string) {
       username: myUserInfo.username,
       image: myUserInfo.image,
       timestamp: new Date(),
-      read: false,
     })
   });
 }

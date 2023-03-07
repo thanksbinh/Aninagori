@@ -13,7 +13,6 @@ export default function AddFriendBtn({ myUserInfo, userInfo, onClick }: { myUser
     e.stopPropagation()
     setRequesting(true)
 
-    // Todo: check if userInfo.username in myUserInfo.request_list
     const docRef = doc(db, "users", myUserInfo.id);
     const docSnap = await getDoc(docRef)
 

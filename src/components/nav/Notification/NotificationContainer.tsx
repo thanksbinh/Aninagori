@@ -1,24 +1,27 @@
 import { FriendRequestDoc } from "@/components/addFriend/friendRequest";
 import { db } from "@/firebase/firebase-app";
-import { doc, onSnapshot } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { arrayRemove, arrayUnion, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { UserInfo } from "../NavBar";
-import NotificationComponent, { Notification } from "./NotificationComponent"
+import FriendNotification from "./FriendNotification"
+import { Notification } from "./Notification"
 
 interface Props {
   myUserInfo: UserInfo
+  setUnreadCount: Dispatch<SetStateAction<number>>
+  showNotification: boolean
 }
 
-const NotificationContainer: React.FC<Props> = ({ myUserInfo }) => {
+const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadCount, showNotification }) => {
   const [userNoti, setUserNoti] = useState([])
 
   // Get notifications real-time
   useEffect(() => {
-    if (!myUserInfo) return;
-
-    const docRef = doc(db, "users", myUserInfo.id);
-    const unsubscribe = onSnapshot(docRef, docSnap => {
+    const userRef = doc(db, "users", myUserInfo.id);
+    const unsubscribe = onSnapshot(userRef, docSnap => {
+      let unreadCount = 0
       setUserNoti(docSnap.data()?.friend_request_list?.map((acc: FriendRequestDoc) => {
+        unreadCount += (acc.read == null) ? 1 : 0
         return {
           notification_id: docSnap.id,
           sender: {
@@ -31,11 +34,41 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo }) => {
           read: acc.read,
         }
       }))
+      setUnreadCount(unreadCount)
     })
+
     return () => {
       unsubscribe && unsubscribe();
     }
   }, [])
+
+  useEffect(() => {
+    if (showNotification) {
+      const userRef = doc(db, "users", myUserInfo.id);
+      userNoti?.forEach((noti: Notification) => {
+        if (noti.read != null) return;
+
+        updateDoc(userRef, {
+          friend_request_list: arrayRemove({
+            id: noti.sender.id,
+            username: noti.sender.username,
+            image: noti.sender.image,
+            timestamp: noti.timestamp,
+          })
+        });
+
+        updateDoc(userRef, {
+          friend_request_list: arrayUnion({
+            id: noti.sender.id,
+            username: noti.sender.username,
+            image: noti.sender.image,
+            timestamp: noti.timestamp,
+            read: false
+          })
+        });
+      })
+    }
+  }, [showNotification])
 
   return (
     <div className="absolute right-0 w-80 top-12 z-50 bg-white rounded-md shadow-lg">
@@ -45,8 +78,8 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo }) => {
       </div>
       <div>
         {userNoti?.length ?
-          userNoti.map((noti: Notification, i: number) =>
-            <NotificationComponent notification={noti} myUserInfo={myUserInfo} key={i} />)
+          userNoti.slice(0).reverse().map((noti: Notification, i: number) =>
+            <FriendNotification notification={noti} myUserInfo={myUserInfo} key={i} />)
           : <div className="flex items-center bg-white rounded-lg px-4 py-4"> Empty! </div>
         }
       </div>

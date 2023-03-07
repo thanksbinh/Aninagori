@@ -1,8 +1,6 @@
-'use client'
-import { useSession } from "next-auth/react"
 export default function Home() {
   return (
-    <div className='flex justify-center'>
+    <div className='flex justify-center pt-20'>
       <div>Home</div>
     </div>
   )
