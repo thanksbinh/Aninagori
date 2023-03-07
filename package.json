@@ -35,6 +35,7 @@
     "@next-auth/firebase-adapter": "^2.0.1",
     "firebase-admin": "^11.5.0",
     "formik": "^2.2.9",
+    "@heroicons/react": "^2.0.16",
     "npm": "^9.5.1",
     "typescript": "4.9.5",
     "yup": "^1.0.2"

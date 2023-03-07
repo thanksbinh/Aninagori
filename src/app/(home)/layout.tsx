@@ -1,5 +1,5 @@
 import '../globals.css';
-import RightSidebar from '@/components/sidebar/RightSidebar';
+import Sidebar from '@/components/Sidebar/Sidebar';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -7,8 +7,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div className="w-full">
                 {children}
             </div>
-
-            <RightSidebar />
         </div>
     )
 }
