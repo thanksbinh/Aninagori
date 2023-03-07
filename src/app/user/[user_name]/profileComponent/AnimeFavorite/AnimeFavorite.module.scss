@@ -1,0 +1,35 @@
+.title {
+  font-size: 1.4rem;
+  margin: 16px 0 10px 0;
+}
+
+.wrapper {
+  display: flex;
+  overflow-x: scroll;
+  padding-bottom: 10px;
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  /* Set a dark color for the thumb */
+  &::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+    background-color: gray;
+  }
+}
+
+.image {
+  width: 85px;
+  height: 125px;
+  border-radius: 3px;
+  object-fit: cover;
+  object-position: center;
+  margin-right: 10px;
+}
+
+.wrapper:last-child {
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}

@@ -2,16 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@200;300;400;500;600;700&family=Roboto:wght@100;300;700&display=swap');
 
 :root {
-    --font-family: 'Tilt Warp', cursive;
-    --gradient-text: linear-gradient(89.97deg, #AE67FA 1.84%, #F49867 102.67%);
+  --font-family: 'Inter', sans-serif;
+  --gradient-text: linear-gradient(89.97deg, #ae67fa 1.84%, #f49867 102.67%);
+  --primary-color: #191c21;
+  --text-color: white;
+}
+
+.section__padding {
+  padding: 2rem 3rem;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6rem;
+  color: var(--text-color);
+  font-family: var(--font-family);
+}
+
+.section__margin {
+  margin: 4rem 6rem;
 }
 
 .gradient__text {
-    background: var(--gradient-text);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  background: var(--gradient-text);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

@@ -1,0 +1,133 @@
+/* eslint-disable @next/next/no-img-element */
+'use client';
+import classNames from 'classnames/bind';
+import styles from './Profile.module.scss';
+import { getAnimeList } from '@/app/api/apiServices/getServices';
+import { useEffect, useRef, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import MyAnimeList from './UserInformation';
+import { get } from '@/app/api/apiServices/httpRequest';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import ProfileHeader from '@/app/user/[user_name]/profileComponent/ProfileHeader/ProfileHeader';
+import AnimeStatus from '@/app/user/[user_name]/profileComponent/AnimeStatus/AnimeStatus';
+import AnimeFavorite from '@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite';
+import AnimeUpdate from '@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate';
+import { useSession } from 'next-auth/react';
+import {doc, getDoc} from 'firebase/firestore';
+import { db } from '@/firebase/firebase-app';
+
+const cx = classNames.bind(styles);
+
+function Profile({ user_name }: { user_name: string }) {
+  const { data: session } = useSession();
+  const [data, setData] = useState({});
+  const [animeData, setAnimeData] = useState({data: ''})
+  const userName = 'B_I_N_H';
+
+  useEffect(() => {
+    async function getUserID() {
+      if(session && session.user) {
+          const docRef = doc(db, "users", (session.user as any).id);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            console.log(docSnap.data());
+            setData(docSnap.data())
+            //TODO handle if docsnap have "connected_to_MAL"
+            const result = await get('api/user/B_I_N_H')
+            setAnimeData(result);
+          }
+      } 
+  }
+  getUserID();
+  }, [session])
+
+  //TODO: add loading effect when first time loading page
+  return (
+      <div className={cx('profile-wrapper')}>
+        <div className={cx('profile-content')}>
+          <ProfileHeader data = {data}/>
+          <div className={cx('profile-body-wrapper')}>
+            <div className={cx('status-section')}>
+              <AnimeUpdate data = {animeData.data}/>
+              <AnimeStatus  data = {animeData.data}/>
+              <AnimeFavorite data = {animeData.data} />
+            </div>
+            <div className={cx('post-section')}>{/* Post here insert later */}</div>
+          </div>
+        </div>
+      </div>
+  );
+}
+
+function Profile2({ user_name }: { user_name: string }) {
+  useEffect(() => {
+    handleConnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [search, setSearch] = useState('');
+  const [image, setImage] = useState(
+    'https://steamuserimages-a.akamaihd.net/ugc/884259456715792803/0BC095F5A9445C9A23F8C6E5AFDC915ACFF64DDC/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false',
+  );
+  const [userName, setUserName] = useState('(Have not connect to MAL)');
+  const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState(false);
+
+  const searchAnime = async (q: string, offset: number, limit: number) => {
+    const animeData = await getAnimeList(q, offset, limit);
+    return animeData;
+  };
+
+  const handleConnect = async () => {
+    let userName = user_name;
+    if (search !== '') userName = search;
+    setLoading(true);
+    let data = await get(`api/user/${userName}`);
+    data = data.data;
+    console.log(data);
+    setUserName(data.username);
+    setImage(data.images.jpg['image_url']);
+    setSearch('');
+    setLoading(false);
+    setUserData(data.updates.anime);
+  };
+
+  return (
+    <>
+      <div className="flex flex-col items-center justify-center py-10 bg-gray-100">
+        <div className="max-w-lg mx-auto bg-white rounded-lg shadow-lg overflow-hidden mb-5">
+          <div className="px-4 py-6">
+            <img className="rounded-full w-32 h-32 mx-auto" src={image} alt="Nguyen Thanh dung" />
+            <h1 className="mt-4 text-2xl font-bold text-center text-gray-800">{userName}</h1>
+            <p className="mt-2 text-gray-600 text-center">Hi im Thanh Dung, currently a university studentXD</p>
+            <p className="mt-2 text-gray-600 text-center">
+              My Anime List nickname is: <span className="no-underline text-red-500">{userName}</span>
+            </p>
+          </div>
+          <div className="bg-blue-100 px-4 py-3 flex flex-col item-center justify-center relative">
+            <input
+              type="text"
+              placeholder="Enter your MAL nickname"
+              className="mb-6 mt-4 border rounded-md px-4 py-2 w-full text-gray-700 focus:outline-none focus:shadow-outline-blue focus:border-blue-300"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+            />
+            {!!loading && <FontAwesomeIcon icon={faSpinner as IconProp} className={cx('spinner')}></FontAwesomeIcon>}
+            <button
+              onClick={handleConnect}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Connect
+            </button>
+          </div>
+        </div>
+      </div>
+      {!!userData && <MyAnimeList animeList={userData} />}
+    </>
+  );
+}
+
+export default Profile;
