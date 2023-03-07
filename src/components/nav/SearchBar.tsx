@@ -1,7 +1,7 @@
 'use client'
 
 import { db } from '@/firebase/firebase-app';
-import { collection, getDocs, limit, query, where } from 'firebase/firestore';
+import { collection, endAt, getDocs, limit, orderBy, query, startAt, where } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import AddFriendBtn from '../addFriend/AddFriendBtn';
@@ -45,7 +45,7 @@ const SearchBar: React.FC<Props> = ({ myUserInfo }) => {
     const realSearchText = value.trim()
     if (realSearchText.length >= 4) {
       const usersRef = collection(db, "users")
-      const usernameQuery = query(usersRef, where("username", "==", realSearchText), limit(1))
+      const usernameQuery = query(usersRef, orderBy('username'), startAt(realSearchText), endAt(realSearchText + '\uf8ff'), limit(5))
       const querySnapshot = await getDocs(usernameQuery)
 
       if (querySnapshot.docs) {
@@ -116,7 +116,7 @@ const SearchBar: React.FC<Props> = ({ myUserInfo }) => {
                 {result.username}
               </div>
               {result.canAddFriend ?
-                <AddFriendBtn myUserInfo={myUserInfo} userInfo={{"username": result.username, "id": result.id, "image": result.image}} onClick={() => {doSearch(result.username)}} /> : null
+                <AddFriendBtn myUserInfo={myUserInfo} userInfo={{ "username": result.username, "id": result.id, "image": result.image }} onClick={() => { doSearch(result.username) }} /> : null
               }
             </div>)}
         </div>

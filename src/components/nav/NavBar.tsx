@@ -32,7 +32,7 @@ export default async function NavBar({ session }: { session: Session | null }) {
   const myUserInfo = await getUserInfo(myUserId)
 
   return (
-    <nav className="py-2 border-b-2 px-4 flex justify-between items-center sticky top-0 z-50 bg-white">
+    <nav className="py-2 border-b-2 px-4 flex justify-between items-center fixed top-0 z-50 w-full bg-white">
       <div className="flex items-center gap-2">
         <Link href="/" className="text-lg font-semibold">
           Aninagori
