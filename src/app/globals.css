@@ -34,11 +34,11 @@
 }
 
 html {
-  font-size: 62.5%;
+  /* font-size: 62.5%; */
 }
 
 body {
-  font-size: 1.6rem;
+  /* font-size: 1.6rem; */
   color: var(--text-color);
   font-family: var(--font-family);
 }
