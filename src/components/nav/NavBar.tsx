@@ -4,7 +4,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
 import ProfilePicture from "./ProfilePicture";
 import SearchBar from "./SearchBar";
-import NotificationBtn from "./Notification/NotificationBtn";
+import NotificationBtn from "./notification/NotificationBtn";
 
 export interface UserInfo {
   "id": string,
@@ -28,7 +28,7 @@ async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
 }
 
 export default async function NavBar({ session }: { session: Session | null }) {
-  const myUserId = (session as any).user?.id
+  const myUserId = (session as any)?.user?.id
   const myUserInfo = await getUserInfo(myUserId)
 
   return (

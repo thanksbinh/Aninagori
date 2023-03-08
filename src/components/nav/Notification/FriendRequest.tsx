@@ -1,17 +1,26 @@
 import { useRouter } from "next/navigation";
 import { UserInfo } from "../NavBar";
 import { removeFriendRequest, beFriends } from "@/components/addFriend/friendRequest";
-import { formatDuration, Notification } from "./Notification";
+import { formatDuration } from "./Notification";
 import { useState } from "react";
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
 
+export interface FriendRequest {
+  id: string;
+  username: string;
+  image: string;
+  type: string;
+  timestamp: Timestamp;
+  read: boolean;
+}
+
 interface Props {
-  notification: Notification;
+  notification: FriendRequest;
   myUserInfo: UserInfo;
 }
 
-const FriendNotification: React.FC<Props> = ({ notification, myUserInfo }) => {
+const FriendRequestComponent: React.FC<Props> = ({ notification, myUserInfo }) => {
   const router = useRouter()
   const [message, setMessage] = useState('')
 
@@ -19,10 +28,11 @@ const FriendNotification: React.FC<Props> = ({ notification, myUserInfo }) => {
     e.stopPropagation()
 
     setMessage("Friend request accepted!")
-    beFriends(myUserInfo, { "id": notification.sender.id, "username": notification.sender.username, "image": notification.sender.image })
-    
+    beFriends(myUserInfo, { "id": notification.id, "username": notification.username, "image": notification.image })
+
     setTimeout(() => {
       removeFriendRequest(myUserInfo, notification)
+      setMessage('')
     }, 3000)
   }
 
@@ -32,6 +42,7 @@ const FriendNotification: React.FC<Props> = ({ notification, myUserInfo }) => {
     setMessage("Friend request rejected!")
     setTimeout(() => {
       removeFriendRequest(myUserInfo, notification)
+      setMessage('')
     }, 1000)
   }
 
@@ -40,38 +51,29 @@ const FriendNotification: React.FC<Props> = ({ notification, myUserInfo }) => {
     if (notification.read) return;
 
     updateDoc(userRef, {
-      friend_request_list: arrayRemove({
-        id: notification.sender.id,
-        username: notification.sender.username,
-        image: notification.sender.image,
-        timestamp: notification.timestamp,
-        read: notification.read
-      })
+      friend_request_list: arrayRemove(notification)
     });
 
     updateDoc(userRef, {
       friend_request_list: arrayUnion({
-        id: notification.sender.id,
-        username: notification.sender.username,
-        image: notification.sender.image,
-        timestamp: notification.timestamp,
+        ...notification,
         read: true
       })
     });
 
-    router.push('/user/' + notification.sender.username)
+    router.push('/user/' + notification.username)
   }
 
   return (
     <div onClick={handleClickProfile} className="flex items-center bg-white rounded-lg px-3 py-4 hover:cursor-pointer hover:bg-gray-100">
       <img
-        src={notification.sender.image || '/images/default-profile-pic.png'}
-        alt={`${notification.sender.username}'s avatar`}
+        src={notification.image || '/images/default-profile-pic.png'}
+        alt={`${notification.username}'s avatar`}
         className="h-10 w-10 rounded-full mr-4"
       />
       <div>
         <p className="text-sm font-medium text-gray-900">
-          {notification.sender.username} sent you a friend request.
+          {notification.username} sent you a friend request.
         </p>
         {message ?
           <div className="text-xs text-gray-500">
@@ -94,4 +96,4 @@ const FriendNotification: React.FC<Props> = ({ notification, myUserInfo }) => {
   );
 };
 
-export default FriendNotification;
+export default FriendRequestComponent;

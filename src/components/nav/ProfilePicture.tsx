@@ -23,7 +23,6 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
         };
 
         document.addEventListener('mousedown', handleClickOutside);
-
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };

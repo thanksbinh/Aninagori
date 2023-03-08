@@ -4,7 +4,8 @@ import { db } from "@/firebase/firebase-app";
 import { doc, getDoc } from "firebase/firestore";
 import { useState } from "react";
 import { UserInfo } from "../nav/NavBar";
-import { beFriends, FriendRequestDoc, makeFriendRequest, removeFriendRequestByRequest } from "./friendRequest";
+import { FriendRequest } from "../nav/notification/FriendRequest";
+import { beFriends, makeFriendRequest, removeFriendRequest } from "./friendRequest";
 
 export default function AddFriendBtn({ myUserInfo, userInfo, onClick }: { myUserInfo: UserInfo, userInfo: UserInfo, onClick: any }) {
   const [requesting, setRequesting] = useState(false)
@@ -16,17 +17,11 @@ export default function AddFriendBtn({ myUserInfo, userInfo, onClick }: { myUser
     const docRef = doc(db, "users", myUserInfo.id);
     const docSnap = await getDoc(docRef)
 
-    if (docSnap.exists() && docSnap.data().friend_request_list?.map((doc: FriendRequestDoc) => doc.username).includes(userInfo.username)) {
+    if (docSnap.exists() && docSnap.data().friend_request_list?.map((doc: FriendRequest) => doc.username).includes(userInfo.username)) {
       beFriends(myUserInfo, userInfo)
-      docSnap.data().friend_request_list.forEach((doc: FriendRequestDoc) => {
+      docSnap.data().friend_request_list.forEach((doc: FriendRequest) => {
         if (doc.username === userInfo.username) {
-          removeFriendRequestByRequest(myUserInfo, {
-            id: doc.id,
-            username: doc.username,
-            image: doc.image,
-            timestamp: doc.timestamp,
-            read: doc.read,
-          })
+          removeFriendRequest(myUserInfo, doc)
         }
       })
     } else {

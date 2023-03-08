@@ -1,5 +1,3 @@
-'use client'
-
 import { db } from "@/firebase/firebase-app"
 import * as Yup from 'yup';
 import { useFormik, FormikConfig, FormikValues } from "formik";
