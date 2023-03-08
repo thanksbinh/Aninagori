@@ -4,21 +4,14 @@ import { db } from '@/firebase/firebase-app';
 import { collection, endAt, getDocs, limit, orderBy, query, startAt } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
-import AddFriendBtn from '../addFriend/AddFriendBtn';
-import { UserInfo } from './NavBar';
 
 interface SearchInfo {
   id: string,
   image: string,
   username: string,
-  canAddFriend: boolean
 }
 
-interface Props {
-  myUserInfo: UserInfo
-}
-
-const SearchBar: React.FC<Props> = ({ myUserInfo }) => {
+const SearchBar = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState<SearchInfo[]>([]);
@@ -44,30 +37,15 @@ const SearchBar: React.FC<Props> = ({ myUserInfo }) => {
   const doSearch = async (value: string) => {
     const realSearchText = value.trim()
     const usersRef = collection(db, "users")
-    const usernameQuery = query(usersRef, orderBy('username'), startAt(realSearchText), endAt(realSearchText + '\uf8ff'), limit(1))
+    const usernameQuery = query(usersRef, orderBy('username'), startAt(realSearchText), endAt(realSearchText + '\uf8ff'), limit(10))
     const querySnapshot = await getDocs(usernameQuery)
 
     if (querySnapshot.docs) {
       setSearchResults(querySnapshot.docs.map(doc => {
-        let canAddFriend = true
-        // If not self
-        // let canAddFriend = !(doc.data().username === myUserInfo.username)
-        // If not requested
-        if (canAddFriend && doc.data().friend_request_list)
-          doc.data().friend_request_list.forEach((acc: SearchInfo) => {
-            if (acc.username === myUserInfo.username) canAddFriend = false;
-          })
-        // If not friend
-        if (canAddFriend && doc.data().friend_list)
-          doc.data().friend_list.forEach((acc: SearchInfo) => {
-            if (acc.username === myUserInfo.username) canAddFriend = false;
-          })
-
         return {
           id: doc.id,
           username: doc.data().username,
           image: doc.data().image,
-          canAddFriend: canAddFriend
         }
       }))
     } else {
@@ -88,7 +66,6 @@ const SearchBar: React.FC<Props> = ({ myUserInfo }) => {
   };
 
   const handleResultClick = (result: string) => {
-    setSearchText(result);
     setShowResults(false);
     router.push('/user/' + result);
   };
@@ -114,9 +91,6 @@ const SearchBar: React.FC<Props> = ({ myUserInfo }) => {
                 />
                 {result.username}
               </div>
-              {result.canAddFriend ?
-                <AddFriendBtn myUserInfo={myUserInfo} userInfo={{ "username": result.username, "id": result.id, "image": result.image }} onClick={() => { doSearch(result.username) }} /> : null
-              }
             </div>)}
         </div>
       )}

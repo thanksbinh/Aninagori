@@ -32,7 +32,7 @@ const Login = () => {
       const usersRef = collection(db, "users")
       const usernameQuery = query(usersRef, where("username", "==", userInfo.userId))
       const querySnapshot = await getDocs(usernameQuery)
-      
+
       if (querySnapshot.docs.length) {
         res = await signIn('credentials', {
           email: querySnapshot.docs[0].data().email,

@@ -1,9 +1,10 @@
 import './globals.css';
-import type { Metadata } from 'next'
+import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
+import React from 'react'
 
 import { SessionProvider } from '@/components/auth/SessionProvider';
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import Login from '@/components/auth/Login';
 import NavBar from '@/components/nav/NavBar';
 
@@ -13,25 +14,25 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
 
   if (!session) {
     return (
-      <html lang='en'>
+      <html lang="en">
         <head />
         <body>
           <SessionProvider session={session}>
             <Login />
             {/* Todo: use favicon without children */}
-            <div className='hidden'>{children}</div>
+            <div className="hidden">{children}</div>
           </SessionProvider>
         </body>
       </html>
-    )
+    );
   }
 
   return (
-    <html lang='en'>
+    <html lang="en">
       <head />
       <body>
         <SessionProvider session={session}>
@@ -44,5 +45,5 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </SessionProvider>
       </body>
     </html>
-  )
+  );
 }

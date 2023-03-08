@@ -50,7 +50,7 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
                 onClick={() => setIsOpen(!isOpen)}
             />
             {isOpen ?
-                <div className="absolute top-12 right-1 z-50 w-56 py-2 mt-1 bg-white rounded-md shadow-lg">
+                <div className="absolute top-14 right-8 z-50 w-56 py-2 bg-white rounded-md shadow-lg">
                     {myUserInfo?.username === "guess" ?
                         <button onClick={() => setOpenUsernamePopup(true)} className="px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left">Set username</button> :
                         <div className="px-4 py-2 text-gray-800">{myUserInfo?.username}</div>
@@ -58,7 +58,7 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
                     <div className="border-t border-gray-100"></div>
                     <Link
                         className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
-                        href="/profile"
+                        href={`/user/${myUserInfo?.username}`}
                         onClick={() => setIsOpen(false)}
                     >
                         View Profile
@@ -71,7 +71,7 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
                     </button>
                 </div> : null
             }
-            <UsernamePopup isOpen={openUsernamePopup} onClose={() => setOpenUsernamePopup(false)}/>
+            <UsernamePopup isOpen={openUsernamePopup} onClose={() => setOpenUsernamePopup(false)} />
         </div>
     );
 };
