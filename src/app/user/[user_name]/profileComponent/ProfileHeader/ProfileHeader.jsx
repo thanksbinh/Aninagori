@@ -4,13 +4,14 @@ import classNames from 'classnames/bind';
 import styles from './ProfileHeader.module.scss';
 import Button from '@/components/Button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImage, faPenToSquare, faPlug, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faImage, faPenToSquare, faPlug, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
-import { setCookie } from 'cookies-next';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-app';
+import { memo } from 'react';
+import Tippy from '@tippyjs/react/headless';
 
 const cx = classNames.bind(styles);
 
@@ -19,6 +20,7 @@ function ProfileHeader({ data, admin = false }) {
   const [link, setLink] = useState('');
   const [load, setLoad] = useState(true);
   const [currentImage, setCurrentImage] = useState('/wallpaper.png');
+  const [visible, setVisible] = useState(false); // for MAL input box
 
   return (
     <div className={cx('wrapper')}>
@@ -94,21 +96,26 @@ function ProfileHeader({ data, admin = false }) {
           </div>
         </div>
         <div className={cx('profile-interact')}>
-          {/* //TODO: 2 types of button for @me / another user */}
           {/* //TODO: make edit profile information feature */}
           {/* //TODO: handle myAnimeList connect feature */}
           {admin ? (
             <>
-              <Button
-                onClick={() => {
-                  console.log('Login ');
-                }}
-                small
-                gradient
-                leftIcon={<FontAwesomeIcon icon={faPlug} />}
-              >
-                Connect with MAL
-              </Button>
+                <Button
+                  onClick={() => {
+                    if (!!!data.myAnimeList_username) {
+                          //TODO: handle log in with MAL later
+                    } else {
+                      console.log('Already Connect');
+                    }
+                  }}
+                  small
+                  gradient
+                  leftIcon={
+                    data.myAnimeList_username ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPlug} />
+                  }
+                >
+                  {data.myAnimeList_username ? 'Connect with MAL' : 'Connected with MAL'}
+                </Button>
               <Button small primary leftIcon={<FontAwesomeIcon icon={faPenToSquare} />}>
                 Edit profile
               </Button>
@@ -117,13 +124,15 @@ function ProfileHeader({ data, admin = false }) {
             <>
               <Button
                 onClick={() => {
-                  console.log('Login ');
+
                 }}
                 small
                 gradient
+                href = {data.myAnimeList_username ? ('https://myanimelist.net/profile/' + data.myAnimeList_username) : false}
                 leftIcon={<FontAwesomeIcon icon={faPlug} />}
               >
-                Visit MAL profile
+                {/*TODO: handle user haven't connected to MAL */}
+                {data.myAnimeList_username ? 'Visit MAL profile' : '....Feature'}
               </Button>
               <Button small primary leftIcon={<FontAwesomeIcon icon={faUserPlus} />}>
                 Add friend
@@ -136,4 +145,4 @@ function ProfileHeader({ data, admin = false }) {
   );
 }
 
-export default ProfileHeader;
+export default memo(ProfileHeader);

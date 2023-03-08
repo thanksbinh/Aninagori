@@ -92,3 +92,18 @@
     opacity: 0.9;
   }
 }
+
+.mal-wrapper{
+  display: flex;
+}
+
+.mal-input {
+  height: 40px;
+  padding: 10px;
+}
+
+.mal-btn {
+  height: 40px;
+  background-color: #377dff;
+  color: white;
+}

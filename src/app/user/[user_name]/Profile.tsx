@@ -37,7 +37,6 @@ function Profile({ user_name }: { user_name: string }) {
           const usernameQuery = query(usersRef, where('username', '==', guessName));
           const querySnapshot = await getDocs(usernameQuery);
           if (querySnapshot.empty) {
-            //TODO: return user not found page
             setUserNotFound(true);
             console.log('not found');
           } else {
@@ -50,10 +49,10 @@ function Profile({ user_name }: { user_name: string }) {
             } else {
               console.log('Not Admin');
             }
-            const result = await get('api/user/B_I_N_H');
-            console.log('REsult í', result);
-
-            setAnimeData(result);
+            if (!!(guess.current as any).myAnimeList_username) {
+              const result = await get('api/user/' + (guess.current as any).myAnimeList_username);
+              setAnimeData(result);
+            }
           }
 
           //TODO handle if docsnap have "connected_to_MAL"
@@ -64,8 +63,7 @@ function Profile({ user_name }: { user_name: string }) {
     }
     getUserID();
   }, [session]);
-  console.log('Re-render and ', userNotFound);
-  
+
   //TODO: add loading effect when first time loading page
   return userNotFound ? (
     <div className="setBackground"></div>
@@ -75,9 +73,13 @@ function Profile({ user_name }: { user_name: string }) {
         <ProfileHeader data={guess.current} admin={isAdmin.current} />
         <div className={cx('profile-body-wrapper')}>
           <div className={cx('status-section')}>
-            <AnimeUpdate data={animeData.data} />
-            <AnimeStatus data={animeData.data} />
-            <AnimeFavorite data={animeData.data} />
+            {!!(guess.current as any).myAnimeList_username ? (
+              <>
+                <AnimeUpdate data={animeData.data} />
+                <AnimeStatus data={animeData.data} />
+                <AnimeFavorite data={animeData.data} />
+              </>
+            ) : <div className={cx('mal-notfound')}>Not connected to MAL yet</div>}
           </div>
           <div className={cx('post-section')}>
             {isAdmin.current && (
