@@ -21,7 +21,7 @@
   display: flex;
   background-color: var(--primary-color);
   justify-content: center;
-  margin-top: 60px;
+  margin-top: 56px;
 }
 
 .profile-content {
@@ -57,4 +57,15 @@
   background-color: var(--primary-color);
   border-radius: 12px;
   width: 53.5%;
+}
+
+.mal-notfound{
+   color: white;
+   text-align: center;
+   padding: 20px;
+   margin: auto;
+   font-size: 24px;
+   background-color: #191c21;
+   border-radius: 12px;
+   height: 500px;
 }
