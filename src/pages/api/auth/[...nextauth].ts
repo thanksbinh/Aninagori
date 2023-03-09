@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
         // ...add more providers here
     ],
     pages: {
-        signIn: '/'
+        signIn: '/login'
     },
     adapter: FirestoreAdapter(firebaseConfig),
     session: {
