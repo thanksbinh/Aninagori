@@ -1,20 +1,19 @@
-/* eslint-disable @next/next/no-img-element */
 'use client'
-import { useSession } from 'next-auth/react';
+
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import UsernamePopup from '../auth/UsernamePopup';
+import { UserInfo } from './NavBar';
 
 interface Props {
-    userimage: string;
-    username: string;
+    myUserInfo: UserInfo | undefined
 }
 
-const ProfilePicture: React.FC<Props> = ({ userimage, username }) => {
+const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
     const ref = useRef<HTMLDivElement>(null);
-    const { data: session } = useSession();
-    
     const [isOpen, setIsOpen] = useState(false);
+    const [openUsernamePopup, setOpenUsernamePopup] = useState(myUserInfo?.username === "guess")
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -24,7 +23,6 @@ const ProfilePicture: React.FC<Props> = ({ userimage, username }) => {
         };
 
         document.addEventListener('mousedown', handleClickOutside);
-
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
@@ -39,12 +37,10 @@ const ProfilePicture: React.FC<Props> = ({ userimage, username }) => {
         }
     };
 
-    if (!session) return null;
-
     return (
         <div ref={ref}>
             <img
-                src={userimage ?? '/images/default-profile-pic.png'}
+                src={myUserInfo?.image ?? '/images/default-profile-pic.png'}
                 onError={({ currentTarget }) => {
                     currentTarget.onerror = null;
                     currentTarget.src = '/images/default-profile-pic.png';
@@ -54,16 +50,19 @@ const ProfilePicture: React.FC<Props> = ({ userimage, username }) => {
                 onClick={() => setIsOpen(!isOpen)}
             />
             {isOpen ?
-                <div className="absolute top-14 right-1 z-50 w-56 py-2 mt-1 bg-white rounded-md shadow-lg">
-                    <div className="px-4 py-2 text-gray-800">{username}</div>
+                <div className="absolute top-14 right-8 z-50 w-56 py-2 bg-white rounded-md shadow-lg">
+                    {myUserInfo?.username === "guess" ?
+                        <button onClick={() => setOpenUsernamePopup(true)} className="px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left">Set username</button> :
+                        <div className="px-4 py-2 text-gray-800">{myUserInfo?.username}</div>
+                    }
                     <div className="border-t border-gray-100"></div>
-                    <a
+                    <Link
                         className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
-                        href= {`/user/${username}`}
+                        href={`/user/${myUserInfo?.username}`}
                         onClick={() => setIsOpen(false)}
                     >
                         View Profile
-                    </a>
+                    </Link>
                     <button
                         className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
                         onClick={handleLogout}
@@ -72,7 +71,7 @@ const ProfilePicture: React.FC<Props> = ({ userimage, username }) => {
                     </button>
                 </div> : null
             }
-
+            <UsernamePopup isOpen={openUsernamePopup} onClose={() => setOpenUsernamePopup(false)} />
         </div>
     );
 };

@@ -1,7 +1,7 @@
 'use client'
 import { db } from "@/firebase/firebase-app"
 import * as Yup from 'yup';
-import { useFormik, FormikConfig, FormikErrors, FormikValues } from "formik";
+import { useFormik, FormikConfig, FormikValues } from "formik";
 import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
