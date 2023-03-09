@@ -11,10 +11,11 @@ import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-app';
+import AddFriendBtn from './AddFriendBtn';
 
 const cx = classNames.bind(styles);
 
-function ProfileHeader({ data, admin = false }) {
+function ProfileHeader({ guess, admin }) {
   const [open, setOpen] = useState(false);
   const [link, setLink] = useState('');
   const [load, setLoad] = useState(true);
@@ -38,7 +39,7 @@ function ProfileHeader({ data, admin = false }) {
         width={1044}
         height={281}
       ></img>
-      {admin && (
+      {(admin.username === guess.username) && (
         <Button
           onClick={() => {
             setOpen(!open);
@@ -78,9 +79,9 @@ function ProfileHeader({ data, admin = false }) {
       )}
       <div className={cx('user-display')}>
         <div className={cx('avatar-wrapper')}>
-          <img src={data.image || '/bocchi.jpg'} alt="avatar" className={cx('avatar')}></img>
+          <img src={guess.image || '/bocchi.jpg'} alt="avatar" className={cx('avatar')}></img>
           <div className={cx('user-information')}>
-            <strong className={cx('user-name')}>{data.name || data.username}</strong>
+            <strong className={cx('user-name')}>{guess.name || guess.username}</strong>
             <div className={cx('friends-count')}>
               <span>5 </span> friends
             </div>
@@ -97,7 +98,7 @@ function ProfileHeader({ data, admin = false }) {
           {/* //TODO: 2 types of button for @me / another user */}
           {/* //TODO: make edit profile information feature */}
           {/* //TODO: handle myAnimeList connect feature */}
-          {admin ? (
+          {(admin.username === guess.username) ? (
             <>
               <Button
                 onClick={() => {
@@ -125,9 +126,7 @@ function ProfileHeader({ data, admin = false }) {
               >
                 Visit MAL profile
               </Button>
-              <Button small primary leftIcon={<FontAwesomeIcon icon={faUserPlus} />}>
-                Add friend
-              </Button>
+              <AddFriendBtn myUserInfo={admin} userInfo={guess}> Button </AddFriendBtn>
             </>
           )}
         </div>

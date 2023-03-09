@@ -30,7 +30,7 @@ function Profile({ user_name }: { user_name: string }) {
         const docRef = doc(db, 'users', (session.user as any).id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          admin.current = docSnap.data();
+          admin.current = { ...docSnap.data(), "id": docSnap.id };
           const adminName = docSnap.data().username;
           const guessName = window.location.href.split('user/')[1];
           const usersRef = collection(db, 'users');
@@ -41,9 +41,7 @@ function Profile({ user_name }: { user_name: string }) {
             setUserNotFound(true);
             console.log('not found');
           } else {
-            querySnapshot.forEach((doc) => {
-              guess.current = doc.data();
-            });
+            guess.current = { ...querySnapshot.docs[0].data(), "id": querySnapshot.docs[0].id }
             isAdmin.current = (guess.current as any).username === (admin.current as any).username;
             if (isAdmin.current) {
               console.log('Current Admin');
@@ -65,14 +63,14 @@ function Profile({ user_name }: { user_name: string }) {
     getUserID();
   }, [session]);
   console.log('Re-render and ', userNotFound);
-  
+
   //TODO: add loading effect when first time loading page
   return userNotFound ? (
     <div className="setBackground"></div>
   ) : (
     <div className={cx('profile-wrapper')}>
       <div className={cx('profile-content')}>
-        <ProfileHeader data={guess.current} admin={isAdmin.current} />
+        <ProfileHeader guess={guess.current} admin={admin.current} />
         <div className={cx('profile-body-wrapper')}>
           <div className={cx('status-section')}>
             <AnimeUpdate data={animeData.data} />

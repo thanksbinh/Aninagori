@@ -9,7 +9,7 @@ type AvatarProps = {
 const Avatar: FC<AvatarProps> = ({ imageUrl, altText, size = 8 }) => {
   return (
     <img
-      className={`rounded-full w-${40} h-${40} object-cover`}
+      className={`rounded-full w-${size} h-${size} object-cover`}
       src={imageUrl}
       alt={altText}
     />

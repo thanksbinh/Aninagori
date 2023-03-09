@@ -24,7 +24,7 @@ const Post: FC<PostProps> = ({
   likes,
   comments,
 }) => {
-  const [ likeToggle, setLikeToggle ] = useState(false);
+  const [likeToggle, setLikeToggle] = useState(false);
 
   return (
     <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 mb-4">
@@ -39,7 +39,7 @@ const Post: FC<PostProps> = ({
       <p className="text-lg mt-4 mb-2 text-[#dddede] mx-2">{content}</p>
       {imageUrl && (
         <div className="mt-4 mx-2">
-          <Image src={imageUrl} width={640} height={360} alt={""} className="rounded-2xl"/>
+          <Image src={imageUrl} width={640} height={360} alt={""} className="rounded-2xl" />
         </div>
       )}
 
@@ -48,7 +48,7 @@ const Post: FC<PostProps> = ({
       <div className="flex items-center justify-between border-t border-b border-[#212833] py-2 mt-4 mx-2">
         <div className="flex">
           <button className="flex items-center space-x-1 text-gray-400 hover:text-[#F14141]">
-            {likeToggle 
+            {likeToggle
               ? <HiHeart className="w-5 h-5 fill-[#F14141]" onClick={() => setLikeToggle(false)} />
               : <HiOutlineHeart className="w-5 h-5" onClick={() => setLikeToggle(true)} />
             }
@@ -68,7 +68,7 @@ const Post: FC<PostProps> = ({
           <span>Plan to Watch</span>
         </button>
       </div>
-      
+
       <div className="flex items-center mt-4 mx-2">
         <Avatar imageUrl={avatarUrl} altText={authorName} size={8} />
         <input
