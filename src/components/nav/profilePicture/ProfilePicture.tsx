@@ -3,8 +3,8 @@
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import UsernamePopup from '../auth/UsernamePopup';
-import { UserInfo } from './NavBar';
+import UsernamePopup from './UsernamePopup';
+import { UserInfo } from '../NavBar';
 
 interface Props {
     myUserInfo: UserInfo | undefined
@@ -50,7 +50,7 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
                 onClick={() => setIsOpen(!isOpen)}
             />
             {isOpen ?
-                <div className="absolute top-14 right-8 z-50 w-56 py-2 bg-white rounded-md shadow-lg">
+                <div className="absolute top-14 right-8 z-40 w-56 py-2 bg-white rounded-md shadow-lg">
                     {myUserInfo?.username === "guess" ?
                         <button onClick={() => setOpenUsernamePopup(true)} className="px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left">Set username</button> :
                         <div className="px-4 py-2 text-gray-800">{myUserInfo?.username}</div>
