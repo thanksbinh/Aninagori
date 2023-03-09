@@ -11,7 +11,9 @@ import { useSession } from 'next-auth/react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-app';
 import AddFriendBtn from './AddFriendBtn';
-import {memo} from 'react';
+import { memo } from 'react';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
 const cx = classNames.bind(styles);
 
@@ -21,6 +23,7 @@ function ProfileHeader({ guess, admin }) {
   const [load, setLoad] = useState(true);
   const [currentImage, setCurrentImage] = useState('/wallpaper.png');
   console.log('re-render header');
+  console.log(guess);
   return (
     <div className={cx('wrapper')}>
       <img
@@ -39,7 +42,7 @@ function ProfileHeader({ guess, admin }) {
         width={1044}
         height={281}
       ></img>
-      {(admin.username === guess.username) && (
+      {admin.username === guess.username && (
         <Button
           onClick={() => {
             setOpen(!open);
@@ -82,40 +85,72 @@ function ProfileHeader({ guess, admin }) {
           <img src={guess.image || '/bocchi.jpg'} alt="avatar" className={cx('avatar')}></img>
           <div className={cx('user-information')}>
             <strong className={cx('user-name')}>{guess.name || guess.username}</strong>
-            <div className={cx('friends-count')}>
-              <span>5 </span> friends
-            </div>
-            <div className={cx('friends-information')}>
-              <img src="/bocchi.jpg" alt="avatar" className={cx('friends-avatar')}></img>
-              <img src="/bocchi.jpg" alt="avatar" className={cx('friends-avatar')}></img>
-              <img src="/bocchi.jpg" alt="avatar" className={cx('friends-avatar')}></img>
-              <img src="/bocchi.jpg" alt="avatar" className={cx('friends-avatar')}></img>
-              <img src="/bocchi.jpg" alt="avatar" className={cx('friends-avatar')}></img>
-            </div>
+            {!!guess.friend_list ? (
+              <>
+                <div className={cx('friends-count')}>
+                  <span>{guess.friend_list.length}</span> friends
+                </div>
+                <div className={cx('friends-information')}>
+                  {guess.friend_list.map((data, index) => {
+                    if (index < 5) {
+                      return (
+                        <Tippy placement="bottom" key={index} content={data.username} delay={[250, 0]}>
+                          <img
+                            key={index}
+                            src={data.image}
+                            alt="avatar"
+                            className={cx('friends-avatar')}
+                            onClick={() => {
+                              window.location.href = process.env.NEXT_PUBLIC_BASE_URL + '/user/' + data.username;
+                            }}
+                          ></img>
+                        </Tippy>
+                      );
+                    }
+                  })}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={cx('friends-count')}>
+                  <span>Only 1</span> friend
+                </div>
+                <div className={cx('friends-information')}>
+                  <img
+                    src={guess.image}
+                    alt="avatar"
+                    className={cx('friends-avatar')}
+                    onClick={() => {
+                      window.location.href = process.env.NEXT_PUBLIC_BASE_URL + '/user/' + guess.username;
+                    }}
+                  ></img>
+                </div>
+              </>
+            )}
           </div>
         </div>
         <div className={cx('profile-interact')}>
           {/* //TODO: make edit profile information feature */}
           {/* //TODO: handle myAnimeList connect feature */}
-          {(admin.username === guess.username) ? (
+          {admin.username === guess.username ? (
             <>
-                <Button
-                  onClick={() => {
-                    if (!!!guess.myAnimeList_username) {
-                          //TODO: handle log in with MAL later
-                          console.log('not connect');
-                    } else {
-                      console.log('Already Connect');
-                    }
-                  }}
-                  small
-                  gradient
-                  leftIcon={
-                    guess.myAnimeList_username ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPlug} />
+              <Button
+                onClick={() => {
+                  if (!!!guess.myAnimeList_username) {
+                    //TODO: handle log in with MAL later
+                    console.log('not connect');
+                  } else {
+                    console.log('Already Connect');
                   }
-                >
-                  {guess.myAnimeList_username ? 'Connected with MAL' : 'Connect with MAL'}
-                </Button>
+                }}
+                small
+                gradient
+                leftIcon={
+                  guess.myAnimeList_username ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPlug} />
+                }
+              >
+                {guess.myAnimeList_username ? 'Connected with MAL' : 'Connect with MAL'}
+              </Button>
               <Button small primary leftIcon={<FontAwesomeIcon icon={faPenToSquare} />}>
                 Edit profile
               </Button>
@@ -123,18 +158,21 @@ function ProfileHeader({ guess, admin }) {
           ) : (
             <>
               <Button
-                onClick={() => {
-
-                }}
+                onClick={() => {}}
                 small
                 gradient
-                href = {guess.myAnimeList_username ? ('https://myanimelist.net/profile/' + guess.myAnimeList_username) : false}
+                href={
+                  guess.myAnimeList_username ? 'https://myanimelist.net/profile/' + guess.myAnimeList_username : false
+                }
                 leftIcon={<FontAwesomeIcon icon={faPlug} />}
               >
                 {/*TODO: handle user haven't connected to MAL */}
                 {guess.myAnimeList_username ? 'Visit MAL profile' : '....Feature'}
               </Button>
-              <AddFriendBtn myUserInfo={admin} userInfo={guess}> Button </AddFriendBtn>
+              <AddFriendBtn myUserInfo={admin} userInfo={guess}>
+                {' '}
+                Button{' '}
+              </AddFriendBtn>
             </>
           )}
         </div>
