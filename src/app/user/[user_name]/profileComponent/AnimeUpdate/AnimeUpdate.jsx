@@ -54,7 +54,6 @@ function convertDateString(dateString) {
   var dateInHCM = new Date(date.toLocaleString('en-US', options));
   var todayInHCM = new Date(today.toLocaleString('en-US', options));
   var diffDays = todayInHCM.getDate() - dateInHCM.getDate();
-  console.log(diffDays);
   var output = '';
   if (diffDays === 0) {
     output += 'Today';

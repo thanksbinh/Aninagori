@@ -20,7 +20,7 @@ function ProfileHeader({ guess, admin }) {
   const [link, setLink] = useState('');
   const [load, setLoad] = useState(true);
   const [currentImage, setCurrentImage] = useState('/wallpaper.png');
-
+  console.log('re-render header');
   return (
     <div className={cx('wrapper')}>
       <img
@@ -101,8 +101,9 @@ function ProfileHeader({ guess, admin }) {
             <>
                 <Button
                   onClick={() => {
-                    if (!!!data.myAnimeList_username) {
+                    if (!!!guess.myAnimeList_username) {
                           //TODO: handle log in with MAL later
+                          console.log('not connect');
                     } else {
                       console.log('Already Connect');
                     }
@@ -113,7 +114,7 @@ function ProfileHeader({ guess, admin }) {
                     guess.myAnimeList_username ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPlug} />
                   }
                 >
-                  {guess.myAnimeList_username ? 'Connect with MAL' : 'Connected with MAL'}
+                  {guess.myAnimeList_username ? 'Connected with MAL' : 'Connect with MAL'}
                 </Button>
               <Button small primary leftIcon={<FontAwesomeIcon icon={faPenToSquare} />}>
                 Edit profile
