@@ -5,7 +5,7 @@ import { collection, doc, getDocs, query, setDoc, where } from "firebase/firesto
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Modal from "@/components/auth/Modal";
+import Modal from "@/app/login/components/Modal";
 
 const UsernamePopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
 	const session = useSession();
@@ -51,7 +51,7 @@ const UsernamePopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
 	);
 
 	return (
-		<Modal isOpen={isOpen} onClose={() => {}} title={""}>
+		<Modal isOpen={isOpen} onClose={() => { }} title={""}>
 			<div className="flex flex-col p-6 w-[500px]">
 				<h2 className="text-2xl font-bold mb-4">Set username</h2>
 				<form className="flex flex-col" onSubmit={formik.handleSubmit}>
@@ -94,7 +94,6 @@ const UsernamePopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
 								</button>
 							)
 						}
-
 					</div>
 				</form>
 			</div>
