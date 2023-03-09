@@ -20,7 +20,6 @@ function ProfileHeader({ guess, admin }) {
   const [link, setLink] = useState('');
   const [load, setLoad] = useState(true);
   const [currentImage, setCurrentImage] = useState('/wallpaper.png');
-  const [visible, setVisible] = useState(false); // for MAL input box
 
   return (
     <div className={cx('wrapper')}>
@@ -111,10 +110,10 @@ function ProfileHeader({ guess, admin }) {
                   small
                   gradient
                   leftIcon={
-                    data.myAnimeList_username ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPlug} />
+                    guess.myAnimeList_username ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPlug} />
                   }
                 >
-                  {data.myAnimeList_username ? 'Connect with MAL' : 'Connected with MAL'}
+                  {guess.myAnimeList_username ? 'Connect with MAL' : 'Connected with MAL'}
                 </Button>
               <Button small primary leftIcon={<FontAwesomeIcon icon={faPenToSquare} />}>
                 Edit profile
@@ -128,11 +127,11 @@ function ProfileHeader({ guess, admin }) {
                 }}
                 small
                 gradient
-                href = {data.myAnimeList_username ? ('https://myanimelist.net/profile/' + data.myAnimeList_username) : false}
+                href = {guess.myAnimeList_username ? ('https://myanimelist.net/profile/' + guess.myAnimeList_username) : false}
                 leftIcon={<FontAwesomeIcon icon={faPlug} />}
               >
                 {/*TODO: handle user haven't connected to MAL */}
-                {data.myAnimeList_username ? 'Visit MAL profile' : '....Feature'}
+                {guess.myAnimeList_username ? 'Visit MAL profile' : '....Feature'}
               </Button>
               <AddFriendBtn myUserInfo={admin} userInfo={guess}> Button </AddFriendBtn>
             </>
