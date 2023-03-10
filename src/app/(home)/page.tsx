@@ -3,7 +3,7 @@ import { db } from '@/firebase/firebase-app';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { doc, getDoc } from 'firebase/firestore';
 import { getServerSession } from 'next-auth';
-import { Post, PostForm } from '../../components';
+import { Post, PostForm, Posts } from '../../components';
 
 async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
   const docRef = doc(db, "users", userId);
@@ -48,6 +48,7 @@ export default async function Home() {
           likes={10}
           comments={10}
         />
+        <Posts />
       </div>
     </div>
   )

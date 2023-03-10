@@ -29,7 +29,7 @@ const Post: FC<PostProps> = ({
   return (
     <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 mb-4">
       <div className="flex items-center space-x-4 mx-2">
-        <Avatar imageUrl={avatarUrl} altText={authorName} size={12} />
+        <Avatar imageUrl={avatarUrl} altText={authorName} size={10} />
         <div>
           <p className="font-bold text-[#dddede]">{authorName}</p>
           <p className="text-gray-500 text-sm">{time}</p>
@@ -82,3 +82,4 @@ const Post: FC<PostProps> = ({
 };
 
 export default Post;
+export type { PostProps };
