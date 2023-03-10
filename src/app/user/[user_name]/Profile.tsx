@@ -23,46 +23,50 @@ function Profile({ user_name }: { user_name: string }) {
   const [userNotFound, setUserNotFound] = useState(false);
   const isAdmin = useRef(false);
   const [animeData, setAnimeData] = useState({ data: '' });
+  const [guessData, setGuessData] = useState({});
 
   useEffect(() => {
     async function getUserID() {
-      if (session && session.user) {
+      // get admin information
+      if (session && !!session.user) {        
         const docRef = doc(db, 'users', (session.user as any).id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          admin.current = { ...docSnap.data(), "id": docSnap.id };
-          const adminName = docSnap.data().username;
-          const guessName = window.location.href.split('user/')[1];
-          const usersRef = collection(db, 'users');
-          const usernameQuery = query(usersRef, where('username', '==', guessName));
-          const querySnapshot = await getDocs(usernameQuery);
-          if (querySnapshot.empty) {
-            //TODO: return user not found page
-            setUserNotFound(true);
-            console.log('not found');
-          } else {
-            guess.current = { ...querySnapshot.docs[0].data(), "id": querySnapshot.docs[0].id }
-            isAdmin.current = (guess.current as any).username === (admin.current as any).username;
-            if (isAdmin.current) {
-              console.log('Current Admin');
-            } else {
-              console.log('Not Admin');
-            }
-            const result = await get('api/user/B_I_N_H');
-            console.log('REsult í', result);
-
-            setAnimeData(result);
-          }
-
-          //TODO handle if docsnap have "connected_to_MAL"
+          admin.current = { ...docSnap.data(), id: docSnap.id }; 
         } else {
           //TODO: return user error apge
         }
+      } 
+      // get guess information
+      const guessName = window.location.href.split('user/')[1];
+      const usersRef = collection(db, 'users');
+      const usernameQuery = query(usersRef, where('username', '==', guessName));
+      const querySnapshot = await getDocs(usernameQuery);
+      if (querySnapshot.empty) {
+        setUserNotFound(true);
+      } else {
+        guess.current = { ...querySnapshot.docs[0].data(), id: querySnapshot.docs[0].id };
+      }
+      
+      // compare between admin and guess
+      if (!querySnapshot.empty && !!session?.user) {
+        guess.current = { ...querySnapshot.docs[0].data(), id: querySnapshot.docs[0].id };
+        isAdmin.current = (guess.current as any).username === (admin.current as any).username;
+        if (isAdmin.current) {
+          console.log('Current Admin');
+        } else {
+          console.log('Not Admin');
+        }
+      }
+      setGuessData(guess.current);
+      if (!!(guess.current as any).myAnimeList_username) {
+        const result = await get('api/user/' + (guess.current as any).myAnimeList_username);
+        setAnimeData(result);
       }
     }
     getUserID();
-  }, [session]);
-  console.log('Re-render and ', userNotFound);
+  }, []);
+  
 
   //TODO: add loading effect when first time loading page
   return userNotFound ? (
@@ -70,12 +74,18 @@ function Profile({ user_name }: { user_name: string }) {
   ) : (
     <div className={cx('profile-wrapper')}>
       <div className={cx('profile-content')}>
-        <ProfileHeader guess={guess.current} admin={admin.current} />
+        <ProfileHeader guess={guessData} admin={admin.current} />
         <div className={cx('profile-body-wrapper')}>
           <div className={cx('status-section')}>
-            <AnimeUpdate data={animeData.data} />
-            <AnimeStatus data={animeData.data} />
-            <AnimeFavorite data={animeData.data} />
+            {!!(guess.current as any).myAnimeList_username ? (
+              <>
+                <AnimeUpdate data={animeData.data} />
+                <AnimeStatus data={animeData.data} />
+                <AnimeFavorite data={animeData.data} />
+              </>
+            ) : (
+              <div className={cx('mal-notfound')}>Not connected to MAL yet</div>
+            )}
           </div>
           <div className={cx('post-section')}>
             {isAdmin.current && (
@@ -88,7 +98,7 @@ function Profile({ user_name }: { user_name: string }) {
                 comments={0}
               />
             )}
-            <Post
+            <Post 
               authorName={(guess.current as any).name || (guess.current as any).username}
               avatarUrl={'/bocchi.jpg'}
               time={'March 1, 2023 at 2:30pm'}

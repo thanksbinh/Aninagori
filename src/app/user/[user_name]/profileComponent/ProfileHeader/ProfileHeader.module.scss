@@ -46,11 +46,11 @@
 }
 
 .user-name {
-  font-size: 2.4rem;
+  font-size: 24px;
 }
 
 .friends-count {
-  font-size: 1.6rem;
+  font-size: 16px;
   color: #b19898;
   font-weight: 400;
   margin-bottom: 4px;
@@ -91,4 +91,23 @@
   &:hover{
     opacity: 0.9;
   }
+}
+
+.mal-wrapper{
+  display: flex;
+}
+
+.mal-input {
+  height: 40px;
+  padding: 10px;
+}
+
+.mal-btn {
+  height: 40px;
+  background-color: #377dff;
+  color: white;
+}
+
+.friend-info{
+  
 }

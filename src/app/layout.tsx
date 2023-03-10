@@ -3,9 +3,8 @@ import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import React from 'react'
 
-import { SessionProvider } from '@/components/auth/SessionProvider';
+import { SessionProvider } from '@/app/SessionProvider';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import Login from '@/components/auth/Login';
 import NavBar from '@/components/nav/NavBar';
 
 export const metadata: Metadata = {
@@ -16,32 +15,15 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
 
-  if (!session) {
-    return (
-      <html lang="en">
-        <head />
-        <body>
-          <SessionProvider session={session}>
-            <Login />
-            {/* Todo: use favicon without children */}
-            <div className="hidden">{children}</div>
-          </SessionProvider>
-        </body>
-      </html>
-    );
-  }
-
   return (
     <html lang="en">
       <head />
       <body>
         <SessionProvider session={session}>
           {/* @ts-expect-error Server Component */}
-          <NavBar session={session} />
+          <NavBar />
 
-          <div>
-            {children}
-          </div>
+          {children}
         </SessionProvider>
       </body>
     </html>

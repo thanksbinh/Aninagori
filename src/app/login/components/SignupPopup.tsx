@@ -1,6 +1,6 @@
 import { auth, db } from "@/firebase/firebase-app"
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
-import Modal from "@/components/auth/Modal";
+import Modal from "@/app/login/components/Modal";
 import { updateProfile } from "firebase/auth";
 import * as Yup from 'yup';
 import { useFormik, FormikConfig, FormikErrors, FormikValues } from "formik";

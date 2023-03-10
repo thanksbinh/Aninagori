@@ -54,6 +54,25 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+.tippy-box {
+  background-color: rgba(84, 84, 84, 1);
+  min-height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.tippy-arrow {
+  color: rgba(84, 84, 84, 1) !important;
+}
+
+.tippy-box[data-placement^='bottom'] > .tippy-arrow {
+  top: -1px;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
