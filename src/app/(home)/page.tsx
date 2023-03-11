@@ -35,7 +35,7 @@ export default async function Home() {
 
   return (
     <div className='flex justify-center pt-10'>
-      <div className="flex flex-col w-2/5">
+      <div className="flex flex-col lg:w-2/5 w-3/5">
         <PostForm avatarUrl={myUserInfo.image} username={myUserInfo.username} />
 
         {/* @ts-expect-error Server Component */}

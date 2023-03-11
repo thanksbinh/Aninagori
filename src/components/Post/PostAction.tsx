@@ -18,12 +18,12 @@ interface Props {
 
 const PostAction: FC<Props> = ({ myUserInfo, reactions0, comments, id }) => {
   const [likeToggle, setLikeToggle] = useState(false)
-  const [reactions, setReactions] = useState(reactions0)
+  const [reactions, setReactions] = useState(reactions0 || [])
 
   useEffect(() => {
     const postRef = doc(db, "posts", id);
     const unsubscribe = onSnapshot(postRef, docSnap => {
-      setReactions(docSnap?.data()?.reactions)
+      setReactions(docSnap?.data()?.reactions || [])
     })
 
     if (reactions?.some((e: any) => e.username === myUserInfo.username))
@@ -60,8 +60,8 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, comments, id }) => {
   return (
     <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pt-0 mb-4 rounded-t-none">
       <div className="flex my-4 mx-2">
-        {(reactions.length > 2 ? reactions?.slice(reactions.length - 3) : reactions.slice(0)).reverse().map((user: any) =>
-          <div className="static"><Avatar imageUrl={user.image} altText={user.username} size={5} key={user.image} /></div>
+        {(reactions.length > 2 ? reactions.slice(reactions.length - 3) : reactions.slice(0)).reverse().map((user: any) =>
+          <Avatar imageUrl={user.image} altText={user.username} size={5} key={user.username} />
         )}
       </div>
 
@@ -73,7 +73,7 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, comments, id }) => {
               : <HiOutlineHeart className="w-5 h-5" />
             }
           </button>
-          <span className="text-gray-400 ml-2">{reactions?.length}</span>
+          <span className="text-gray-400 ml-2">{reactions.length}</span>
         </div>
 
         <div className="flex">
