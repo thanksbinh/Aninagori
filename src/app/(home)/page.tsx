@@ -35,7 +35,7 @@ export default async function Home() {
 
   return (
     <div className='flex justify-center pt-10 bg-[#212833]'>
-      <div className="flex flex-col bg-[#212833]">
+      <div className="flex flex-col bg-[#212833] w-2/5">
         <PostForm
           avatarUrl={myUserInfo.image} authorName={myUserInfo.username} time={''} content={''} likes={0} comments={0}
         />

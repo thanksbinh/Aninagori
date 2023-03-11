@@ -3,6 +3,7 @@ import { FC } from "react";
 import Avatar from "../Avatar/Avatar";
 import { HiPhoto, HiVideoCamera } from "react-icons/hi2";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { db, storage } from "@/firebase/firebase-app";
@@ -31,6 +32,7 @@ const PostForm: FC<PostFormProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const filePickerRef = useRef<HTMLInputElement>(null);
   const [imageToPost, setImageToPost] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleClear = () => {
     if (inputRef.current) {
@@ -56,6 +58,8 @@ const PostForm: FC<PostFormProps> = ({
     handleClear();
 
     alert("Post successfully added");
+
+    router.refresh();
   }
 
   return (
