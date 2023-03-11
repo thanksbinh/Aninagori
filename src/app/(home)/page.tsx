@@ -39,7 +39,7 @@ export default async function Home() {
         <PostForm avatarUrl={myUserInfo.image} username={myUserInfo.username} />
 
         {/* @ts-expect-error Server Component */}
-        <Posts />
+        <Posts myUserInfo={myUserInfo} />
       </div>
     </div>
   )

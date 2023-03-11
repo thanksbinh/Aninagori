@@ -1,6 +1,8 @@
 import Post, { PostProps } from "./Post";
 import { getDocs, collection, query, orderBy } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
+import { UserInfo } from "../nav/NavBar";
+import PostAction from "./PostAction"
 
 async function fetchData() {
   const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
@@ -17,8 +19,9 @@ async function fetchData() {
   return fetchedPosts
 }
 
-export default async function Posts() {
+export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
   const posts: PostProps[] = await fetchData();
+  console.log(myUserInfo)
 
   return (
     <div className="flex flex-col">
@@ -34,6 +37,7 @@ export default async function Posts() {
             comments={post.comments}
             id={post.id}
           />
+          <PostAction myUserInfo={myUserInfo} likes={post.likes} comments={post.comments} />
         </div>
       ))}
     </div>
