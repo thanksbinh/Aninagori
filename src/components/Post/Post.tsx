@@ -1,3 +1,4 @@
+'use client';
 import { FC, useState } from "react";
 import Avatar from "../Avatar/Avatar";
 import Image from "next/image";

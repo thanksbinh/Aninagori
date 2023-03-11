@@ -1,3 +1,4 @@
+'use client';
 import { FC } from "react";
 import Avatar from "../Avatar/Avatar";
 import { HiPhoto, HiVideoCamera } from "react-icons/hi2";
@@ -51,8 +52,6 @@ const PostForm: FC<PostFormProps> = ({
         likes: 0,
         comments: 0
     });
-
-    console.log("Document written with ID: ", docRef.id);
 
     handleClear();
 

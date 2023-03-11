@@ -1,50 +1,37 @@
-import { useState, useEffect } from "react";
+import Post, { PostProps } from "./Post";
 import { getDocs, collection, query, orderBy } from "firebase/firestore";
-import { db, storage } from "@/firebase/firebase-app";
-import Post,  { PostProps }  from "./Post";
+import { db } from "@/firebase/firebase-app";
 
-const Posts = () => {
-    const [posts, setPosts] = useState<PostProps[]>([]);
+async function fetchData() {
+    const q = query(collection(db, "posts"), orderBy("timeStamp", "desc"));
+    const fetchedPosts: PostProps[] = [];
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      const post = {
+        ...doc.data(),
+        time: doc.data().timeStamp.toDate().toString(),
+      } as PostProps;
+      fetchedPosts.push(post);
+    });
+    return fetchedPosts
+}  
 
-    useEffect(() => {
-      async function fetchData() {        
-        const q = query(collection(db, "posts"), orderBy("timeStamp", "desc"));
-        const fetchedPosts: PostProps[] = [];
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          console.log(doc.id, " => ", doc.data());
+export default async function Posts() {
+  const posts: PostProps[] = await fetchData();
 
-          const post = {
-            authorName: doc.data().authorName,
-            avatarUrl: doc.data().avatarUrl,
-            time: doc.data().timeStamp.toDate().toString(),
-            content: doc.data().content,
-            imageUrl: doc.data().imgUrl,
-            likes: doc.data().likes,
-            comments: doc.data().comments,
-          } as PostProps;
-          fetchedPosts.push(post);
-        });
-        setPosts(fetchedPosts);
-      }  
-      fetchData();
-    }, []);
-    
-    return (
-        <div>
-            {posts.map((post) => (
-                <Post
-                    authorName={post.authorName}
-                    avatarUrl={post.avatarUrl}
-                    time={post.time}
-                    content={post.content}
-                    imageUrl={post.imageUrl}
-                    likes={post.likes}
-                    comments={post.comments}
-                />
-            ))}        
-        </div>
-    )
+  return (
+    <div className="flex flex-col">
+      {posts.map((post) => (      
+        <Post
+          authorName={post.authorName}
+          avatarUrl={post.avatarUrl}
+          time={post.time}
+          content={post.content}
+          imageUrl={post.imageUrl}
+          likes={post.likes}
+          comments={post.comments}
+        />
+      ))}
+    </div>
+  );
 }
-
-export default Posts
