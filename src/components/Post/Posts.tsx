@@ -21,7 +21,6 @@ async function fetchData() {
 
 export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
   const posts: PostProps[] = await fetchData();
-  console.log(myUserInfo)
 
   return (
     <div className="flex flex-col">
@@ -33,11 +32,10 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
             timestamp={post.timestamp}
             content={post.content}
             imageUrl={post.imageUrl}
-            likes={post.likes}
             comments={post.comments}
             id={post.id}
           />
-          <PostAction myUserInfo={myUserInfo} likes={post.likes} comments={post.comments} />
+          <PostAction myUserInfo={myUserInfo} comments={post.comments} id={post.id} />
         </div>
       ))}
     </div>

@@ -7,7 +7,6 @@ type PostProps = {
   timestamp: string;
   content: string;
   imageUrl: string | null;
-  likes: number;
   comments: number;
   id: string;
 };
@@ -35,8 +34,6 @@ const Post: FC<PostProps> = ({
           <img src={imageUrl} alt={""} className="rounded-2xl" />
         </div>
       )}
-
-      <div className="flex item-center justify-between my-4"></div>
     </div>
   );
 };
