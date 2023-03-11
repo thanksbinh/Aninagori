@@ -11,7 +11,7 @@ import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: UserInfo, userInfo: UserInfo }) {
   const [content, setContent] = useState("Add friend")
   const [disabled, setDisabled] = useState(false)
-
+  
   useEffect(() => {
     // If requested
     if ((userInfo as any)?.friend_request_list?.some((acc: any) => (acc.username === myUserInfo.username))) {
@@ -32,20 +32,24 @@ export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: Use
   }, [content])
 
   const handleAddFriend = async () => {
-    const docRef = doc(db, "users", myUserInfo.id);
-    const docSnap = await getDoc(docRef)
-
-    if (docSnap.exists() && docSnap.data().friend_request_list?.map((doc: FriendRequest) => doc.username).includes(userInfo.username)) {
-      beFriends(myUserInfo, userInfo)
-      setContent("Friend")
-      docSnap.data().friend_request_list.forEach((doc: FriendRequest) => {
-        if (doc.username === userInfo.username) {
-          removeFriendRequest(myUserInfo, doc)
-        }
-      })
+    if(!!myUserInfo.id) {      
+      const docRef = doc(db, "users", myUserInfo.id);
+      const docSnap = await getDoc(docRef)
+      if (docSnap.exists() && docSnap.data().friend_request_list?.map((doc: FriendRequest) => doc.username).includes(userInfo.username)) {
+        beFriends(myUserInfo, userInfo)
+        setContent("Friend")
+        docSnap.data().friend_request_list.forEach((doc: FriendRequest) => {
+          if (doc.username === userInfo.username) {
+            removeFriendRequest(myUserInfo, doc)
+          }
+        })
+      } else {
+        makeFriendRequest(myUserInfo, userInfo.id)
+        setContent("Requesting...")
+      }
     } else {
-      makeFriendRequest(myUserInfo, userInfo.id)
-      setContent("Requesting...")
+      // not log in and click add friend btn => redirect to login step
+      window.location.href = process.env.NEXT_PUBLIC_BASE_URL as any;
     }
   }
 

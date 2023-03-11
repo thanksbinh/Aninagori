@@ -69,7 +69,7 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadCount, sh
   }, [showNotification])
 
   return (
-    <div className="absolute right-0 w-80 top-12 z-50 bg-white rounded-md shadow-lg">
+    <div className="absolute right-0 w-80 top-12 z-40 bg-white rounded-md shadow-lg">
       <div className="flex justify-between items-center px-4">
         <h2 className="text-gray-800 font-semibold text-xl pt-4">Notification</h2>
         <div className="hover:cursor-pointer hover:bg-gray-200 rounded-full p-2"><svg className="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <circle cx="5" cy="12" r="1" />  <circle cx="12" cy="12" r="1" />  <circle cx="19" cy="12" r="1" /></svg></div>
