@@ -21,7 +21,7 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, set
     const userRef = doc(db, "users", myUserInfo.id);
     const unsubscribe = onSnapshot(userRef, docSnap => {
       let count = 0
-      setFriendRequest(docSnap.data()?.friend_request_list.map((doc: any) => {
+      setFriendRequest(docSnap.data()?.friend_request_list?.map((doc: any) => {
         count += (doc.read == null) ? 1 : 0
         return doc
       }))
