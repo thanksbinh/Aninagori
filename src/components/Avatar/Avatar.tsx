@@ -6,7 +6,7 @@ type AvatarProps = {
   size?: number;
 };
 
-const Avatar: FC<AvatarProps> = ({ imageUrl, altText, size = 8 }) => {
+const Avatar: FC<AvatarProps> = ({ imageUrl, altText, size }) => {
   return (
     <img
       className={`rounded-full w-${size} h-${size} object-cover`}

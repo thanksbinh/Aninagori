@@ -3,7 +3,7 @@ import { db } from '@/firebase/firebase-app';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { doc, getDoc } from 'firebase/firestore';
 import { getServerSession } from 'next-auth';
-import { Post, PostForm } from '../../components';
+import { PostForm, Posts } from '../../components';
 
 async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
   const docRef = doc(db, "users", userId);
@@ -35,19 +35,12 @@ export default async function Home() {
 
   return (
     <div className='flex justify-center pt-10 bg-[#212833]'>
-      <div className="flex flex-col bg-[#212833]">
+      <div className="flex flex-col bg-[#212833] w-2/5">
         <PostForm
           avatarUrl={myUserInfo.image} authorName={myUserInfo.username} time={''} content={''} likes={0} comments={0}
         />
-        <Post
-          authorName={'Nichan'}
-          avatarUrl={''}
-          time={'March 1, 2023 at 2:30pm'}
-          content={'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
-          imageUrl={'/Konosuba.jpg'}
-          likes={10}
-          comments={10}
-        />
+        {/* @ts-expect-error Server Component */}
+        <Posts />
       </div>
     </div>
   )
