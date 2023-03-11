@@ -33,7 +33,6 @@ const PostForm: FC<PostFormProps> = ({
       timestamp: serverTimestamp(),
       content: inputRef.current.value,
       imageUrl: '',
-      likes: 0,
       comments: 0
     });
 
