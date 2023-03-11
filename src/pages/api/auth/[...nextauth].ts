@@ -5,7 +5,7 @@ import { FirestoreAdapter } from "@next-auth/firebase-adapter"
 import { signInWithCustomToken, signInWithEmailAndPassword } from "firebase/auth"
 import { auth, db } from "@/firebase/firebase-app"
 import { getAuth } from "firebase-admin/auth"
-import { doc, serverTimestamp, setDoc } from "firebase/firestore"
+import { doc, serverTimestamp, updateDoc } from "firebase/firestore"
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -62,7 +62,7 @@ export const authOptions: NextAuthOptions = {
             if (isNewUser == true) {
                 try {
                     const userRef = doc(db, 'users', token.sub!);
-                    setDoc(userRef, { joined_date: serverTimestamp(), username: "guess" }, { merge: true });
+                    updateDoc(userRef, { joined_date: serverTimestamp(), username: "guess" });
                 } catch (error) {
                     console.log(error)
                 }

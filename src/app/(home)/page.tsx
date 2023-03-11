@@ -16,7 +16,7 @@ async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
       "image": docSnap.data().image,
     }
   } else {
-    console.log("No such document in NavBar/getUserInfo()!");
+    console.log("No such document in page/getUserInfo()!");
   }
 }
 
@@ -34,13 +34,12 @@ export default async function Home() {
   )
 
   return (
-    <div className='flex justify-center pt-10 bg-[#212833]'>
-      <div className="flex flex-col bg-[#212833] w-2/5">
-        <PostForm
-          avatarUrl={myUserInfo.image} authorName={myUserInfo.username} time={''} content={''} likes={0} comments={0}
-        />
+    <div className='flex justify-center pt-10'>
+      <div className="flex flex-col w-2/5">
+        <PostForm avatarUrl={myUserInfo.image} username={myUserInfo.username} />
+
         {/* @ts-expect-error Server Component */}
-        <Posts />
+        <Posts myUserInfo={myUserInfo} />
       </div>
     </div>
   )

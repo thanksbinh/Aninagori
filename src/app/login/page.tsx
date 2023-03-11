@@ -57,7 +57,7 @@ export default function page() {
     <div className="flex flex-col items-center justify-center h-screen">
       <form onSubmit={handleSubmit} className="w-full max-w-md">
         <div className="mb-4">
-          <label htmlFor="userId" className="block text-gray-700 font-bold mb-2">
+          <label htmlFor="userId" className="block text-gray-300 font-bold mb-2">
             Email/ Username
           </label>
           <input
@@ -70,7 +70,7 @@ export default function page() {
           />
         </div>
         <div className="mb-6">
-          <label htmlFor="password" className="block text-gray-700 font-bold mb-2">
+          <label htmlFor="password" className="block text-gray-300 font-bold mb-2">
             Password
           </label>
           <input

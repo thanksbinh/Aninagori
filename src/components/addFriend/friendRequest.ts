@@ -1,23 +1,21 @@
 import { db } from "@/firebase/firebase-app";
-import { arrayRemove, arrayUnion, doc,  updateDoc } from "firebase/firestore";
+import { addDoc, arrayRemove, arrayUnion, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { UserInfo } from "../nav/NavBar";
 import { FriendRequest } from "../nav/notification/FriendRequest";
 
 async function notifyFriendRequestAccept(myUserInfo: UserInfo, userId: string) {
-  const userRef = doc(db, 'users', userId);
-  await updateDoc(userRef, {
-    notification: arrayUnion({
-      title: "You and " + myUserInfo.username + " are now friends!",
-      url: "/user/" + myUserInfo.username,
-      sender: {
-        id: myUserInfo.id,
-        username: myUserInfo.username,
-        image: myUserInfo.image,
-      },
-      type: "friend request accepted",
-      timestamp: new Date(),
-      read: null,
-    })
+  const notificationsRef = collection(db, 'users', userId, "notifications");
+  await addDoc(notificationsRef, {
+    title: "You and " + myUserInfo.username + " are now friends!",
+    url: "/user/" + myUserInfo.username,
+    sender: {
+      id: myUserInfo.id,
+      username: myUserInfo.username,
+      image: myUserInfo.image,
+    },
+    type: "friend request accepted",
+    timestamp: serverTimestamp(),
+    read: null
   });
 }
 
