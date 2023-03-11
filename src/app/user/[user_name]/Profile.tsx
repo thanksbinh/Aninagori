@@ -28,15 +28,15 @@ function Profile({ user_name }: { user_name: string }) {
   useEffect(() => {
     async function getUserID() {
       // get admin information
-      if (session && !!session.user) {        
+      if (session && !!session.user) {
         const docRef = doc(db, 'users', (session.user as any).id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          admin.current = { ...docSnap.data(), id: docSnap.id }; 
+          admin.current = { ...docSnap.data(), id: docSnap.id };
         } else {
           //TODO: return user error apge
         }
-      } 
+      }
       // get guess information
       const guessName = window.location.href.split('user/')[1];
       const usersRef = collection(db, 'users');
@@ -47,7 +47,7 @@ function Profile({ user_name }: { user_name: string }) {
       } else {
         guess.current = { ...querySnapshot.docs[0].data(), id: querySnapshot.docs[0].id };
       }
-      
+
       // compare between admin and guess
       if (!querySnapshot.empty && !!session?.user) {
         guess.current = { ...querySnapshot.docs[0].data(), id: querySnapshot.docs[0].id };
@@ -66,9 +66,9 @@ function Profile({ user_name }: { user_name: string }) {
     }
     getUserID();
   }, []);
-  
 
-  //TODO: add loading effect when first time loading page
+
+  //TODO: add loading effect when first timestamp loading page
   return userNotFound ? (
     <div className="setBackground"></div>
   ) : (
@@ -91,17 +91,13 @@ function Profile({ user_name }: { user_name: string }) {
             {isAdmin.current && (
               <PostForm
                 avatarUrl={'/bocchi.jpg'}
-                authorName={(guess.current as any).name || (guess.current as any).username}
-                time={''}
-                content={''}
-                likes={0}
-                comments={0}
+                username={(guess.current as any).name || (guess.current as any).username}
               />
             )}
-            <Post 
+            <Post
               authorName={(guess.current as any).name || (guess.current as any).username}
               avatarUrl={'/bocchi.jpg'}
-              time={'March 1, 2023 at 2:30pm'}
+              timestamp={'March 1, 2023 at 2:30pm'}
               content={'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
               imageUrl={'/Konosuba.jpg'}
               likes={10}
@@ -110,7 +106,7 @@ function Profile({ user_name }: { user_name: string }) {
             <Post
               authorName={'Nichan'}
               avatarUrl={'/bocchi.jpg'}
-              time={'March 1, 2023 at 2:30pm'}
+              timestamp={'March 1, 2023 at 2:30pm'}
               content={'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
               imageUrl={'/Konosuba.jpg'}
               likes={10}
@@ -119,7 +115,7 @@ function Profile({ user_name }: { user_name: string }) {
             <Post
               authorName={'Nichan'}
               avatarUrl={'/bocchi.jpg'}
-              time={'March 1, 2023 at 2:30pm'}
+              timestamp={'March 1, 2023 at 2:30pm'}
               content={'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
               imageUrl={'/Konosuba.jpg'}
               likes={10}
@@ -128,7 +124,7 @@ function Profile({ user_name }: { user_name: string }) {
             <Post
               authorName={'Nichan'}
               avatarUrl={'/bocchi.jpg'}
-              time={'March 1, 2023 at 2:30pm'}
+              timestamp={'March 1, 2023 at 2:30pm'}
               content={'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
               imageUrl={'/Konosuba.jpg'}
               likes={10}

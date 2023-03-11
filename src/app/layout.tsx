@@ -19,12 +19,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en">
       <head />
       <body>
-        <SessionProvider session={session}>
-          {/* @ts-expect-error Server Component */}
-          <NavBar />
+        <main className='bg-[#212833]'>
+          <SessionProvider session={session}>
+            {/* @ts-expect-error Server Component */}
+            <NavBar />
 
-          {children}
-        </SessionProvider>
+            {children}
+          </SessionProvider>
+        </main>
       </body>
     </html>
   );

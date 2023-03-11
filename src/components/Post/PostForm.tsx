@@ -1,71 +1,50 @@
 'use client';
+
 import { FC } from "react";
 import Avatar from "../Avatar/Avatar";
 import { HiPhoto, HiVideoCamera } from "react-icons/hi2";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { useRef, useState } from "react";
-import { db, storage } from "@/firebase/firebase-app";
+import { db } from "@/firebase/firebase-app";
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 type PostFormProps = {
-  authorName: string;
+  username: string;
   avatarUrl: string;
-  time: string;
-  content: string;
-  imageUrl?: string;
-  likes: number;
-  comments: number;
 };
 
 const PostForm: FC<PostFormProps> = ({
-  authorName,
+  username,
   avatarUrl,
-  time,
-  content,
-  imageUrl,
-  likes,
-  comments,
 }) => {
-  const {data: session} = useSession();
   const inputRef = useRef<HTMLInputElement>(null);
   const filePickerRef = useRef<HTMLInputElement>(null);
   const [imageToPost, setImageToPost] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleClear = () => {
-    if (inputRef.current) {
-      inputRef.current.value = ""; // clear input value
-    }
-  }
-
-  async function handleClick(event: React.MouseEvent<HTMLButtonElement>): Promise<void> {
+  async function handleSubmit(event: React.MouseEvent<HTMLButtonElement>): Promise<void> {
     // your async logic here
     event.preventDefault();
     if (!inputRef.current?.value) return;
 
-    const docRef = await addDoc(collection(db, 'posts'), {
-        authorName: session?.user?.name,
-        avatarUrl: session?.user?.image,
-        timeStamp: serverTimestamp(),
-        content: inputRef.current.value,
-        imgUrl: '',
-        likes: 0,
-        comments: 0
+    await addDoc(collection(db, 'posts'), {
+      authorName: username,
+      avatarUrl: avatarUrl,
+      timestamp: serverTimestamp(),
+      content: inputRef.current.value,
+      imageUrl: '',
+      likes: 0,
+      comments: 0
     });
 
-    handleClear();
-
-    alert("Post successfully added");
-
+    inputRef.current.value = "";
     router.refresh();
   }
 
   return (
     <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-2 my-4">
       <div className="flex justify-between items-center mt-4">
-        <Avatar imageUrl={avatarUrl} altText={authorName} size={8} />
+        <Avatar imageUrl={avatarUrl} altText={username} size={8} />
         <input
           type="text"
           ref={inputRef}
@@ -83,11 +62,11 @@ const PostForm: FC<PostFormProps> = ({
           <HiVideoCamera className="w-5 h-5 fill-[#FF1D43]" />
           <span>Video</span>
         </button>
-        <button className="flex flex-1 items-center justify-center space-x-1 text-[#fff] bg-[#377dff] hover:bg-[#0e5ef1] py-2 px-4 rounded-lg mt-1 mx-1" onClick={handleClick}>
+        <button className="flex flex-1 items-center justify-center space-x-1 text-[#fff] bg-[#377dff] hover:bg-[#0e5ef1] py-2 px-4 rounded-lg mt-1 mx-1" onClick={handleSubmit}>
           <span>Share</span>
         </button>
       </div>
-      
+
     </div>
   );
 };

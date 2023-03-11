@@ -1,7 +1,6 @@
 'use client';
 import { FC, useState } from "react";
 import Avatar from "../Avatar/Avatar";
-import Image from "next/image";
 import { AiOutlineComment } from "react-icons/ai";
 import { RiAddCircleLine } from "react-icons/ri";
 import { HiOutlineHeart, HiHeart } from "react-icons/hi2";
@@ -9,9 +8,9 @@ import { HiOutlineHeart, HiHeart } from "react-icons/hi2";
 type PostProps = {
   authorName: string;
   avatarUrl: string;
-  time: string;
+  timestamp: string;
   content: string;
-  imageUrl?: string;
+  imageUrl: string | null;
   likes: number;
   comments: number;
 };
@@ -19,7 +18,7 @@ type PostProps = {
 const Post: FC<PostProps> = ({
   authorName,
   avatarUrl,
-  time,
+  timestamp,
   content,
   imageUrl,
   likes,
@@ -33,14 +32,14 @@ const Post: FC<PostProps> = ({
         <Avatar imageUrl={avatarUrl} altText={authorName} size={10} />
         <div>
           <p className="font-bold text-[#dddede]">{authorName}</p>
-          <p className="text-gray-500 text-sm">{time}</p>
+          <p className="text-gray-500 text-sm">{timestamp}</p>
         </div>
       </div>
 
       <p className="text-lg mt-4 mb-2 text-[#dddede] mx-2">{content}</p>
       {imageUrl && (
         <div className="mt-4 mx-2">
-          <Image src={imageUrl} width={640} height={360} alt={""} className="rounded-2xl" />
+          <img src={imageUrl} alt={""} className="rounded-2xl" />
         </div>
       )}
 
