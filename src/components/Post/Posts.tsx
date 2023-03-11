@@ -32,10 +32,11 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
             timestamp={post.timestamp}
             content={post.content}
             imageUrl={post.imageUrl}
+            reactions={[]}
             comments={post.comments}
             id={post.id}
           />
-          <PostAction myUserInfo={myUserInfo} comments={post.comments} id={post.id} />
+          <PostAction myUserInfo={myUserInfo} reactions0={post.reactions} comments={post.comments} id={post.id} />
         </div>
       ))}
     </div>

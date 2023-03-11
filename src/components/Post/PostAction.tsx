@@ -12,21 +12,22 @@ import { db } from "@/firebase/firebase-app";
 interface Props {
   myUserInfo: UserInfo
   comments: number;
+  reactions0: Object[];
   id: string;
 };
 
-const PostAction: FC<Props> = ({ myUserInfo, comments, id }) => {
-  const [likeToggle, setLikeToggle] = useState(false);
-  const [reactions, setReactions] = useState([])
+const PostAction: FC<Props> = ({ myUserInfo, reactions0, comments, id }) => {
+  const [likeToggle, setLikeToggle] = useState(false)
+  const [reactions, setReactions] = useState(reactions0)
 
   useEffect(() => {
     const postRef = doc(db, "posts", id);
     const unsubscribe = onSnapshot(postRef, docSnap => {
       setReactions(docSnap?.data()?.reactions)
-
-      if (docSnap?.data()?.reactions?.some((e: any) => e.username === myUserInfo.username))
-        setLikeToggle(true)
     })
+
+    if (reactions?.some((e: any) => e.username === myUserInfo.username))
+      setLikeToggle(true)
 
     return () => {
       unsubscribe && unsubscribe()
@@ -72,7 +73,7 @@ const PostAction: FC<Props> = ({ myUserInfo, comments, id }) => {
               : <HiOutlineHeart className="w-5 h-5" />
             }
           </button>
-          <span className="text-gray-400 ml-2">{reactions.length}</span>
+          <span className="text-gray-400 ml-2">{reactions?.length}</span>
         </div>
 
         <div className="flex">

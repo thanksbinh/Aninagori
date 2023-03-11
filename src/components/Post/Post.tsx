@@ -7,6 +7,7 @@ type PostProps = {
   timestamp: string;
   content: string;
   imageUrl: string | null;
+  reactions: Object[];
   comments: number;
   id: string;
 };
