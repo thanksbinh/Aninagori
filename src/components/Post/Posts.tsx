@@ -9,7 +9,8 @@ async function fetchData() {
   const fetchedPosts = querySnapshot.docs.map((doc) => {
     return {
       ...doc.data(),
-      timestamp: doc.data().timestamp.toDate().toString()
+      timestamp: doc.data().timestamp.toDate().toString(),
+      id: doc.id
     } as PostProps;
   })
 
@@ -22,15 +23,18 @@ export default async function Posts() {
   return (
     <div className="flex flex-col">
       {posts.map((post) => (
-        <Post
-          authorName={post.authorName}
-          avatarUrl={post.avatarUrl}
-          timestamp={post.timestamp}
-          content={post.content}
-          imageUrl={post.imageUrl}
-          likes={post.likes}
-          comments={post.comments}
-        />
+        <div key={post.id}>
+          <Post
+            authorName={post.authorName}
+            avatarUrl={post.avatarUrl}
+            timestamp={post.timestamp}
+            content={post.content}
+            imageUrl={post.imageUrl}
+            likes={post.likes}
+            comments={post.comments}
+            id={post.id}
+          />
+        </div>
       ))}
     </div>
   );

@@ -1,7 +1,7 @@
 import { db } from "@/firebase/firebase-app"
 import * as Yup from 'yup';
 import { useFormik, FormikConfig, FormikValues } from "formik";
-import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,7 +17,7 @@ const UsernamePopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
 		try {
 			setLoading(true);
 			const userRef = doc(db, 'users', (session as any).data.user?.id);
-			await setDoc(userRef, { username: values.username }, { merge: true });
+			await updateDoc(userRef, { username: values.username });
 			router.refresh();
 
 		} catch (error) {

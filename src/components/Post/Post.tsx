@@ -1,4 +1,5 @@
 'use client';
+
 import { FC, useState } from "react";
 import Avatar from "../Avatar/Avatar";
 import { AiOutlineComment } from "react-icons/ai";
@@ -13,6 +14,7 @@ type PostProps = {
   imageUrl: string | null;
   likes: number;
   comments: number;
+  id: string;
 };
 
 const Post: FC<PostProps> = ({
