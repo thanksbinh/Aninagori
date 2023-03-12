@@ -34,6 +34,7 @@
   width: 150px;
   height: 150px;
   border-radius: 50%;
+  object-fit: cover;
   border: 4px solid var(--primary-color);
   margin-right: 14px;
 }
@@ -65,6 +66,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
+  object-fit: cover;
 }
 
 .friends-avatar:not(:first-child) {
@@ -88,12 +90,12 @@
   outline: none;
   border: none;
 
-  &:hover{
+  &:hover {
     opacity: 0.9;
   }
 }
 
-.mal-wrapper{
+.mal-wrapper {
   display: flex;
 }
 
@@ -108,6 +110,152 @@
   color: white;
 }
 
-.friend-info{
-  
+.friend-info {
+}
+
+.modal {
+  /* display: flex; */
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  animation: fadeIn linear 0.1s;
+  z-index: 30;
+}
+
+.modal_overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal_body {
+  width: 420px;
+  height: 380px;
+  border-radius: 5px;
+  padding: 30px 24px;
+  background-color: white;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  animation: growth linear 0.1s;
+  will-change: transform;
+  color: rgb(25, 109, 174);
+}
+
+.Fadein {
+  animation: reveal 0.3s linear alternate;
+}
+
+.Fadeout {
+  animation: hide 0.3s linear forwards;
+}
+
+.form-control {
+  height: 40px;
+  /* min-width: 200px; */
+  padding: 8px 12px;
+  border: 1px solid #b3b3b3;
+  border-radius: 3px;
+  outline: none;
+  font-size: 14px;
+  color: black;
+}
+
+.form-control:hover {
+  border-color: #1dbfaf;
+}
+
+.edit-title {
+  margin-bottom: 30px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 50px;
+}
+
+.form-title {
+  min-width: 110px;
+  font-weight: 500;
+  margin-right: 10px;
+}
+
+.form-control {
+  flex: 1;
+}
+
+.form-btn {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 30px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes headerNotifyGrow {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes growth {
+  from {
+    transform: scale(0.7);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes hide {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

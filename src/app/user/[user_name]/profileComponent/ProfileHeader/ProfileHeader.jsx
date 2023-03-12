@@ -5,15 +5,16 @@ import styles from './ProfileHeader.module.scss';
 import Button from '@/components/Button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faImage, faPenToSquare, faPlug, faUserPlus } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-app';
 import AddFriendBtn from './AddFriendBtn';
 import { memo } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
+import Avatar from '@/components/Avatar/Avatar';
 
 const cx = classNames.bind(styles);
 
@@ -21,13 +22,105 @@ function ProfileHeader({ guess, admin }) {
   const [open, setOpen] = useState(false);
   const [link, setLink] = useState('');
   const [load, setLoad] = useState(true);
+  const [userName, setUserName] = useState('');
+  const [avatar, setAvatar] = useState('');
+  const [wallpaper, setWallpaper] = useState('');
   const [currentImage, setCurrentImage] = useState('/wallpaper.png');
-  console.log('re-render header');
-  console.log(guess);
+  const editBox = useRef();
+  const editBoxWrapper = useRef();
   return (
     <div className={cx('wrapper')}>
+      <div className={cx('modal')} ref={editBoxWrapper}>
+        <div className={cx('modal_overlay')}></div>
+        <div className={cx('modal_body')} ref={editBox}>
+          <h4 className={cx('edit-title')}>Edit your profile information</h4>
+          <div className={cx('form-group')}>
+            <h5 className={cx('form-title')}>Username: </h5>
+            <input
+              onChange={(e) => {
+                setUserName(e.target.value);
+              }}
+              className={cx('form-control')}
+              placeholder="Enter your display name"
+            ></input>
+          </div>
+          <div className={cx('form-group')}>
+            <h5 className={cx('form-title')}>Avatar link: </h5>
+            <input
+              onChange={(e) => {
+                setAvatar(e.target.value);
+              }}
+              className={cx('form-control')}
+              placeholder="Enter your avatar link"
+            ></input>
+          </div>
+          <div className={cx('form-group')}>
+            <h5 className={cx('form-title')}>Wallpaper link: </h5>
+            <input
+              onChange={async (e) => {
+                setWallpaper(e.target.value);
+              }}
+              className={cx('form-control')}
+              placeholder="Enter your wallpaper link"
+            ></input>
+          </div>
+          <div className={cx('form-btn')}>
+            <Button
+              small
+              primary
+              to={undefined}
+              href={undefined}
+              onClick={() => {
+                editBox.current.classList.add(cx('Fadeout'));
+                editBox.current.classList.remove(cx('Fadein'));
+                setTimeout(() => {
+                  editBox.current.classList.remove(cx('Fadeout'));
+                  editBoxWrapper.current.style.display = 'none';
+                }, 300);
+              }}
+              leftIcon={undefined}
+              rightIcon={undefined}
+            >
+              Close
+            </Button>
+            <Button
+              small
+              primary
+              to={undefined}
+              href={undefined}
+              onClick={async () => {
+                const docRef = doc(db, 'users', admin.id);
+                if (userName !== '') {
+                  await updateDoc(docRef, {
+                    name: userName
+                  });
+                }
+                if(wallpaper !== '') {
+                  await updateDoc(docRef, {
+                    wallpaper: wallpaper
+                  });
+                }
+                if(avatar !== '') {
+                  await updateDoc(docRef, {
+                    image: avatar
+                  });
+                }
+                if(userName !== '' || wallpaper !== '' || avatar !== '') {
+                  location.reload();
+                } else {
+                  alert('Please fill up at least 1 fill :((')
+                }
+              }}
+              leftIcon={undefined}
+              rightIcon={undefined}
+            >
+              Submit
+            </Button>
+          </div>
+        </div>
+      </div>
       <img
-        src={currentImage}
+        src={guess.wallpaper || currentImage}
         alt="wallpaper"
         className={cx('wallpaper')}
         onError={({ currentTarget }) => {
@@ -56,7 +149,7 @@ function ProfileHeader({ guess, admin }) {
         </Button>
       )}
       {open && (
-        <div className="px-2 absolute bottom-1/4 right-8 z-10 rounded-2xl overflow-hidden">
+        <div className="px-2 absolute bottom-1/4 right-3 z-10 rounded-2xl overflow-hidden">
           <input
             type="text"
             className="border border-gray-300 py-2 px-4 w-64 text-black outline-none"
@@ -67,11 +160,18 @@ function ProfileHeader({ guess, admin }) {
             value={link}
           />
           <button
-            onClick={() => {
+            onClick={async() => {
               if (!load) {
                 setCurrentImage(link);
+                const docRef = doc(db, 'users', admin.id);
+                if (link !== '') {
+                  await updateDoc(docRef, {
+                    wallpaper: link
+                  });
+                  setLink('');
+                  location.reload();
+                }
               }
-              setLink('');
             }}
             type="submit"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4"
@@ -151,7 +251,15 @@ function ProfileHeader({ guess, admin }) {
               >
                 {guess.myAnimeList_username ? 'Connected with MAL' : 'Connect with MAL'}
               </Button>
-              <Button small primary leftIcon={<FontAwesomeIcon icon={faPenToSquare} />}>
+              <Button
+                onClick={() => {
+                  editBox.current.classList.add(cx('Fadein'));
+                  editBoxWrapper.current.style.display = 'flex';
+                }}
+                small
+                primary
+                leftIcon={<FontAwesomeIcon icon={faPenToSquare} />}
+              >
                 Edit profile
               </Button>
             </>
@@ -181,4 +289,4 @@ function ProfileHeader({ guess, admin }) {
   );
 }
 
-export default memo(ProfileHeader);
+export default ProfileHeader;

@@ -46,7 +46,7 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
                     currentTarget.src = '/bocchi.jpg';
                 }}
                 alt="Profile"
-                className="w-10 h-10 rounded-full cursor-pointer"
+                className="w-10 h-10 rounded-full cursor-pointer object-cover"
                 onClick={() => setIsOpen(!isOpen)}
             />
             {isOpen ?

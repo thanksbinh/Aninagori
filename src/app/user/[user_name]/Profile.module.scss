@@ -31,7 +31,7 @@
 .profile-body-wrapper {
   width: 1000px;
   display: flex;
-  min-height: 2000px; // for developer state
+  // min-height: 2000px; // for developer state
   margin-top: 24px;
   box-sizing: border-box;
   margin-left: 24px;
@@ -59,13 +59,15 @@
   width: 53.5%;
 }
 
-.mal-notfound{
-   color: white;
-   text-align: center;
-   padding: 20px;
-   margin: auto;
-   font-size: 24px;
-   background-color: #191c21;
-   border-radius: 12px;
-   height: 500px;
+.mal-notfound {
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin: auto;
+  font-size: 24px;
+  background-color: #191c21;
+  border-radius: 12px;
+  height: 500px;
 }
+
+
