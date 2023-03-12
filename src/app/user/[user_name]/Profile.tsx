@@ -14,6 +14,9 @@ import { db } from '@/firebase/firebase-app';
 import PostForm from '@/components/Post/PostForm';
 import Post from '@/components/Post/Post';
 import PostAction from '@/components/Post/PostAction';
+import Button from '@/components/Button/Button';
+import { Posts } from '@/components';
+import { AnyRecord } from 'dns';
 
 const cx = classNames.bind(styles);
 
@@ -21,19 +24,24 @@ function Profile({ user_name }: { user_name: string }) {
   const { data: session } = useSession();
   const admin = useRef({});
   const guess = useRef({});
-  const [userNotFound, setUserNotFound] = useState(false);
   const isAdmin = useRef(false);
+  const [userNotFound, setUserNotFound] = useState(false);
   const [animeData, setAnimeData] = useState({ data: '' });
   const [guessData, setGuessData] = useState({});
+  const [adminData, setAdminData] = useState({});
 
   useEffect(() => {
     async function getUserID() {
       // get admin information
+      console.log(session);
+
       if (session && !!session.user) {
         const docRef = doc(db, 'users', (session.user as any).id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           admin.current = { ...docSnap.data(), id: docSnap.id };
+          console.log(admin.current);
+          setAdminData(admin.current);
         } else {
           //TODO: return user error apge
         }
@@ -68,14 +76,13 @@ function Profile({ user_name }: { user_name: string }) {
     getUserID();
   }, []);
 
-
   //TODO: add loading effect when first timestamp loading page
   return userNotFound ? (
     <div className="setBackground"></div>
   ) : (
     <div className={cx('profile-wrapper')}>
       <div className={cx('profile-content')}>
-        <ProfileHeader guess={guessData} admin={admin.current} />
+        <ProfileHeader guess={guessData} admin={adminData} />
         <div className={cx('profile-body-wrapper')}>
           <div className={cx('status-section')}>
             {!!(guess.current as any).myAnimeList_username ? (
@@ -95,19 +102,6 @@ function Profile({ user_name }: { user_name: string }) {
                 username={(guess.current as any).name || (guess.current as any).username}
               />
             )}
-            {/* <div>
-              <Post
-                authorName={'Nichan'}
-                avatarUrl={'/bocchi.jpg'}
-                timestamp={'March 1, 2023 at 2:30pm'}
-                content={'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
-                imageUrl={'/Konosuba.jpg'}
-                reactions={[]}
-                comments={0}
-                id={""}
-              />
-              <PostAction myUserInfo={admin.current as any} reactions0={[]} comments={0} id={""} />
-            </div> */}
           </div>
         </div>
       </div>

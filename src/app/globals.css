@@ -73,6 +73,10 @@ body {
   top: -1px;
 }
 
+.liked-avatar:not(:first-child) {
+  margin-left: -4.5px;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

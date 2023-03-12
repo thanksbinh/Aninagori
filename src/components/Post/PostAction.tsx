@@ -61,7 +61,7 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, comments, id }) => {
     <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pt-0 mb-4 rounded-t-none">
       <div className="flex my-4 mx-2">
         {(reactions.length > 2 ? reactions.slice(reactions.length - 3) : reactions.slice(0)).reverse().map((user: any) =>
-          <Avatar imageUrl={user.image} altText={user.username} size={5} key={user.username} />
+          <Avatar className = 'liked-avatar' imageUrl={user.image} altText={user.username} size={5} key={user.username} />
         )}
       </div>
 
