@@ -105,7 +105,7 @@ function ProfileHeader({ guess, admin }) {
                     image: avatar
                   });
                 }
-                if(avatar !== '' || wallpaper !== '' || avatar !== '') {
+                if(userName !== '' || wallpaper !== '' || avatar !== '') {
                   location.reload();
                 } else {
                   alert('Please fill up at least 1 fill :((')
