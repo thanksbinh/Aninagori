@@ -10,7 +10,7 @@ const Avatar: FC<AvatarProps> = ({ imageUrl, altText, size }) => {
   return (
     <img
       className={`rounded-full w-${size} h-${size} object-cover`}
-      src={imageUrl}
+      src={imageUrl || '/bocchi.jpg'}
       alt={altText}
     />
   );

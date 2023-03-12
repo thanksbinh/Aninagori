@@ -85,7 +85,7 @@ const SearchBar = () => {
             <div key={result.username} onClick={() => handleResultClick(result.username)} className="flex justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer">
               <div className="flex items-center gap-2 text-gray-800">
                 <img
-                  src={result.image || '/images/default-profile-pic.png'}
+                  src={result.image || '/bocchi.jpg'}
                   alt="Profile"
                   className="w-10 h-10 rounded-full cursor-pointer"
                 />
@@ -94,7 +94,7 @@ const SearchBar = () => {
             </div>)}
         </div>
       )}
-      <button type="button" className="absolute right-0 top-0 h-full px-4 py-2 text-gray-800 rounded-full hover:bg-gray-200 focus:outline-none focus:ring focus:ring-blue-300">
+      <button type="button" title='search' className="absolute right-0 top-0 h-full px-4 py-2 text-gray-800 rounded-full hover:bg-gray-200 focus:outline-none focus:ring focus:ring-blue-300">
         <svg className="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <circle cx="10" cy="10" r="7" />  <line x1="21" y1="21" x2="15" y2="15" /></svg>
       </button>
     </div>

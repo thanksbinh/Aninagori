@@ -49,7 +49,7 @@ const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) =>
   return (
     <div className="flex items-center bg-white rounded-lg px-3 py-4 hover:cursor-pointer hover:bg-gray-100">
       <img
-        src={notification.sender.image || '/images/default-profile-pic.png'}
+        src={notification.sender.image || '/bocchi.jpg'}
         alt={`${notification.sender.username}'s avatar`}
         onClick={handleClickProfile}
         className="h-10 w-10 rounded-full mr-4"

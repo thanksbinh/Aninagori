@@ -34,7 +34,7 @@ const NotificationBtn: React.FC<Props> = ({ myUserInfo }) => {
 
   return (
     <div ref={ref} className="relative inline-block h-full">
-      <button onClick={toggleNotification} className="p-3 text-[#fff] bg-[#798597] hover:bg-[#94B0DD] rounded-full font-medium focus:outline-none">
+      <button title="notification" onClick={toggleNotification} className="p-3 text-[#fff] bg-[#798597] hover:bg-[#94B0DD] rounded-full font-medium focus:outline-none">
         <BsBellFill className="w-4 h-4" />
         {unreadNoti + unreadFriendReq > 0 && (
           <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">

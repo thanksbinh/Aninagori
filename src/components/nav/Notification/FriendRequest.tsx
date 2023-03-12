@@ -67,7 +67,7 @@ const FriendRequestComponent: React.FC<Props> = ({ notification, myUserInfo }) =
   return (
     <div onClick={handleClickProfile} className="flex items-center bg-white rounded-lg px-3 py-4 hover:cursor-pointer hover:bg-gray-100">
       <img
-        src={notification.image || '/images/default-profile-pic.png'}
+        src={notification.image || '/bocchi.jpg'}
         alt={`${notification.username}'s avatar`}
         className="h-10 w-10 rounded-full mr-4"
       />

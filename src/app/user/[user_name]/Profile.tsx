@@ -13,6 +13,7 @@ import { collection, doc, getDoc, query, where, getDocs } from 'firebase/firesto
 import { db } from '@/firebase/firebase-app';
 import PostForm from '@/components/Post/PostForm';
 import Post from '@/components/Post/Post';
+import PostAction from '@/components/Post/PostAction';
 
 const cx = classNames.bind(styles);
 
@@ -94,42 +95,19 @@ function Profile({ user_name }: { user_name: string }) {
                 username={(guess.current as any).name || (guess.current as any).username}
               />
             )}
-            <Post
-              authorName={(guess.current as any).name || (guess.current as any).username}
-              avatarUrl={'/bocchi.jpg'}
-              timestamp={'March 1, 2023 at 2:30pm'}
-              content={'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
-              imageUrl={'/Konosuba.jpg'}
-              likes={10}
-              comments={10}
-            />
-            <Post
-              authorName={'Nichan'}
-              avatarUrl={'/bocchi.jpg'}
-              timestamp={'March 1, 2023 at 2:30pm'}
-              content={'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
-              imageUrl={'/Konosuba.jpg'}
-              likes={10}
-              comments={10}
-            />
-            <Post
-              authorName={'Nichan'}
-              avatarUrl={'/bocchi.jpg'}
-              timestamp={'March 1, 2023 at 2:30pm'}
-              content={'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
-              imageUrl={'/Konosuba.jpg'}
-              likes={10}
-              comments={10}
-            />
-            <Post
-              authorName={'Nichan'}
-              avatarUrl={'/bocchi.jpg'}
-              timestamp={'March 1, 2023 at 2:30pm'}
-              content={'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
-              imageUrl={'/Konosuba.jpg'}
-              likes={10}
-              comments={10}
-            />
+            {/* <div>
+              <Post
+                authorName={'Nichan'}
+                avatarUrl={'/bocchi.jpg'}
+                timestamp={'March 1, 2023 at 2:30pm'}
+                content={'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
+                imageUrl={'/Konosuba.jpg'}
+                reactions={[]}
+                comments={0}
+                id={""}
+              />
+              <PostAction myUserInfo={admin.current as any} reactions0={[]} comments={0} id={""} />
+            </div> */}
           </div>
         </div>
       </div>

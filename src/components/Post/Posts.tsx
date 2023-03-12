@@ -32,6 +32,7 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
             timestamp={post.timestamp}
             content={post.content}
             imageUrl={post.imageUrl}
+            videoUrl={post.videoUrl}
             reactions={[]}
             comments={post.comments}
             id={post.id}
