@@ -105,7 +105,7 @@ function ProfileHeader({ guess, admin }) {
                     image: avatar
                   });
                 }
-                if(avatar !== '' && wallpaper !== '' && avatar !== '') {
+                if(avatar !== '' || wallpaper !== '' || avatar !== '') {
                   location.reload();
                 } else {
                   alert('Please fill up at least 1 fill :((')
@@ -149,7 +149,7 @@ function ProfileHeader({ guess, admin }) {
         </Button>
       )}
       {open && (
-        <div className="px-2 absolute bottom-1/4 right-8 z-10 rounded-2xl overflow-hidden">
+        <div className="px-2 absolute bottom-1/4 right-3 z-10 rounded-2xl overflow-hidden">
           <input
             type="text"
             className="border border-gray-300 py-2 px-4 w-64 text-black outline-none"
