@@ -40,10 +40,10 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
     return (
         <div ref={ref}>
             <img
-                src={myUserInfo?.image ?? '/images/default-profile-pic.png'}
+                src={myUserInfo?.image ?? '/bocchi.jpg'}
                 onError={({ currentTarget }) => {
                     currentTarget.onerror = null;
-                    currentTarget.src = '/images/default-profile-pic.png';
+                    currentTarget.src = '/bocchi.jpg';
                 }}
                 alt="Profile"
                 className="w-10 h-10 rounded-full cursor-pointer"

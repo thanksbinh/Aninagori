@@ -51,7 +51,7 @@ const FriendList = () => {
             <div className="flex items-center">
               <img
                 className="h-8 w-8 rounded-full object-cover"
-                src={friend.image || '/images/default-profile-pic.png'}
+                src={friend.image || '/bocchi.jpg'}
                 alt={friend.username}
               />
               <span className="ml-2 font-medium">{friend.username}</span>

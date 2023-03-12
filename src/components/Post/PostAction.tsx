@@ -67,7 +67,7 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, comments, id }) => {
 
       <div className="flex items-center justify-between border-t border-b border-[#212833] pb-2 mx-2">
         <div className="flex">
-          <button onClick={onLikeClick} className="flex items-center space-x-1 text-gray-400 hover:text-[#F14141]">
+          <button title="react" onClick={onLikeClick} className="flex items-center space-x-1 text-gray-400 hover:text-[#F14141]">
             {likeToggle
               ? <HiHeart className="w-5 h-5 fill-[#F14141]" />
               : <HiOutlineHeart className="w-5 h-5" />
@@ -77,13 +77,13 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, comments, id }) => {
         </div>
 
         <div className="flex">
-          <button className="flex items-center space-x-1 text-gray-400 hover:text-[#3BC361]">
+          <button title="comment" className="flex items-center space-x-1 text-gray-400 hover:text-[#3BC361]">
             <AiOutlineComment className="w-5 h-5" />
           </button>
           <span className="text-gray-400 ml-2">{comments}</span>
         </div>
 
-        <button className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]">
+        <button title="plan to watch" className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]">
           <RiAddCircleLine className="w-5 h-5" />
           <span>Plan to Watch</span>
         </button>

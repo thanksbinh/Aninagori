@@ -53,7 +53,7 @@ export default async function NavBar() {
         </div>
         :
         <div className="flex items-center gap-2">
-          <button className="flex item-center justify-center space-x-1 text-[#fff] bg-[#798597] hover:bg-[#94B0DD] p-3 rounded-full"><BsChatLeftDotsFill className="w-4 h-4" /></button>
+          <button title="message" className="flex item-center justify-center space-x-1 text-[#fff] bg-[#798597] hover:bg-[#94B0DD] p-3 rounded-full"><BsChatLeftDotsFill className="w-4 h-4" /></button>
           <NotificationBtn myUserInfo={myUserInfo} />
           <ProfilePicture myUserInfo={myUserInfo} />
         </div>
