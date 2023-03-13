@@ -197,7 +197,7 @@ function ProfileHeader({ guess, admin }) {
                         <Tippy placement="bottom" key={index} content={data.username} delay={[250, 0]}>
                           <img
                             key={index}
-                            src={data.image}
+                            src={data.image || '/bocchi.jpg'}
                             alt="avatar"
                             className={cx('friends-avatar')}
                             onClick={() => {
