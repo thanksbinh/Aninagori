@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@200;300;400;500;600;700&family=Roboto:wght@100;300;700&display=swap');
+
+:root {
+  --font-family: 'Inter', sans-serif;
+  --gradient-text: linear-gradient(89.97deg, #ae67fa 1.84%, #f49867 102.67%);
+  --primary-color: #191c21;
+  --text-color: white;
+}
+
+.section__padding {
+  padding: 2rem 3rem;
+}
+
+.setBackground {
+  width: 100vw;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-clip: center;
+  background-position: center;
+  background-image: url(https://cdn.dribbble.com/users/1026512/screenshots/10130839/waifu_laifu_404_copia_4x.png);
+}
+
+.header-fixed {
+  z-index: 50;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+html {
+  /* font-size: 62.5%; */
+}
+
+body {
+  /* font-size: 1.6rem; */
+  color: var(--text-color);
+  font-family: var(--font-family);
+}
+
+.section__margin {
+  margin: 4rem 6rem;
+}
+
+.gradient__text {
+  background: var(--gradient-text);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tippy-box {
+  background-color: rgba(84, 84, 84, 1);
+  min-height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.tippy-arrow {
+  color: rgba(84, 84, 84, 1) !important;
+}
+
+.tippy-box[data-placement^='bottom'] > .tippy-arrow {
+  top: -1px;
+}
+
+.liked-avatar:not(:first-child) {
+  margin-left: -4.5px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

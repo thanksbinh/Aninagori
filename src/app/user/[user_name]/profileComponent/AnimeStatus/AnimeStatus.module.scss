@@ -1,0 +1,63 @@
+.progress-bar{
+    height: 25px;
+    display: flex;
+    background-color: #757B85;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.stats-number{
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin: 12px 0 16px 0;
+}
+
+.highlight{
+    color: #F26A1C;
+    font-weight: 600;
+}
+
+.status-note {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    padding-bottom: 20px;
+
+    &>div {
+        width: 43%;
+    }
+}
+
+.status-wrapper, .watch-wrapper{
+    display: flex;
+    padding: 5px 0;
+}
+
+.watch-wrapper{
+    justify-content: space-between;
+    padding-right: 10px;
+}
+
+.status-text-wrapper{
+    padding-left: 12px;
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.status-round {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
+.watch-title{
+    display: inline-block;
+    width: 80%;
+}
+
+.watch-number{
+    text-align: right;
+}

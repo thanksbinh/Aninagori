@@ -1,0 +1,64 @@
+.time-line {
+  color: #ada9a9;
+  font-weight: 600;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.wrapper {
+  margin-bottom: 20px;
+  padding-left: 10px;
+}
+
+.update-information {
+  display: flex;
+  justify-content: flex-start;
+  font-size: 14px;
+  align-items: center;
+}
+
+.anime-pic {
+  width: 60px;
+  height: 77px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
+  margin-right: 14px;
+  cursor: pointer;
+}
+
+.anime-name {
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.more-detail {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+}
+
+.progress-bar {
+  width: 240px;
+  height: 16px;
+  border-radius: 3px;
+  padding: 3px;
+  background-color: #d9d9d9;
+  display: flex;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.progress-percent {
+  border-radius: 3px;
+}
+
+.highlight {
+  color: #1ce318;
+  font-weight: 600;
+}
