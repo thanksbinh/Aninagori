@@ -87,7 +87,7 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, set
         {notification?.map((noti: Notification, i: number) =>
           <NotificationComponent notification={noti} myUserInfo={myUserInfo} key={i} />)
         }
-        {!(friendRequest?.length || notification?.length) ? <div className="flex items-center text-black bg-white rounded-lg px-4 py-4"> Empty! </div> : null}
+        {!(friendRequest?.length || notification?.length) && <div className="flex items-center text-black bg-white rounded-lg px-4 py-4"> Empty! </div>}
       </div>
     </div>
   )

@@ -1,42 +1,21 @@
 import { getDocs, collection, query, orderBy, getCountFromServer, limit } from "firebase/firestore";
-import PostContent from "./PostContent";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "../nav/NavBar";
-import PostAction from "./PostAction"
 import { formatDuration } from "../utils/formatDuration";
+import PostContent from "./PostContent";
+import PostAction from "./PostAction"
 
 async function fetchData() {
-  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
-
-  let fetchedPosts = [];
+  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(10));
   const querySnapshot = await getDocs(q);
 
-  for (let i = 0; i < querySnapshot.docs.length; i++) {
-    const doc = querySnapshot.docs[i];
-
-    const commentsRef = collection(doc.ref, "comments")
-    const commentCount = (await getCountFromServer(commentsRef)).data().count
-
-    const lastCommentRef = query(commentsRef, orderBy("timestamp", "desc"), limit(1))
-    const lastComment = (await getDocs(lastCommentRef)).docs[0]?.data()
-
-    fetchedPosts.push({
-      authorName: doc.data().authorName,
-      avatarUrl: doc.data().avatarUrl,
-      content: doc.data().content,
-      imageUrl: doc.data().imageUrl,
-      videoUrl: doc.data().videoUrl,
+  let fetchedPosts = querySnapshot.docs.map((doc) => {
+    return {
+      ...doc.data(),
       timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
-
-      reactions: doc.data().reactions,
-      commentCount: commentCount,
-      lastComment: lastComment && {
-        ...lastComment,
-        timestamp: formatDuration(new Date().getTime() - lastComment.timestamp.toDate().getTime())
-      },
       id: doc.id
-    })
-  }
+    } as any
+  });
 
   return fetchedPosts
 }
@@ -48,20 +27,16 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
     <div className="flex flex-col">
       {posts.map((post) => (
         <div key={post.id}>
-          <PostContent
+          {/* @ts-expect-error Server Component */}
+          <Post
             authorName={post.authorName}
             avatarUrl={post.avatarUrl}
             timestamp={post.timestamp}
             content={post.content}
             imageUrl={post.imageUrl}
             videoUrl={post.videoUrl}
-            id={post.id}
-          />
-          <PostAction
             myUserInfo={myUserInfo}
-            reactions0={post.reactions}
-            commentCount={post.commentCount}
-            lastComment={post.lastComment as any}
+            reactions={post.reactions}
             id={post.id}
           />
         </div>
@@ -69,3 +44,37 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
     </div>
   );
 }
+
+async function Post(props: any) {
+  const commentsRef = collection(db, "posts", props.id, "comments")
+  const commentCount = (await getCountFromServer(commentsRef)).data().count
+
+  const lastCommentRef = query(commentsRef, orderBy("timestamp", "desc"), limit(1))
+  const lastCommentData = (await getDocs(lastCommentRef)).docs[0]?.data()
+  const lastComment = lastCommentData && {
+    ...lastCommentData,
+    timestamp: formatDuration(new Date().getTime() - lastCommentData.timestamp.toDate().getTime())
+  } as any
+
+  return (
+    <div className="mb-4">
+      <PostContent
+        authorName={props.authorName}
+        avatarUrl={props.avatarUrl}
+        timestamp={props.timestamp}
+        content={props.content}
+        imageUrl={props.imageUrl}
+        videoUrl={props.videoUrl}
+        id={props.id}
+      />
+      <PostAction
+        myUserInfo={props.myUserInfo}
+        reactions0={props.reactions}
+        commentCount={commentCount}
+        comments={lastComment ? [lastComment] : []}
+        id={props.id}
+      />
+    </div>
+  );
+}
+

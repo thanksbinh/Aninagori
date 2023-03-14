@@ -13,19 +13,19 @@ interface CommentProps {
 
 interface Props {
   myUserInfo: UserInfo;
-  lastComment: CommentProps | undefined;
+  comments: CommentProps[];
   id: string;
   incCommentCount: any;
   inputRef: any;
 };
 
-const Comment: FC<Props> = ({ myUserInfo, lastComment, incCommentCount, inputRef, id }) => {
+const Comment: FC<Props> = ({ myUserInfo, comments, incCommentCount, inputRef, id }) => {
   const [myComment, setMyComment] = useState("")
   const [lastComments, setLastComments] = useState<CommentProps[]>([])
 
   useEffect(() => {
-    lastComment && setLastComments([lastComment])
-  }, [])
+    comments && setLastComments(comments)
+  }, [comments])
 
   const sendComment = async (comment: any) => {
     const commentsRef = collection(db, 'posts', id, "comments");
@@ -58,19 +58,19 @@ const Comment: FC<Props> = ({ myUserInfo, lastComment, incCommentCount, inputRef
 
   return (
     <div>
-      {lastComments.map((comment) =>
-        <div className="flex flex-col mt-4 mx-2">
+      {lastComments.map((comment, id) =>
+        <div key={id} className="flex flex-col mt-4 mx-2">
           <div className="flex">
             <Avatar imageUrl={comment!.avatarUrl} altText={comment!.username} size={8} />
             <div className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] focus:outline-none caret-white">
-              <div className="text-sm font-bold text-"> {comment!.username} </div>
+              <div className="text-sm font-bold"> {comment!.username} </div>
               {comment!.content}
             </div>
           </div>
           <div className="flex gap-2 ml-14 mt-1 text-xs">
-            <div className="hover:cursor-pointer hover:underline">Like</div>
-            <div className="hover:cursor-pointer hover:underline">Reply</div>
-            <div className="hover:cursor-pointer hover:underline">{comment!.timestamp}</div>
+            <div className="font-bold text-gray-400 hover:cursor-pointer hover:underline">Like</div>
+            <div className="font-bold text-gray-400 hover:cursor-pointer hover:underline">Reply</div>
+            <div className="text-gray-400 hover:cursor-pointer hover:underline">{comment!.timestamp}</div>
           </div>
         </div>
       )

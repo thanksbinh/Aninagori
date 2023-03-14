@@ -33,6 +33,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl }) => {
       content: inputRef.current?.value || "",
       imageUrl: (mediaType === "image") ? downloadMediaUrl : "",
       videoUrl: (mediaType === "video") ? downloadMediaUrl : "",
+      // Remove comments: 0
       comments: 0
     });
 

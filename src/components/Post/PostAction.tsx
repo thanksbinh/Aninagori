@@ -9,24 +9,29 @@ import { UserInfo } from "../nav/NavBar";
 import { arrayRemove, arrayUnion, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
 import Comment from "./Comment";
+import Modal from "../utils/Modal";
+import Post from "./PostPopup";
+
+interface CommentProps {
+  username: string;
+  avatarUrl: string;
+  content: string;
+  timestamp: string;
+}
 
 interface Props {
   myUserInfo: UserInfo;
   reactions0: Object[];
   commentCount: number;
-  lastComment: {
-    username: string;
-    avatarUrl: string;
-    content: string;
-    timestamp: string;
-  } | undefined;
+  comments: CommentProps[];
   id: string;
 };
 
-const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, lastComment, id }) => {
+const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, comments, id }) => {
   const [likeToggle, setLikeToggle] = useState(false)
   const [reactions, setReactions] = useState(reactions0 || [])
-  const [commentNum, setCommentNum] = useState(commentCount)
+  const [commentNum, setCommentNum] = useState(0)
+  const [postExpend, setPostExpend] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -35,13 +40,18 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, lastComme
       setReactions(docSnap?.data()?.reactions || [])
     })
 
-    if (reactions0?.some((e: any) => e.username === myUserInfo.username))
-      setLikeToggle(true)
-
     return () => {
       unsubscribe && unsubscribe()
     };
   }, [])
+
+  useEffect(() => {
+    setLikeToggle(reactions0?.some((e: any) => e.username === myUserInfo.username))
+  }, [reactions0])
+
+  useEffect(() => {
+    setCommentNum(commentCount)
+  }, [commentCount])
 
   const onReaction = () => {
     const postRef = doc(db, "posts", id);
@@ -79,7 +89,7 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, lastComme
   }
 
   return (
-    <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pt-4 mb-4 rounded-t-none">
+    <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pt-0 rounded-t-none">
       <div className="flex my-4 mx-2">
         {(reactions.length > 2 ? reactions.slice(reactions.length - 3) : reactions.slice(0)).reverse().map((user: any) =>
           <Avatar className='liked-avatar' imageUrl={user.image} altText={user.username} size={5} key={user.username} />
@@ -107,12 +117,22 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, lastComme
         </button>
       </div>
 
+      {(commentCount > 1 && commentCount > comments.length) &&
+        <div>
+          <div onClick={() => setPostExpend(true)} className="mt-4 ml-2 text-sm font-bold text-gray-400 hover:cursor-pointer hover:underline">View more comments</div>
+          {postExpend &&
+            <Modal isOpen={postExpend} onClose={() => setPostExpend(false)} title={""}>
+              <Post myUserInfo={myUserInfo} id={id} />
+            </Modal>}
+        </div>
+      }
+
       <Comment
         myUserInfo={myUserInfo}
-        lastComment={lastComment as any}
-        id={id}
+        comments={comments}
         incCommentCount={onComment}
         inputRef={inputRef}
+        id={id}
       />
     </div>
   );

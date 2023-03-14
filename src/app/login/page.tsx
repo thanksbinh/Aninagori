@@ -83,7 +83,7 @@ export default function page() {
           />
         </div>
 
-        {loginFail ? <div className="text-red-500"><p>Account not exits or wrong password</p><br /></div> : null}
+        {loginFail && <div className="text-red-500"><p>Account not exits or wrong password</p><br /></div>}
 
         <div className="flex">
           {

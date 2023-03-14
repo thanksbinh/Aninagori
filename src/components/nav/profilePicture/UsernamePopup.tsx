@@ -5,7 +5,7 @@ import { collection, doc, getDocs, query, updateDoc, where } from "firebase/fire
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Modal from "@/app/login/components/Modal";
+import Modal from "@/components/utils/Modal";
 
 const UsernamePopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
 	const session = useSession();
