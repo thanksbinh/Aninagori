@@ -2,19 +2,17 @@ import { FC } from "react";
 import Avatar from "../Avatar/Avatar";
 import { VideoComponent } from "./Video";
 
-type PostProps = {
+type PostPropsStatic = {
   authorName: string;
   avatarUrl: string;
   timestamp: string;
   content: string;
   imageUrl: string | null;
   videoUrl: string | null;
-  reactions: Object[];
-  comments: number;
   id: string;
 };
 
-const Post: FC<PostProps> = ({
+const Post: FC<PostPropsStatic> = ({
   authorName,
   avatarUrl,
   timestamp,
@@ -44,4 +42,3 @@ const Post: FC<PostProps> = ({
 };
 
 export default Post;
-export type { PostProps };

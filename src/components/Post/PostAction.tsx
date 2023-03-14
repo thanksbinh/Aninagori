@@ -10,15 +10,22 @@ import { arrayRemove, arrayUnion, doc, onSnapshot, updateDoc } from "firebase/fi
 import { db } from "@/firebase/firebase-app";
 
 interface Props {
-  myUserInfo: UserInfo
-  comments: number;
+  myUserInfo: UserInfo;
   reactions0: Object[];
+  commentCount: number;
+  lastComment: {
+    username: string;
+    avatarUrl: string;
+    content: string;
+    timestamp: string;
+  } | undefined;
   id: string;
 };
 
-const PostAction: FC<Props> = ({ myUserInfo, reactions0, comments, id }) => {
+const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, lastComment, id }) => {
   const [likeToggle, setLikeToggle] = useState(false)
   const [reactions, setReactions] = useState(reactions0 || [])
+  const [commentNum, setCommentNum] = useState(commentCount);
 
   useEffect(() => {
     const postRef = doc(db, "posts", id);
@@ -61,7 +68,7 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, comments, id }) => {
     <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pt-0 mb-4 rounded-t-none">
       <div className="flex my-4 mx-2">
         {(reactions.length > 2 ? reactions.slice(reactions.length - 3) : reactions.slice(0)).reverse().map((user: any) =>
-          <Avatar className = 'liked-avatar' imageUrl={user.image} altText={user.username} size={5} key={user.username} />
+          <Avatar className='liked-avatar' imageUrl={user.image} altText={user.username} size={5} key={user.username} />
         )}
       </div>
 
@@ -80,7 +87,7 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, comments, id }) => {
           <button title="comment" className="flex items-center space-x-1 text-gray-400 hover:text-[#3BC361]">
             <AiOutlineComment className="w-5 h-5" />
           </button>
-          <span className="text-gray-400 ml-2">{comments}</span>
+          <span className="text-gray-400 ml-2">{commentNum}</span>
         </div>
 
         <button title="plan to watch" className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]">
@@ -89,12 +96,29 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, comments, id }) => {
         </button>
       </div>
 
+      {lastComment &&
+        <div className="flex flex-col mt-4 mx-2">
+          <div className="flex">
+            <Avatar imageUrl={lastComment.avatarUrl} altText={myUserInfo.username} size={8} />
+            <div className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] focus:outline-none caret-white">
+              <div className="text-sm font-bold text-"> {lastComment.username} </div>
+              {lastComment.content}
+            </div>
+          </div>
+          <div className="flex gap-2 ml-14 mt-1 text-xs">
+            <div className="hover:cursor-pointer hover:underline">Like</div>
+            <div className="hover:cursor-pointer hover:underline">Reply</div>
+            <div className="hover:cursor-pointer hover:underline">{lastComment.timestamp}</div>
+          </div>
+        </div>
+      }
+
       <div className="flex items-center mt-4 mx-2">
         <Avatar imageUrl={myUserInfo.image} altText={myUserInfo.username} size={8} />
         <input
           type="text"
-          className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] focus:outline-none caret-white"
           placeholder="Write a comment..."
+          className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] focus:outline-none caret-white"
         />
       </div>
     </div>
