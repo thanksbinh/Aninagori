@@ -25,7 +25,8 @@ interface Props {
 const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, lastComment, id }) => {
   const [likeToggle, setLikeToggle] = useState(false)
   const [reactions, setReactions] = useState(reactions0 || [])
-  const [commentNum, setCommentNum] = useState(commentCount);
+  const [commentNum, setCommentNum] = useState(commentCount)
+  const [myComment, setMyComment] = useState("")
 
   useEffect(() => {
     const postRef = doc(db, "posts", id);
@@ -62,6 +63,12 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, lastComme
     }
 
     setLikeToggle(!likeToggle)
+  }
+
+  const onComment = (e: any) => {
+    e && e.preventDefault()
+    setMyComment("")
+    setCommentNum(commentNum + 1)
   }
 
   return (
@@ -115,11 +122,15 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, lastComme
 
       <div className="flex items-center mt-4 mx-2">
         <Avatar imageUrl={myUserInfo.image} altText={myUserInfo.username} size={8} />
-        <input
-          type="text"
-          placeholder="Write a comment..."
-          className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] focus:outline-none caret-white"
-        />
+        <form onSubmit={onComment} className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] caret-white" >
+          <input
+            type="text"
+            placeholder="Write a comment..."
+            value={myComment}
+            onChange={(e) => setMyComment(e.target.value)}
+            className="w-full bg-[#212833] focus:outline-none caret-white"
+          />
+        </form>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
-import Post from "./Post";
 import { getDocs, collection, query, orderBy, getCountFromServer, limit } from "firebase/firestore";
+import PostContent from "./PostContent";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "../nav/NavBar";
 import PostAction from "./PostAction"
@@ -48,7 +48,7 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
     <div className="flex flex-col">
       {posts.map((post) => (
         <div key={post.id}>
-          <Post
+          <PostContent
             authorName={post.authorName}
             avatarUrl={post.avatarUrl}
             timestamp={post.timestamp}

@@ -12,7 +12,7 @@ import { useSession } from 'next-auth/react';
 import { collection, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-app';
 import PostForm from '@/components/Post/PostForm';
-import Post from '@/components/Post/Post';
+import PostContent from '@/components/Post/PostContent';
 import PostAction from '@/components/Post/PostAction';
 import Button from '@/components/Button/Button';
 import { Posts } from '@/components';
