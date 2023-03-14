@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import Avatar from "../Avatar/Avatar";
 import { AiOutlineComment } from "react-icons/ai";
 import { RiAddCircleLine } from "react-icons/ri";
@@ -8,6 +8,7 @@ import { HiOutlineHeart, HiHeart } from "react-icons/hi2";
 import { UserInfo } from "../nav/NavBar";
 import { arrayRemove, arrayUnion, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
+import Comment from "./Comment";
 
 interface Props {
   myUserInfo: UserInfo;
@@ -26,7 +27,7 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, lastComme
   const [likeToggle, setLikeToggle] = useState(false)
   const [reactions, setReactions] = useState(reactions0 || [])
   const [commentNum, setCommentNum] = useState(commentCount)
-  const [myComment, setMyComment] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const postRef = doc(db, "posts", id);
@@ -34,7 +35,7 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, lastComme
       setReactions(docSnap?.data()?.reactions || [])
     })
 
-    if (reactions?.some((e: any) => e.username === myUserInfo.username))
+    if (reactions0?.some((e: any) => e.username === myUserInfo.username))
       setLikeToggle(true)
 
     return () => {
@@ -42,7 +43,7 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, lastComme
     };
   }, [])
 
-  const onLikeClick = () => {
+  const onReaction = () => {
     const postRef = doc(db, "posts", id);
     if (!likeToggle) {
       updateDoc(postRef, {
@@ -65,73 +66,54 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, lastComme
     setLikeToggle(!likeToggle)
   }
 
-  const onComment = (e: any) => {
-    e && e.preventDefault()
-    setMyComment("")
+  const onCommentBtnClick = () => {
+    inputRef.current && inputRef.current.focus()
+  }
+
+  const onComment = () => {
     setCommentNum(commentNum + 1)
   }
 
+  const onPlanToWatch = () => {
+    console.log("Add to Plan to Watch")
+  }
+
   return (
-    <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pt-0 mb-4 rounded-t-none">
+    <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pt-4 mb-4 rounded-t-none">
       <div className="flex my-4 mx-2">
         {(reactions.length > 2 ? reactions.slice(reactions.length - 3) : reactions.slice(0)).reverse().map((user: any) =>
           <Avatar className='liked-avatar' imageUrl={user.image} altText={user.username} size={5} key={user.username} />
         )}
       </div>
 
-      <div className="flex items-center justify-between border-t border-b border-[#212833] pb-2 mx-2">
+      <div className="flex items-center justify-between border-t border-b border-[#212833] py-2 mx-2">
         <div className="flex">
-          <button title="react" onClick={onLikeClick} className="flex items-center space-x-1 text-gray-400 hover:text-[#F14141]">
-            {likeToggle
-              ? <HiHeart className="w-5 h-5 fill-[#F14141]" />
-              : <HiOutlineHeart className="w-5 h-5" />
-            }
+          <button title="react" onClick={onReaction} className="flex items-center space-x-1 text-gray-400 hover:text-[#F14141]">
+            {likeToggle ? <HiHeart className="w-5 h-5 fill-[#F14141]" /> : <HiOutlineHeart className="w-5 h-5" />}
           </button>
           <span className="text-gray-400 ml-2">{reactions.length}</span>
         </div>
 
         <div className="flex">
-          <button title="comment" className="flex items-center space-x-1 text-gray-400 hover:text-[#3BC361]">
+          <button title="comment" onClick={onCommentBtnClick} className="flex items-center space-x-1 text-gray-400 hover:text-[#3BC361]">
             <AiOutlineComment className="w-5 h-5" />
           </button>
           <span className="text-gray-400 ml-2">{commentNum}</span>
         </div>
 
-        <button title="plan to watch" className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]">
+        <button title="plan to watch" onClick={onPlanToWatch} className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]">
           <RiAddCircleLine className="w-5 h-5" />
           <span>Plan to Watch</span>
         </button>
       </div>
 
-      {lastComment &&
-        <div className="flex flex-col mt-4 mx-2">
-          <div className="flex">
-            <Avatar imageUrl={lastComment.avatarUrl} altText={myUserInfo.username} size={8} />
-            <div className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] focus:outline-none caret-white">
-              <div className="text-sm font-bold text-"> {lastComment.username} </div>
-              {lastComment.content}
-            </div>
-          </div>
-          <div className="flex gap-2 ml-14 mt-1 text-xs">
-            <div className="hover:cursor-pointer hover:underline">Like</div>
-            <div className="hover:cursor-pointer hover:underline">Reply</div>
-            <div className="hover:cursor-pointer hover:underline">{lastComment.timestamp}</div>
-          </div>
-        </div>
-      }
-
-      <div className="flex items-center mt-4 mx-2">
-        <Avatar imageUrl={myUserInfo.image} altText={myUserInfo.username} size={8} />
-        <form onSubmit={onComment} className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] caret-white" >
-          <input
-            type="text"
-            placeholder="Write a comment..."
-            value={myComment}
-            onChange={(e) => setMyComment(e.target.value)}
-            className="w-full bg-[#212833] focus:outline-none caret-white"
-          />
-        </form>
-      </div>
+      <Comment
+        myUserInfo={myUserInfo}
+        lastComment={lastComment as any}
+        id={id}
+        incCommentCount={onComment}
+        inputRef={inputRef}
+      />
     </div>
   );
 };
