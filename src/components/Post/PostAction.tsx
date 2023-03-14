@@ -10,7 +10,7 @@ import { arrayRemove, arrayUnion, doc, onSnapshot, updateDoc } from "firebase/fi
 import { db } from "@/firebase/firebase-app";
 import Comment from "./Comment";
 import Modal from "../utils/Modal";
-import Post from "./PostPopup";
+import PostPopup from "./PostPopup";
 
 interface CommentProps {
   username: string;
@@ -121,9 +121,8 @@ const PostAction: FC<Props> = ({ myUserInfo, reactions0, commentCount, comments,
         <div>
           <div onClick={() => setPostExpend(true)} className="mt-4 ml-2 text-sm font-bold text-gray-400 hover:cursor-pointer hover:underline">View more comments</div>
           {postExpend &&
-            <Modal isOpen={postExpend} onClose={() => setPostExpend(false)} title={""}>
-              <Post myUserInfo={myUserInfo} id={id} />
-            </Modal>}
+            <PostPopup isOpen={postExpend} onClose={() => setPostExpend(false)} myUserInfo={myUserInfo} id={id} />
+          }
         </div>
       }
 
