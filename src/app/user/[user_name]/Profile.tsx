@@ -11,9 +11,9 @@ import AnimeUpdate from '@/app/user/[user_name]/profileComponent/AnimeUpdate/Ani
 import { useSession } from 'next-auth/react';
 import { collection, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-app';
-import PostForm from '@/components/Post/PostForm';
-import Post from '@/components/Post/Post';
-import PostAction from '@/components/Post/PostAction';
+import PostForm from '@/components/post/PostForm';
+import Post from '@/components/post/Post';
+import PostAction from '@/components/post/PostAction';
 import Button from '@/components/Button/Button';
 import { Posts } from '@/components';
 import { AnyRecord } from 'dns';
