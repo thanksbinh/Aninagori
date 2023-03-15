@@ -10,10 +10,11 @@ export interface CommentProps {
   content: string;
   timestamp: string;
   reactions?: any[];
+  replies?: any[];
   id: string;
 }
 
-const Comment = ({ comment }: { comment: CommentProps }) => {
+const Comment = ({ comment, level }: { comment: CommentProps, level: number }) => {
   const { myUserInfo, postId } = useContext(PostContext)
 
   const [reactionToggle, setReactionToggle] = useState(false)
@@ -60,7 +61,7 @@ const Comment = ({ comment }: { comment: CommentProps }) => {
       <div className="flex gap-2 ml-14 mt-1 text-xs font-bold text-gray-400">
         <div>
           <span onClick={onReaction} className={`hover:cursor-pointer hover:underline ${reactionToggle && "text-[#F14141]"}`}>Like</span>
-          <span> +{reactions.length}</span>
+          {(reactions.length > 0) && (<span> +{reactions.length}</span>)}
         </div>
 
         <div className="font-bold text-gray-400 hover:cursor-pointer hover:underline">Reply</div>

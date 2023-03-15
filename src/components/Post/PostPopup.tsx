@@ -22,12 +22,18 @@ export default function PostPopup({ isOpen, onClose }: { isOpen: boolean, onClos
       const commentsRef = collection(postDoc.ref, "comments")
       const commentsQuery = query(commentsRef, orderBy("timestamp", "asc"))
 
-      const commentsData = (await getDocs(commentsQuery)).docs
-      const commentCount = commentsData.length
+      const commentsDocs = (await getDocs(commentsQuery)).docs
+      const commentCount = commentsDocs.length
 
-      const comments = commentsData.map(doc => {
+      const comments = commentsDocs.map(doc => {
         return {
           ...doc.data(),
+          replies: doc.data().replies?.map((reply: any) => {
+            return {
+              ...reply,
+              timestamp: formatDuration(new Date().getTime() - new Date(reply.timestamp.seconds * 1000).getTime())
+            }
+          }),
           timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
           id: doc.id
         }

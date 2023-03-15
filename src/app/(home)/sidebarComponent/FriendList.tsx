@@ -1,18 +1,16 @@
-/* eslint-disable @next/next/no-img-element */
-'use client';
-
 import { db } from '@/firebase/firebase-app';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import { doc, getDoc } from 'firebase/firestore';
+import { getServerSession } from 'next-auth';
 
 interface Friend {
   username: string;
   image: string;
 }
 
-// Static friend list
 async function getFriendList(userId: string): Promise<Friend[] | undefined> {
+  if (!userId) return;
+
   const docRef = doc(db, 'users', userId);
   const docSnap = await getDoc(docRef);
 
@@ -23,22 +21,10 @@ async function getFriendList(userId: string): Promise<Friend[] | undefined> {
   }
 }
 
-const FriendList = () => {
-  const session = useSession();
-  const [friendList, setFriendList] = useState<Friend[]>([]);
-
-  useEffect(() => {
-    if (session.status != 'authenticated') return;
-
-    const myUserId = (session as any).data?.user?.id;
-    const docRef = doc(db, 'users', myUserId);
-    const unsubscribe = onSnapshot(docRef, (docSnap) => {
-      setFriendList(docSnap.data()?.friend_list);
-    });
-    return () => {
-      unsubscribe && unsubscribe();
-    };
-  }, [session.status]);
+export default async function FriendList() {
+  const session = await getServerSession(authOptions)
+  const myUserId = (session as any)?.user?.id
+  const friendList = await getFriendList(myUserId)
 
   return (
     <div className="relative">
@@ -79,5 +65,3 @@ const FriendList = () => {
     </div>
   );
 };
-
-export default FriendList;

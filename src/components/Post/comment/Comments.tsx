@@ -1,9 +1,10 @@
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp, Timestamp } from "firebase/firestore";
 import { FC, useContext, useEffect, useState } from "react";
 import { db } from "@/firebase/firebase-app";
 import Avatar from "../../Avatar/Avatar";
 import { PostContext } from "../context/PostContex";
 import Comment, { CommentProps } from "./Comment";
+import { formatDuration } from "@/components/utils/formatDuration";
 
 interface Props {
   comments: CommentProps[];
@@ -53,12 +54,21 @@ const Comments: FC<Props> = ({ comments, incCommentCount, inputRef }) => {
 
   return (
     <div>
-      {lastComments.map((comment) =>
+      {lastComments.map((comment) => (
         <div key={comment.id} className="flex flex-col mt-4 mx-2">
-          <Comment comment={comment} />
+          <Comment comment={comment} level={1} />
+
+          <div className="ml-10 border-l-2 pl-2">
+            {comment.replies?.map((reply, index) => {
+              return (
+                <div key={index} className="mt-4">
+                  <Comment comment={reply} level={2} />
+                </div>
+              )
+            })}
+          </div>
         </div>
-      )
-      }
+      ))}
 
       <div className="flex items-center mt-4 mx-2">
         <Avatar imageUrl={myUserInfo.image} altText={myUserInfo.username} size={8} />

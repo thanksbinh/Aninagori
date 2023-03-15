@@ -6,7 +6,7 @@ import PostContent from "./PostContent";
 import PostAction from "./PostAction"
 
 async function fetchData() {
-  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(20));
+  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(10));
   const querySnapshot = await getDocs(q);
 
   let fetchedPosts = querySnapshot.docs.map((doc) => {
@@ -50,12 +50,22 @@ async function Post(props: any) {
   const commentCount = (await getCountFromServer(commentsRef)).data().count
 
   const lastCommentRef = query(commentsRef, orderBy("timestamp", "desc"), limit(1))
-  const lastCommentData = (await getDocs(lastCommentRef)).docs[0]
-  const lastComment = lastCommentData ? [{
-    ...lastCommentData.data(),
-    timestamp: formatDuration(new Date().getTime() - lastCommentData.data().timestamp.toDate().getTime()),
-    id: lastCommentData.id
-  }] as any : []
+  const lastCommentDocs = (await getDocs(lastCommentRef)).docs
+
+  const lastComment = lastCommentDocs.map(doc => {
+    return {
+      ...doc.data(),
+      replies: doc.data().replies?.map((reply: any) => {
+        return {
+          ...reply,
+          timestamp: formatDuration(new Date().getTime() - new Date(reply.timestamp.seconds * 1000).getTime())
+        }
+      }),
+      timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
+      id: doc.id
+    } as any
+  })
+
 
   return (
     <div className="mb-4">
