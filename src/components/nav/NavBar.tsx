@@ -4,7 +4,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
 import ProfilePicture from "./profilePicture/ProfilePicture";
 import SearchBar from "./search/SearchBar";
-import NotificationBtn from "@/components/nav/notification/NotificationBtn";
+import NotificationBtn from "./notification/NotificationBtn";
 import { BsChatLeftDotsFill } from 'react-icons/bs';
 import Button from "../Button/Button";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
