@@ -6,7 +6,6 @@ import Button from '@/components/Button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faImage, faPenToSquare, faPlug, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { useState, useRef } from 'react';
-import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-app';
@@ -15,6 +14,10 @@ import { memo } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import Avatar from '@/components/Avatar/Avatar';
+import { get } from '@/app/api/apiServices/httpRequest';
+import { redirect } from 'next/navigation';
+import { generateCodeChallenge, generateCodeVerifier } from '@/app/api/auth/route';
+import { setCookie } from 'cookies-next';
 
 const cx = classNames.bind(styles);
 
@@ -28,6 +31,8 @@ function ProfileHeader({ guess, admin }) {
   const [currentImage, setCurrentImage] = useState('/wallpaper.png');
   const editBox = useRef();
   const editBoxWrapper = useRef();
+  const { data: session } = useSession();
+
   return (
     <div className={cx('wrapper')}>
       <div className={cx('modal')} ref={editBoxWrapper}>
@@ -242,17 +247,26 @@ function ProfileHeader({ guess, admin }) {
           </div>
         </div>
         <div className={cx('profile-interact')}>
-          {/* //TODO: make edit profile information feature */}
-          {/* //TODO: handle myAnimeList connect feature */}
           {admin.username === guess.username ? (
             <>
               <Button
-                onClick={() => {
+                onClick={async () => {
+                  //TODO:  handle not connected to MAL
                   if (!!!guess.myAnimeList_username) {
-                    //TODO: handle log in with MAL later
-                    console.log('not connect');
-                  } else {
-                    console.log('Already Connect');
+                    console.log('testttt');
+                    try {
+                      const codeChallenge = generateCodeChallenge(generateCodeVerifier());
+                      setCookie('codechallenge', codeChallenge);
+                      const result = await get('api/auth', {
+                        headers: {
+                          codeChallenge: codeChallenge,
+                          userID: session.user?.id,
+                        },
+                      });
+                      window.location.href = result.url;
+                    } catch (err) {
+                      console.log(err);
+                    }
                   }
                 }}
                 small

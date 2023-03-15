@@ -2,28 +2,76 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { createHash } from 'crypto';
 import axios from 'axios';
 import { NextResponse, NextRequest } from 'next/server';
-import { getCookies, getCookie, setCookie, setCookies, removeCookies } from 'cookies-next';
 import { cookies } from 'next/headers';
+import { db } from '@/firebase/firebase-app';
+import { doc, updateDoc } from 'firebase/firestore';
+import qs from 'qs';
 
 const MYANIMELIST_CLIENT_ID = process.env.X_MAL_CLIENT_ID;
 const MYANIMELIST_CLIENT_SECRET = process.env.X_MAL_CLIENT_SECRET;
 const REDIRECT_URI = `${process.env.NEXT_PUBLIC_BASE_URL}api/auth`;
 
 export async function GET(request: Request, { params }: { params: any }) {
-  setCookie('haha', 'haha');
-  const codeChallenge = generateCodeChallenge(generateCodeVerifier());
-  // TODO: Luu code challenge vao google firebase 
+  //first step of auth
   if (request.url === REDIRECT_URI) {
-    const url = `https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id=${MYANIMELIST_CLIENT_ID}&code_challenge=${codeChallenge}&state=RequestID42`;
-    return NextResponse.redirect(url);
-  } else {
-    const oAuth2Code = request.url.split('?')[1];
-    return NextResponse.redirect(process.env.NEXT_PUBLIC_BASE_URL + '/user/LostArrow');
+    const urlRedirect = `https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id=${MYANIMELIST_CLIENT_ID}&code_challenge=${request.headers.get(
+      'codechallenge',
+    )}&state=RequestID42`;
+    return NextResponse.json({ url: urlRedirect });
   }
+  // second step of auth
+  //1: get userID and codechallenge
+  const str = request.headers.get('cookie');
+  const obj = str?.split('; ').reduce((acc: any, curr: any) => {
+    const [key, value] = curr.split('=');
+    acc[key] = decodeURIComponent(value);
+    return acc;
+  }, {});
+  //2: get oauthCode
+  const urlParams = new URLSearchParams(new URL(request.url).search);
+  const authCode = urlParams.get('code');
+  //3: get AccessToken
+  const urlParamsOauth = {
+    client_id: '226fe352931de7f26af22eb85acf3e71',
+    client_secret: 'd6bd82b3f49ddd349f93feb8206a0b7e3dc81f581636641b28173dc7ca6a5e0c',
+    code_verifier: obj.codechallenge as any,
+    grant_type: 'authorization_code',
+    code: authCode as any,
+  };
+  const urlEncodedParams = qs.stringify(urlParamsOauth);
+  const res = await fetch('https://myanimelist.net/v1/oauth2/token', {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: urlEncodedParams,
+  });
+  const result = await res.json();
+  //4: Save Access Token and RefreshToken
+  const docRef = doc(db, 'users', obj.userID);
+  await updateDoc(docRef, {
+    accessToken: result.access_token,
+    refreshToken: result.refresh_token,
+  });
+  //5: Get User information and saved info to firebase
+  const accessToken = result.access_token;
+  const url = 'https://api.myanimelist.net/v2/users/@me?fields=anime_statistics';
+  fetch(url, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then(async (data) => {
+      await updateDoc(docRef, {
+        myAnimeList_username: data.name,
+      });
+    })
+    .catch((error) => console.error(error));
+  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}user/${obj.username}`);
 }
 
 export const getServerSideProps = ({ req, res }: { req: any; res: any }) => {
-  setCookie('test', 'value', { req, res, maxAge: 60 * 6 * 24 });
   return { props: {} };
 };
 
@@ -39,7 +87,6 @@ export function generateCodeChallenge(codeVerifier: string) {
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=/g, '');
-
   return hashed;
 }
 
