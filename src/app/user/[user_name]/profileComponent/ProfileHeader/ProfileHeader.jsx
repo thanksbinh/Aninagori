@@ -92,23 +92,23 @@ function ProfileHeader({ guess, admin }) {
                 const docRef = doc(db, 'users', admin.id);
                 if (userName !== '') {
                   await updateDoc(docRef, {
-                    name: userName
+                    name: userName,
                   });
                 }
-                if(wallpaper !== '') {
+                if (wallpaper !== '') {
                   await updateDoc(docRef, {
-                    wallpaper: wallpaper
+                    wallpaper: wallpaper,
                   });
                 }
-                if(avatar !== '') {
+                if (avatar !== '') {
                   await updateDoc(docRef, {
-                    image: avatar
+                    image: avatar,
                   });
                 }
-                if(userName !== '' || wallpaper !== '' || avatar !== '') {
+                if (userName !== '' || wallpaper !== '' || avatar !== '') {
                   location.reload();
                 } else {
-                  alert('Please fill up at least 1 fill :((')
+                  alert('Please fill up at least 1 fill :((');
                 }
               }}
               leftIcon={undefined}
@@ -160,13 +160,13 @@ function ProfileHeader({ guess, admin }) {
             value={link}
           />
           <button
-            onClick={async() => {
+            onClick={async () => {
               if (!load) {
                 setCurrentImage(link);
                 const docRef = doc(db, 'users', admin.id);
                 if (link !== '') {
                   await updateDoc(docRef, {
-                    wallpaper: link
+                    wallpaper: link,
                   });
                   setLink('');
                   location.reload();
@@ -182,7 +182,15 @@ function ProfileHeader({ guess, admin }) {
       )}
       <div className={cx('user-display')}>
         <div className={cx('avatar-wrapper')}>
-          <img src={guess.image || '/bocchi.jpg'} alt="avatar" className={cx('avatar')}></img>
+          <img
+            src={guess.image || '/bocchi.jpg'}
+            alt="avatar"
+            className={cx('avatar')}
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null;
+              currentTarget.src = '/bocchi.jpg';
+            }}
+          ></img>
           <div className={cx('user-information')}>
             <strong className={cx('user-name')}>{guess.name || guess.username}</strong>
             {!!guess.friend_list ? (
@@ -202,6 +210,10 @@ function ProfileHeader({ guess, admin }) {
                             className={cx('friends-avatar')}
                             onClick={() => {
                               window.location.href = process.env.NEXT_PUBLIC_BASE_URL + '/user/' + data.username;
+                            }}
+                            onError={({ currentTarget }) => {
+                              currentTarget.onerror = null;
+                              currentTarget.src = '/bocchi.jpg';
                             }}
                           ></img>
                         </Tippy>
