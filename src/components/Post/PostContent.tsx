@@ -2,17 +2,17 @@ import { FC } from "react";
 import Avatar from "../Avatar/Avatar";
 import { VideoComponent } from "./Video";
 
-type PostPropsStatic = {
+type PostStaticProps = {
   authorName: string;
   avatarUrl: string;
   timestamp: string;
   content: string;
-  imageUrl: string | null;
-  videoUrl: string | null;
+  imageUrl?: string;
+  videoUrl?: string;
   id: string;
 };
 
-const PostContent: FC<PostPropsStatic> = ({
+const PostContent: FC<PostStaticProps> = ({
   authorName,
   avatarUrl,
   timestamp,

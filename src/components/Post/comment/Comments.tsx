@@ -1,34 +1,27 @@
-import { db } from "@/firebase/firebase-app";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { FC, useEffect, useState } from "react";
-import Avatar from "../Avatar/Avatar";
-import { UserInfo } from "../nav/NavBar";
-
-interface CommentProps {
-  username: string;
-  avatarUrl: string;
-  content: string;
-  timestamp: string;
-}
+import { FC, useContext, useEffect, useState } from "react";
+import { db } from "@/firebase/firebase-app";
+import Avatar from "../../Avatar/Avatar";
+import { PostContext } from "../context/PostContex";
+import Comment, { CommentProps } from "./Comment";
 
 interface Props {
-  myUserInfo: UserInfo;
   comments: CommentProps[];
-  id: string;
   incCommentCount: any;
   inputRef: any;
 };
 
-const Comment: FC<Props> = ({ myUserInfo, comments, incCommentCount, inputRef, id }) => {
+const Comments: FC<Props> = ({ comments, incCommentCount, inputRef }) => {
   const [myComment, setMyComment] = useState("")
   const [lastComments, setLastComments] = useState<CommentProps[]>([])
+  const { myUserInfo, postId } = useContext(PostContext)
 
   useEffect(() => {
     comments && setLastComments(comments)
   }, [comments])
 
   const sendComment = async (comment: any) => {
-    const commentsRef = collection(db, 'posts', id, "comments");
+    const commentsRef = collection(db, 'posts', postId, "comments");
     await addDoc(commentsRef, comment);
   }
 
@@ -49,6 +42,8 @@ const Comment: FC<Props> = ({ myUserInfo, comments, incCommentCount, inputRef, i
       {
         ...thisComment,
         timestamp: "less than a minute ago",
+        // Add comment's true id
+        id: ""
       }
     ])
 
@@ -58,20 +53,9 @@ const Comment: FC<Props> = ({ myUserInfo, comments, incCommentCount, inputRef, i
 
   return (
     <div>
-      {lastComments.map((comment, id) =>
-        <div key={id} className="flex flex-col mt-4 mx-2">
-          <div className="flex">
-            <Avatar imageUrl={comment!.avatarUrl} altText={comment!.username} size={8} />
-            <div className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] focus:outline-none caret-white">
-              <div className="text-sm font-bold"> {comment!.username} </div>
-              {comment!.content}
-            </div>
-          </div>
-          <div className="flex gap-2 ml-14 mt-1 text-xs">
-            <div className="font-bold text-gray-400 hover:cursor-pointer hover:underline">Like</div>
-            <div className="font-bold text-gray-400 hover:cursor-pointer hover:underline">Reply</div>
-            <div className="text-gray-400 hover:cursor-pointer hover:underline">{comment!.timestamp}</div>
-          </div>
+      {lastComments.map((comment, index) =>
+        <div key={index} className="flex flex-col mt-4 mx-2">
+          <Comment comment={comment} />
         </div>
       )
       }
@@ -93,4 +77,4 @@ const Comment: FC<Props> = ({ myUserInfo, comments, incCommentCount, inputRef, i
   );
 };
 
-export default Comment;
+export default Comments;

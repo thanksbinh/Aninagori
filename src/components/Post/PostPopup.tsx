@@ -1,37 +1,37 @@
 'use client'
 
 import { getDocs, collection, query, orderBy, getDoc, doc } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
+
 import PostContent from "./PostContent";
 import { db } from "@/firebase/firebase-app";
 import PostAction from "./PostAction"
 import { formatDuration } from "../utils/formatDuration";
-import { useEffect, useState } from "react";
-import { UserInfo } from "../nav/NavBar";
 import Modal from "../utils/Modal";
+import { PostContext } from "./context/PostContex";
 
-export default function PostPopup({ isOpen, onClose, myUserInfo, id }: { isOpen: boolean, onClose: any, myUserInfo: UserInfo, id: string }) {
+export default function PostPopup({ isOpen, onClose }: { isOpen: boolean, onClose: any }) {
   const [post, setPost] = useState<any>({})
+  const { myUserInfo, postId } = useContext(PostContext)
 
   useEffect(() => {
     async function fetchData() {
-      const postDoc = await getDoc(doc(db, "posts", id))
+      const postDoc = await getDoc(doc(db, "posts", postId))
       if (!postDoc.exists()) return;
 
       const commentsRef = collection(postDoc.ref, "comments")
       const commentsQuery = query(commentsRef, orderBy("timestamp", "asc"))
 
       const commentsData = (await getDocs(commentsQuery)).docs
-      console.log(commentsData)
       const commentCount = commentsData.length
 
       const comments = commentsData.map(doc => {
         return {
           ...doc.data(),
-          timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime())
+          timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
+          id: doc.id
         }
       })
-
-      console.log(comments)
 
       setPost({
         ...postDoc.data(),
@@ -54,14 +54,14 @@ export default function PostPopup({ isOpen, onClose, myUserInfo, id }: { isOpen:
           content={post.content}
           imageUrl={post.imageUrl}
           videoUrl={post.videoUrl}
-          id={id}
+          id={postId}
         />
         <PostAction
           myUserInfo={myUserInfo}
           reactions0={post.reactions}
           commentCount={post.commentCount}
           comments={post.comments}
-          id={id}
+          id={postId}
         />
       </div>
     </Modal >

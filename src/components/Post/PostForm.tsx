@@ -1,13 +1,12 @@
 'use client';
 
-import { FC } from "react";
-import Avatar from "../Avatar/Avatar";
-import { HiPhoto, HiVideoCamera } from "react-icons/hi2";
-import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
-import { db, storage } from "@/firebase/firebase-app";
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { HiPhoto, HiVideoCamera } from "react-icons/hi2";
+import { useRouter } from "next/navigation";
+import { FC, useRef, useState } from "react";
+import { db, storage } from "@/firebase/firebase-app";
+import Avatar from "../Avatar/Avatar";
 import { v4 } from "uuid"
 
 type PostFormProps = {
@@ -33,7 +32,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl }) => {
       content: inputRef.current?.value || "",
       imageUrl: (mediaType === "image") ? downloadMediaUrl : "",
       videoUrl: (mediaType === "video") ? downloadMediaUrl : "",
-      // Remove comments: 0
+      // Todo: Remove comments: 0
       comments: 0
     });
 
@@ -54,6 +53,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl }) => {
   }
 
   const handleMediaChange = (e: any, mediaType: string) => {
+    // Todo: multi media file
     const file = e.target.files[0];
     if (!file) return;
 
@@ -93,9 +93,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl }) => {
             type="file"
             id="image-input"
             accept="image/*"
-            onChange={(e) => {
-              handleMediaChange(e, "image")
-            }}
+            onChange={(e) => handleMediaChange(e, "image")}
             className="hidden"
           />
 
@@ -107,9 +105,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl }) => {
             type="file"
             id="video-input"
             accept="video/*"
-            onChange={(e) => {
-              handleMediaChange(e, "video")
-            }}
+            onChange={(e) => handleMediaChange(e, "video")}
             className="hidden"
           />
 
