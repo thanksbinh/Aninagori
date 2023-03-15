@@ -7,7 +7,8 @@ import { db } from '@/firebase/firebase-app';
 import { doc, updateDoc } from 'firebase/firestore';
 import qs from 'qs';
 
-const MYANIMELIST_CLIENT_ID = process.env.X_MAL_CLIENT_ID;
+const MYANIMELIST_CLIENT_ID = process.env.X_MAL_CLIENT_ID + '';
+const MYANIMELIST_CLIENT_SECRET = process.env.X_MAL_CLIENT_SECRET + '';
 const REDIRECT_URI = `${process.env.NEXT_PUBLIC_BASE_URL}api/auth`;
 
 export async function GET(request: Request, { params }: { params: any }) {
@@ -31,12 +32,13 @@ export async function GET(request: Request, { params }: { params: any }) {
   const authCode = urlParams.get('code');
   //3: get AccessToken
   const urlParamsOauth = {
-    client_id: '226fe352931de7f26af22eb85acf3e71',
-    client_secret: 'd6bd82b3f49ddd349f93feb8206a0b7e3dc81f581636641b28173dc7ca6a5e0c',
+    client_id: MYANIMELIST_CLIENT_ID,
+    client_secret: MYANIMELIST_CLIENT_SECRET,
     code_verifier: obj.codechallenge as any,
     grant_type: 'authorization_code',
     code: authCode as any,
   };
+  console.log(urlParamsOauth);
   const urlEncodedParams = qs.stringify(urlParamsOauth);
   const res = await fetch('https://myanimelist.net/v1/oauth2/token', {
     method: 'post',
@@ -46,6 +48,8 @@ export async function GET(request: Request, { params }: { params: any }) {
     body: urlEncodedParams,
   });
   const result = await res.json();
+  console.log(result);
+
   //4: Save Access Token and RefreshToken
   const docRef = doc(db, 'users', obj.userID);
   //5: Get User information and saved info to firebase
