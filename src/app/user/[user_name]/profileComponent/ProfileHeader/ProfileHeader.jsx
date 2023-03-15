@@ -252,7 +252,7 @@ function ProfileHeader({ guess, admin }) {
               <Button
                 onClick={async () => {
                   //TODO:  handle not connected to MAL
-                  if (!!!guess.myAnimeList_username) {
+                  if (!!!guess?.mal_connect?.myAnimeList_username) {
                     console.log('testttt');
                     try {
                       const codeChallenge = generateCodeChallenge(generateCodeVerifier());
@@ -272,10 +272,10 @@ function ProfileHeader({ guess, admin }) {
                 small
                 gradient
                 leftIcon={
-                  guess.myAnimeList_username ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPlug} />
+                  guess?.mal_connect?.myAnimeList_username ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPlug} />
                 }
               >
-                {guess.myAnimeList_username ? 'Connected with MAL' : 'Connect with MAL'}
+                {guess?.mal_connect?.myAnimeList_username ? 'Connected with MAL' : 'Connect with MAL'}
               </Button>
               <Button
                 onClick={() => {
@@ -296,12 +296,12 @@ function ProfileHeader({ guess, admin }) {
                 small
                 gradient
                 href={
-                  guess.myAnimeList_username ? 'https://myanimelist.net/profile/' + guess.myAnimeList_username : false
+                  guess?.mal_connect?.myAnimeList_username ? 'https://myanimelist.net/profile/' + guess?.mal_connect?.myAnimeList_username : false
                 }
                 leftIcon={<FontAwesomeIcon icon={faPlug} />}
               >
                 {/*TODO: handle user haven't connected to MAL */}
-                {guess.myAnimeList_username ? 'Visit MAL profile' : '....Feature'}
+                {guess?.mal_connect?.myAnimeList_username ? 'Visit MAL profile' : '....Feature'}
               </Button>
               <AddFriendBtn myUserInfo={admin} userInfo={guess}>
                 {' '}

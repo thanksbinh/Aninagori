@@ -62,6 +62,7 @@ function Profile({ user_name }: { user_name: string }) {
       // compare between admin and guess
       if (!querySnapshot.empty && !!session?.user) {
         guess.current = { ...querySnapshot.docs[0].data(), id: querySnapshot.docs[0].id };
+        console.log(guess.current);
         isAdmin.current = (guess.current as any).username === (admin.current as any).username;
         if (isAdmin.current) {
           console.log('Current Admin');
@@ -70,8 +71,8 @@ function Profile({ user_name }: { user_name: string }) {
         }
       }
       setGuessData(guess.current);
-      if (!!(guess.current as any).myAnimeList_username) {
-        const result = await get('api/user/' + (guess.current as any).myAnimeList_username);
+      if (!!(guess.current as any)?.mal_connect?.myAnimeList_username) {
+        const result = await get('api/user/' + (guess.current as any)?.mal_connect?.myAnimeList_username);
         setAnimeData(result);
       }
     }
@@ -87,7 +88,7 @@ function Profile({ user_name }: { user_name: string }) {
         <ProfileHeader guess={guessData} admin={adminData} />
         <div className={cx('profile-body-wrapper')}>
           <div className={cx('status-section')}>
-            {!!(guess.current as any).myAnimeList_username ? (
+            {!!(guess.current as any)?.mal_connect?.myAnimeList_username ? (
               <>
                 <AnimeUpdate data={animeData.data} />
                 <AnimeStatus data={animeData.data} />

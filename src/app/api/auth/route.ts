@@ -8,7 +8,6 @@ import { doc, updateDoc } from 'firebase/firestore';
 import qs from 'qs';
 
 const MYANIMELIST_CLIENT_ID = process.env.X_MAL_CLIENT_ID;
-const MYANIMELIST_CLIENT_SECRET = process.env.X_MAL_CLIENT_SECRET;
 const REDIRECT_URI = `${process.env.NEXT_PUBLIC_BASE_URL}api/auth`;
 
 export async function GET(request: Request, { params }: { params: any }) {
@@ -49,10 +48,6 @@ export async function GET(request: Request, { params }: { params: any }) {
   const result = await res.json();
   //4: Save Access Token and RefreshToken
   const docRef = doc(db, 'users', obj.userID);
-  await updateDoc(docRef, {
-    accessToken: result.access_token,
-    refreshToken: result.refresh_token,
-  });
   //5: Get User information and saved info to firebase
   const accessToken = result.access_token;
   const url = 'https://api.myanimelist.net/v2/users/@me?fields=anime_statistics';
@@ -64,7 +59,11 @@ export async function GET(request: Request, { params }: { params: any }) {
     .then((response) => response.json())
     .then(async (data) => {
       await updateDoc(docRef, {
-        myAnimeList_username: data.name,
+        mal_connect: {
+          myAnimeList_username: data.name,
+          accessToken: result.access_token,
+          refreshToken: result.refresh_token,
+        },
       });
     })
     .catch((error) => console.error(error));
