@@ -53,8 +53,8 @@ const Comments: FC<Props> = ({ comments, incCommentCount, inputRef }) => {
 
   return (
     <div>
-      {lastComments.map((comment, index) =>
-        <div key={index} className="flex flex-col mt-4 mx-2">
+      {lastComments.map((comment) =>
+        <div key={comment.id} className="flex flex-col mt-4 mx-2">
           <Comment comment={comment} />
         </div>
       )

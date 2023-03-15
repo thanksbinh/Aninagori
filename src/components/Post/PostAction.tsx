@@ -13,6 +13,7 @@ import Comments from "./comment/Comments";
 import PostPopup from "./PostPopup";
 import { PostContext } from "./context/PostContex";
 import { CommentProps } from "./comment/Comment";
+import { useRouter } from "next/navigation";
 
 interface PostDynamicProps {
   myUserInfo: UserInfo;
@@ -28,6 +29,7 @@ const PostAction: FC<PostDynamicProps> = ({ myUserInfo, reactions0, commentCount
   const [commentNum, setCommentNum] = useState(0)
   const [postExpand, setPostExpand] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
 
   // Update post's reaction realtime
   useEffect(() => {
@@ -115,7 +117,7 @@ const PostAction: FC<PostDynamicProps> = ({ myUserInfo, reactions0, commentCount
           <div>
             <div onClick={() => setPostExpand(true)} className="mt-4 ml-2 text-sm font-bold text-gray-400 hover:cursor-pointer hover:underline">View more comments</div>
             {postExpand &&
-              <PostPopup isOpen={postExpand} onClose={() => setPostExpand(false)} />
+              <PostPopup isOpen={postExpand} onClose={() => { setPostExpand(false); router.refresh(); }} />
             }
           </div>
         }

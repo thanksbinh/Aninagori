@@ -20,7 +20,10 @@ const Comment = ({ comment }: { comment: CommentProps }) => {
   const [reactions, setReactions] = useState(comment.reactions || [])
 
   useEffect(() => {
-    comment.reactions && setReactionToggle(comment.reactions.some((e: any) => e.username === myUserInfo.username))
+    if (!comment.reactions) return
+
+    setReactionToggle(comment.reactions.some((e: any) => e.username === myUserInfo.username))
+    setReactions(comment.reactions)
   }, [comment.reactions])
 
   const onReaction = () => {
