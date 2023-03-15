@@ -51,11 +51,11 @@ async function Post(props: any) {
 
   const lastCommentRef = query(commentsRef, orderBy("timestamp", "desc"), limit(1))
   const lastCommentData = (await getDocs(lastCommentRef)).docs[0]
-  const lastComment = lastCommentData ? {
+  const lastComment = lastCommentData ? [{
     ...lastCommentData.data(),
     timestamp: formatDuration(new Date().getTime() - lastCommentData.data().timestamp.toDate().getTime()),
     id: lastCommentData.id
-  } as any : []
+  }] as any : []
 
   return (
     <div className="mb-4">
