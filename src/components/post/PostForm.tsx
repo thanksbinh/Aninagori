@@ -6,7 +6,7 @@ import { HiPhoto, HiVideoCamera } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
 import { FC, useRef, useState } from "react";
 import { db, storage } from "@/firebase/firebase-app";
-import Avatar from "../Avatar/Avatar";
+import Avatar from "../avatar/Avatar";
 import { v4 } from "uuid"
 
 type PostFormProps = {

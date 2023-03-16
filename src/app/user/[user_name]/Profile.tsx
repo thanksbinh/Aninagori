@@ -14,7 +14,7 @@ import { db } from '@/firebase/firebase-app';
 import PostForm from '@/components/post/PostForm';
 import PostContent from '@/components/post/PostContent';
 import PostAction from '@/components/post/PostAction';
-import Button from '@/components/Button/Button';
+import Button from '@/components/button/Button';
 import { Posts } from '@/components';
 import { AnyRecord } from 'dns';
 

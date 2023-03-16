@@ -6,7 +6,7 @@ import ProfilePicture from "./profilePicture/ProfilePicture";
 import SearchBar from "./search/SearchBar";
 import NotificationBtn from "./notification/NotificationBtn";
 import { BsChatLeftDotsFill } from 'react-icons/bs';
-import Button from "../Button/Button";
+import Button from "../button/Button";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 export interface UserInfo {

@@ -6,7 +6,7 @@ import { HiOutlineHeart, HiHeart } from "react-icons/hi2";
 import { AiOutlineComment } from "react-icons/ai";
 import { RiAddCircleLine } from "react-icons/ri";
 
-import Avatar from "../Avatar/Avatar";
+import Avatar from "../avatar/Avatar";
 import { UserInfo } from "../nav/NavBar";
 import { db } from "@/firebase/firebase-app";
 import Comments from "./comment/Comments";
@@ -14,26 +14,37 @@ import PostPopup from "./PostPopup";
 import { PostContext } from "./context/PostContex";
 import { CommentProps } from "./comment/Comment";
 import { useRouter } from "next/navigation";
+import CommentForm from "./comment/CommentForm";
 
 interface PostDynamicProps {
   myUserInfo: UserInfo;
-  reactions0: Object[];
+  reactions: Object[];
   commentCount: number;
   comments: CommentProps[];
-  id: string;
+  postId: string;
 };
 
-const PostAction: FC<PostDynamicProps> = ({ myUserInfo, reactions0, commentCount, comments, id }) => {
+const PostAction: FC<PostDynamicProps> = ({
+  myUserInfo,
+  reactions: reactions0,
+  commentCount,
+  comments: comments0,
+  postId
+}) => {
   const [reactionToggle, setReactionToggle] = useState(false)
   const [reactions, setReactions] = useState(reactions0 || [])
+
   const [commentNum, setCommentNum] = useState(0)
+  const [comments, setComments] = useState<CommentProps[]>([])
+  const [lastComment, setLastComment] = useState<CommentProps>()
+
   const [postExpand, setPostExpand] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
   // Update post's reaction realtime
   useEffect(() => {
-    const postRef = doc(db, "posts", id);
+    const postRef = doc(db, "posts", postId);
     const unsubscribe = onSnapshot(postRef, docSnap => {
       setReactions(docSnap?.data()?.reactions || [])
     })
@@ -44,15 +55,29 @@ const PostAction: FC<PostDynamicProps> = ({ myUserInfo, reactions0, commentCount
   }, [])
 
   useEffect(() => {
-    setReactionToggle(reactions0?.some((e: any) => e.username === myUserInfo.username))
+    reactions0 && setReactionToggle(reactions0.some((e: any) => e.username === myUserInfo.username))
   }, [reactions0])
 
   useEffect(() => {
     setCommentNum(commentCount)
   }, [commentCount])
 
+  useEffect(() => {
+    comments0 && setComments(comments0)
+  }, [comments0])
+
+  useEffect(() => {
+    if (!lastComment) return;
+
+    setCommentNum(commentNum + 1)
+    setComments([
+      ...comments,
+      lastComment
+    ])
+  }, [lastComment])
+
   const onReaction = () => {
-    const postRef = doc(db, "posts", id)
+    const postRef = doc(db, "posts", postId)
     const myReaction = {
       username: myUserInfo.username,
       image: myUserInfo.image,
@@ -81,7 +106,7 @@ const PostAction: FC<PostDynamicProps> = ({ myUserInfo, reactions0, commentCount
   }
 
   return (
-    <PostContext.Provider value={{ myUserInfo, postId: id }}>
+    <PostContext.Provider value={{ myUserInfo, postId }}>
       <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pt-0 rounded-t-none">
         {/* Recent reactions */}
         <div className="flex my-4 mx-2">
@@ -113,7 +138,7 @@ const PostAction: FC<PostDynamicProps> = ({ myUserInfo, reactions0, commentCount
         </div>
 
         {/* Expand post if comments > 1 */}
-        {(commentCount > 1 && commentCount > comments.length) &&
+        {(commentCount > 1 && commentCount > comments0.length) &&
           <div>
             <div onClick={() => setPostExpand(true)} className="mt-4 ml-2 text-sm font-bold text-gray-400 hover:cursor-pointer hover:underline">View more comments</div>
             {postExpand &&
@@ -123,11 +148,11 @@ const PostAction: FC<PostDynamicProps> = ({ myUserInfo, reactions0, commentCount
         }
 
         {/* Comments and comment's form */}
-        <Comments
-          comments={comments}
-          incCommentCount={() => setCommentNum(commentNum + 1)}
-          inputRef={inputRef}
-        />
+        <div className="mx-2">
+          <Comments comments={comments} />
+          <CommentForm setLastComment={setLastComment} inputRef={inputRef} />
+        </div>
+
       </div>
     </PostContext.Provider >
   );

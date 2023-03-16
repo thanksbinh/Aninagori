@@ -5,11 +5,10 @@ import { formatDuration } from "../utils/formatDuration";
 import PostContent from "./PostContent";
 import PostAction from "./PostAction"
 
-async function fetchData() {
+export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
   const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(10));
   const querySnapshot = await getDocs(q);
-
-  let fetchedPosts = querySnapshot.docs.map((doc) => {
+  const fetchedPosts = querySnapshot.docs.map((doc) => {
     return {
       ...doc.data(),
       timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
@@ -17,15 +16,9 @@ async function fetchData() {
     } as any
   });
 
-  return fetchedPosts
-}
-
-export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
-  const posts = await fetchData();
-
   return (
     <div className="flex flex-col">
-      {posts.map((post) => (
+      {fetchedPosts.map((post) => (
         <div key={post.id}>
           {/* @ts-expect-error Server Component */}
           <Post
@@ -66,7 +59,6 @@ async function Post(props: any) {
     } as any
   })
 
-
   return (
     <div className="mb-4">
       <PostContent
@@ -80,10 +72,10 @@ async function Post(props: any) {
       />
       <PostAction
         myUserInfo={props.myUserInfo}
-        reactions0={props.reactions}
+        reactions={props.reactions}
         commentCount={commentCount}
         comments={lastComment}
-        id={props.id}
+        postId={props.id}
       />
     </div>
   );

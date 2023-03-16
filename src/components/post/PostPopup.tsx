@@ -10,6 +10,7 @@ import { formatDuration } from "../utils/formatDuration";
 import Modal from "../utils/Modal";
 import { PostContext } from "./context/PostContex";
 
+// Todo: Optimization
 export default function PostPopup({ isOpen, onClose }: { isOpen: boolean, onClose: any }) {
   const [post, setPost] = useState<any>({})
   const { myUserInfo, postId } = useContext(PostContext)
@@ -64,10 +65,10 @@ export default function PostPopup({ isOpen, onClose }: { isOpen: boolean, onClos
         />
         <PostAction
           myUserInfo={myUserInfo}
-          reactions0={post.reactions}
+          reactions={post.reactions}
           commentCount={post.commentCount}
           comments={post.comments}
-          id={postId}
+          postId={postId}
         />
       </div>
     </Modal >

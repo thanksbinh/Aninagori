@@ -1,5 +1,5 @@
 import { FC } from "react";
-import Avatar from "../Avatar/Avatar";
+import Avatar from "../avatar/Avatar";
 import { VideoComponent } from "./Video";
 
 type PostStaticProps = {
