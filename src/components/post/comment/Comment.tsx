@@ -12,13 +12,14 @@ export interface CommentProps {
   timestamp: string;
   reactions?: any[];
   replies?: any[];
-  // id if is a comment, parentId if is a reply
+  // A comment has an id
   id?: string;
+  // A reply has these
   parentId?: string;
   realTimestamp?: Timestamp;
 }
 
-const Comment = ({ comment }: { comment: CommentProps }) => {
+const Comment = ({ comment, onParentReply }: { comment: CommentProps, onParentReply?: any }) => {
   const { myUserInfo, postId } = useContext(PostContext)
 
   const [reactionToggle, setReactionToggle] = useState(false)
@@ -28,6 +29,7 @@ const Comment = ({ comment }: { comment: CommentProps }) => {
   const [lastReply, setLastReply] = useState<CommentProps>()
 
   const [openReplyForm, setOpenReplyForm] = useState(false)
+  const [taggedUser, setTaggedUser] = useState("")
 
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -113,10 +115,18 @@ const Comment = ({ comment }: { comment: CommentProps }) => {
     setReactionToggle(!reactionToggle)
   }
 
-  const onReply = () => {
+  const onReply = (username: string) => {
+    onParentReply && onParentReply(username)
+
     setOpenReplyForm(true)
+    setTaggedUser(username)
+
     inputRef.current?.focus()
   }
+
+  useEffect(() => {
+    inputRef.current && (inputRef.current.value = "@" + taggedUser + " ")
+  }, [inputRef.current, taggedUser])
 
   return (
     <div className="flex flex-col mt-4">
@@ -136,7 +146,7 @@ const Comment = ({ comment }: { comment: CommentProps }) => {
           {(reactions.length > 0) && (<span> +{reactions.length}</span>)}
         </div>
 
-        <div onClick={onReply} className="font-bold text-gray-400 hover:cursor-pointer hover:underline">Reply</div>
+        <div onClick={() => onReply(comment.username)} className="font-bold text-gray-400 hover:cursor-pointer hover:underline">Reply</div>
 
         <div className="text-gray-400 hover:cursor-pointer hover:underline">{comment!.timestamp}</div>
       </div>
@@ -146,11 +156,11 @@ const Comment = ({ comment }: { comment: CommentProps }) => {
         {replies?.map((reply, index) => {
           return (
             <div key={index}>
-              <Comment comment={reply} />
+              <Comment comment={reply} onParentReply={onReply} />
             </div>
           )
         })}
-        {openReplyForm && (
+        {openReplyForm && !comment.parentId && (
           <CommentForm setLastComment={setLastReply} inputRef={inputRef} commentId={comment.id} />
         )}
       </div>
