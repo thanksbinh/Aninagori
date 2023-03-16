@@ -11,3 +11,6 @@ export const get = async (apiPath: string, option = {}) => {
 };
 
 // Cusom fetch POST method using axios
+export const post = async (apiPath: string, option = {}) => {
+    
+}

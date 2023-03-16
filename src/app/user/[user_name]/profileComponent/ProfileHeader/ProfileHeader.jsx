@@ -6,7 +6,6 @@ import Button from '@/components/Button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faImage, faPenToSquare, faPlug, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { useState, useRef } from 'react';
-import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-app';
@@ -15,6 +14,10 @@ import { memo } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import Avatar from '@/components/Avatar/Avatar';
+import { get } from '@/app/api/apiServices/httpRequest';
+import { redirect } from 'next/navigation';
+import { generateCodeChallenge, generateCodeVerifier } from '@/app/api/auth/route';
+import { setCookie } from 'cookies-next';
 
 const cx = classNames.bind(styles);
 
@@ -28,6 +31,8 @@ function ProfileHeader({ guess, admin }) {
   const [currentImage, setCurrentImage] = useState('/wallpaper.png');
   const editBox = useRef();
   const editBoxWrapper = useRef();
+  const { data: session } = useSession();
+
   return (
     <div className={cx('wrapper')}>
       <div className={cx('modal')} ref={editBoxWrapper}>
@@ -92,23 +97,23 @@ function ProfileHeader({ guess, admin }) {
                 const docRef = doc(db, 'users', admin.id);
                 if (userName !== '') {
                   await updateDoc(docRef, {
-                    name: userName
+                    name: userName,
                   });
                 }
-                if(wallpaper !== '') {
+                if (wallpaper !== '') {
                   await updateDoc(docRef, {
-                    wallpaper: wallpaper
+                    wallpaper: wallpaper,
                   });
                 }
-                if(avatar !== '') {
+                if (avatar !== '') {
                   await updateDoc(docRef, {
-                    image: avatar
+                    image: avatar,
                   });
                 }
-                if(userName !== '' || wallpaper !== '' || avatar !== '') {
+                if (userName !== '' || wallpaper !== '' || avatar !== '') {
                   location.reload();
                 } else {
-                  alert('Please fill up at least 1 fill :((')
+                  alert('Please fill up at least 1 fill :((');
                 }
               }}
               leftIcon={undefined}
@@ -160,13 +165,13 @@ function ProfileHeader({ guess, admin }) {
             value={link}
           />
           <button
-            onClick={async() => {
+            onClick={async () => {
               if (!load) {
                 setCurrentImage(link);
                 const docRef = doc(db, 'users', admin.id);
                 if (link !== '') {
                   await updateDoc(docRef, {
-                    wallpaper: link
+                    wallpaper: link,
                   });
                   setLink('');
                   location.reload();
@@ -182,7 +187,15 @@ function ProfileHeader({ guess, admin }) {
       )}
       <div className={cx('user-display')}>
         <div className={cx('avatar-wrapper')}>
-          <img src={guess.image || '/bocchi.jpg'} alt="avatar" className={cx('avatar')}></img>
+          <img
+            src={guess.image || '/bocchi.jpg'}
+            alt="avatar"
+            className={cx('avatar')}
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null;
+              currentTarget.src = '/bocchi.jpg';
+            }}
+          ></img>
           <div className={cx('user-information')}>
             <strong className={cx('user-name')}>{guess.name || guess.username}</strong>
             {!!guess.friend_list ? (
@@ -202,6 +215,10 @@ function ProfileHeader({ guess, admin }) {
                             className={cx('friends-avatar')}
                             onClick={() => {
                               window.location.href = process.env.NEXT_PUBLIC_BASE_URL + '/user/' + data.username;
+                            }}
+                            onError={({ currentTarget }) => {
+                              currentTarget.onerror = null;
+                              currentTarget.src = '/bocchi.jpg';
                             }}
                           ></img>
                         </Tippy>
@@ -230,26 +247,35 @@ function ProfileHeader({ guess, admin }) {
           </div>
         </div>
         <div className={cx('profile-interact')}>
-          {/* //TODO: make edit profile information feature */}
-          {/* //TODO: handle myAnimeList connect feature */}
           {admin.username === guess.username ? (
             <>
               <Button
-                onClick={() => {
-                  if (!!!guess.myAnimeList_username) {
-                    //TODO: handle log in with MAL later
-                    console.log('not connect');
-                  } else {
-                    console.log('Already Connect');
+                onClick={async () => {
+                  //TODO:  handle not connected to MAL
+                  if (!!!guess?.mal_connect?.myAnimeList_username) {
+                    console.log('testttt');
+                    try {
+                      const codeChallenge = generateCodeChallenge(generateCodeVerifier());
+                      setCookie('codechallenge', codeChallenge);
+                      const result = await get('api/auth', {
+                        headers: {
+                          codeChallenge: codeChallenge,
+                          userID: session.user?.id,
+                        },
+                      });
+                      window.location.href = result.url;
+                    } catch (err) {
+                      console.log(err);
+                    }
                   }
                 }}
                 small
                 gradient
                 leftIcon={
-                  guess.myAnimeList_username ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPlug} />
+                  guess?.mal_connect?.myAnimeList_username ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPlug} />
                 }
               >
-                {guess.myAnimeList_username ? 'Connected with MAL' : 'Connect with MAL'}
+                {guess?.mal_connect?.myAnimeList_username ? 'Connected with MAL' : 'Connect with MAL'}
               </Button>
               <Button
                 onClick={() => {
@@ -270,12 +296,12 @@ function ProfileHeader({ guess, admin }) {
                 small
                 gradient
                 href={
-                  guess.myAnimeList_username ? 'https://myanimelist.net/profile/' + guess.myAnimeList_username : false
+                  guess?.mal_connect?.myAnimeList_username ? 'https://myanimelist.net/profile/' + guess?.mal_connect?.myAnimeList_username : false
                 }
                 leftIcon={<FontAwesomeIcon icon={faPlug} />}
               >
                 {/*TODO: handle user haven't connected to MAL */}
-                {guess.myAnimeList_username ? 'Visit MAL profile' : '....Feature'}
+                {guess?.mal_connect?.myAnimeList_username ? 'Visit MAL profile' : '....Feature'}
               </Button>
               <AddFriendBtn myUserInfo={admin} userInfo={guess}>
                 {' '}
