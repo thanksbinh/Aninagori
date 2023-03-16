@@ -1,4 +1,4 @@
-import { addDoc, arrayUnion, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, doc, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
 import { FC, useContext, useState } from "react";
 import { db } from "@/firebase/firebase-app";
 import Avatar from "../../avatar/Avatar";
@@ -70,7 +70,12 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
     }
 
     sendReply(content)
-    router.refresh()
+    setLastComment({
+      ...content,
+      timestamp: "less than a minute ago",
+      realTimestamp: Timestamp.fromDate(content.timestamp),
+      parentId: commentId
+    })
 
     setMyComment("")
   }

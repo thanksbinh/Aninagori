@@ -10,7 +10,7 @@ const Comments: FC<Props> = ({ comments }) => {
     <div>
       {comments.map((comment) => (
         <div key={comment.id}>
-          <Comment comment={comment} level={1} />
+          <Comment comment={comment} />
         </div>
       ))}
     </div>

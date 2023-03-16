@@ -48,10 +48,12 @@ async function Post(props: any) {
   const lastComment = lastCommentDocs.map(doc => {
     return {
       ...doc.data(),
-      replies: doc.data().replies?.map((reply: any) => {
+      replies: doc.data().replies?.sort((a: any, b: any) => a.timestamp - b.timestamp).map((reply: any) => {
         return {
           ...reply,
-          timestamp: formatDuration(new Date().getTime() - new Date(reply.timestamp.seconds * 1000).getTime())
+          timestamp: formatDuration(new Date().getTime() - new Date(reply.timestamp.seconds * 1000).getTime()),
+          realTimestamp: { ...reply.timestamp },
+          parentId: doc.id
         }
       }),
       timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
