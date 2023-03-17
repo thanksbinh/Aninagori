@@ -4,6 +4,7 @@ import { UserInfo } from "../nav/NavBar";
 import { formatDuration } from "../utils/formatDuration";
 import PostContent from "./PostContent";
 import PostAction from "./PostAction"
+import { Suspense } from "react";
 
 export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
   const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(10));
@@ -20,21 +21,24 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
     <div className="flex flex-col">
       {fetchedPosts.map((post) => (
         <div key={post.id}>
-          {/* @ts-expect-error Server Component */}
-          <Post
-            authorName={post.authorName}
-            avatarUrl={post.avatarUrl}
-            timestamp={post.timestamp}
-            content={post.content}
-            imageUrl={post.imageUrl}
-            videoUrl={post.videoUrl}
-            myUserInfo={myUserInfo}
-            reactions={post.reactions}
-            id={post.id}
-          />
+          <Suspense fallback={<div className="h-screen">Loading...</div>}>
+            {/* @ts-expect-error Server Component */}
+            <Post
+              authorName={post.authorName}
+              avatarUrl={post.avatarUrl}
+              timestamp={post.timestamp}
+              content={post.content}
+              imageUrl={post.imageUrl}
+              videoUrl={post.videoUrl}
+              myUserInfo={myUserInfo}
+              reactions={post.reactions}
+              id={post.id}
+            />
+          </Suspense>
         </div>
-      ))}
-    </div>
+      ))
+      }
+    </div >
   );
 }
 

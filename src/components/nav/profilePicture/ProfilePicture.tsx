@@ -13,7 +13,7 @@ interface Props {
 const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
     const ref = useRef<HTMLDivElement>(null);
     const [isOpen, setIsOpen] = useState(false);
-    const [openUsernamePopup, setOpenUsernamePopup] = useState(myUserInfo?.username === "guess")
+    const [openUsernamePopup, setOpenUsernamePopup] = useState(false)
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -27,6 +27,11 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    useEffect(() => {
+        if (myUserInfo?.username === "guess")
+            setOpenUsernamePopup(true)
+    }, [myUserInfo])
 
     const handleLogout = async () => {
         try {
