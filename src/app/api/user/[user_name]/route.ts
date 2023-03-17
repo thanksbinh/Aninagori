@@ -8,8 +8,10 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request, { params }: { params: any }) {
   const userName = params.user_name;
-  let userAnimeUpdate: any = await getUserAnimeList(userName);
-  let userInformation: any = await getUserInformation(userName);
+  const userAnimeUpdateData: any = getUserAnimeList(userName);
+  const userInformationData: any = getUserInformation(userName);
+  const [userAnimeUpdate, userInformation] = await Promise.all([userAnimeUpdateData, userInformationData]);
+
   let animeArr: any = [];
   userInformation.data.data.updates.anime.map(async (anime: any, key: number) => {
     const list_status = userAnimeUpdate.data.data[key].list_status;
@@ -32,7 +34,7 @@ export async function GET(request: Request, { params }: { params: any }) {
       default:
         status = 'Unknow Status';
         break;
-    }    
+    }
     if (list_status.is_rewatching) {
       status = 'Re Watching';
     }

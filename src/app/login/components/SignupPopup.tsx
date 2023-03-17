@@ -1,6 +1,6 @@
 import { auth, db } from "@/firebase/firebase-app"
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
-import Modal from "@/app/login/components/Modal";
+import Modal from "@/components/utils/Modal";
 import { updateProfile } from "firebase/auth";
 import * as Yup from 'yup';
 import { useFormik, FormikConfig, FormikErrors, FormikValues } from "formik";
@@ -45,7 +45,7 @@ const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
 				username: values.username
 			});
 			sendEmailVerification(userCredential.user!, {
-				url: 'http://localhost:3000/?email=' + userCredential.user.email,
+				url: 'https://aninagori.vercel.app/?email=' + userCredential.user.email,
 			})
 
 			onClose();

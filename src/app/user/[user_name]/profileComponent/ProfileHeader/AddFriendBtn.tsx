@@ -1,10 +1,10 @@
 import { db } from '@/firebase/firebase-app';
 import { doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState, useRef } from 'react';
-import { UserInfo } from '@/components/nav/NavBar';
-import { FriendRequest } from '@/components/nav/notification/FriendRequest';
-import { beFriends, makeFriendRequest, removeFriendRequest } from '@/components/addFriend/friendRequest';
-import Button from '@/components/Button/Button';
+import { UserInfo } from "@/components/nav/NavBar";
+import { FriendRequest } from "@/components/nav/notification/FriendRequest";
+import { beFriends, makeFriendRequest, removeFriendRequest } from "@/components/addFriend/friendRequest";
+import Button from '@/components/button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserCheck, faUserMinus, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -33,6 +33,7 @@ export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: Use
 
   const handleAddFriend = async () => {
     if (!!myUserInfo.id) {
+
       const docRef = doc(db, 'users', myUserInfo.id);
       const docSnap = await getDoc(docRef);
       if (

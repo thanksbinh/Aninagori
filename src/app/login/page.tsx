@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from 'react'
 import SignupPopup from "./components/SignupPopup";
 
-export default function page() {
+export default function LoginPage() {
   const [userInfo, setUserInfo] = useState({ userId: '', password: '' })
   const [openSignupPopup, setOpenSignupPopup] = useState(false)
   const [loginFail, setLoginFail] = useState(false)
@@ -83,7 +83,7 @@ export default function page() {
           />
         </div>
 
-        {loginFail ? <div className="text-red-500"><p>Account not exits or wrong password</p><br /></div> : null}
+        {loginFail && <div className="text-red-500"><p>Account not exits or wrong password</p><br /></div>}
 
         <div className="flex">
           {

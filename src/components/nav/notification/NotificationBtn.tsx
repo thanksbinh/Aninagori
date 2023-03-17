@@ -1,9 +1,14 @@
 'use client'
 
 import { useEffect, useRef, useState } from "react";
-import { UserInfo } from "../NavBar";
 import NotificationContainer from "./NotificationContainer";
 import { BsBellFill } from 'react-icons/bs';
+
+interface UserInfo {
+  "id": string,
+  "username": string,
+  "image": string,
+}
 
 interface Props {
   myUserInfo: UserInfo | undefined
@@ -43,8 +48,8 @@ const NotificationBtn: React.FC<Props> = ({ myUserInfo }) => {
         )}
       </button>
       <div className={showNotification ? "" : "hidden"}>
-        {myUserInfo ?
-          <NotificationContainer myUserInfo={myUserInfo} setUnreadNoti={setUnreadNoti} setUnreadFriendReq={setUnreadFriendReq} showNotification={showNotification} /> : null
+        {myUserInfo &&
+          <NotificationContainer myUserInfo={myUserInfo} setUnreadNoti={setUnreadNoti} setUnreadFriendReq={setUnreadFriendReq} showNotification={showNotification} />
         }
       </div>
     </div>

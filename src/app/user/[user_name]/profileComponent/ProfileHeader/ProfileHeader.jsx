@@ -2,7 +2,7 @@
 'use client';
 import classNames from 'classnames/bind';
 import styles from './ProfileHeader.module.scss';
-import Button from '@/components/Button/Button';
+import Button from '@/components/button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faImage, faPenToSquare, faPlug, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { useState, useRef } from 'react';
@@ -13,7 +13,7 @@ import AddFriendBtn from './AddFriendBtn';
 import { memo } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import Avatar from '@/components/Avatar/Avatar';
+import Avatar from '@/components/avatar/Avatar';
 import { get } from '@/app/api/apiServices/httpRequest';
 import { redirect } from 'next/navigation';
 import { generateCodeChallenge, generateCodeVerifier } from '@/app/api/auth/route';
@@ -292,7 +292,7 @@ function ProfileHeader({ guess, admin }) {
           ) : (
             <>
               <Button
-                onClick={() => {}}
+                onClick={() => { }}
                 small
                 gradient
                 href={

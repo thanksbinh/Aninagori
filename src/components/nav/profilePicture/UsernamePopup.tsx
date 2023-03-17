@@ -5,7 +5,7 @@ import { collection, doc, getDocs, query, updateDoc, where } from "firebase/fire
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Modal from "@/app/login/components/Modal";
+import Modal from "@/components/utils/Modal";
 
 const UsernamePopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
 	const session = useSession();
@@ -53,7 +53,7 @@ const UsernamePopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
 	return (
 		<Modal isOpen={isOpen} onClose={() => { }} title={""}>
 			<div className="flex flex-col p-6 w-[500px]">
-				<h2 className="text-2xl font-bold mb-4">Set username</h2>
+				<h2 className="text-2xl font-bold mb-4 text-gray-800">Set username</h2>
 				<form className="flex flex-col" onSubmit={formik.handleSubmit}>
 					<div className="mb-4">
 						<input
