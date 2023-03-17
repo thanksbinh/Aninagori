@@ -13,7 +13,7 @@ import AddFriendBtn from './AddFriendBtn';
 import { memo } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import Avatar from '@/components/Avatar/Avatar';
+import Avatar from '@/components/avatar/Avatar';
 import { get } from '@/app/api/apiServices/httpRequest';
 import { redirect } from 'next/navigation';
 import { generateCodeChallenge, generateCodeVerifier } from '@/app/api/auth/route';
