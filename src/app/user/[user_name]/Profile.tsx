@@ -9,7 +9,7 @@ import AnimeStatus from '@/app/user/[user_name]/profileComponent/AnimeStatus/Ani
 import AnimeFavorite from '@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite';
 import AnimeUpdate from '@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate';
 import { useSession } from 'next-auth/react';
-import { collection, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, query, where, getDocs, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-app';
 import PostForm from '@/components/Post/PostForm';
 import Post from '@/components/Post/Post';
@@ -23,23 +23,23 @@ const cx = classNames.bind(styles);
 
 function Profile({ user_name }: { user_name: string }) {
   const { data: session } = useSession();
-  const admin = useRef({ username: '', id: '' });
+  const admin = useRef({ username: '', id: '', mal_connect: {} });
   const guess = useRef({});
   const isAdmin = useRef(false);
   const [userNotFound, setUserNotFound] = useState(false);
   const [animeData, setAnimeData] = useState({ data: '' });
   const [guessData, setGuessData] = useState({});
   const [adminData, setAdminData] = useState({});
+
   useEffect(() => {
     async function getUserID() {
       // get admin information
       console.log(session);
-
       if (session && !!session.user) {
         const docRef = doc(db, 'users', (session.user as any).id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          admin.current = { username: '', ...docSnap.data(), id: docSnap.id };
+          admin.current = { username: '', mal_connect: {}, ...docSnap.data(), id: docSnap.id };
           console.log(admin.current);
           setCookie('username', admin.current?.username as any);
           setCookie('userID', admin.current?.id as any);

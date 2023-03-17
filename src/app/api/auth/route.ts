@@ -4,12 +4,13 @@ import axios from 'axios';
 import { NextResponse, NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 import { db } from '@/firebase/firebase-app';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import qs from 'qs';
 
 const MYANIMELIST_CLIENT_ID = process.env.X_MAL_CLIENT_ID + '';
 const MYANIMELIST_CLIENT_SECRET = process.env.X_MAL_CLIENT_SECRET + '';
 const REDIRECT_URI = `${process.env.NEXT_PUBLIC_BASE_URL}api/auth`;
+import {firebase} from '@/firebase/firebase-app';
 
 export async function GET(request: Request, { params }: { params: any }) {
   //first step of auth
@@ -38,7 +39,6 @@ export async function GET(request: Request, { params }: { params: any }) {
     grant_type: 'authorization_code',
     code: authCode as any,
   };
-  console.log(urlParamsOauth);
   const urlEncodedParams = qs.stringify(urlParamsOauth);
   const res = await fetch('https://myanimelist.net/v1/oauth2/token', {
     method: 'post',
@@ -67,6 +67,8 @@ export async function GET(request: Request, { params }: { params: any }) {
           myAnimeList_username: data.name,
           accessToken: result.access_token,
           refreshToken: result.refresh_token,
+          expiresIn: result.expires_in,
+          createDate: serverTimestamp() 
         },
       });
     })
