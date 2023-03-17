@@ -1,20 +1,18 @@
 import { FC } from "react";
-import Avatar from "../Avatar/Avatar";
+import Avatar from "../avatar/Avatar";
 import { VideoComponent } from "./Video";
 
-type PostProps = {
+type PostStaticProps = {
   authorName: string;
   avatarUrl: string;
   timestamp: string;
   content: string;
-  imageUrl: string | null;
-  videoUrl: string | null;
-  reactions: Object[];
-  comments: number;
+  imageUrl?: string;
+  videoUrl?: string;
   id: string;
 };
 
-const Post: FC<PostProps> = ({
+const PostContent: FC<PostStaticProps> = ({
   authorName,
   avatarUrl,
   timestamp,
@@ -26,9 +24,9 @@ const Post: FC<PostProps> = ({
   return (
     <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pb-0 rounded-b-none">
       <div className="flex items-center space-x-4 mx-2">
-        <Avatar imageUrl={avatarUrl} altText={authorName} size={10} />
+        <a href={"/user/" + authorName}><Avatar imageUrl={avatarUrl} altText={authorName} size={10} /></a>
         <div>
-          <p className="font-bold text-[#dddede]">{authorName}</p>
+          <a href={"/user/" + authorName} className="font-bold text-[#dddede]">{authorName}</a>
           <p className="text-gray-500 text-sm">{timestamp}</p>
         </div>
       </div>
@@ -43,5 +41,4 @@ const Post: FC<PostProps> = ({
   );
 };
 
-export default Post;
-export type { PostProps };
+export default PostContent;

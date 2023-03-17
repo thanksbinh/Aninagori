@@ -2,7 +2,7 @@
 import StatusWrapper from '../StatusWrapper/StatusWrapper';
 import classNames from 'classnames/bind';
 import styles from './AnimeFavorite.module.scss';
-import { memo } from 'react';
+import Link from 'next/link';
 const cx = classNames.bind(styles);
 
 function AnimeFavorite({ data }) {
@@ -37,15 +37,14 @@ function FavoriteChild({ title, count, data }) {
 
 export function Img({ href, className, src, alt }) {
   return (
-    <img
-      src={src}
-      alt={alt}
-      className={className}
-      onClick={() => {
-        window.location.href = href;
-      }}
-    ></img>
+    <Link href={href}>
+      <img
+        src={src}
+        alt={alt}
+        className={className}
+      ></img>
+    </Link>
   );
 }
 
-export default memo(AnimeFavorite);
+export default AnimeFavorite;

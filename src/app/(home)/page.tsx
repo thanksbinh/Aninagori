@@ -6,6 +6,8 @@ import { getServerSession } from 'next-auth';
 import { PostForm, Posts } from '../../components';
 
 async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
+  if (!userId) return;
+
   const docRef = doc(db, "users", userId);
   const docSnap = await getDoc(docRef);
 
@@ -22,16 +24,10 @@ async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
-  if (!session) return null
-
   const myUserId = (session as any)?.user?.id
   const myUserInfo = await getUserInfo(myUserId)
 
-  if (!myUserInfo) return (
-    <div>
-      Loading...
-    </div>
-  )
+  if (!myUserInfo) return null
 
   return (
     <div className='flex justify-center pt-10'>
