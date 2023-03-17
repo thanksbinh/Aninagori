@@ -90,7 +90,6 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
           value={myComment}
           onChange={(e) => setMyComment(e.target.value)}
           ref={inputRef}
-          autoFocus={true}
           className="w-full bg-[#212833] focus:outline-none caret-white"
         />
       </form>

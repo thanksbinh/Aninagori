@@ -45,7 +45,7 @@ const SignupPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
 				username: values.username
 			});
 			sendEmailVerification(userCredential.user!, {
-				url: 'http://localhost:3000/?email=' + userCredential.user.email,
+				url: 'https://aninagori.vercel.app/?email=' + userCredential.user.email,
 			})
 
 			onClose();

@@ -1,12 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 import StatusWrapper from '../StatusWrapper/StatusWrapper';
-import Image from 'next/image';
 import classNames from 'classnames/bind';
 import styles from './AnimeUpdate.module.scss';
 import { ProgressChild } from '../AnimeStatus/AnimeStatus';
 import { Img } from '../AnimeFavorite/AnimeFavorite';
-import { useSession } from 'next-auth/react';
-import { memo } from 'react';
 const cx = classNames.bind(styles);
 
 function AnimeUpdate({ data }) {
@@ -78,4 +75,4 @@ export function convertToPercent(seen, total) {
   }
 }
 
-export default memo(AnimeUpdate);
+export default AnimeUpdate;

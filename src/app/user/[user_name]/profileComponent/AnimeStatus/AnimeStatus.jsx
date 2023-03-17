@@ -1,7 +1,6 @@
 import StatusWrapper from '../StatusWrapper/StatusWrapper';
 import classNames from 'classnames/bind';
 import styles from './AnimeStatus.module.scss';
-import { memo } from 'react';
 import { convertToPercent } from '../AnimeUpdate/AnimeUpdate';
 const cx = classNames.bind(styles);
 
@@ -108,4 +107,4 @@ export function ProgressChild({ percent, color = '#1ce318', className }) {
   );
 }
 
-export default memo(AnimeStatus);
+export default AnimeStatus;

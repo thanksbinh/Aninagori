@@ -126,6 +126,7 @@ const Comment = ({ comment, onParentReply }: { comment: CommentProps, onParentRe
 
   useEffect(() => {
     inputRef.current && (inputRef.current.value = "@" + taggedUser + " ")
+    inputRef.current?.focus()
   }, [inputRef.current, taggedUser])
 
   return (
