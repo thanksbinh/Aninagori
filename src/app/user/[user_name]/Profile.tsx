@@ -17,19 +17,19 @@ import PostAction from '@/components/post/PostAction';
 import Button from '@/components/button/Button';
 import { Posts } from '@/components';
 import { AnyRecord } from 'dns';
+import { setCookie } from 'cookies-next';
 
 const cx = classNames.bind(styles);
 
 function Profile({ user_name }: { user_name: string }) {
   const { data: session } = useSession();
-  const admin = useRef({});
+  const admin = useRef({ username: '', id: '' });
   const guess = useRef({});
   const isAdmin = useRef(false);
   const [userNotFound, setUserNotFound] = useState(false);
   const [animeData, setAnimeData] = useState({ data: '' });
   const [guessData, setGuessData] = useState({});
   const [adminData, setAdminData] = useState({});
-
   useEffect(() => {
     async function getUserID() {
       // get admin information
@@ -39,9 +39,11 @@ function Profile({ user_name }: { user_name: string }) {
         const docRef = doc(db, 'users', (session.user as any).id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          admin.current = { ...docSnap.data(), id: docSnap.id };
+          admin.current = { username: '', ...docSnap.data(), id: docSnap.id };
           console.log(admin.current);
-          setAdminData(admin.current);
+          setCookie('username', admin.current?.username as any);
+          setCookie('userID', admin.current?.id as any);
+          setAdminData(admin.current as any);
         } else {
           //TODO: return user error apge
         }
@@ -60,6 +62,7 @@ function Profile({ user_name }: { user_name: string }) {
       // compare between admin and guess
       if (!querySnapshot.empty && !!session?.user) {
         guess.current = { ...querySnapshot.docs[0].data(), id: querySnapshot.docs[0].id };
+        console.log(guess.current);
         isAdmin.current = (guess.current as any).username === (admin.current as any).username;
         if (isAdmin.current) {
           console.log('Current Admin');
@@ -68,8 +71,8 @@ function Profile({ user_name }: { user_name: string }) {
         }
       }
       setGuessData(guess.current);
-      if (!!(guess.current as any).myAnimeList_username) {
-        const result = await get('api/user/' + (guess.current as any).myAnimeList_username);
+      if (!!(guess.current as any)?.mal_connect?.myAnimeList_username) {
+        const result = await get('api/user/' + (guess.current as any)?.mal_connect?.myAnimeList_username);
         setAnimeData(result);
       }
     }
@@ -85,7 +88,7 @@ function Profile({ user_name }: { user_name: string }) {
         <ProfileHeader guess={guessData} admin={adminData} />
         <div className={cx('profile-body-wrapper')}>
           <div className={cx('status-section')}>
-            {!!(guess.current as any).myAnimeList_username ? (
+            {!!(guess.current as any)?.mal_connect?.myAnimeList_username ? (
               <>
                 <AnimeUpdate data={animeData.data} />
                 <AnimeStatus data={animeData.data} />
@@ -98,7 +101,7 @@ function Profile({ user_name }: { user_name: string }) {
           <div className={cx('post-section')}>
             {isAdmin.current && (
               <PostForm
-                avatarUrl={'/bocchi.jpg'}
+                avatarUrl={session?.user?.image as string}
                 username={(guess.current as any).name || (guess.current as any).username}
               />
             )}

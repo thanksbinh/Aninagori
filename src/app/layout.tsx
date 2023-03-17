@@ -23,7 +23,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <SessionProvider session={session}>
             {/* @ts-expect-error Server Component */}
             <NavBar />
-
             {children}
           </SessionProvider>
         </main>

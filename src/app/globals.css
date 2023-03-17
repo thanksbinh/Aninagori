@@ -65,10 +65,6 @@ body {
   line-height: 22px;
 }
 
-.tippy-arrow {
-  color: rgba(84, 84, 84, 1) !important;
-}
-
 .tippy-box[data-placement^='bottom'] > .tippy-arrow {
   top: -1px;
 }
