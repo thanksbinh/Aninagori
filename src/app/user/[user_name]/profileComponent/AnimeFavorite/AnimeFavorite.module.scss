@@ -18,6 +18,12 @@
     border-radius: 20px;
     background-color: gray;
   }
+
+  & > a {
+    margin-right: 12px;
+    width: 85px;
+    height: 125px;
+  }
 }
 
 .image {

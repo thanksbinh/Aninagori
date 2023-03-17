@@ -5,7 +5,7 @@ import styles from './ProfileHeader.module.scss';
 import Button from '@/components/button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faImage, faPenToSquare, faPlug, faUserPlus } from '@fortawesome/free-solid-svg-icons';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-app';
@@ -32,6 +32,11 @@ function ProfileHeader({ guess, admin }) {
   const editBox = useRef();
   const editBoxWrapper = useRef();
   const { data: session } = useSession();
+
+  useEffect(() => {
+    setCookie('username', admin.username);
+    setCookie('userID', admin.id);
+  }, [admin.id, admin.username]);
 
   return (
     <div className={cx('wrapper')}>
@@ -272,7 +277,11 @@ function ProfileHeader({ guess, admin }) {
                 small
                 gradient
                 leftIcon={
-                  guess?.mal_connect?.myAnimeList_username ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPlug} />
+                  guess?.mal_connect?.myAnimeList_username ? (
+                    <FontAwesomeIcon icon={faCheck} />
+                  ) : (
+                    <FontAwesomeIcon icon={faPlug} />
+                  )
                 }
               >
                 {guess?.mal_connect?.myAnimeList_username ? 'Connected with MAL' : 'Connect with MAL'}
@@ -292,11 +301,13 @@ function ProfileHeader({ guess, admin }) {
           ) : (
             <>
               <Button
-                onClick={() => { }}
+                onClick={() => {}}
                 small
                 gradient
                 href={
-                  guess?.mal_connect?.myAnimeList_username ? 'https://myanimelist.net/profile/' + guess?.mal_connect?.myAnimeList_username : false
+                  guess?.mal_connect?.myAnimeList_username
+                    ? 'https://myanimelist.net/profile/' + guess?.mal_connect?.myAnimeList_username
+                    : false
                 }
                 leftIcon={<FontAwesomeIcon icon={faPlug} />}
               >

@@ -3,37 +3,77 @@ import StatusWrapper from '../StatusWrapper/StatusWrapper';
 import classNames from 'classnames/bind';
 import styles from './AnimeUpdate.module.scss';
 import { ProgressChild } from '../AnimeStatus/AnimeStatus';
+import { getAnimeTotal } from '@/app/api/apiServices/getServices';
 import { Img } from '../AnimeFavorite/AnimeFavorite';
 const cx = classNames.bind(styles);
 
-function AnimeUpdate({ data }) {
+async function AnimeUpdate({ data }) {
+  if (data.length !== 0) {
+    const updateArr = data;
+    const id = updateArr.map((e) => {
+      return getAnimeTotal(e.node.id);
+    });
+    const totalArr = await Promise.all([id[0], id[1], id[2]]);
+    const newUpdateArr = updateArr.map((data, index) => {
+      let status = data.list_status.status;
+      switch (status) {
+        case 'completed':
+          status = 'Completed';
+          break;
+        case 'plan_to_watch':
+          status = 'Plan To Watch';
+          break;
+        case 'watching':
+          status = 'Watching';
+          break;
+        case 'on_hold':
+          status = 'On Hold';
+          break;
+        default:
+          status = 'Unknow Status';
+          break;
+      }
+      if (data.list_status.is_rewatching) {
+        status = 'Re Watching';
+      }
+      data.list_status.status = status;
+      data.list_status.num_episodes_total = totalArr[index].data.num_episodes;
+      return data;
+    });
+    data = newUpdateArr;
+  }
   return (
     <StatusWrapper title="Last Anime Updates">
-      {!!data.updates &&
-        data.updates.anime.map((anime, key) => {
+      {!!data &&
+        data.map((anime, key) => {
           return (
             <div className={cx('wrapper')} key={key}>
-              <p className={cx('time-line')}>{convertDateString(anime.date)}</p>
+              <p className={cx('time-line')}>{convertDateString(anime.list_status.updated_at)}</p>
               <div className={cx('update-information')}>
                 <Img
-                  href={anime.entry.url}
+                  href={'https://myanimelist.net/anime/' + anime.node.id}
                   className={cx('anime-pic')}
-                  src={anime.entry.images.jpg.image_url}
+                  src={anime.node.main_picture.medium}
                   alt="anime pic"
                 />
                 <div className={cx('more-detail')}>
-                  <a className={cx('anime-name')} href="">
-                    {anime.entry.title}
+                  <a className={cx('anime-name')} href={'https://myanimelist.net/anime/' + anime.node.id}>
+                    {anime.node.title}
                   </a>
                   <div className={cx('progress-bar')}>
                     <ProgressChild
                       className={cx('progress-percent')}
-                      percent={convertToPercent(anime.episodes_seen, anime.episodes_total)}
+                      percent={convertToPercent(
+                        anime.list_status.num_episodes_watched,
+                        anime.list_status.num_episodes_total,
+                      )}
                     ></ProgressChild>
                   </div>
                   <div className={cx('status-wrapper')}>
-                    {anime.status} <span className={cx('highlight')}>{anime.episodes_seen}</span>/{anime.episodes_total}{' '}
-                    - Scored <span className={cx('highlight')}>{anime.score}</span>
+                    {anime.list_status.status}{' '}
+                    <span className={cx('highlight')}>{anime.list_status.num_episodes_watched}</span>/
+                    {anime.list_status.num_episodes_total} - Scored{' '}
+                    <span className={cx('highlight')}>{anime.list_status.score}</span>
                   </div>
                 </div>
               </div>

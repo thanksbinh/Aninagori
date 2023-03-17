@@ -10,7 +10,7 @@ import qs from 'qs';
 const MYANIMELIST_CLIENT_ID = process.env.X_MAL_CLIENT_ID + '';
 const MYANIMELIST_CLIENT_SECRET = process.env.X_MAL_CLIENT_SECRET + '';
 const REDIRECT_URI = `${process.env.NEXT_PUBLIC_BASE_URL}api/auth`;
-import {firebase} from '@/firebase/firebase-app';
+import { firebase } from '@/firebase/firebase-app';
 
 export async function GET(request: Request, { params }: { params: any }) {
   //first step of auth
@@ -62,15 +62,16 @@ export async function GET(request: Request, { params }: { params: any }) {
   })
     .then((response) => response.json())
     .then(async (data) => {
-      await updateDoc(docRef, {
+      const res = await updateDoc(docRef, {
         mal_connect: {
           myAnimeList_username: data.name,
           accessToken: result.access_token,
           refreshToken: result.refresh_token,
           expiresIn: result.expires_in,
-          createDate: serverTimestamp() 
+          createDate: serverTimestamp(),
         },
-      });
+      });      
+      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}user/${obj.username}`);
     })
     .catch((error) => console.error(error));
   return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}user/${obj.username}`);

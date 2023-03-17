@@ -53,3 +53,14 @@ export const getAnimeInformation = async (id: string) => {
     console.log(error);
   }
 };
+
+export const getAnimeTotal = async (id: string) => {
+  try {
+    const animeTotal = await apiServices.MALRequest.get(
+      `/anime/${id}?fields=num_episodes`,
+    );
+    return animeTotal;
+  } catch (error) {
+    console.log(error);
+  }
+};
