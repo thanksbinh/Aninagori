@@ -65,14 +65,14 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, isBanned }) => {
   if (isBanned)
     return (
       <form onSubmit={(e) => handleSubmit(e)}>
-        <div className="flex flex-col item flex-1 bg-[#191c21] rounded-2xl px-4 my-4">
+        <div className="flex flex-col item flex-1 bg-ani-black rounded-2xl px-4 my-4">
           <div className="flex justify-between items-center mt-4">
             <Avatar imageUrl={avatarUrl} altText={username} size={8} />
             <input
               type="text"
               ref={inputRef}
               disabled
-              className="flex rounded-3xl py-3 px-4 mx-2 w-full focus:outline-none bg-[#212833] caret-white"
+              className="flex rounded-3xl py-3 px-4 mx-2 w-full focus:outline-none bg-ani-gray caret-white"
             />
           </div>
 
@@ -102,14 +102,14 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, isBanned }) => {
 
   return (
     <form onSubmit={(e) => handleSubmit(e)}>
-      <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl px-4 my-4">
+      <div className="flex flex-col flex-1 bg-ani-black rounded-2xl px-4 my-4">
         <div className="flex justify-between items-center mt-4">
           <Avatar imageUrl={avatarUrl} altText={username} size={8} />
           <input
             type="text"
             ref={inputRef}
             placeholder="Share your favourite Animemory now!"
-            className="flex rounded-3xl py-3 px-4 mx-2 w-full focus:outline-none bg-[#212833] caret-white"
+            className="flex rounded-3xl py-3 px-4 mx-2 w-full focus:outline-none bg-ani-gray caret-white"
           />
         </div>
 

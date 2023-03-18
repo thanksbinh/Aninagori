@@ -28,8 +28,8 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
   return (
     <div className="flex flex-col">
       {fetchedPosts.map((post) => (
-        <Suspense key={post.id} fallback={<div className="mb-4"><PostContent content={"Loading..."} /><PostAction /></div>}>
-          <ContextProvider myUserInfo={myUserInfo} authorName={post.authorName} postId={post.id}>
+        <ContextProvider key={post.id} myUserInfo={myUserInfo} authorName={post.authorName} postId={post.id}>
+          <Suspense fallback={<div className="mb-4"><PostContent content={"Loading..."} /><PostAction /></div>}>
             {/* @ts-expect-error Server Component */}
             <Post
               authorName={post.authorName}
@@ -41,8 +41,8 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
               reactions={post.reactions}
               id={post.id}
             />
-          </ContextProvider>
-        </Suspense>
+          </Suspense>
+        </ContextProvider>
       ))}
     </div >
   );

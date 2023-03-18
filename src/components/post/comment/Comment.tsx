@@ -4,6 +4,7 @@ import { db } from "@/firebase/firebase-app";
 import Avatar from "../../avatar/Avatar";
 import { PostContext } from "../context/PostContext";
 import CommentForm from "./CommentForm";
+import Link from "next/link";
 
 export interface CommentProps {
   username: string;
@@ -132,10 +133,11 @@ const Comment = ({ comment, onParentReply }: { comment: CommentProps, onParentRe
   return (
     <div className="flex flex-col mt-4">
       {/* Comment content */}
-      <div className="flex">
-        <Avatar imageUrl={comment!.avatarUrl} altText={comment!.username} size={8} />
-        <div className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] focus:outline-none caret-white">
-          <div className="text-sm font-bold"> {comment!.username} </div>
+      <div className="flex justify-between text-ani-text-gray">
+        <Link href={"/user/" + comment!.username} className="min-w-fit"><Avatar imageUrl={comment!.avatarUrl} altText={comment!.username} size={8} /></Link>
+        <div className="rounded-2xl py-2 px-4 ml-2 w-full bg-ani-gray focus:outline-none caret-white">
+          <Link href={"/user/" + comment!.username} className="text-sm font-bold">{comment!.username}</Link>
+          <br />
           {comment!.content}
         </div>
       </div>

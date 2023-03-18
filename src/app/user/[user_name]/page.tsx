@@ -48,7 +48,7 @@ async function Profile({ params }: { params: { user_name: string } }) {
   return (
     <div className={cx('profile-wrapper')}>
       <div className={cx('profile-content')}>
-        <ProfileHeader guess={{ ...guessData }} admin={{ ...adminData }} />
+        <ProfileHeader guess={guessData} admin={adminData} />
         <div className={cx('profile-body-wrapper')}>
           <div className={cx('status-section')}>
             {guessData?.mal_connect ? (

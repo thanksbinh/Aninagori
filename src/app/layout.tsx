@@ -19,7 +19,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en">
       <head />
       <body>
-        <main className='bg-[#212833]'>
+        <main className='bg-ani-gray'>
           <SessionProvider session={session}>
             {/* @ts-expect-error Server Component */}
             <NavBar />

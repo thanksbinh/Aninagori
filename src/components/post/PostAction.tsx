@@ -53,11 +53,11 @@ const PostAction: FC<PostDynamicProps> = ({
   }, [])
 
   useEffect(() => {
-    (reactions0.length != reactions.length) && setReactionToggle(reactions0.some((e: any) => e.username === myUserInfo.username))
+    reactions0 && setReactionToggle(reactions0.some((e: any) => e.username === myUserInfo.username))
   }, [reactions0])
 
   useEffect(() => {
-    setCommentNum(commentCount)
+    commentCount && (commentCount != commentNum) && setCommentNum(commentCount)
   }, [commentCount])
 
   useEffect(() => {
@@ -104,7 +104,7 @@ const PostAction: FC<PostDynamicProps> = ({
   }
 
   return (
-    <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pt-0 rounded-t-none">
+    <div className="flex flex-col flex-1 bg-ani-black rounded-2xl p-4 pt-0 rounded-t-none">
       {/* Recent reactions */}
       <div className="flex my-4 mx-2">
         {(reactions.length > 2 ? reactions.slice(reactions.length - 3) : reactions.slice(0)).reverse().map((user: any) =>
@@ -134,8 +134,8 @@ const PostAction: FC<PostDynamicProps> = ({
         </button>
       </div>
 
-      {/* Expand post if comments > 1 */}
-      {(commentCount > 1 && commentCount > comments0.length) &&
+      {/* Expand post */}
+      {(commentCount > comments0.length) &&
         <div>
           <div onClick={() => setPostExpand(true)} className="mt-4 ml-2 text-sm font-bold text-gray-400 hover:cursor-pointer hover:underline">View more comments</div>
           {postExpand &&
