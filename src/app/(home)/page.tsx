@@ -3,7 +3,7 @@ import { db } from '@/firebase/firebase-app';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { doc, getDoc } from 'firebase/firestore';
 import { getServerSession } from 'next-auth';
-import { PostForm, Posts } from '../../components';
+import { PostForm, Posts, Message, MessageForm } from '../../components';
 
 async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
   if (!userId) return;
@@ -32,6 +32,18 @@ export default async function Home() {
   return (
     <div className='flex justify-center pt-10'>
       <div className="flex flex-col lg:w-2/5 w-3/5">
+        <div className='flex flex-col flex-1 bg-[#191c21] rounded-2xl px-4 my-4'>
+          <Message 
+            senderUsername={myUserInfo.username}
+            receiverUsername={'Some1'}
+            avatarUrl={myUserInfo.image}
+            timestamp={'5 minutes ago'}
+            content={'Hello'}
+            likes={0}
+          />
+          <MessageForm setLastMessage={undefined} inputRef={undefined} />
+        </div>
+
         <PostForm avatarUrl={myUserInfo.image} username={myUserInfo.username} />
 
         {/* @ts-expect-error Server Component */}
