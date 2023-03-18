@@ -44,6 +44,6 @@
     "src/components/post/PostContent.tsx",
     "src/app/profile/page.jsx",
     "src/app/(home)/layout.tsx"
-  ],
+, "src/app/wrap/page.jsx"  ],
   "exclude": ["node_modules"]
 }
