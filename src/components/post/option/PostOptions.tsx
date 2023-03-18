@@ -9,7 +9,7 @@ import { adminOptions, authorOptions, guestOptions } from "./userTypes";
 
 interface option {
   name: string,
-  action: (postId: string, authorName?: string) => void
+  action: any
 }
 
 const PostOptions = () => {
@@ -41,8 +41,8 @@ const PostOptions = () => {
     };
   }, []);
 
-  const handleOption = (option: option) => {
-    option.action(postId, authorName)
+  const handleOption = async (option: option) => {
+    await option.action(postId, authorName)
     setIsOpen(false)
     router.refresh()
   }

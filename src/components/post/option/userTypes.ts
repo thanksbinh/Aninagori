@@ -27,7 +27,7 @@ const authorOptions = [
   },
   {
     name: 'Move to trash',
-    action: (postId: string) => moveToTrash(postId),
+    action: async (postId: string) => await moveToTrash(postId),
   },
 ];
 
@@ -38,11 +38,11 @@ const adminOptions = [
   },
   {
     name: 'Move to trash',
-    action: (postId: string) => moveToTrash(postId),
+    action: async (postId: string) => await moveToTrash(postId),
   },
   {
     name: 'Ban this user',
-    action: (postId: string, authorName?: string) => authorName && banUser(authorName),
+    action: async (postId: string, authorName?: string) => await banUser(authorName),
   },
 ];
 
