@@ -8,7 +8,7 @@ import { db } from "@/firebase/firebase-app";
 import PostAction from "./PostAction"
 import { formatDuration } from "../utils/formatDuration";
 import Modal from "../utils/Modal";
-import { PostContext } from "./context/PostContex";
+import { PostContext } from "./PostAction";
 
 // Todo: Optimization
 export default function PostPopup({ isOpen, onClose }: { isOpen: boolean, onClose: any }) {
@@ -57,6 +57,7 @@ export default function PostPopup({ isOpen, onClose }: { isOpen: boolean, onClos
     <Modal isOpen={isOpen} onClose={onClose} title={""}>
       <div className="w-[600px]" >
         <PostContent
+          myUserInfo={myUserInfo}
           authorName={post.authorName}
           avatarUrl={post.avatarUrl}
           timestamp={post.timestamp}

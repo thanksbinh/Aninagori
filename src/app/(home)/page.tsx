@@ -1,4 +1,4 @@
-import { UserInfo } from "@/global/types";
+import { UserInfo } from "@/global/UserInfo";
 import { db } from '@/firebase/firebase-app';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { doc, getDoc } from 'firebase/firestore';

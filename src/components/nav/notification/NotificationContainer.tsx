@@ -1,7 +1,7 @@
 import { db } from "@/firebase/firebase-app";
 import { arrayRemove, arrayUnion, collection, doc, getDocs, onSnapshot, orderBy, query, updateDoc, where } from "firebase/firestore";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { UserInfo } from "../../../global/types";
+import { UserInfo } from "../../../global/UserInfo";
 import FriendRequestComponent, { FriendRequest } from "./FriendRequest"
 import NotificationComponent, { Notification } from "./Notification";
 

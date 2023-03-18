@@ -5,16 +5,21 @@ import { FC, useEffect, useRef, useState } from "react";
 import { HiOutlineHeart, HiHeart } from "react-icons/hi2";
 import { AiOutlineComment } from "react-icons/ai";
 import { RiAddCircleLine } from "react-icons/ri";
+import React from 'react';
 
 import Avatar from "../avatar/Avatar";
-import { UserInfo } from "../../global/types";
+import { UserInfo } from "../../global/UserInfo";
 import { db } from "@/firebase/firebase-app";
 import Comments from "./comment/Comments";
 import PostPopup from "./PostPopup";
-import { PostContext } from "./context/PostContex";
 import { CommentProps } from "./comment/Comment";
 import { useRouter } from "next/navigation";
 import CommentForm from "./comment/CommentForm";
+
+interface PostContextType {
+  myUserInfo: UserInfo;
+  postId: string;
+}
 
 interface PostDynamicProps {
   myUserInfo: UserInfo;
@@ -23,6 +28,15 @@ interface PostDynamicProps {
   comments: CommentProps[];
   postId: string;
 };
+
+export const PostContext = React.createContext<PostContextType>({
+  myUserInfo: {
+    username: "",
+    image: "",
+    id: "",
+  },
+  postId: ""
+});
 
 const PostAction: FC<PostDynamicProps> = ({
   myUserInfo,

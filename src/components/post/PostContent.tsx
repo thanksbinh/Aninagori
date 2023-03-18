@@ -1,6 +1,6 @@
 import { FC } from "react";
 import Avatar from "../avatar/Avatar";
-import { UserInfo } from "../../global/types";
+import { UserInfo } from "../../global/UserInfo";
 import PostOptions from "./option/PostOptions";
 import { VideoComponent } from "./Video";
 
@@ -37,7 +37,7 @@ const PostContent: FC<PostStaticProps> = ({
           </div>
         </div>
         <div className="m-2">
-          <PostOptions isAdmin={myUserInfo?.is_admin || myUserInfo.username === authorName} postId={id} />
+          <PostOptions isAdmin={myUserInfo?.is_admin || myUserInfo?.username === authorName} postId={id} />
         </div>
       </div>
 

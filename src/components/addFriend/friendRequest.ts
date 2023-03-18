@@ -1,7 +1,30 @@
 import { db } from "@/firebase/firebase-app";
-import { addDoc, arrayRemove, arrayUnion, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { UserInfo } from "../../global/types";
+import { addDoc, arrayRemove, arrayUnion, collection, doc, serverTimestamp, updateDoc, writeBatch } from "firebase/firestore";
+import { UserInfo } from "../../global/UserInfo";
 import { FriendRequest } from "../nav/notification/FriendRequest";
+
+// Person's info remove from Self friend list and opposite
+async function unfriend(myUserInfo: UserInfo, userInfo: UserInfo) {
+  const batch = writeBatch(db);
+
+  const myUserRef = doc(db, 'users', myUserInfo.id);
+  const userRef = doc(db, 'users', userInfo.id);
+
+  batch.update(myUserRef, {
+    friend_list: arrayRemove({
+      username: userInfo.username,
+      image: userInfo.image,
+    })
+  });
+  batch.update(userRef, {
+    friend_list: arrayRemove({
+      username: myUserInfo.username,
+      image: myUserInfo.image,
+    })
+  });
+
+  await batch.commit();
+}
 
 async function notifyFriendRequestAccept(myUserInfo: UserInfo, userId: string) {
   const notificationsRef = collection(db, 'users', userId, "notifications");
@@ -68,4 +91,4 @@ function beFriends(myUserInfo: UserInfo, userInfo: UserInfo) {
   notifyFriendRequestAccept(myUserInfo, userInfo.id)
 }
 
-export { makeFriendRequest, removeFriendRequest, beFriends }
+export { makeFriendRequest, removeFriendRequest, beFriends, unfriend }

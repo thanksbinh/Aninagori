@@ -1,6 +1,6 @@
 import { getDocs, collection, query, orderBy, getCountFromServer, limit } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
-import { UserInfo } from "../../global/types";
+import { UserInfo } from "../../global/UserInfo";
 import { formatDuration } from "../utils/formatDuration";
 import PostContent from "./PostContent";
 import PostAction from "./PostAction"
