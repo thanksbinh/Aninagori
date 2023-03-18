@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserInfo } from '../../nav/NavBar';
+import { UserInfo } from "../../../global/types";
 
 interface PostContextType {
   myUserInfo: UserInfo;

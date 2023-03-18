@@ -1,6 +1,6 @@
 import { getDocs, collection, query, orderBy, getCountFromServer, limit } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
-import { UserInfo } from "../nav/NavBar";
+import { UserInfo } from "../../global/types";
 import { formatDuration } from "../utils/formatDuration";
 import PostContent from "./PostContent";
 import PostAction from "./PostAction"
@@ -68,6 +68,7 @@ async function Post(props: any) {
   return (
     <div className="mb-4">
       <PostContent
+        myUserInfo={props.myUserInfo}
         authorName={props.authorName}
         avatarUrl={props.avatarUrl}
         timestamp={props.timestamp}

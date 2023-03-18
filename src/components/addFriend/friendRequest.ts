@@ -1,6 +1,6 @@
 import { db } from "@/firebase/firebase-app";
 import { addDoc, arrayRemove, arrayUnion, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { UserInfo } from "../nav/NavBar";
+import { UserInfo } from "../../global/types";
 import { FriendRequest } from "../nav/notification/FriendRequest";
 
 async function notifyFriendRequestAccept(myUserInfo: UserInfo, userId: string) {

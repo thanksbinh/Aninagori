@@ -8,12 +8,7 @@ import NotificationBtn from "./notification/NotificationBtn";
 import { BsChatLeftDotsFill } from 'react-icons/bs';
 import Button from "../button/Button";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-
-export interface UserInfo {
-  "id": string,
-  "username": string,
-  "image": string,
-}
+import { UserInfo } from "../../global/types";
 
 async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
   if (!userId) return undefined

@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { UserInfo } from "../NavBar";
+import { UserInfo } from "../../../global/types";
 import { removeFriendRequest, beFriends } from "@/components/addFriend/friendRequest";
 import { formatDuration } from "@/components/utils/formatDuration";
 import { useState } from "react";

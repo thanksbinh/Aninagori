@@ -1,4 +1,4 @@
-import { UserInfo } from '@/components/nav/NavBar';
+import { UserInfo } from "@/global/types";
 import { db } from '@/firebase/firebase-app';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { doc, getDoc } from 'firebase/firestore';
@@ -16,6 +16,7 @@ async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
       "id": docSnap.id,
       "username": docSnap.data().username,
       "image": docSnap.data().image,
+      "is_admin": docSnap.data().is_admin,
     }
   } else {
     console.log("No such document in page/getUserInfo()!");

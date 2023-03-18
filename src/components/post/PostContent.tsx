@@ -1,8 +1,11 @@
 import { FC } from "react";
 import Avatar from "../avatar/Avatar";
+import { UserInfo } from "../../global/types";
+import PostOptions from "./option/PostOptions";
 import { VideoComponent } from "./Video";
 
 type PostStaticProps = {
+  myUserInfo: UserInfo;
   authorName: string;
   avatarUrl: string;
   timestamp: string;
@@ -13,21 +16,28 @@ type PostStaticProps = {
 };
 
 const PostContent: FC<PostStaticProps> = ({
+  myUserInfo,
   authorName,
   avatarUrl,
   timestamp,
   content,
   imageUrl,
-  videoUrl
+  videoUrl,
+  id
 }) => {
 
   return (
     <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pb-0 rounded-b-none">
-      <div className="flex items-center space-x-4 mx-2">
-        <a href={"/user/" + authorName}><Avatar imageUrl={avatarUrl} altText={authorName} size={10} /></a>
-        <div>
-          <a href={"/user/" + authorName} className="font-bold text-[#dddede]">{authorName}</a>
-          <p className="text-gray-500 text-sm">{timestamp}</p>
+      <div className="flex justify-between">
+        <div className="flex items-center space-x-4 mx-2">
+          <a href={"/user/" + authorName}><Avatar imageUrl={avatarUrl} altText={authorName} size={10} /></a>
+          <div>
+            <a href={"/user/" + authorName} className="font-bold text-[#dddede]">{authorName}</a>
+            <p className="text-gray-500 text-sm">{timestamp}</p>
+          </div>
+        </div>
+        <div className="m-2">
+          <PostOptions isAdmin={myUserInfo?.is_admin || myUserInfo.username === authorName} postId={id} />
         </div>
       </div>
 

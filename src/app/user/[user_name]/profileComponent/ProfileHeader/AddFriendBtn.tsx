@@ -1,7 +1,7 @@
 import { db } from '@/firebase/firebase-app';
 import { doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState, useRef } from 'react';
-import { UserInfo } from "@/components/nav/NavBar";
+import { UserInfo } from "@/global/types";
 import { FriendRequest } from "@/components/nav/notification/FriendRequest";
 import { beFriends, makeFriendRequest, removeFriendRequest } from "@/components/addFriend/friendRequest";
 import Button from '@/components/button/Button';

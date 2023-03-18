@@ -7,7 +7,7 @@ import { AiOutlineComment } from "react-icons/ai";
 import { RiAddCircleLine } from "react-icons/ri";
 
 import Avatar from "../avatar/Avatar";
-import { UserInfo } from "../nav/NavBar";
+import { UserInfo } from "../../global/types";
 import { db } from "@/firebase/firebase-app";
 import Comments from "./comment/Comments";
 import PostPopup from "./PostPopup";
