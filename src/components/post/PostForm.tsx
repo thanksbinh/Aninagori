@@ -78,7 +78,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, isBanned }) => {
 
           <div className="flex w-full mt-4">
             <img src="/banned.gif" className="w-2/3 object-contain" />
-            <div>you've been banned</div>
+            <div>you&apos;ve been banned</div>
           </div>
 
           <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-[#212833]">
