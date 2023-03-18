@@ -2,7 +2,7 @@ import { addDoc, arrayUnion, collection, doc, serverTimestamp, Timestamp, update
 import { FC, useContext, useState } from "react";
 import { db } from "@/firebase/firebase-app";
 import Avatar from "../../avatar/Avatar";
-import { PostContext } from "../PostAction";
+import { PostContext } from "../context/PostContext";
 import { useRouter } from "next/navigation";
 
 interface Props {

@@ -2,7 +2,7 @@ import { arrayRemove, arrayUnion, doc, getDoc, Timestamp, updateDoc } from "fire
 import { useEffect, useContext, useState, useRef } from "react";
 import { db } from "@/firebase/firebase-app";
 import Avatar from "../../avatar/Avatar";
-import { PostContext } from "../PostAction";
+import { PostContext } from "../context/PostContext";
 import CommentForm from "./CommentForm";
 
 export interface CommentProps {

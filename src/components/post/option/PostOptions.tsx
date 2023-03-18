@@ -2,50 +2,31 @@
 
 import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
-import { FC, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { SiThreedotjs } from "react-icons/si";
-import { moveToTrash } from "./moveToTrash";
+import { PostContext } from "../context/PostContext";
+import { adminOptions, authorOptions, guestOptions } from "./userTypes";
 
-const adminOptions = [
-  {
-    name: 'Turn on/off notifications for this post',
-    action: () => console.log('Turn on/off notifications for this post'),
-  },
-  {
-    name: 'Edit post',
-    action: () => console.log('Edit post'),
-  },
-  {
-    name: 'Move to trash',
-    action: (postId: string) => moveToTrash(postId),
-  },
-];
+interface option {
+  name: string,
+  action: (postId: string, authorName?: string) => void
+}
 
-const guestOptions = [
-  {
-    name: 'Turn on/off notifications for this post',
-    action: () => console.log('Turn on/off notifications for this post'),
-  },
-  {
-    name: 'Hide post',
-    action: () => console.log('Hide post'),
-  },
-  {
-    name: 'Report post',
-    action: () => console.log('Report post'),
-  },
-];
+const PostOptions = () => {
+  const { myUserInfo, authorName, postId } = useContext(PostContext)
 
-
-type Props = {
-  isAdmin: boolean | undefined;
-  postId: string;
-};
-
-const PostOptions: FC<Props> = ({ isAdmin, postId }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+
+  const postOptions = []
+  if (myUserInfo?.username === authorName) {
+    postOptions.push(...authorOptions);
+  } else if (myUserInfo.is_admin) {
+    postOptions.push(...adminOptions);
+  } else {
+    postOptions.push(...guestOptions);
+  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -60,8 +41,9 @@ const PostOptions: FC<Props> = ({ isAdmin, postId }) => {
     };
   }, []);
 
-  const handleOption = (option: any) => {
-    option.action(postId)
+  const handleOption = (option: option) => {
+    option.action(postId, authorName)
+    setIsOpen(false)
     router.refresh()
   }
 
@@ -81,7 +63,7 @@ const PostOptions: FC<Props> = ({ isAdmin, postId }) => {
       >
         <Menu.Items static className="origin-top-right absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="py-1">
-            {((isAdmin) ? adminOptions : guestOptions).map((option) => (
+            {postOptions.map((option) => (
               <Menu.Item key={option.name}>
                 {({ active }) => (
                   <button onClick={() => handleOption(option)} className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} block px-4 py-2 text-sm w-full text-left`}>

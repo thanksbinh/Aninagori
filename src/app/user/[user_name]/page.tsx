@@ -65,6 +65,7 @@ async function Profile({ params }: { params: { user_name: string } }) {
               <PostForm
                 avatarUrl={session?.user?.image as string}
                 username={guessData.name || guessData.username}
+                isBanned={!!adminData.is_banned}
               />
             )}
             {/* @ts-expect-error Server Component */}

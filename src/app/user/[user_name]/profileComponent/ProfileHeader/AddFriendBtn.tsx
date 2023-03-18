@@ -1,9 +1,9 @@
 import { db } from '@/firebase/firebase-app';
 import { doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState, useRef } from 'react';
-import { UserInfo } from "@/global/UserInfo";
+import { UserInfo } from "@/global/types";
 import { FriendRequest } from "@/components/nav/notification/FriendRequest";
-import { beFriends, makeFriendRequest, removeFriendRequest, unfriend } from "@/components/addFriend/friendRequest";
+import { beFriends, makeFriendRequest, removeFriendRequest, unfriend } from "@/components/friend/friendAction";
 import Button from '@/components/button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserCheck, faUserMinus, faUserPlus } from '@fortawesome/free-solid-svg-icons';

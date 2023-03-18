@@ -1,31 +1,25 @@
 import { FC } from "react";
 import Avatar from "../avatar/Avatar";
-import { UserInfo } from "../../global/UserInfo";
 import PostOptions from "./option/PostOptions";
 import { VideoComponent } from "./Video";
 
 type PostStaticProps = {
-  myUserInfo: UserInfo;
-  authorName: string;
-  avatarUrl: string;
-  timestamp: string;
-  content: string;
+  authorName?: string;
+  avatarUrl?: string;
+  timestamp?: string;
+  content?: string;
   imageUrl?: string;
   videoUrl?: string;
-  id: string;
 };
 
 const PostContent: FC<PostStaticProps> = ({
-  myUserInfo,
-  authorName,
-  avatarUrl,
+  authorName = "",
+  avatarUrl = "",
   timestamp,
   content,
   imageUrl,
   videoUrl,
-  id
 }) => {
-
   return (
     <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pb-0 rounded-b-none">
       <div className="flex justify-between">
@@ -37,7 +31,7 @@ const PostContent: FC<PostStaticProps> = ({
           </div>
         </div>
         <div className="m-2">
-          <PostOptions isAdmin={myUserInfo?.is_admin || myUserInfo?.username === authorName} postId={id} />
+          <PostOptions />
         </div>
       </div>
 

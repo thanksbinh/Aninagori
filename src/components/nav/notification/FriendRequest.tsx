@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
-import { UserInfo } from "../../../global/UserInfo";
-import { removeFriendRequest, beFriends } from "@/components/addFriend/friendRequest";
+import { UserInfo } from "../../../global/types";
+import { removeFriendRequest, beFriends } from "@/components/friend/friendAction";
 import { formatDuration } from "@/components/utils/formatDuration";
 import { useState } from "react";
 import { arrayRemove, arrayUnion, doc, Timestamp, updateDoc } from "firebase/firestore";
