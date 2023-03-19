@@ -2,9 +2,8 @@ import NextAuth, { NextAuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { FirestoreAdapter } from "@next-auth/firebase-adapter"
-import { signInWithCustomToken, signInWithEmailAndPassword } from "firebase/auth"
+import { signInWithEmailAndPassword } from "firebase/auth"
 import { auth, db } from "@/firebase/firebase-app"
-import { getAuth } from "firebase-admin/auth"
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore"
 import { cert } from "firebase-admin/app"
 
@@ -69,7 +68,7 @@ export const authOptions: NextAuthOptions = {
             if (isNewUser == true) {
                 try {
                     const userRef = doc(db, 'users', token.sub!);
-                    updateDoc(userRef, { joined_date: serverTimestamp(), username: "guess" });
+                    updateDoc(userRef, { joined_date: serverTimestamp(), username: "" });
                 } catch (error) {
                     console.log(error)
                 }

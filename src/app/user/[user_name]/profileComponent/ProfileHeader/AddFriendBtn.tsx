@@ -50,7 +50,7 @@ export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: Use
         setContent({ content: 'Accept friend', icon: faUserCheck });
     }
 
-    checkFriendStatus()
+    myUserInfo.username && userInfo.username && checkFriendStatus()
   }, [myUserInfo, userInfo]);
 
   const handleAddFriend = async () => {

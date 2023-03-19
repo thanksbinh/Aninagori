@@ -1,7 +1,7 @@
 'use client'
 
 import { db } from "@/firebase/firebase-app";
-import { doc, onSnapshot, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot, serverTimestamp, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { UserInfo } from "../../../global/types";
 import FriendRequestComponent from "./FriendRequest";
@@ -21,9 +21,12 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, sho
   useEffect(() => {
     const notificationsRef = doc(db, "notifications", myUserInfo.username);
     const unsubscribe = onSnapshot(notificationsRef, docSnap => {
-      if (!docSnap.exists()) return;
+      if (!docSnap.exists()) {
+        setDoc(notificationsRef, { recentNotifications: [], lastRead: serverTimestamp() })
+        return;
+      }
 
-      setNotification(docSnap.data()?.recentNotifications.sort((a: any, b: any) => b.timestamp - a.timestamp))
+      setNotification(docSnap.data().recentNotifications.sort((a: any, b: any) => b.timestamp - a.timestamp))
       setLastRead(docSnap.data().lastRead)
     })
 
@@ -39,7 +42,9 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, sho
   }, [notification, lastRead])
 
   useEffect(() => {
-    if (showNotification) setUnreadNoti(0);
+    if (!showNotification) return;
+
+    setUnreadNoti(0);
 
     const notificationsRef = doc(db, "notifications", myUserInfo.username);
     updateDoc(notificationsRef, {
