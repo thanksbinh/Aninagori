@@ -52,7 +52,6 @@ function AnimeSearch() {
 
   return (
     <HeadlessTippy
-      appendTo={() => document.body}
       visible={searchResult.length !== 0}
       placement="bottom-start"
       interactive={true}
