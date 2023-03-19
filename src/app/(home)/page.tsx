@@ -1,4 +1,4 @@
-import { UserInfo } from '@/components/nav/NavBar';
+import { UserInfo } from "@/global/types";
 import { db } from '@/firebase/firebase-app';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { doc, getDoc } from 'firebase/firestore';
@@ -16,6 +16,8 @@ async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
       "id": docSnap.id,
       "username": docSnap.data().username,
       "image": docSnap.data().image,
+      "is_admin": docSnap.data().is_admin,
+      "is_banned": docSnap.data().is_banned,
     }
   } else {
     console.log("No such document in page/getUserInfo()!");
@@ -32,7 +34,7 @@ export default async function Home() {
   return (
     <div className='flex justify-center pt-10'>
       <div className="flex flex-col lg:w-2/5 w-3/5">
-        <PostForm avatarUrl={myUserInfo.image} username={myUserInfo.username} />
+        <PostForm avatarUrl={myUserInfo.image} username={myUserInfo.username} isBanned={!!myUserInfo.is_banned} />
 
         {/* @ts-expect-error Server Component */}
         <Posts myUserInfo={myUserInfo} />

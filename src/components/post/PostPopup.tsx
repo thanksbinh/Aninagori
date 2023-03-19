@@ -8,12 +8,12 @@ import { db } from "@/firebase/firebase-app";
 import PostAction from "./PostAction"
 import { formatDuration } from "../utils/formatDuration";
 import Modal from "../utils/Modal";
-import { PostContext } from "./context/PostContex";
+import { PostContext } from "./context/PostContext";
 
 // Todo: Optimization
 export default function PostPopup({ isOpen, onClose }: { isOpen: boolean, onClose: any }) {
   const [post, setPost] = useState<any>({})
-  const { myUserInfo, postId } = useContext(PostContext)
+  const { postId } = useContext(PostContext)
 
   useEffect(() => {
     async function fetchData() {
@@ -63,14 +63,11 @@ export default function PostPopup({ isOpen, onClose }: { isOpen: boolean, onClos
           content={post.content}
           imageUrl={post.imageUrl}
           videoUrl={post.videoUrl}
-          id={postId}
         />
         <PostAction
-          myUserInfo={myUserInfo}
           reactions={post.reactions}
           commentCount={post.commentCount}
           comments={post.comments}
-          postId={postId}
         />
       </div>
     </Modal >

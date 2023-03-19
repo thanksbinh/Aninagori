@@ -8,12 +8,7 @@ import NotificationBtn from "./notification/NotificationBtn";
 import { BsChatLeftDotsFill } from 'react-icons/bs';
 import Button from "../button/Button";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-
-export interface UserInfo {
-  "id": string,
-  "username": string,
-  "image": string,
-}
+import { UserInfo } from "../../global/types";
 
 async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
   if (!userId) return undefined
@@ -38,7 +33,7 @@ export default async function NavBar() {
   const myUserInfo = await getUserInfo(myUserId)
 
   return (
-    <nav className="flex justify-between items-center px-8 fixed top-0 z-40 w-full h-14 header-fixed bg-[#4e5d78] shadow-md">
+    <nav className="flex justify-between items-center px-8 fixed top-0 z-40 w-full h-14 header-fixed bg-ani-light-gray shadow-md">
       <div className="flex items-center gap-10">
         <Link href="/" className="text-lg font-semibold">
           Aninagori

@@ -1,33 +1,38 @@
+import Link from "next/link";
 import { FC } from "react";
 import Avatar from "../avatar/Avatar";
+import PostOptions from "./option/PostOptions";
 import { VideoComponent } from "./Video";
 
 type PostStaticProps = {
-  authorName: string;
-  avatarUrl: string;
-  timestamp: string;
-  content: string;
+  authorName?: string;
+  avatarUrl?: string;
+  timestamp?: string;
+  content?: string;
   imageUrl?: string;
   videoUrl?: string;
-  id: string;
 };
 
 const PostContent: FC<PostStaticProps> = ({
-  authorName,
-  avatarUrl,
+  authorName = "",
+  avatarUrl = "",
   timestamp,
   content,
   imageUrl,
-  videoUrl
+  videoUrl,
 }) => {
-
   return (
-    <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pb-0 rounded-b-none">
-      <div className="flex items-center space-x-4 mx-2">
-        <a href={"/user/" + authorName}><Avatar imageUrl={avatarUrl} altText={authorName} size={10} /></a>
-        <div>
-          <a href={"/user/" + authorName} className="font-bold text-[#dddede]">{authorName}</a>
-          <p className="text-gray-500 text-sm">{timestamp}</p>
+    <div className="flex flex-col flex-1 bg-ani-black rounded-2xl p-4 pb-0 rounded-b-none">
+      <div className="flex justify-between">
+        <div className="flex items-center space-x-4 mx-2">
+          <Link href={"/user/" + authorName}><Avatar imageUrl={avatarUrl} altText={authorName} size={10} /></Link>
+          <div>
+            <Link href={"/user/" + authorName} className="font-bold text-[#dddede]">{authorName}</Link>
+            <p className="text-gray-500 text-sm">{timestamp}</p>
+          </div>
+        </div>
+        <div className="m-2">
+          <PostOptions />
         </div>
       </div>
 

@@ -82,7 +82,7 @@ const SearchBar = () => {
       {showResults && (
         <div className="absolute z-10 w-72 mt-1 bg-white rounded-lg shadow-lg">
           {searchResults.map((result) =>
-            <div key={result.username} onClick={() => handleResultClick(result.username)} className="flex justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer">
+            <div key={result.username} onClick={() => handleResultClick(result.username)} className="flex justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-lg">
               <div className="flex items-center gap-2 text-gray-800">
                 <img
                   src={result.image || '/bocchi.jpg'}

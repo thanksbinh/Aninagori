@@ -29,7 +29,7 @@ export default async function FriendList() {
   return (
     <div className="relative">
       <div className="flex justify-between items-center px-2 mb-4">
-        <h2 className="text-white font-semibold text-xl">Friends</h2>
+        <h2 className="text-ani-text-gray font-semibold text-xl">Friends</h2>
         <div className="hover:cursor-pointer hover:bg-gray-200 rounded-full p-2">
           <svg
             className="h-6 w-6 text-gray-500"

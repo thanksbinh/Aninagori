@@ -12,9 +12,10 @@ import { v4 } from "uuid"
 type PostFormProps = {
   username: string;
   avatarUrl: string;
+  isBanned: boolean;
 };
 
-const PostForm: FC<PostFormProps> = ({ username, avatarUrl }) => {
+const PostForm: FC<PostFormProps> = ({ username, avatarUrl, isBanned }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [mediaUrl, setMediaUrl] = useState<any>(null);
   const [mediaType, setMediaType] = useState<string>("")
@@ -32,8 +33,6 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl }) => {
       content: inputRef.current?.value || "",
       imageUrl: (mediaType === "image") ? downloadMediaUrl : "",
       videoUrl: (mediaType === "video") ? downloadMediaUrl : "",
-      // Todo: Remove comments: 0
-      comments: 0
     });
 
     inputRef.current!.value = "";
@@ -61,16 +60,54 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl }) => {
     setMediaUrl(file)
   };
 
+  if (isBanned)
+    return (
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <div className="flex flex-col item flex-1 bg-ani-black rounded-2xl px-4 my-4">
+          <div className="flex justify-between items-center mt-4">
+            <Avatar imageUrl={avatarUrl} altText={username} size={8} />
+            <input
+              type="text"
+              ref={inputRef}
+              disabled
+              className="flex rounded-3xl py-3 px-4 mx-2 w-full focus:outline-none bg-ani-gray caret-white"
+            />
+          </div>
+
+          <div className="flex w-full mt-4">
+            <img src="/banned.gif" className="w-2/3 object-contain" />
+            <div>you&apos;ve been banned</div>
+          </div>
+
+          <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-[#212833]">
+            <label htmlFor="image-input" className="flex flex-1 items-center justify-center space-x-1 text-[#fff] py-2 px-4 rounded-lg mt-1 mx-1">
+              <HiPhoto className="w-5 h-5" />
+              <span>Photo/Gif</span>
+            </label>
+
+            <label htmlFor="video-input" className="flex flex-1 items-center justify-center space-x-1 text-[#fff] py-2 px-4 rounded-lg mt-1 mx-1">
+              <HiVideoCamera className="w-5 h-5" />
+              <span>Video</span>
+            </label>
+
+            <button type="submit" disabled className="flex flex-1 items-center justify-center space-x-1 text-[#fff] bg-[#798597] py-2 px-4 rounded-lg mt-1 mx-1">
+              <span>Share</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    )
+
   return (
     <form onSubmit={(e) => handleSubmit(e)}>
-      <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl px-4 my-4">
+      <div className="flex flex-col flex-1 bg-ani-black rounded-2xl px-4 my-4">
         <div className="flex justify-between items-center mt-4">
           <Avatar imageUrl={avatarUrl} altText={username} size={8} />
           <input
             type="text"
             ref={inputRef}
             placeholder="Share your favourite Animemory now!"
-            className="flex rounded-3xl py-3 px-4 mx-2 w-full focus:outline-none bg-[#212833] caret-white"
+            className="flex rounded-3xl py-3 px-4 mx-2 w-full focus:outline-none bg-ani-gray caret-white"
           />
         </div>
 

@@ -48,7 +48,7 @@ async function Profile({ params }: { params: { user_name: string } }) {
   return (
     <div className={cx('profile-wrapper')}>
       <div className={cx('profile-content')}>
-        <ProfileHeader guess={{ ...guessData }} admin={{ ...adminData }} />
+        <ProfileHeader guess={guessData} admin={adminData} />
         <div className={cx('profile-body-wrapper')}>
           <div className={cx('status-section')}>
             {guessData?.mal_connect ? (
@@ -65,6 +65,7 @@ async function Profile({ params }: { params: { user_name: string } }) {
               <PostForm
                 avatarUrl={session?.user?.image as string}
                 username={guessData.name || guessData.username}
+                isBanned={!!adminData.is_banned}
               />
             )}
             {/* @ts-expect-error Server Component */}
