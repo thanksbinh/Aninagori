@@ -1,6 +1,8 @@
+'use client'
+
 import { formatDuration } from "@/components/utils/formatDuration";
 import { db } from "@/firebase/firebase-app";
-import { arrayRemove, arrayUnion, doc, Timestamp, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, Timestamp, writeBatch } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { UserInfo } from "../../../global/types";
 
@@ -14,7 +16,7 @@ export interface Notification {
   };
   type: string;
   timestamp: Timestamp;
-  read: boolean;
+  read: boolean | null;
 }
 
 interface Props {
@@ -22,28 +24,35 @@ interface Props {
   myUserInfo: UserInfo;
 }
 
+export async function markAsRead(username: string, notification: Notification) {
+  const notificationsRef = doc(db, "notifications", username)
+  const batch = writeBatch(db);
+
+  batch.update(notificationsRef, {
+    recentNotifications: arrayRemove(notification)
+  });
+  batch.update(notificationsRef, {
+    recentNotifications: arrayUnion({
+      ...notification,
+      read: true
+    })
+  });
+
+  await batch.commit();
+}
+
 const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) => {
   const router = useRouter()
 
   const handleClickProfile = () => {
+    if (notification.read) return;
+    markAsRead(myUserInfo.username, notification)
     router.push('/user/' + notification.sender.username)
   }
 
   const handleClickNoti = () => {
-    const userRef = doc(db, "users", myUserInfo.id);
     if (notification.read) return;
-
-    updateDoc(userRef, {
-      notification: arrayRemove(notification)
-    });
-
-    updateDoc(userRef, {
-      notification: arrayUnion({
-        ...notification,
-        read: true
-      })
-    });
-
+    markAsRead(myUserInfo.username, notification)
     router.push(notification.url)
   }
 

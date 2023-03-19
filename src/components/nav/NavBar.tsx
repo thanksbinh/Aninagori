@@ -1,17 +1,15 @@
-import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
+import { doc, getDoc } from "firebase/firestore";
+import Link from "next/link";
+import { BsChatLeftDotsFill } from 'react-icons/bs';
+import { UserInfo } from "../../global/types";
+import Button from "../button/Button";
+import NotificationBtn from "./notification/NotificationBtn";
 import ProfilePicture from "./profilePicture/ProfilePicture";
 import SearchBar from "./search/SearchBar";
-import NotificationBtn from "./notification/NotificationBtn";
-import { BsChatLeftDotsFill } from 'react-icons/bs';
-import Button from "../button/Button";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { UserInfo } from "../../global/types";
 
-async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
-  if (!userId) return undefined
+async function getUserInfo(userId: string | undefined): Promise<UserInfo | undefined> {
+  if (!userId) return;
 
   const docRef = doc(db, "users", userId);
   const docSnap = await getDoc(docRef);
@@ -27,9 +25,7 @@ async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
   }
 }
 
-export default async function NavBar() {
-  const session = await getServerSession(authOptions);
-  const myUserId = (session as any)?.user?.id
+export default async function NavBar({ myUserId }: { myUserId: string | undefined }) {
   const myUserInfo = await getUserInfo(myUserId)
 
   return (

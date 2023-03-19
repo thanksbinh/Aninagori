@@ -10,6 +10,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      backgroundImage: (theme) => ({
+        'login-bg': "url('/wallpaper.png')",
+      }),
       colors: {
         'ani-gray': '#212733',
         'ani-light-gray': '#4e5d78',

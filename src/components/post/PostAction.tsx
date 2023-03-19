@@ -1,20 +1,19 @@
 'use client';
 
 import { arrayRemove, arrayUnion, doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { FC, useContext, useEffect, useRef, useState } from "react";
-import { HiOutlineHeart, HiHeart } from "react-icons/hi2";
+import { FC, useContext, useEffect, useRef, useState } from 'react';
 import { AiOutlineComment } from "react-icons/ai";
+import { HiHeart, HiOutlineHeart } from "react-icons/hi2";
 import { RiAddCircleLine } from "react-icons/ri";
-import React from 'react';
 
-import Avatar from "../avatar/Avatar";
 import { db } from "@/firebase/firebase-app";
-import Comments from "./comment/Comments";
-import PostPopup from "./PostPopup";
-import { CommentProps } from "./comment/Comment";
 import { useRouter } from "next/navigation";
+import Avatar from "../avatar/Avatar";
+import { CommentProps } from "./comment/Comment";
 import CommentForm from "./comment/CommentForm";
+import Comments from "./comment/Comments";
 import { PostContext } from "./context/PostContext";
+import PostPopup from "./PostPopup";
 
 interface PostDynamicProps {
   reactions?: Object[];

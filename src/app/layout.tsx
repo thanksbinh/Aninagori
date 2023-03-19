@@ -14,15 +14,16 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
+  const myUserId = (session as any)?.user?.id
 
   return (
     <html lang="en">
       <head />
-      <body>
+      <body className='bg-ani-gray'>
         <main className='bg-ani-gray'>
           <SessionProvider session={session}>
             {/* @ts-expect-error Server Component */}
-            <NavBar />
+            {myUserId && <NavBar myUserId={myUserId} />}
             {children}
           </SessionProvider>
         </main>
