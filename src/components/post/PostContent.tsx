@@ -32,7 +32,7 @@ const PostContent: FC<PostStaticProps> = ({
   imageUrl,
   videoUrl,
   animeID = '12403',
-  animeName = 'Yuru Yuri Nachuyachumi! Yuru Yuri Nachuyachumi! Yuru Yuri Nachuyachumi! Yuru Yuri Nachuyachumi!',
+  animeName = 'Yuru Yuri Nachuyachumi!',
   watchingProgess = 'is watching',
   episodesSeen = 6,
   episodesTotal = 13,

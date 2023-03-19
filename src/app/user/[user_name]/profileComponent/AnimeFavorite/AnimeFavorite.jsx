@@ -2,7 +2,6 @@
 import StatusWrapper from '../StatusWrapper/StatusWrapper';
 import classNames from 'classnames/bind';
 import styles from './AnimeFavorite.module.scss';
-import Link from 'next/link';
 const cx = classNames.bind(styles);
 
 function AnimeFavorite({ favorite_data }) {
@@ -37,9 +36,9 @@ function FavoriteChild({ title, count, data }) {
 
 export function Img({ href, className, src, alt }) {
   return (
-    <Link href={href}>
+    <a href={href} target="_blank">
       <img src={src} alt={alt} className={className}></img>
-    </Link>
+    </a>
   );
 }
 

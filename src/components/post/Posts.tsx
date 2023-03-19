@@ -20,7 +20,7 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
   return (
     <div className="flex flex-col">
       {fetchedPosts.map((post, key) => {
-        if (key !== -1) {
+        if (key === 0) {
           return (
             <>
               <div key={post.id}>

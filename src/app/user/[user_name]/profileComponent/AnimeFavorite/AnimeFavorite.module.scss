@@ -20,8 +20,9 @@
   }
 
   & > a {
+    display: inline-block;  
     margin-right: 12px;
-    width: 85px;
+    min-width: 85px;
     height: 125px;
   }
 }

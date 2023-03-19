@@ -17,8 +17,6 @@ function AnimeName({
   seen: number;
   total: number;
 }) {
-  console.log(convertToPercent(seen, total));
-
   return (
     <Tippy
       className={cx('tippy-anime-name')}
@@ -37,9 +35,7 @@ function AnimeName({
                 backgroundImage: `linear-gradient(to right, #c574cc ${convertToPercent(
                   seen,
                   total,
-                )}%, #444444 ${convertToPercent(
-                    seen,
-                    total,)}%)`,
+                )}%, #444444 ${convertToPercent(seen, total)}%)`,
               }
             : { backgroundColor: '#444444' }
         }
