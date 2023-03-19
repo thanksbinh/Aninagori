@@ -1,9 +1,8 @@
-import { addDoc, arrayUnion, collection, doc, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, doc, serverTimestamp, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { FC, useContext, useState } from "react";
 import { db } from "@/firebase/firebase-app";
 import Avatar from "../../avatar/Avatar";
 import { PostContext } from "../context/PostContext";
-import { useRouter } from "next/navigation";
 
 interface Props {
   setLastComment: any;
@@ -17,14 +16,17 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
   const isReply = commentId ? true : false
 
   const [myComment, setMyComment] = useState("")
-  const router = useRouter()
 
-  const sendComment = (comment: any) => {
+  const sendComment = async (comment: any) => {
     const commentsRef = collection(db, 'posts', postId, "comments");
-    addDoc(commentsRef, comment);
+
+    const docAdd = await addDoc(commentsRef, comment)
+    updateDoc(doc(db, "posts", postId), { lastComment: { ...comment, id: docAdd.id } })
+
+    return docAdd.id;
   }
 
-  const onComment = (e: any) => {
+  const onComment = async (e: any) => {
     e.preventDefault()
 
     if (!myComment.trim()) return;
@@ -36,16 +38,12 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
       timestamp: serverTimestamp(),
     }
 
-    sendComment(content)
+    commentId = await sendComment(content)
     setLastComment({
       ...content,
       timestamp: "less than a minute ago",
-      id: ""
+      id: commentId
     })
-
-    setTimeout(() => {
-      router.refresh()
-    }, 1000)
 
     setMyComment("")
   }

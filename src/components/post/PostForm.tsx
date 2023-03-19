@@ -33,8 +33,6 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, isBanned }) => {
       content: inputRef.current?.value || "",
       imageUrl: (mediaType === "image") ? downloadMediaUrl : "",
       videoUrl: (mediaType === "video") ? downloadMediaUrl : "",
-      // Todo: Remove comments: 0
-      comments: 0
     });
 
     inputRef.current!.value = "";

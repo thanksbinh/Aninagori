@@ -14,6 +14,10 @@ async function fetchPosts() {
   const fetchedPosts = querySnapshot.docs.map((doc) => {
     return {
       ...doc.data(),
+      lastComment: doc.data().lastComment && {
+        ...doc.data().lastComment,
+        timestamp: formatDuration(new Date().getTime() - doc.data().lastComment.timestamp.toDate().getTime()),
+      },
       timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
       id: doc.id
     } as any
@@ -39,6 +43,7 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
               imageUrl={post.imageUrl}
               videoUrl={post.videoUrl}
               reactions={post.reactions}
+              lastComment={post.lastComment}
               id={post.id}
             />
           </Suspense>
