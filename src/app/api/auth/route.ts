@@ -48,7 +48,6 @@ export async function GET(request: Request, { params }: { params: any }) {
     body: urlEncodedParams,
   });
   const result = await res.json();
-  console.log(result);
 
   //4: Save Access Token and RefreshToken
   const docRef = doc(db, 'users', obj.userID);
@@ -70,7 +69,7 @@ export async function GET(request: Request, { params }: { params: any }) {
           expiresIn: result.expires_in,
           createDate: serverTimestamp(),
         },
-      });      
+      });
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}user/${obj.username}`);
     })
     .catch((error) => console.error(error));

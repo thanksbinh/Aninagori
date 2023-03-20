@@ -1,0 +1,48 @@
+.status-component {
+  width: 24%;
+  padding: 4px 8px;
+  height: 40px;
+  background-color: #4e5d78;
+  border-radius: 18px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.wrapper {
+  display: flex;
+  position: relative;
+
+  & > input {
+    margin-left: 10px;
+    width: 50%;
+    background-color: #4e5d78;
+    outline: none;
+    border: none;
+  }
+
+  & > .total-episodes {
+    position: absolute;
+    right: 20%;
+    top: 0;
+    transform: translateY(17%);
+  }
+}
+
+.adjust-episodes {
+  position: relative;
+}
+
+.up-icon,
+.down-icon {
+  font-size: 20px;
+  position: absolute;
+  right: 0;
+}
+
+.up-icon {
+  top: -1px;
+}
+
+.down-icon {
+  bottom: -1px;
+}

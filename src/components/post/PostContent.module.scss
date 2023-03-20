@@ -4,9 +4,6 @@
   align-items: flex-end;
 }
 
-.user-name {
-}
-
 .watch-status {
   font-size: 14px;
   font-weight: 700;
@@ -15,27 +12,6 @@
   line-height: 24px;
 }
 
-.anime-name {
-  max-width: 45%;
-  font-size: 13.5px;
-  text-align: center;
-  padding: 4px 8px;
-  font-weight: 600;
-  border-radius: 5px;
-  color: white;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  position: relative;
-  cursor: pointer;
-
-  & > .progress-name {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    background-color: transparent;
-  }
-}
 .tag-wrapper {
   display: flex;
   margin-top: 12px;
@@ -54,8 +30,4 @@
   overflow: hidden;
   white-space: nowrap;
   cursor: pointer;
-}
-
-.tippy-anime-name {
-  font-size: 14px !important;
 }

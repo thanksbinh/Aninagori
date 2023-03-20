@@ -15,8 +15,10 @@ import styles from './PostForm.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-import AnimeSearch from './AnimeSearch';
+import AnimeSearch from './animePostComponent/AnimeSearch';
 import { Img } from '@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite';
+import AnimeWatchStatus from './animePostComponent/AnimeWatchStatus';
+import AnimeEpisodes from './animePostComponent/AnimeEpisodes';
 const cx = classNames.bind(styles);
 
 type PostFormProps = {
@@ -28,7 +30,6 @@ type PostFormProps = {
 
 const PostForm: FC<PostFormProps> = ({ username, avatarUrl }) => {
   const [open, setOpen] = useState(false);
-  const [rerender, setRerender] = useState(true);
 
   function openForm() {
     setTimeout(() => {
@@ -95,8 +96,14 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
   const [mediaUrl, setMediaUrl] = useState<any>(null);
   const [mediaType, setMediaType] = useState<string>('');
   const router = useRouter();
+  const animeStatus = useRef();
+  const animeSearch = useRef();
+  const animeEpisodes = useRef();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
+    console.log((animeStatus?.current as any).getAnimeStatus());
+    console.log((animeSearch?.current as any).getAnimeName());
+    console.log((animeEpisodes?.current as any).getAnimeEpisodes());
     e.preventDefault();
     if (!inputRef.current?.value && !mediaUrl) return;
 
@@ -160,9 +167,9 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
             <h4 className="text-base font-bold ml-4">{username}</h4>
           </div>
           <div className={cx('status-wrapper')}>
-            <div className={cx('status-component')}>Watch Status</div>
-            <AnimeSearch/>
-            <div className={cx('status-component')}>Episodes</div>
+            <AnimeWatchStatus ref={animeStatus} />
+            <AnimeSearch ref={animeSearch} animeEpsRef={animeEpisodes} />
+            <AnimeEpisodes ref={animeEpisodes} />
           </div>
           <input
             type="text"

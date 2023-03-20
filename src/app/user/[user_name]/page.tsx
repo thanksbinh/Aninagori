@@ -118,13 +118,6 @@ async function getUserAnimeUpdate(access_token: any, mal_username: any) {
       Authorization: `Bearer ${access_token}`,
     },
   }).then((res) => res.json());
-
-  const result = await userUpdate;
-  result.data.map((data: any) => {
-    console.log(data.node);
-    console.log(data.list_status);
-  });
-
   return userUpdate;
 }
 

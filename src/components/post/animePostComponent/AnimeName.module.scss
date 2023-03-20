@@ -1,0 +1,25 @@
+.tippy-anime-name {
+  font-size: 14px !important;
+}
+
+.anime-name {
+  max-width: 45%;
+  font-size: 13.5px;
+  text-align: center;
+  padding: 4px 8px;
+  font-weight: 600;
+  border-radius: 5px;
+  color: white;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  cursor: pointer;
+
+  & > .progress-name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: transparent;
+  }
+}

@@ -1,0 +1,68 @@
+import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import classNames from 'classnames/bind';
+import { useState, forwardRef, useImperativeHandle } from 'react';
+import styles from './AnimeEpisodes.module.scss';
+const cx = classNames.bind(styles);
+
+function AnimeEpisodes(props: any, ref: any) {
+  const [episodes, setEpisodes] = useState('0');
+  const [totalEpisodes, setTotalEpisodes] = useState(26);
+
+  useImperativeHandle(ref, () => ({
+    getAnimeEpisodes: () => {
+      return episodes;
+    },
+    setAnimeTotal: (total: any) => {
+      setTotalEpisodes(total);
+    },
+  }));
+
+  return (
+    <div className={cx('status-component')} ref={ref}>
+      <div className={cx('wrapper')}>
+        <input
+          onChange={(e) => {
+            if (e.target.value === '' || (parseInt(e.target.value) >= 0 && parseInt(e.target.value) <= totalEpisodes)) {
+              setEpisodes(e.target.value);
+            }
+          }}
+          placeholder="Watched eps..."
+          type="text"
+          value={episodes}
+        ></input>
+        <p className={cx('total-episodes')}>{` / ${totalEpisodes}`}</p>
+      </div>
+      <div className={cx('adjust-episodes')}>
+        <FontAwesomeIcon
+          onClick={() => {
+            if (episodes === '') {
+              setEpisodes('0');
+            } else if (parseInt(episodes) >= totalEpisodes) {
+              setEpisodes(totalEpisodes + '');
+            } else {
+              setEpisodes(parseInt(episodes) + 1 + '');
+            }
+          }}
+          icon={faCaretUp as any}
+          className={cx('up-icon')}
+        />
+        <FontAwesomeIcon
+          onClick={() => {
+            if (episodes === '') {
+              setEpisodes('0');
+            } else if (parseInt(episodes) <= 0) {
+              setEpisodes('0');
+            } else {
+              setEpisodes(parseInt(episodes) - 1 + '');
+            }
+          }}
+          icon={faCaretDown as any}
+          className={cx('down-icon')}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default forwardRef(AnimeEpisodes);

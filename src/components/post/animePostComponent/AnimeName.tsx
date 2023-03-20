@@ -1,6 +1,6 @@
 'use client';
 import classNames from 'classnames/bind';
-import styles from './PostContent.module.scss';
+import styles from './AnimeName.module.scss';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { convertToPercent } from '@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate';

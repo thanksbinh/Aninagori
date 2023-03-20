@@ -6,7 +6,7 @@ import classNames from 'classnames/bind';
 import styles from './PostContent.module.scss';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import AnimeName from './AnimeName';
+import AnimeName from './animePostComponent/AnimeName';
 const cx = classNames.bind(styles);
 
 type PostStaticProps = {

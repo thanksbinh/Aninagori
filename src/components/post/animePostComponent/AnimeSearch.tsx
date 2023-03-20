@@ -1,22 +1,31 @@
 /* eslint-disable @next/next/no-img-element */
 import classNames from 'classnames/bind';
-import { useState, useEffect } from 'react';
-import styles from './PostForm.module.scss';
+import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import styles from './AnimeSearch.module.scss';
 import HeadlessTippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { get } from '@/app/api/apiServices/httpRequest';
 import { faCaretDown, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getAnimeTotal } from '@/app/api/apiServices/getServices';
 const cx = classNames.bind(styles);
 
-function AnimeSearch() {
+function AnimeSearch(props: any, ref: any) {
+  const { animeEpsRef } = props;
   const [animeName, setAnimeName] = useState('');
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [animePic, setAnimepic] = useState('');
   const [animeID, setAnimeID] = useState('');
-
+  const [animeIDsent, setAnimeIDsent] = useState('');
+  const [resultBoxOpen, setResultBoxOpen] = useState(false);
   const debouncedValue = useDebounce(animeName, 500);
+
+  useImperativeHandle(ref, () => ({
+    getAnimeName: () => {
+      return { animeName: animeName, animeID: animeIDsent };
+    },
+  }));
 
   useEffect(() => {
     if (!debouncedValue.trim()) {
@@ -37,6 +46,7 @@ function AnimeSearch() {
           setSearchResult([]);
         } else {
           setSearchResult(result.data);
+          setResultBoxOpen(true);
         }
         setLoading(false);
       } catch (err) {
@@ -52,20 +62,27 @@ function AnimeSearch() {
 
   return (
     <HeadlessTippy
-      visible={searchResult.length !== 0}
+      visible={searchResult.length !== 0 && resultBoxOpen}
+      onClickOutside={() => {
+        setResultBoxOpen(false);
+      }}
+      appendTo={() => document.body}
       placement="bottom-start"
       interactive={true}
       render={() => {
         return (
-          <div className={cx('result-wrapper')}>
+          <div className={cx('result-wrapper')} ref={ref}>
             {searchResult.map((ele, index) => {
               return (
                 <div
-                  onClick={() => {
+                  onClick={async () => {
                     setAnimepic((ele as any).node.main_picture.medium);
                     setAnimeName((ele as any).node.title);
                     setAnimeID((ele as any).node.id);
-                    setSearchResult([]);
+                    setAnimeIDsent((ele as any).node.id);
+                    setResultBoxOpen(false);
+                    const { total } = await get(`api/anime/total/${(ele as any).node.id}`);
+                    animeEpsRef?.current.setAnimeTotal(total);
                   }}
                   key={index}
                   className={cx('result-children')}
@@ -100,17 +117,19 @@ function AnimeSearch() {
           ></input>
         </div>
         {!loading ? (
-          <FontAwesomeIcon className={cx('down-icon')} icon={faCaretDown as any}></FontAwesomeIcon>
+          <FontAwesomeIcon
+            onClick={() => {
+              setResultBoxOpen(!resultBoxOpen);
+            }}
+            className={cx('down-icon')}
+            icon={faCaretDown as any}
+          ></FontAwesomeIcon>
         ) : (
           <FontAwesomeIcon className={cx('loading-icon')} icon={faSpinner as any}></FontAwesomeIcon>
         )}
         <img
           className={cx('anime-preview')}
-          src={
-            animePic !== ''
-              ? animePic
-              : 'https://styles.redditmedia.com/t5_xpfq5/styles/communityIcon_f7njauwbmdfa1.png'
-          }
+          src={animePic !== '' ? animePic : 'https://static.thenounproject.com/png/660317-200.png'}
           alt="anime-preview"
         ></img>
       </div>
@@ -130,4 +149,4 @@ function useDebounce(value: any, delay: any) {
   return debouncedValue;
 }
 
-export default AnimeSearch;
+export default forwardRef(AnimeSearch);
