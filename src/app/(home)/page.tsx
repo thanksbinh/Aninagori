@@ -1,3 +1,4 @@
+import ChatPopup from '@/components/chat/ChatPopup';
 import { UserInfo } from '@/components/nav/NavBar';
 import { db } from '@/firebase/firebase-app';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
@@ -32,10 +33,7 @@ export default async function Home() {
   return (
     <div className='flex justify-center pt-10'>
       <div className="flex flex-col lg:w-2/5 w-3/5">
-        <div className='flex flex-col flex-1 bg-[#191c21] rounded-2xl px-4 my-4'>
-          <Messages />
-          <MessageForm setLastMessage={undefined} inputRef={undefined} />
-        </div>
+        <ChatPopup />
 
         <PostForm avatarUrl={myUserInfo.image} username={myUserInfo.username} />
 

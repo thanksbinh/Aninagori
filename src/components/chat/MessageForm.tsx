@@ -3,7 +3,6 @@
 import { collection, serverTimestamp, doc, addDoc } from "firebase/firestore";
 import { FC, useContext, useState, useRef } from "react";
 import { db } from "@/firebase/firebase-app";
-import Avatar from "../avatar/Avatar";
 import { ChatContext } from "./context/ChatContext";
 import { useRouter } from "next/navigation";
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
@@ -11,7 +10,6 @@ import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 
 interface Props {
-  setLastMessage: any;
   inputRef: any;
   messageId?: string;
 };
@@ -53,11 +51,11 @@ const MessageForm: FC<Props> = ({ }) => {
     }, 1000)
 
     setMyMessage("")
+
   }
 
   return (
-    <div className="flex items-center mt-4">
-      <Avatar imageUrl={myUserInfo.username} altText={myUserInfo.username} size={10} />
+    <div className="flex items-center my-4 pr-4 pl-2">
       <form onSubmit={onMessage} className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] caret-white" >
         <input
           type="text"

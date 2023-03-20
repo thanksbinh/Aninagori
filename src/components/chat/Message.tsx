@@ -20,16 +20,17 @@ const Message: FC<MessageProps> = ({
   timestamp,
   content,
   likes,
+  id,
 }) => {
   const [likeToggle, setLikeToggle] = useState(false);
 
 
   return (
-    <div className="flex flex-col mt-4 w-2/5">
+    <div className="flex flex-col mt-4 px-4 w-2/5">
       <div className="flex gap-2 ml-12 my-2 text-xs font-bold text-gray-400"> {senderUsername} </div>
       {/* Message content */}
       <div className="flex flex-row items-center">
-        <Avatar imageUrl={avatarUrl} altText={senderUsername} size={10} />
+        <Avatar imageUrl={avatarUrl} altText={senderUsername} size={8} />
         <div className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#fff] focus:outline-none text-black">
           {content}
         </div>

@@ -11,7 +11,7 @@ const Messages = () => {
 
   useEffect(() => {
     async function fetchData() {        
-      const q = query(collection(db, "conversation", conversationID, "messages"), orderBy("timestamp", "desc"));
+      const q = query(collection(db, "conversation", conversationID, "messages"), orderBy("timestamp", "asc"));
       const fetchedMessages: MessageProps[] = [];
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
