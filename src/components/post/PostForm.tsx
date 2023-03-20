@@ -13,12 +13,13 @@ import { v4 } from 'uuid';
 import classNames from 'classnames/bind';
 import styles from './PostForm.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown, faCircleXmark, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import AnimeSearch from './animePostComponent/AnimeSearch';
 import { Img } from '@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite';
 import AnimeWatchStatus from './animePostComponent/AnimeWatchStatus';
 import AnimeEpisodes from './animePostComponent/AnimeEpisodes';
+import AnimeTag from './animePostComponent/AnimeTag';
 const cx = classNames.bind(styles);
 
 type PostFormProps = {
@@ -99,11 +100,14 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
   const animeStatus = useRef();
   const animeSearch = useRef();
   const animeEpisodes = useRef();
+  const animeTag = useRef();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     console.log((animeStatus?.current as any).getAnimeStatus());
     console.log((animeSearch?.current as any).getAnimeName());
     console.log((animeEpisodes?.current as any).getAnimeEpisodes());
+    console.log((animeTag?.current as any).getAnimeTag());
+
     e.preventDefault();
     if (!inputRef.current?.value && !mediaUrl) return;
 
@@ -133,6 +137,11 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
     const downloadMediaUrl = await getDownloadURL(snapshot.ref);
 
     return downloadMediaUrl;
+  };
+
+  const handleDeleteMedia = () => {
+    URL.revokeObjectURL(mediaUrl);
+    setMediaUrl('');
   };
 
   const handleMediaChange = (e: any, mediaType: string) => {
@@ -178,14 +187,30 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
             className="flex rounded-3xl py-3 px-4 w-full focus:outline-none bg-[#212833] caret-white"
           />
 
-          <div className="mt-4 w-2/3">
+          <div className="mt-4 w-full flex items-center justify-center">
             {mediaUrl &&
               (mediaUrl.name.endsWith('.mp4') ? (
-                <video src={URL.createObjectURL(mediaUrl)} controls />
+                <div className={cx('media-wrapper') + ' w-2/3 flex items-center justify-center relative'}>
+                  <video src={URL.createObjectURL(mediaUrl)} className="w-full object-contain rounded-xl" controls />
+                  <FontAwesomeIcon
+                    onClick={handleDeleteMedia}
+                    icon={faCircleXmark as any}
+                    className={cx('delete-icon')}
+                  />
+                </div>
               ) : (
-                <img src={URL.createObjectURL(mediaUrl)} className="w-full object-contain" />
+                <div className={cx('media-wrapper') + ' w-2/3 flex items-center justify-center relative'}>
+                  <img src={URL.createObjectURL(mediaUrl)} className="w-full object-contain rounded-xl" />
+                  <FontAwesomeIcon
+                    onClick={handleDeleteMedia}
+                    icon={faCircleXmark as any}
+                    className={cx('delete-icon')}
+                  />
+                </div>
               ))}
           </div>
+
+          <AnimeTag tagArr={['Spoiler', 'NSFW', 'BestWaifu']} ref={animeTag} />
 
           <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-[#212833]">
             <label
