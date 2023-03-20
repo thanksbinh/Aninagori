@@ -1,12 +1,12 @@
 import { db } from "@/firebase/firebase-app";
 import { doc, getDoc } from "firebase/firestore";
-import Link from "next/link";
 import { BsChatLeftDotsFill } from 'react-icons/bs';
 import { UserInfo } from "../../global/types";
 import Button from "../button/Button";
+import Logo from "./Logo";
 import NotificationBtn from "./notification/NotificationBtn";
 import ProfilePicture from "./profilePicture/ProfilePicture";
-import SearchBar from "./search/SearchBar";
+import SearchBar from "./SearchBar";
 
 async function getUserInfo(userId: string | undefined): Promise<UserInfo | undefined> {
   if (!userId) return;
@@ -31,9 +31,7 @@ export default async function NavBar({ myUserId }: { myUserId: string | undefine
   return (
     <nav className="flex justify-between items-center px-8 fixed top-0 z-40 w-full h-14 header-fixed bg-ani-light-gray shadow-md">
       <div className="flex items-center gap-10">
-        <Link href="/" className="text-lg font-semibold">
-          Aninagori
-        </Link>
+        <Logo />
         <SearchBar />
       </div>
       {!myUserInfo ?

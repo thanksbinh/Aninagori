@@ -1,7 +1,8 @@
-import { storage } from "@/firebase/firebase-app";
-import { collection, deleteDoc, doc, getDoc, getDocs, limit, query, writeBatch } from "firebase/firestore";
-import { deleteObject, ref } from "firebase/storage";
 import { db } from "@/firebase/firebase-app";
+import { deleteDoc, doc, getDoc, writeBatch, collection, getDocs, limit, query, updateDoc, where } from "firebase/firestore";
+
+import { storage } from "@/firebase/firebase-app";
+import { deleteObject, ref } from "firebase/storage";
 
 export async function moveToTrash(postId: string) {
   const postRef = doc(db, "posts", postId);
@@ -14,6 +15,14 @@ export async function moveToTrash(postId: string) {
   ])
 
   console.log('Post moved to trash')
+}
+
+export async function banUser(authorName?: string) {
+  if (!authorName) return;
+
+  const userQuery = query(collection(db, "users"), where("username", "==", authorName), limit(1))
+  const userRef = (await getDocs(userQuery)).docs[0].ref
+  updateDoc(userRef, { is_banned: true })
 }
 
 async function deleteMediaFiles(imageUrl?: string, videoUrl?: string) {
@@ -67,3 +76,4 @@ async function deleteQueryBatch(query: any, resolve: any) {
     deleteQueryBatch(query, resolve);
   });
 }
+

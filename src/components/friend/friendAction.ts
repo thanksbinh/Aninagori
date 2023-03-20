@@ -1,7 +1,7 @@
 import { db } from "@/firebase/firebase-app";
 import { arrayRemove, arrayUnion, doc, updateDoc, writeBatch } from "firebase/firestore";
 import { UserInfo } from "../../global/types";
-import { Notification } from "../nav/notification/Notification";
+import { Notification } from "../nav/notification/Notification.types";
 
 // Person's info remove from Self friend list and opposite
 async function unfriend(myUserInfo: UserInfo, userInfo: UserInfo) {
@@ -48,8 +48,6 @@ async function makeFriendRequest(myUserInfo: UserInfo, userInfo: UserInfo) {
   const notificationsRef = doc(db, "notifications", userInfo.username);
   await updateDoc(notificationsRef, {
     recentNotifications: arrayUnion({
-      title: myUserInfo.username + " sent you a friend request",
-      url: "/user/" + myUserInfo.username,
       sender: {
         id: myUserInfo.id,
         username: myUserInfo.username,

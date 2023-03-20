@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FC } from "react";
 import Avatar from "../avatar/Avatar";
-import PostOptions from "./option/PostOptions";
+import PostOptions from "./option/PostOptionsPopup";
 import { VideoComponent } from "./Video";
 
 type PostStaticProps = {

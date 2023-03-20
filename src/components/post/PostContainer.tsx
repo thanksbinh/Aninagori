@@ -1,15 +1,14 @@
-import { getDocs, collection, query, orderBy, limit } from "firebase/firestore";
+import { getDocs, collection, query, orderBy, limit, getCountFromServer } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "../../global/types";
 import { formatDuration } from "../utils/formatDuration";
 import { Suspense } from "react";
 import ContextProvider from "./context/PostContext";
-import { Post } from "./Post";
 import PostContent from "./PostContent";
 import PostAction from "./PostAction";
 
 async function fetchPosts() {
-  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(1));
+  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(2));
   const querySnapshot = await getDocs(q);
   const fetchedPosts = querySnapshot.docs.map((doc) => {
     return {
@@ -26,26 +25,42 @@ async function fetchPosts() {
   return fetchedPosts;
 }
 
+async function fetchCommentCount(postId: string) {
+  const commentsRef = collection(db, "posts", postId, "comments")
+  const commentCount = (await getCountFromServer(commentsRef)).data().count
+
+  return commentCount;
+}
+
 export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
   const fetchedPosts = await fetchPosts()
 
   return (
     <div className="flex flex-col">
       {fetchedPosts.map((post) => (
-        <ContextProvider key={post.id} myUserInfo={myUserInfo} authorName={post.authorName} postId={post.id}>
+        <ContextProvider
+          key={post.id}
+          myUserInfo={myUserInfo}
+          content={post.content}
+          authorName={post.authorName}
+          postId={post.id}
+        >
           <Suspense fallback={<div className="mb-4"><PostContent content={"Loading..."} /><PostAction /></div>}>
-            {/* @ts-expect-error Server Component */}
-            <Post
-              authorName={post.authorName}
-              avatarUrl={post.avatarUrl}
-              timestamp={post.timestamp}
-              content={post.content}
-              imageUrl={post.imageUrl}
-              videoUrl={post.videoUrl}
-              reactions={post.reactions}
-              lastComment={post.lastComment}
-              id={post.id}
-            />
+            <div className="mb-4">
+              <PostContent
+                authorName={post.authorName}
+                avatarUrl={post.avatarUrl}
+                timestamp={post.timestamp}
+                content={post.content}
+                imageUrl={post.imageUrl}
+                videoUrl={post.videoUrl}
+              />
+              <PostAction
+                reactions={post.reactions}
+                commentCountPromise={fetchCommentCount(post.id)}
+                comments={post.lastComment ? [post.lastComment] : []}
+              />
+            </div>
           </Suspense>
         </ContextProvider>
       ))}

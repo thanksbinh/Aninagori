@@ -4,8 +4,10 @@ import { useRouter } from "next/navigation";
 import { UserInfo } from "../../../global/types";
 import { removeFriendRequest, beFriends } from "@/components/friend/friendAction";
 import { formatDuration } from "@/components/utils/formatDuration";
-import { useState } from "react";
-import { markAsRead, Notification } from "./Notification";
+import { useContext, useState } from "react";
+import { Notification } from "./Notification.types";
+import { NotiContext } from "./NotificationBtn";
+import { markAsRead } from "./NotificationContainer";
 
 interface Props {
   notification: Notification;
@@ -15,6 +17,7 @@ interface Props {
 const FriendRequestComponent: React.FC<Props> = ({ notification, myUserInfo }) => {
   const router = useRouter()
   const [message, setMessage] = useState('')
+  const { setShowNotification } = useContext(NotiContext)
 
   const handleAcceptFriend = async (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -24,6 +27,7 @@ const FriendRequestComponent: React.FC<Props> = ({ notification, myUserInfo }) =
     router.refresh()
 
     setTimeout(() => {
+      setShowNotification(false)
       removeFriendRequest(myUserInfo, notification)
       setMessage('')
     }, 3000)
@@ -34,15 +38,18 @@ const FriendRequestComponent: React.FC<Props> = ({ notification, myUserInfo }) =
 
     setMessage("Friend request rejected!")
     setTimeout(() => {
+      setShowNotification(false)
       removeFriendRequest(myUserInfo, notification)
       setMessage('')
     }, 1000)
   }
 
   const handleClickProfile = () => {
-    if (notification.read) return;
-    markAsRead(myUserInfo.username, notification)
+    setShowNotification(false)
     router.push('/user/' + notification.sender.username)
+
+    if (!notification.read)
+      markAsRead(myUserInfo.username, notification)
   }
 
   return (
@@ -54,7 +61,7 @@ const FriendRequestComponent: React.FC<Props> = ({ notification, myUserInfo }) =
       />
       <div>
         <p className="text-sm font-medium text-gray-900">
-          {notification.title}
+          {notification.sender.username} sent you a friend request.
         </p>
         {message ?
           <div className="text-xs text-gray-500">{message}</div> :

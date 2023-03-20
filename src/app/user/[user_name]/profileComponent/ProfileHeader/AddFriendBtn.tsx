@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserCheck, faUserMinus, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { Menu, Transition } from '@headlessui/react';
 import { useRouter } from 'next/navigation';
-import { Notification } from '@/components/nav/notification/Notification';
+import { Notification } from "@/components/nav/notification/Notification.types";
 
 export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: UserInfo; userInfo: UserInfo }) {
   const [content, setContent] = useState({ content: 'Add friend', icon: faUserPlus });

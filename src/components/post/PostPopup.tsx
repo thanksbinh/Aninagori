@@ -66,7 +66,7 @@ export default function PostPopup({ isOpen, onClose }: { isOpen: boolean, onClos
         />
         <PostAction
           reactions={post.reactions}
-          commentCount={post.commentCount}
+          commentCountPromise={post.commentCount}
           comments={post.comments}
         />
       </div>

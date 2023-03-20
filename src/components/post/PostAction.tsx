@@ -1,9 +1,8 @@
 'use client';
 
-import { arrayRemove, arrayUnion, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { FC, useContext, useEffect, useRef, useState } from 'react';
 import { AiOutlineComment } from "react-icons/ai";
-import { HiHeart, HiOutlineHeart } from "react-icons/hi2";
 import { RiAddCircleLine } from "react-icons/ri";
 
 import { db } from "@/firebase/firebase-app";
@@ -14,24 +13,23 @@ import CommentForm from "./comment/CommentForm";
 import Comments from "./comment/Comments";
 import { PostContext } from "./context/PostContext";
 import PostPopup from "./PostPopup";
+import Reaction from "./reaction/Reaction";
 
 interface PostDynamicProps {
   reactions?: Object[];
-  commentCount?: number;
+  commentCountPromise?: Promise<number>;
   comments?: CommentProps[];
 };
 
 const PostAction: FC<PostDynamicProps> = ({
   reactions: reactions0 = [],
-  commentCount = 0,
+  commentCountPromise = 0,
   comments: comments0 = [],
 }) => {
-  const { myUserInfo, postId } = useContext(PostContext)
+  const { postId } = useContext(PostContext)
 
-  const [reactionToggle, setReactionToggle] = useState(reactions0.some((e: any) => e.username === myUserInfo.username))
   const [reactions, setReactions] = useState(reactions0)
-
-  const [commentNum, setCommentNum] = useState(0)
+  const [commentCount, setCommentCount] = useState(0)
   const [comments, setComments] = useState<CommentProps[]>([])
   const [lastComment, setLastComment] = useState<CommentProps>()
 
@@ -52,12 +50,12 @@ const PostAction: FC<PostDynamicProps> = ({
   }, [])
 
   useEffect(() => {
-    reactions0 && setReactionToggle(reactions0.some((e: any) => e.username === myUserInfo.username))
-  }, [reactions0])
-
-  useEffect(() => {
-    commentCount && (commentCount != commentNum) && setCommentNum(commentCount)
-  }, [commentCount])
+    async function fetchData() {
+      const newCount = await commentCountPromise
+      newCount && setCommentCount(newCount)
+    }
+    fetchData()
+  }, [commentCountPromise])
 
   useEffect(() => {
     (comments0.length != comments.length) && setComments(comments0)
@@ -66,33 +64,12 @@ const PostAction: FC<PostDynamicProps> = ({
   useEffect(() => {
     if (!lastComment) return;
 
-    setCommentNum(commentNum + 1)
+    setCommentCount(commentCount + 1)
     setComments([
       ...comments,
       lastComment
     ])
   }, [lastComment])
-
-  const onReaction = () => {
-    const postRef = doc(db, "posts", postId)
-    const myReaction = {
-      username: myUserInfo.username,
-      image: myUserInfo.image,
-      type: "heart"
-    }
-
-    if (!reactionToggle) {
-      updateDoc(postRef, {
-        reactions: arrayUnion(myReaction)
-      });
-    } else {
-      updateDoc(postRef, {
-        reactions: arrayRemove(myReaction)
-      });
-    }
-
-    setReactionToggle(!reactionToggle)
-  }
 
   const onComment = () => {
     inputRef.current && inputRef.current.focus()
@@ -113,18 +90,13 @@ const PostAction: FC<PostDynamicProps> = ({
 
       {/* 3 post actions */}
       <div className="flex items-center justify-between border-t border-b border-[#212833] py-2 mx-2">
-        <div className="flex">
-          <button title="react" onClick={onReaction} className="flex items-center space-x-1 text-gray-400 hover:text-[#F14141]">
-            {reactionToggle ? <HiHeart className="w-5 h-5 fill-[#F14141]" /> : <HiOutlineHeart className="w-5 h-5" />}
-          </button>
-          <span className="text-gray-400 ml-2">{reactions.length}</span>
-        </div>
+        <Reaction reactions={reactions} />
 
         <div className="flex">
           <button title="comment" onClick={onComment} className="flex items-center space-x-1 text-gray-400 hover:text-[#3BC361]">
             <AiOutlineComment className="w-5 h-5" />
           </button>
-          <span className="text-gray-400 ml-2">{commentNum}</span>
+          <span className="text-gray-400 ml-2">{commentCount}</span>
         </div>
 
         <button title="plan to watch" onClick={onPlanToWatch} className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]">
@@ -134,7 +106,7 @@ const PostAction: FC<PostDynamicProps> = ({
       </div>
 
       {/* Expand post */}
-      {(commentCount > comments0.length) &&
+      {(commentCount > comments.length) &&
         <div>
           <div onClick={() => setPostExpand(true)} className="mt-4 ml-2 text-sm font-bold text-gray-400 hover:cursor-pointer hover:underline">View more comments</div>
           {postExpand &&
@@ -150,7 +122,6 @@ const PostAction: FC<PostDynamicProps> = ({
       </div>
 
     </div>
-
   );
 };
 

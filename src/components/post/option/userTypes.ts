@@ -1,5 +1,4 @@
-import { banUser } from "./banUser";
-import { moveToTrash } from "./moveToTrash";
+import { banUser, moveToTrash } from "./postOptions";
 
 const guestOptions = [
   {

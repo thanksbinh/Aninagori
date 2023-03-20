@@ -1,16 +1,34 @@
 'use client'
 
 import { db } from "@/firebase/firebase-app";
-import { doc, onSnapshot, serverTimestamp, setDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, onSnapshot, serverTimestamp, setDoc, Timestamp, updateDoc, writeBatch } from "firebase/firestore";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { UserInfo } from "../../../global/types";
 import FriendRequestComponent from "./FriendRequest";
-import NotificationComponent, { Notification } from "./Notification";
+import NotificationComponent from "./Notification";
+import { Notification } from "./Notification.types";
 
 interface Props {
   myUserInfo: UserInfo
   setUnreadNoti: Dispatch<SetStateAction<number>>
   showNotification: boolean
+}
+
+export async function markAsRead(username: string, notification: Notification) {
+  const notificationsRef = doc(db, "notifications", username)
+  const batch = writeBatch(db);
+
+  batch.update(notificationsRef, {
+    recentNotifications: arrayRemove(notification)
+  });
+  batch.update(notificationsRef, {
+    recentNotifications: arrayUnion({
+      ...notification,
+      read: true
+    })
+  });
+
+  await batch.commit();
 }
 
 const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, showNotification }) => {
@@ -22,7 +40,7 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, sho
     const notificationsRef = doc(db, "notifications", myUserInfo.username);
     const unsubscribe = onSnapshot(notificationsRef, docSnap => {
       if (!docSnap.exists()) {
-        setDoc(notificationsRef, { recentNotifications: [], lastRead: serverTimestamp() })
+        setDoc(notificationsRef, {}, { merge: true })
         return;
       }
 
@@ -66,6 +84,7 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, sho
         {!notification?.length && <div className="flex items-center text-black bg-white rounded-lg px-4 py-4"> Empty! </div>}
       </div>
     </div>
+
   )
 }
 
