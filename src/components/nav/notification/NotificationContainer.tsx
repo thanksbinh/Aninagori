@@ -7,6 +7,7 @@ import { UserInfo } from "../../../global/types";
 import FriendRequestComponent from "./FriendRequest";
 import NotificationComponent from "./Notification";
 import { Notification } from "./Notification.types";
+import { noticationFilter } from "./notificationFilter";
 
 interface Props {
   myUserInfo: UserInfo
@@ -44,7 +45,7 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, sho
         return;
       }
 
-      setNotification(docSnap.data().recentNotifications.sort((a: any, b: any) => b.timestamp - a.timestamp))
+      setNotification(noticationFilter(docSnap.data().recentNotifications))
       setLastRead(docSnap.data().lastRead)
     })
 

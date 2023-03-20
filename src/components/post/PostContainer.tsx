@@ -8,7 +8,7 @@ import PostContent from "./PostContent";
 import PostAction from "./PostAction";
 
 async function fetchPosts() {
-  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(2));
+  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(10));
   const querySnapshot = await getDocs(q);
   const fetchedPosts = querySnapshot.docs.map((doc) => {
     return {

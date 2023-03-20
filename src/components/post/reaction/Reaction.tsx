@@ -37,6 +37,8 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
   }
 
   async function notifyReaction(myUserInfo: UserInfo, username: string) {
+    if (myUserInfo.username === username) return;
+
     const notificationsRef = doc(db, "notifications", username);
     await updateDoc(notificationsRef, {
       recentNotifications: arrayUnion({
