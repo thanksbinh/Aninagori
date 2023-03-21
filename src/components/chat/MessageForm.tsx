@@ -7,16 +7,20 @@ import { useRouter } from "next/navigation";
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
+import { UserInfo } from "../nav/NavBar";
 
 interface Props {
   messageId?: string;
   messages: Object[];
   conversationId: string;
+  myUserInfo: UserInfo;
 };
 
 const MessageForm: FC<Props> = ({
   messageId,
+  messages,
   conversationId,
+  myUserInfo,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   
@@ -38,9 +42,9 @@ const MessageForm: FC<Props> = ({
     if (!myMessage.trim()) return;
 
     const content = {
-      senderUsername: 'niichan1403',
+      senderUsername: myUserInfo.username,
       receiverUsername: 'niichan',
-      avatarUrl: '',
+      avatarUrl: myUserInfo.image,
       content: myMessage,
       timestamp: '',
       likes: 0

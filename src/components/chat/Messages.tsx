@@ -17,12 +17,8 @@ const Messages = () => {
       querySnapshot.forEach((doc) => {
         console.log(doc.id, " => ", doc.data());
         const message = {
-          senderUsername: doc.data().senderUsername,
-          receiverUsername: doc.data().receiverUsername,
-          avatarUrl: doc.data().avatarUrl,
+          ...doc.data(),
           timestamp: doc.data().timestamp.toDate().toString(),
-          content: doc.data().content,
-          likes: doc.data().likes,
         } as MessageProps;
         fetchedMessages.push(message);
       });
