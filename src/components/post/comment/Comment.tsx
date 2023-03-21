@@ -5,6 +5,7 @@ import Avatar from "../../avatar/Avatar";
 import { PostContext } from "../context/PostContext";
 import CommentForm from "./CommentForm";
 import Link from "next/link";
+import { sentReaction } from "../reaction/doReaction";
 
 export interface CommentProps {
   username: string;
@@ -55,7 +56,6 @@ const Comment = ({ comment, onParentReply }: { comment: CommentProps, onParentRe
   }, [lastReply])
 
   const onCommentReaction = () => {
-    const commentRef = doc(db, "posts", postId, "comments", comment.id!);
     const myReaction = {
       username: myUserInfo.username,
       type: "heart"
@@ -63,16 +63,11 @@ const Comment = ({ comment, onParentReply }: { comment: CommentProps, onParentRe
 
     if (!reactionToggle) {
       setReactions([...reactions, myReaction])
-      updateDoc(commentRef, {
-        reactions: arrayUnion(myReaction)
-      });
     } else {
       setReactions(reactions.filter(reaction => reaction.username !== myUserInfo.username))
-      updateDoc(commentRef, {
-        reactions: arrayRemove(myReaction)
-      });
     }
 
+    sentReaction(myUserInfo, myReaction, reactionToggle, comment.username, comment.content, postId, comment.id!)
     setReactionToggle(!reactionToggle)
   }
 

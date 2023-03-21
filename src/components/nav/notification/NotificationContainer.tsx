@@ -45,7 +45,7 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, sho
         return;
       }
 
-      setNotification(noticationFilter(docSnap.data().recentNotifications))
+      docSnap.data().recentNotifications && setNotification(noticationFilter(docSnap.data().recentNotifications))
       setLastRead(docSnap.data().lastRead)
     })
 
