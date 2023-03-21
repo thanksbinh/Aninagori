@@ -1,12 +1,9 @@
 'use client'
 
 import { collection, serverTimestamp, doc, addDoc, updateDoc, arrayUnion } from "firebase/firestore";
-import { FC, useContext, useState, useRef } from "react";
+import { FC, useState, useRef } from "react";
 import { db } from "@/firebase/firebase-app";
 import { useRouter } from "next/navigation";
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { getServerSession } from "next-auth";
-import { useSession } from "next-auth/react";
 import { UserInfo } from "../nav/NavBar";
 
 interface Props {

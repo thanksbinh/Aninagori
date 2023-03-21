@@ -17,7 +17,7 @@ export default function ChatPopup({myUserInfo}: {myUserInfo: UserInfo}){
                     <p>Active now</p>   
                 </div>
             </div>
-            <Messages />
+            <Messages myUserInfo={myUserInfo}/>
             <MessageForm messages={[]} conversationId={"s1czHpCmjcciBf3438XW"} myUserInfo={myUserInfo} />
         </div> 
     );

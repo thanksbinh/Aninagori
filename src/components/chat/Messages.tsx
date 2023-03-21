@@ -1,29 +1,36 @@
 'use client'
 
 import { db } from "@/firebase/firebase-app";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { FC, useEffect, useState } from "react";
+import { UserInfo } from "../nav/NavBar";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import Message, { MessageProps } from "./Message";
 
-const Messages = () => {
+const Messages = ({ myUserInfo }: { myUserInfo: UserInfo }) => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
-  const conversationID = 'Qtp6I39m8uWhiNfcvQHR';
 
   useEffect(() => {
-    async function fetchData() {        
-      const q = query(collection(db, "conversation", conversationID, "messages"), orderBy("timestamp", "asc"));
-      const fetchedMessages: MessageProps[] = [];
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
-        const message = {
-          ...doc.data(),
-          timestamp: doc.data().timestamp.toDate().toString(),
-        } as MessageProps;
-        fetchedMessages.push(message);
-      });
+    async function fetchData() {    
+      const messagesRef = collection(db, 'conversation');
+      const messagesQuery = query(
+        messagesRef, 
+        where('username1', 'in', [myUserInfo.username, 'niichan1403']),
+        where('username2', 'in', [myUserInfo.username, 'niichan1403'])
+      );
+      const querySnapshot = await getDocs(messagesQuery);
+      
+      // Fetch messages from conversation  
+      const doc = querySnapshot.docs[0].data().messages || [];
+      const fetchedMessages: MessageProps[] = doc.map((obj : MessageProps) => ({
+        senderUsername: obj.senderUsername,
+        receiverUsername: obj.receiverUsername,
+        avatarUrl: obj.avatarUrl,
+        timestamp: obj.timestamp,
+        content: obj.content,
+        likes: obj.likes,
+      }));
       setMessages(fetchedMessages);
-    }  
+    }
     fetchData();
   }, []);
 
@@ -38,7 +45,7 @@ const Messages = () => {
                   content={message.content}
                   likes={message.likes}
               />
-          ))}        
+          ))}
       </div>
   )
 }
