@@ -1,32 +1,34 @@
 'use client'
 
-import { collection, serverTimestamp, doc, addDoc } from "firebase/firestore";
+import { collection, serverTimestamp, doc, addDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { FC, useContext, useState, useRef } from "react";
 import { db } from "@/firebase/firebase-app";
-import { ChatContext } from "./context/ChatContext";
 import { useRouter } from "next/navigation";
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 
 interface Props {
-  inputRef: any;
   messageId?: string;
+  messages: Object[];
+  conversationId: string;
 };
 
-const MessageForm: FC<Props> = ({ }) => {
-  const {data: session} = useSession();
+const MessageForm: FC<Props> = ({
+  messageId,
+  conversationId,
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
   
-  const { myUserInfo, conversationId } = useContext(ChatContext)
-
   const [myMessage, setMyMessage] = useState("")
   const router = useRouter()
+
   // send message to conversation
   const sendMessage = async (message: any) => {
-    const conversationRef = doc(db, 'conversation', conversationId);
-    const messagesRef = collection(conversationRef, 'messages');
-    await addDoc(messagesRef, message);
+    const conversationRef = doc(collection(db, 'conversation'), conversationId);
+    await updateDoc(conversationRef, {
+      messages: arrayUnion(message)
+    });
     console.log("Message sent:" + message);
   }
 
@@ -38,20 +40,17 @@ const MessageForm: FC<Props> = ({ }) => {
     const content = {
       senderUsername: 'niichan1403',
       receiverUsername: 'niichan',
-      avatarUrl: session?.user?.image,
+      avatarUrl: '',
       content: myMessage,
-      timestamp: serverTimestamp(),
+      timestamp: '',
       likes: 0
     }
 
     sendMessage(content)
 
-    setTimeout(() => {
-      router.refresh()
-    }, 1000)
+    router.refresh()
 
     setMyMessage("")
-
   }
 
   return (
