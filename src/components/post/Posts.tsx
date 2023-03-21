@@ -5,6 +5,9 @@ import { formatDuration } from '../utils/formatDuration';
 import PostContent from './PostContent';
 import PostAction from './PostAction';
 import { Suspense } from 'react';
+import classNames from 'classnames/bind';
+import styles from './PostContent.module.scss';
+const cx = classNames.bind(styles);
 
 export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
   const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'), limit(10));
@@ -20,7 +23,7 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
   return (
     <div className="flex flex-col">
       {fetchedPosts.map((post, key) => {
-        if (key !== -1) {
+        if (key >= -1) {
           return (
             <>
               <div key={post.id}>

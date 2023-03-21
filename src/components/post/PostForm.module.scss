@@ -29,6 +29,18 @@
   margin-top: 10px;
 }
 
+.close-post {
+  position: absolute;
+  top: 24px;
+  right: 9px;
+  font-size: 30px;
+  color: #444;
+
+  &:hover {
+    color: #777;
+  }
+}
+
 .delete-icon {
   position: absolute;
   top: 4px;

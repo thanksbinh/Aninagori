@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+'use client';
 import { FC } from 'react';
 import Avatar from '../avatar/Avatar';
 import { VideoComponent } from './Video';
@@ -7,6 +8,7 @@ import styles from './PostContent.module.scss';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import AnimeName from './animePostComponent/AnimeName';
+import { useState } from 'react';
 const cx = classNames.bind(styles);
 
 type PostStaticProps = {
@@ -39,8 +41,26 @@ const PostContent: FC<PostStaticProps> = ({
   episodesTotal = 13,
   tag = [],
 }) => {
+  const [spoiler, setSpoiler] = useState(() => {
+    return tag.some((a: any) => {
+      return a === 'Spoiler';
+    });
+  });
   return (
-    <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pb-0 rounded-b-none">
+    <div className="flex flex-col flex-1 bg-[#191c21] relative rounded-2xl p-4 pb-0 rounded-b-none">
+      {spoiler && (
+        <>
+          <div
+            className={cx('spoiler-button')}
+            onClick={() => {
+              setSpoiler(false);
+            }}
+          >
+            SPOILER
+          </div>
+          <div className={cx('spoiler-overlay')}></div>
+        </>
+      )}
       <div className="flex items-center space-x-4 mx-2">
         <a href={'/user/' + authorName}>
           <Avatar imageUrl={avatarUrl} altText={authorName} size={10} />
@@ -63,10 +83,17 @@ const PostContent: FC<PostStaticProps> = ({
           return <PostTag key={index}>#{data}</PostTag>;
         })}
       </div>
-      <p className="text-lg mt-3 mb-2 text-[#dddede] mx-2">{content}</p>
-      <div className="mt-4 mx-2">
-        {imageUrl && <img src={imageUrl} alt={''} className="rounded-2xl" />}
-        {videoUrl && <VideoComponent videoUrl={videoUrl} />}
+      <p className="text-lg mx-2 mt-3 mb-2 text-[#dddede] mx-2)}">{content}</p>
+      <div className="mt-4 mx-2 relative">
+        {imageUrl && (
+          <img
+            draggable="false"
+            src={imageUrl}
+            alt={''}
+            className={`cursor-pointer rounded-2xl ${cx({ 'blur-3xl': spoiler })}`}
+          />
+        )}
+        {videoUrl && <VideoComponent videoUrl={videoUrl} className={cx('')} />}
       </div>
     </div>
   );
