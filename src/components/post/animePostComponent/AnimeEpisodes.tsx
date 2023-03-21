@@ -13,8 +13,14 @@ function AnimeEpisodes(props: any, ref: any) {
     getAnimeEpisodes: () => {
       return episodes;
     },
+    getAnimeTotal: () => {
+      return totalEpisodes;
+    },
     setAnimeTotal: (total: any) => {
       setTotalEpisodes(total);
+    },
+    setAnimeEpisodes: (eps: any) => {
+      setEpisodes(eps);
     },
   }));
 
@@ -23,15 +29,19 @@ function AnimeEpisodes(props: any, ref: any) {
       <div className={cx('wrapper')}>
         <input
           onChange={(e) => {
-            if (e.target.value === '' || (parseInt(e.target.value) >= 0 && parseInt(e.target.value) <= totalEpisodes)) {
+            const reg = new RegExp('^[0-9]+$');
+            if (
+              e.target.value === '' ||
+              (reg.test(e.target.value) && parseInt(e.target.value) >= 0 && parseInt(e.target.value) <= totalEpisodes)
+            ) {
               setEpisodes(e.target.value);
             }
           }}
-          placeholder="Watched eps..."
           type="text"
           value={episodes}
         ></input>
-        <p className={cx('total-episodes')}>{` / ${totalEpisodes}`}</p>
+        <div className={cx('space')}>/</div>
+        <p className={cx('total-episodes')}>{`${totalEpisodes}`}</p>
       </div>
       <div className={cx('adjust-episodes')}>
         <FontAwesomeIcon

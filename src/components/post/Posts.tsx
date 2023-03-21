@@ -20,7 +20,7 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
   return (
     <div className="flex flex-col">
       {fetchedPosts.map((post, key) => {
-        if (key === 0) {
+        if (key !== -1) {
           return (
             <>
               <div key={post.id}>
@@ -35,6 +35,7 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
                     videoUrl={post.videoUrl}
                     myUserInfo={myUserInfo}
                     reactions={post.reactions}
+                    postAnimeData={post?.post_anime_data}
                     id={post.id}
                   />
                 </Suspense>
@@ -84,6 +85,12 @@ async function Post(props: any) {
         content={props.content}
         imageUrl={props.imageUrl}
         videoUrl={props.videoUrl}
+        animeID={props?.postAnimeData?.anime_id}
+        animeName={props?.postAnimeData?.anime_name}
+        watchingProgess={props?.postAnimeData?.watching_progess}
+        episodesSeen={props?.postAnimeData?.episodes_seen}
+        episodesTotal={props?.postAnimeData?.total_episodes}
+        tag={props?.postAnimeData?.tag}
         id={props.id}
       />
       <PostAction

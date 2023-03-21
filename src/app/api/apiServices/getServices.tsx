@@ -8,6 +8,7 @@ export const getAnimeList = async (q: string, offset: number, limit: number) => 
         q,
         offset,
         limit,
+        fields: 'num_episodes',
       },
     });
 
@@ -56,9 +57,7 @@ export const getAnimeInformation = async (id: string) => {
 
 export const getAnimeTotal = async (id: string) => {
   try {
-    const animeTotal = await apiServices.MALRequest.get(
-      `/anime/${id}?fields=num_episodes`,
-    );
+    const animeTotal = await apiServices.MALRequest.get(`/anime/${id}?fields=num_episodes`);
     return animeTotal;
   } catch (error) {
     console.log(error);

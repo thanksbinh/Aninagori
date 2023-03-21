@@ -12,18 +12,17 @@ const cx = classNames.bind(styles);
 
 function AnimeSearch(props: any, ref: any) {
   const { animeEpsRef } = props;
-  const [animeName, setAnimeName] = useState('');
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [animePic, setAnimepic] = useState('');
-  const [animeID, setAnimeID] = useState('');
-  const [animeIDsent, setAnimeIDsent] = useState('');
+  const [animeData, setAnimeData] = useState({ animeName: '', animeID: '' });
+  const [animeDataSent, setAnimeDataSent] = useState({ animeName: '', animeID: '' });
   const [resultBoxOpen, setResultBoxOpen] = useState(false);
-  const debouncedValue = useDebounce(animeName, 500);
+  const debouncedValue = useDebounce(animeData.animeName, 500);
 
   useImperativeHandle(ref, () => ({
     getAnimeName: () => {
-      return { animeName: animeName, animeID: animeIDsent };
+      return { animeName: animeDataSent.animeName, animeID: animeDataSent.animeID };
     },
   }));
 
@@ -53,12 +52,12 @@ function AnimeSearch(props: any, ref: any) {
         console.log(err);
       }
     };
-    if (animeID === '') {
+    if (animeData.animeID === '') {
       searchAnimeName();
     } else {
       setLoading(false);
     }
-  }, [animeID, debouncedValue]);
+  }, [animeData.animeID, debouncedValue]);
 
   return (
     <HeadlessTippy
@@ -77,12 +76,13 @@ function AnimeSearch(props: any, ref: any) {
                 <div
                   onClick={async () => {
                     setAnimepic((ele as any).node.main_picture.medium);
-                    setAnimeName((ele as any).node.title);
-                    setAnimeID((ele as any).node.id);
-                    setAnimeIDsent((ele as any).node.id);
+                    setAnimeData({ animeName: (ele as any).node.title, animeID: (ele as any).node.id });
+                    setAnimeDataSent({ animeName: (ele as any).node.title, animeID: (ele as any).node.id });
                     setResultBoxOpen(false);
-                    const { total } = await get(`api/anime/total/${(ele as any).node.id}`);
-                    animeEpsRef?.current.setAnimeTotal(total);
+                    animeEpsRef?.current.setAnimeTotal((ele as any).node.num_episodes);
+                    if (parseInt(animeEpsRef?.current.getAnimeEpisodes()) > (ele as any).node.num_episodes) {
+                      animeEpsRef?.current.setAnimeEpisodes('0');
+                    }
                   }}
                   key={index}
                   className={cx('result-children')}
@@ -101,18 +101,18 @@ function AnimeSearch(props: any, ref: any) {
       <div className={cx('anime-search-wrapper')}>
         <div>
           <input
-            value={animeName}
+            value={animeData.animeName}
             placeholder="Search anime name"
             onChange={(e) => {
               const regex = /^\S/;
               if (regex.test(e.target.value)) {
-                setAnimeName(e.target.value);
+                setAnimeData({ ...animeData, animeName: e.target.value });
               } else {
-                setAnimeName('');
+                setAnimeData({ ...animeData, animeName: '' });
               }
             }}
             onKeyDown={(e) => {
-              setAnimeID('');
+              setAnimeData({ ...animeData, animeID: '' });
             }}
           ></input>
         </div>

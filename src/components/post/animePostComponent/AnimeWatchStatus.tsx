@@ -50,7 +50,7 @@ function AnimeWatchStatus(props: any, ref: any) {
             </div>
             <div
               onClick={() => {
-                setChoice('Finshed');
+                setChoice('Finished');
               }}
               className={cx('option')}
             >

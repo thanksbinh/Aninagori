@@ -22,6 +22,7 @@ type PostStaticProps = {
   watchingProgess?: string;
   episodesSeen?: number;
   episodesTotal?: number;
+  tag?: any;
 };
 
 const PostContent: FC<PostStaticProps> = ({
@@ -36,6 +37,7 @@ const PostContent: FC<PostStaticProps> = ({
   watchingProgess = 'is watching',
   episodesSeen = 6,
   episodesTotal = 13,
+  tag = [],
 }) => {
   return (
     <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl p-4 pb-0 rounded-b-none">
@@ -43,7 +45,7 @@ const PostContent: FC<PostStaticProps> = ({
         <a href={'/user/' + authorName}>
           <Avatar imageUrl={avatarUrl} altText={authorName} size={10} />
         </a>
-        <div>
+        <div style={{ width: '430px' }}>
           <div className="flex item-center font-bold text-[#dddede]">
             <div className={cx('info-wrapper')}>
               <a href={'/user/' + authorName} className={`${cx('user-name')}`}>
@@ -52,15 +54,14 @@ const PostContent: FC<PostStaticProps> = ({
               <p className={cx('watch-status')}>{watchingProgess}</p>
               <AnimeName animeName={animeName} animeID={animeID as any} seen={episodesSeen} total={episodesTotal} />
             </div>
-            <div>...</div>
           </div>
           <p className="text-gray-500 text-sm">{timestamp}</p>
         </div>
       </div>
       <div className={cx('tag-wrapper')}>
-        <PostTag>#NSFW</PostTag>
-        <PostTag>#BestWaifu</PostTag>
-        <PostTag>#Spoiler</PostTag>
+        {tag.map((data: any, index: any) => {
+          return <PostTag key={index}>#{data}</PostTag>;
+        })}
       </div>
       <p className="text-lg mt-3 mb-2 text-[#dddede] mx-2">{content}</p>
       <div className="mt-4 mx-2">
