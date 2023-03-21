@@ -1,5 +1,6 @@
 import { FC } from "react";
-import Comment, { CommentProps } from "./Comment";
+import Comment from "./Comment";
+import { CommentProps } from "./Comment.types";
 
 interface Props {
   comments: CommentProps[];

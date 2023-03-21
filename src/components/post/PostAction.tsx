@@ -8,7 +8,7 @@ import { RiAddCircleLine } from "react-icons/ri";
 import { db } from "@/firebase/firebase-app";
 import { useRouter } from "next/navigation";
 import Avatar from "../avatar/Avatar";
-import { CommentProps } from "./comment/Comment";
+import { CommentProps } from "./comment/Comment.types";
 import CommentForm from "./comment/CommentForm";
 import Comments from "./comment/Comments";
 import { PostContext } from "./context/PostContext";
@@ -93,7 +93,7 @@ const PostAction: FC<PostDynamicProps> = ({
         <Reaction reactions={reactions} />
 
         <div className="flex">
-          <button title="comment" onClick={onComment} className="flex items-center space-x-1 text-gray-400 hover:text-[#3BC361]">
+          <button title="comment" onClick={() => setPostExpand(true)} className="flex items-center space-x-1 text-gray-400 hover:text-[#3BC361]">
             <AiOutlineComment className="w-5 h-5" />
           </button>
           <span className="text-gray-400 ml-2">{commentCount}</span>
@@ -109,10 +109,10 @@ const PostAction: FC<PostDynamicProps> = ({
       {(commentCount > comments.length) &&
         <div>
           <div onClick={() => setPostExpand(true)} className="mt-4 ml-2 text-sm font-bold text-gray-400 hover:cursor-pointer hover:underline">View more comments</div>
-          {postExpand &&
-            <PostPopup isOpen={postExpand} onClose={() => { setPostExpand(false); router.refresh(); }} />
-          }
         </div>
+      }
+      {postExpand &&
+        <PostPopup isOpen={postExpand} onClose={() => { setPostExpand(false); router.refresh(); }} />
       }
 
       {/* Comments and comment's form */}

@@ -15,7 +15,7 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
   const onReaction = async () => {
     const myReaction = {
       username: myUserInfo.username,
-      image: myUserInfo.image,
+      image: myUserInfo.image, // Might be removed
       type: "heart"
     }
 

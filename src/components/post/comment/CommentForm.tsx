@@ -1,8 +1,7 @@
-import { addDoc, arrayUnion, collection, doc, serverTimestamp, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { FC, useContext, useState } from "react";
-import { db } from "@/firebase/firebase-app";
 import Avatar from "../../avatar/Avatar";
 import { PostContext } from "../context/PostContext";
+import { sendComment, sendReply } from "./doComment";
 
 interface Props {
   setLastComment: any;
@@ -12,67 +11,32 @@ interface Props {
 
 // It's actually a comment/reply form!!!
 const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
-  const { myUserInfo, postId } = useContext(PostContext)
+  const { myUserInfo, authorName, content, postId } = useContext(PostContext)
   const isReply = commentId ? true : false
 
   const [myComment, setMyComment] = useState("")
 
-  const sendComment = async (comment: any) => {
-    const commentsRef = collection(db, 'posts', postId, "comments");
-
-    const docAdd = await addDoc(commentsRef, comment)
-    updateDoc(doc(db, "posts", postId), { lastComment: { ...comment, id: docAdd.id } })
-
-    return docAdd.id;
-  }
-
   const onComment = async (e: any) => {
     e.preventDefault()
-
     if (!myComment.trim()) return;
 
-    const content = {
-      username: myUserInfo.username,
-      avatarUrl: myUserInfo.image,
-      content: myComment,
-      timestamp: serverTimestamp(),
-    }
-
-    commentId = await sendComment(content)
+    const lastComment = await sendComment(myUserInfo, myComment, authorName, content, postId)
     setLastComment({
-      ...content,
+      ...lastComment,
       timestamp: "less than a minute ago",
-      id: commentId
     })
 
     setMyComment("")
   }
 
-  const sendReply = (reply: any) => {
-    const commentRef = doc(db, 'posts', postId, "comments", commentId!);
-    updateDoc(commentRef, {
-      replies: arrayUnion(reply)
-    })
-  }
-
-  const onReply = (e: any) => {
+  const onReply = async (e: any) => {
     e.preventDefault()
-
     if (!myComment.trim()) return;
 
-    const content = {
-      username: myUserInfo.username,
-      avatarUrl: myUserInfo.image,
-      content: myComment,
-      timestamp: new Date(),
-    }
-
-    sendReply(content)
+    const lastComment = await sendReply(myUserInfo, myComment, postId, commentId!)
     setLastComment({
-      ...content,
+      ...lastComment,
       timestamp: "less than a minute ago",
-      realTimestamp: Timestamp.fromDate(content.timestamp),
-      parentId: commentId
     })
 
     setMyComment("")
