@@ -1,15 +1,15 @@
-import { UserInfo } from '@/global/types';
-import { db } from '@/firebase/firebase-app';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { doc, getDoc } from 'firebase/firestore';
-import { getServerSession } from 'next-auth';
-import { PostForm, Posts } from '../../components';
+import { UserInfo } from "@/global/types"
+import { db } from "@/firebase/firebase-app"
+import { authOptions } from "@/pages/api/auth/[...nextauth]"
+import { doc, getDoc } from "firebase/firestore"
+import { getServerSession } from "next-auth"
+import { PostForm, Posts } from "../../components"
 
 export async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
-  if (!userId) return;
+  if (!userId) return
 
-  const docRef = doc(db, 'users', userId);
-  const docSnap = await getDoc(docRef);
+  const docRef = doc(db, "users", userId)
+  const docSnap = await getDoc(docRef)
 
   if (docSnap.exists()) {
     return {
@@ -18,18 +18,18 @@ export async function getUserInfo(userId: string): Promise<UserInfo | undefined>
       image: docSnap.data().image,
       is_admin: docSnap.data().is_admin,
       is_banned: docSnap.data().is_banned,
-    };
+    }
   } else {
-    console.log('No such document in page/getUserInfo()!');
+    console.log("No such document in page/getUserInfo()!")
   }
 }
 
 export default async function Home() {
-  const session = await getServerSession(authOptions);
-  const myUserId = (session as any)?.user?.id;
-  const myUserInfo = await getUserInfo(myUserId);
+  const session = await getServerSession(authOptions)
+  const myUserId = (session as any)?.user?.id
+  const myUserInfo = await getUserInfo(myUserId)
 
-  if (!myUserInfo) return null;
+  if (!myUserInfo) return null
 
   return (
     <div className="flex justify-center pt-10">
@@ -45,5 +45,5 @@ export default async function Home() {
         <Posts myUserInfo={myUserInfo} />
       </div>
     </div>
-  );
+  )
 }

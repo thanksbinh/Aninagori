@@ -1,33 +1,33 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-'use client';
+"use client"
 
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { HiPhoto, HiVideoCamera } from 'react-icons/hi2';
-import { FC, useRef, useState } from 'react';
-import Avatar from '../avatar/Avatar';
-import classNames from 'classnames/bind';
-import styles from './PostForm.module.scss';
-import PostFormPopUp from './PostFormPopUp';
-const cx = classNames.bind(styles);
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { HiPhoto, HiVideoCamera } from "react-icons/hi2"
+import { FC, useRef, useState } from "react"
+import Avatar from "../avatar/Avatar"
+import classNames from "classnames/bind"
+import styles from "./PostForm.module.scss"
+import PostFormPopUp from "./PostFormPopUp"
+const cx = classNames.bind(styles)
 
 type PostFormProps = {
-  username: string;
-  avatarUrl: string;
-  isBanned: boolean;
-  setOpen?: any;
-  open?: any;
-  className?: any;
-};
+  username: string
+  avatarUrl: string
+  isBanned: boolean
+  setOpen?: any
+  open?: any
+  className?: any
+}
 
-const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = '', isBanned }) => {
-  const [open, setOpen] = useState(false);
+const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBanned }) => {
+  const [open, setOpen] = useState(false)
 
   function openForm() {
     setTimeout(() => {
-      setOpen(true);
-    }, 90);
+      setOpen(true)
+    }, 90)
   }
 
   if (isBanned)
@@ -75,7 +75,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = '', isBa
           </div>
         </div>
       </form>
-    );
+    )
 
   return (
     <div className={className}>
@@ -85,7 +85,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = '', isBa
           <Avatar imageUrl={avatarUrl} altText={username} size={8} />
           <div
             onClick={() => {
-              openForm();
+              openForm()
             }}
             className="cursor-default flex rounded-3xl py-3 px-4 mx-2 w-full focus:outline-none bg-[#212833] hover:bg-[#4e5d78] caret-white"
           >
@@ -96,7 +96,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = '', isBa
         <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-[#212833]">
           <label
             onClick={() => {
-              openForm();
+              openForm()
             }}
             className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer"
           >
@@ -106,7 +106,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = '', isBa
 
           <label
             onClick={() => {
-              openForm();
+              openForm()
             }}
             className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer"
           >
@@ -116,7 +116,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = '', isBa
 
           <button
             onClick={() => {
-              setOpen(true);
+              setOpen(true)
             }}
             className="flex flex-1 items-center justify-center space-x-1 text-[#fff] bg-[#377dff] hover:bg-[#0e5ef1] py-2 px-4 rounded-lg mt-1 mx-1"
           >
@@ -125,7 +125,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = '', isBa
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PostForm;
+export default PostForm

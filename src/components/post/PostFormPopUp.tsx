@@ -1,128 +1,128 @@
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { HiPhoto, HiVideoCamera } from 'react-icons/hi2';
-import { useRouter } from 'next/navigation';
-import { FC, useRef, useState } from 'react';
-import { db, storage } from '@/firebase/firebase-app';
-import Avatar from '../avatar/Avatar';
-import { v4 } from 'uuid';
-import classNames from 'classnames/bind';
-import styles from './PostForm.module.scss';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown, faCircleXmark, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { HiPhoto, HiVideoCamera } from "react-icons/hi2"
+import { useRouter } from "next/navigation"
+import { FC, useRef, useState } from "react"
+import { db, storage } from "@/firebase/firebase-app"
+import Avatar from "../avatar/Avatar"
+import { v4 } from "uuid"
+import classNames from "classnames/bind"
+import styles from "./PostForm.module.scss"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCaretDown, faCircleXmark, faSpinner } from "@fortawesome/free-solid-svg-icons"
 
-import AnimeSearch from './animePostComponent/AnimeSearch';
-import AnimeWatchStatus from './animePostComponent/AnimeWatchStatus';
-import AnimeEpisodes from './animePostComponent/AnimeEpisodes';
-import AnimeTag from './animePostComponent/AnimeTag';
+import AnimeSearch from "./animePostComponent/AnimeSearch"
+import AnimeWatchStatus from "./animePostComponent/AnimeWatchStatus"
+import AnimeEpisodes from "./animePostComponent/AnimeEpisodes"
+import AnimeTag from "./animePostComponent/AnimeTag"
 
-const cx = classNames.bind(styles);
+const cx = classNames.bind(styles)
 
 type PostFormProps = {
-  username: string;
-  avatarUrl: string;
-  setOpen?: any;
-  open?: any;
-};
+  username: string
+  avatarUrl: string
+  setOpen?: any
+  open?: any
+}
 
 const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [mediaUrl, setMediaUrl] = useState<any>(null);
-  const [mediaType, setMediaType] = useState<string>('');
-  const router = useRouter();
-  const animeStatus = useRef();
-  const animeSearch = useRef();
-  const animeEpisodes = useRef();
-  const animeTag = useRef();
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [mediaUrl, setMediaUrl] = useState<any>(null)
+  const [mediaType, setMediaType] = useState<string>("")
+  const router = useRouter()
+  const animeStatus = useRef()
+  const animeSearch = useRef()
+  const animeEpisodes = useRef()
+  const animeTag = useRef()
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
-    const statusData = (animeStatus?.current as any).getAnimeStatus();
-    const searchData = (animeSearch?.current as any).getAnimeName();
-    const episodesData = (animeEpisodes?.current as any).getAnimeEpisodes();
-    const totalEps = (animeEpisodes?.current as any).getAnimeTotal();
-    const tagData = (animeTag?.current as any).getAnimeTag();
+    const statusData = (animeStatus?.current as any).getAnimeStatus()
+    const searchData = (animeSearch?.current as any).getAnimeName()
+    const episodesData = (animeEpisodes?.current as any).getAnimeEpisodes()
+    const totalEps = (animeEpisodes?.current as any).getAnimeTotal()
+    const tagData = (animeTag?.current as any).getAnimeTag()
 
-    e.preventDefault();
-    if ((!inputRef.current?.value && !mediaUrl) || (animeSearch?.current as any).getAnimeName().animeID === '') {
-      console.log('erroer');
-      return;
+    e.preventDefault()
+    if ((!inputRef.current?.value && !mediaUrl) || (animeSearch?.current as any).getAnimeName().animeID === "") {
+      console.log("erroer")
+      return
     }
-    const postAnimeData = handleAnimeInformationPosting(statusData, searchData, episodesData, tagData, totalEps);
+    const postAnimeData = handleAnimeInformationPosting(statusData, searchData, episodesData, tagData, totalEps)
 
-    const downloadMediaUrl = await uploadMedia();
-    await addDoc(collection(db, 'posts'), {
+    const downloadMediaUrl = await uploadMedia()
+    await addDoc(collection(db, "posts"), {
       authorName: username,
       avatarUrl: avatarUrl,
       timestamp: serverTimestamp(),
-      content: inputRef.current?.value || '',
-      imageUrl: mediaType === 'image' ? downloadMediaUrl : '',
-      videoUrl: mediaType === 'video' ? downloadMediaUrl : '',
+      content: inputRef.current?.value || "",
+      imageUrl: mediaType === "image" ? downloadMediaUrl : "",
+      videoUrl: mediaType === "video" ? downloadMediaUrl : "",
       post_anime_data: postAnimeData,
       // Todo: Remove comments: 0
       comments: 0,
-    });
+    })
 
-    inputRef.current!.value = '';
-    setMediaUrl(null);
-    location.reload();
-    setOpen(false);
+    inputRef.current!.value = ""
+    setMediaUrl(null)
+    location.reload()
+    setOpen(false)
   }
 
   const uploadMedia = async () => {
-    if (mediaUrl == null) return '';
+    if (mediaUrl == null) return ""
 
-    const mediaRef = ref(storage, `posts/${mediaUrl.name + v4()}`);
-    const snapshot = await uploadBytes(mediaRef, mediaUrl);
-    const downloadMediaUrl = await getDownloadURL(snapshot.ref);
+    const mediaRef = ref(storage, `posts/${mediaUrl.name + v4()}`)
+    const snapshot = await uploadBytes(mediaRef, mediaUrl)
+    const downloadMediaUrl = await getDownloadURL(snapshot.ref)
 
-    return downloadMediaUrl;
-  };
+    return downloadMediaUrl
+  }
 
   const handleDeleteMedia = () => {
-    URL.revokeObjectURL(mediaUrl);
-    setMediaUrl('');
-  };
+    URL.revokeObjectURL(mediaUrl)
+    setMediaUrl("")
+  }
 
   const handleMediaChange = (e: any, mediaType: string) => {
     // Todo: multi media file
-    const file = e.target.files[0];
-    if (!file) return;
+    const file = e.target.files[0]
+    if (!file) return
 
-    setMediaType(mediaType);
-    setMediaUrl(file);
-  };
+    setMediaType(mediaType)
+    setMediaUrl(file)
+  }
 
   return (
     <div
       onClick={() => {
         setTimeout(() => {
-          setOpen(false);
-        }, 90);
+          setOpen(false)
+        }, 90)
       }}
-      className={cx('modal')}
-      style={open ? { display: 'flex' } : { display: 'none' }}
+      className={cx("modal")}
+      style={open ? { display: "flex" } : { display: "none" }}
     >
-      <div className={cx('modal_overlay')}></div>
+      <div className={cx("modal_overlay")}></div>
       <form
         onClick={(e) => {
-          e.stopPropagation();
+          e.stopPropagation()
         }}
         onSubmit={(e) => handleSubmit(e)}
         className="relative"
       >
         <FontAwesomeIcon
           onClick={() => {
-            setOpen(false);
+            setOpen(false)
           }}
           icon={faCircleXmark as any}
-          className={cx('close-post')}
+          className={cx("close-post")}
         />
         <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl px-4 my-4">
           <div className="flex justify-start mt-4 px-2 mb-4 items-start">
             <Avatar imageUrl={avatarUrl} altText={username} size={10} />
             <h4 className="text-base font-bold ml-4">{username}</h4>
           </div>
-          <div className={cx('status-wrapper')}>
+          <div className={cx("status-wrapper")}>
             <AnimeWatchStatus ref={animeStatus} />
             <AnimeSearch ref={animeSearch} animeEpsRef={animeEpisodes} />
             <AnimeEpisodes ref={animeEpisodes} />
@@ -136,17 +136,17 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
 
           <div className="mt-4 w-full flex items-center justify-center">
             {mediaUrl &&
-              (mediaUrl.name.endsWith('.mp4') ? (
-                <div className={cx('media-wrapper') + ' w-2/3 h-2/5 flex items-center justify-center relative'}>
+              (mediaUrl.name.endsWith(".mp4") ? (
+                <div className={cx("media-wrapper") + " w-2/3 h-2/5 flex items-center justify-center relative"}>
                   <video src={URL.createObjectURL(mediaUrl)} className="w-full object-contain rounded-xl" controls />
                   <FontAwesomeIcon
                     onClick={handleDeleteMedia}
                     icon={faCircleXmark as any}
-                    className={cx('delete-icon')}
+                    className={cx("delete-icon")}
                   />
                 </div>
               ) : (
-                <div className={cx('media-wrapper') + ' w-2/3 h-64 flex items-center justify-center relative'}>
+                <div className={cx("media-wrapper") + " w-2/3 h-64 flex items-center justify-center relative"}>
                   <img
                     src={URL.createObjectURL(mediaUrl)}
                     className="w-full h-full object-cover object-center rounded-xl"
@@ -154,13 +154,13 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
                   <FontAwesomeIcon
                     onClick={handleDeleteMedia}
                     icon={faCircleXmark as any}
-                    className={cx('delete-icon')}
+                    className={cx("delete-icon")}
                   />
                 </div>
               ))}
           </div>
 
-          <AnimeTag tagArr={['Spoiler', 'GoodStory', 'BestWaifu']} ref={animeTag} />
+          <AnimeTag tagArr={["Spoiler", "GoodStory", "BestWaifu"]} ref={animeTag} />
 
           <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-[#212833]">
             <label
@@ -174,7 +174,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
               type="file"
               id="image-input"
               accept="image/*"
-              onChange={(e) => handleMediaChange(e, 'image')}
+              onChange={(e) => handleMediaChange(e, "image")}
               className="hidden"
             />
 
@@ -189,7 +189,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
               type="file"
               id="video-input"
               accept="video/*"
-              onChange={(e) => handleMediaChange(e, 'video')}
+              onChange={(e) => handleMediaChange(e, "video")}
               className="hidden"
             />
 
@@ -203,10 +203,10 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default PostFormPopUp;
+export default PostFormPopUp
 
 function handleAnimeInformationPosting(status: any, animeInformation: any, episodes: any, tag: any, totalEps: any) {
   const postAnimeData = {
@@ -214,29 +214,29 @@ function handleAnimeInformationPosting(status: any, animeInformation: any, episo
     anime_name: animeInformation.animeName,
     anime_id: animeInformation.animeID,
     episodes_seen: episodes,
-    total_episodes: parseInt(totalEps) === 0 ? '1' : totalEps + '',
+    total_episodes: parseInt(totalEps) === 0 ? "1" : totalEps + "",
     tag: tag,
-  };
-  console.log(status);
+  }
+  console.log(status)
 
-  if (status === 'Watching' && episodes === '0') {
-    postAnimeData.watching_progess = 'is watching';
-    postAnimeData.episodes_seen = '1';
-  } else if (status === 'Watching') {
-    postAnimeData.watching_progess = 'is watching';
-  } else if (status === 'Plan to watch') {
-    postAnimeData.watching_progess = 'plan to watch';
-    postAnimeData.episodes_seen = '0';
-  } else if (status === 'Finished') {
-    postAnimeData.watching_progess = 'have finished';
-    postAnimeData.episodes_seen = postAnimeData.total_episodes;
-  } else if (status === 'Drop') {
-    postAnimeData.watching_progess = 'have dropped';
+  if (status === "Watching" && episodes === "0") {
+    postAnimeData.watching_progess = "is watching"
+    postAnimeData.episodes_seen = "1"
+  } else if (status === "Watching") {
+    postAnimeData.watching_progess = "is watching"
+  } else if (status === "Plan to watch") {
+    postAnimeData.watching_progess = "plan to watch"
+    postAnimeData.episodes_seen = "0"
+  } else if (status === "Finished") {
+    postAnimeData.watching_progess = "have finished"
+    postAnimeData.episodes_seen = postAnimeData.total_episodes
+  } else if (status === "Drop") {
+    postAnimeData.watching_progess = "have dropped"
   }
   if (postAnimeData.episodes_seen === postAnimeData.total_episodes) {
-    postAnimeData.watching_progess = 'have finished';
+    postAnimeData.watching_progess = "have finished"
   }
-  console.log(postAnimeData);
+  console.log(postAnimeData)
 
-  return postAnimeData;
+  return postAnimeData
 }

@@ -1,4 +1,4 @@
-import FriendList from './FriendList';
+import FriendList from "./FriendList"
 
 export default function RightSidebar() {
   return (
@@ -6,5 +6,5 @@ export default function RightSidebar() {
       {/* @ts-expect-error Server Component */}
       <FriendList />
     </div>
-  );
+  )
 }

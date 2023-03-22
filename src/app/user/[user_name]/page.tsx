@@ -1,55 +1,55 @@
 /* eslint-disable @next/next/no-img-element */
-import classNames from 'classnames/bind';
-import styles from './Profile.module.scss';
-import { get } from '@/app/api/apiServices/httpRequest';
-import ProfileHeader from '@/app/user/[user_name]/profileComponent/ProfileHeader/ProfileHeader';
-import AnimeStatus from '@/app/user/[user_name]/profileComponent/AnimeStatus/AnimeStatus';
-import AnimeFavorite from '@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite';
-import AnimeUpdate from '@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate';
-import { collection, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-app';
-import { setCookie } from 'cookies-next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { Suspense } from 'react';
-import { PostForm, Posts } from '@/components';
-import * as apiServices from '@/app/api/apiServices/apiServicesConfig';
-import axios from 'axios';
-import { getAnimeInformation, getAnimeTotal } from '@/app/api/apiServices/getServices';
-import { getUserInfo } from '@/app/(home)/page';
+import classNames from "classnames/bind"
+import styles from "./Profile.module.scss"
+import { get } from "@/app/api/apiServices/httpRequest"
+import ProfileHeader from "@/app/user/[user_name]/profileComponent/ProfileHeader/ProfileHeader"
+import AnimeStatus from "@/app/user/[user_name]/profileComponent/AnimeStatus/AnimeStatus"
+import AnimeFavorite from "@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite"
+import AnimeUpdate from "@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate"
+import { collection, doc, getDoc, query, where, getDocs } from "firebase/firestore"
+import { db } from "@/firebase/firebase-app"
+import { setCookie } from "cookies-next"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/pages/api/auth/[...nextauth]"
+import { Suspense } from "react"
+import { PostForm, Posts } from "@/components"
+import * as apiServices from "@/app/api/apiServices/apiServicesConfig"
+import axios from "axios"
+import { getAnimeInformation, getAnimeTotal } from "@/app/api/apiServices/getServices"
+import { getUserInfo } from "@/app/(home)/page"
 
-const cx = classNames.bind(styles);
+const cx = classNames.bind(styles)
 
 async function Profile({ params }: { params: { user_name: string } }) {
-  const session = await getServerSession(authOptions);
-  const myUserId = (session as any)?.user?.id;
-  const myUserInfo = await getUserInfo(myUserId);
+  const session = await getServerSession(authOptions)
+  const myUserId = (session as any)?.user?.id
+  const myUserInfo = await getUserInfo(myUserId)
 
   // get admin information
-  let adminData = {} as any;
+  let adminData = {} as any
 
   if (session && !!session.user) {
-    const docRef = doc(db, 'users', (session.user as any).id);
-    const docSnap = await getDoc(docRef);
+    const docRef = doc(db, "users", (session.user as any).id)
+    const docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
-      adminData = { ...docSnap.data(), joined_date: '', id: docSnap.id };
+      adminData = { ...docSnap.data(), joined_date: "", id: docSnap.id }
     }
   }
 
   // get guess information
-  const usersRef = collection(db, 'users');
-  const usernameQuery = query(usersRef, where('username', '==', params.user_name));
-  const querySnapshot = await getDocs(usernameQuery);
-  const guessData = { ...querySnapshot.docs[0].data(), joined_date: '', id: querySnapshot.docs[0].id } as any;
+  const usersRef = collection(db, "users")
+  const usernameQuery = query(usersRef, where("username", "==", params.user_name))
+  const querySnapshot = await getDocs(usernameQuery)
+  const guessData = { ...querySnapshot.docs[0].data(), joined_date: "", id: querySnapshot.docs[0].id } as any
 
   // compare between admin and guess
-  const isAdmin = !querySnapshot.empty && !!session?.user && params.user_name === adminData.username;
+  const isAdmin = !querySnapshot.empty && !!session?.user && params.user_name === adminData.username
   return (
-    <div className={cx('profile-wrapper')}>
-      <div className={cx('profile-content')}>
+    <div className={cx("profile-wrapper")}>
+      <div className={cx("profile-content")}>
         <ProfileHeader guess={guessData} admin={adminData} />
-        <div className={cx('profile-body-wrapper')}>
-          <div className={cx('status-section')}>
+        <div className={cx("profile-body-wrapper")}>
+          <div className={cx("status-section")}>
             {guessData?.mal_connect ? (
               <Suspense
                 fallback={
@@ -68,10 +68,10 @@ async function Profile({ params }: { params: { user_name: string } }) {
                 />
               </Suspense>
             ) : (
-              <div className={cx('mal-notfound')}>Not connected to MAL yet</div>
+              <div className={cx("mal-notfound")}>Not connected to MAL yet</div>
             )}
           </div>
-          <div className={cx('post-section')}>
+          <div className={cx("post-section")}>
             {isAdmin && (
               <>
                 <PostForm
@@ -87,14 +87,14 @@ async function Profile({ params }: { params: { user_name: string } }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 async function AnimeComponent({ mal_username, access_token }: { mal_username: string; access_token: string }) {
-  const animeData = getUserAnimeUpdate(access_token, mal_username);
-  const animeStatus = getAnimeStatus(access_token);
-  const userFavorite = getAnimeFavorite(mal_username);
-  const [data, anime_status, user_favorite] = await Promise.all([animeData, animeStatus, userFavorite]);
+  const animeData = getUserAnimeUpdate(access_token, mal_username)
+  const animeStatus = getAnimeStatus(access_token)
+  const userFavorite = getAnimeFavorite(mal_username)
+  const [data, anime_status, user_favorite] = await Promise.all([animeData, animeStatus, userFavorite])
 
   return (
     <>
@@ -103,30 +103,30 @@ async function AnimeComponent({ mal_username, access_token }: { mal_username: st
       <AnimeStatus statusData={anime_status.anime_statistics} />
       <AnimeFavorite favorite_data={user_favorite.data.data.favorites} />
     </>
-  );
+  )
 }
 
 function getAnimeStatus(access_token: any) {
-  const url = 'https://api.myanimelist.net/v2/users/@me?fields=anime_statistics';
+  const url = "https://api.myanimelist.net/v2/users/@me?fields=anime_statistics"
   return fetch(url, {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
-  }).then((res) => res.json());
+  }).then((res) => res.json())
 }
 
 function getAnimeFavorite(mal_username: any) {
-  return apiServices.jikanRequest.get(`/users/${mal_username}/full`);
+  return apiServices.jikanRequest.get(`/users/${mal_username}/full`)
 }
 
 async function getUserAnimeUpdate(access_token: any, mal_username: any) {
-  const url = 'https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status&limit=3&sort=list_updated_at';
+  const url = "https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status&limit=3&sort=list_updated_at"
   const userUpdate = fetch(url, {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
-  }).then((res) => res.json());
-  return userUpdate;
+  }).then((res) => res.json())
+  return userUpdate
 }
 
-export default Profile;
+export default Profile
