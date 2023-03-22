@@ -1,18 +1,18 @@
-import { getDocs, collection, query, orderBy, limit, getCountFromServer } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-app';
-import { UserInfo } from '../../global/types';
-import { formatDuration } from '../utils/formatDuration';
-import { Suspense } from 'react';
-import ContextProvider from './context/PostContext';
-import PostContent from './PostContent';
-import PostAction from './PostAction';
+import { getDocs, collection, query, orderBy, limit, getCountFromServer } from "firebase/firestore"
+import { db } from "@/firebase/firebase-app"
+import { UserInfo } from "../../global/types"
+import { formatDuration } from "../utils/formatDuration"
+import { Suspense } from "react"
+import ContextProvider from "./context/PostContext"
+import PostContent from "./postContent/PostContent"
+import PostAction from "./PostAction"
 
 export default async function Post(props: any) {
-  const commentsRef = collection(db, 'posts', props.id, 'comments');
-  const commentCount = (await getCountFromServer(commentsRef)).data().count;
+  const commentsRef = collection(db, "posts", props.id, "comments")
+  const commentCount = (await getCountFromServer(commentsRef)).data().count
 
-  const lastCommentRef = query(commentsRef, orderBy('timestamp', 'desc'), limit(1));
-  const lastCommentDocs = (await getDocs(lastCommentRef)).docs;
+  const lastCommentRef = query(commentsRef, orderBy("timestamp", "desc"), limit(1))
+  const lastCommentDocs = (await getDocs(lastCommentRef)).docs
 
   const lastComment = lastCommentDocs.map((doc) => {
     return {
@@ -26,12 +26,12 @@ export default async function Post(props: any) {
             timestamp: formatDuration(new Date().getTime() - new Date(reply.timestamp.seconds * 1000).getTime()),
             realTimestamp: { ...reply.timestamp },
             parentId: doc.id,
-          };
+          }
         }),
       timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
       id: doc.id,
-    } as any;
-  });
+    } as any
+  })
 
   return (
     <div className="mb-4">
@@ -51,5 +51,5 @@ export default async function Post(props: any) {
       />
       <PostAction reactions={props.reactions} commentCount={commentCount} comments={lastComment} />
     </div>
-  );
+  )
 }

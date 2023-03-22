@@ -7,7 +7,6 @@ import "tippy.js/dist/tippy.css"
 import { get } from "@/app/api/apiServices/httpRequest"
 import { faCaretDown, faSpinner } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { getAnimeTotal } from "@/app/api/apiServices/getServices"
 const cx = classNames.bind(styles)
 
 function AnimeSearch(props: any, ref: any) {

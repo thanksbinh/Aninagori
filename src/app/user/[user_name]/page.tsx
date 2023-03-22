@@ -1,21 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 import classNames from "classnames/bind"
 import styles from "./Profile.module.scss"
-import { get } from "@/app/api/apiServices/httpRequest"
 import ProfileHeader from "@/app/user/[user_name]/profileComponent/ProfileHeader/ProfileHeader"
 import AnimeStatus from "@/app/user/[user_name]/profileComponent/AnimeStatus/AnimeStatus"
 import AnimeFavorite from "@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite"
 import AnimeUpdate from "@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate"
 import { collection, doc, getDoc, query, where, getDocs } from "firebase/firestore"
 import { db } from "@/firebase/firebase-app"
-import { setCookie } from "cookies-next"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/pages/api/auth/[...nextauth]"
 import { Suspense } from "react"
 import { PostForm, Posts } from "@/components"
 import * as apiServices from "@/app/api/apiServices/apiServicesConfig"
-import axios from "axios"
-import { getAnimeInformation, getAnimeTotal } from "@/app/api/apiServices/getServices"
 import { getUserInfo } from "@/app/(home)/page"
 
 const cx = classNames.bind(styles)

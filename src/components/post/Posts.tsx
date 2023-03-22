@@ -1,10 +1,10 @@
-import { getDocs, collection, query, orderBy, limit, getCountFromServer } from "firebase/firestore"
+import { getDocs, collection, query, orderBy, limit } from "firebase/firestore"
 import { db } from "@/firebase/firebase-app"
 import { UserInfo } from "../../global/types"
 import { formatDuration } from "../utils/formatDuration"
 import { Suspense } from "react"
 import ContextProvider from "./context/PostContext"
-import PostContent from "./PostContent"
+import PostContent from "./postContent/PostContent"
 import PostAction from "./PostAction"
 import Post from "./Post"
 

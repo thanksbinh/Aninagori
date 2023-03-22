@@ -3,7 +3,7 @@
 import { getDocs, collection, query, orderBy, getDoc, doc } from "firebase/firestore"
 import { useContext, useEffect, useState } from "react"
 
-import PostContent from "./PostContent"
+import PostContent from "./postContent/PostContent"
 import { db } from "@/firebase/firebase-app"
 import PostAction from "./PostAction"
 import { formatDuration } from "../utils/formatDuration"

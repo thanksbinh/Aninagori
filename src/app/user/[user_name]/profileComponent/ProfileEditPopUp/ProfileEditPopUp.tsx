@@ -4,7 +4,7 @@ import classNames from "classnames/bind"
 import styles from "../ProfileHeader/ProfileHeader.module.scss"
 import Button from "@/components/button/Button"
 import { forwardRef } from "react"
-import { doc, getDoc, updateDoc } from "firebase/firestore"
+import { doc, updateDoc } from "firebase/firestore"
 import { db } from "@/firebase/firebase-app"
 import "tippy.js/dist/tippy.css"
 const cx = classNames.bind(styles)
