@@ -242,6 +242,7 @@ function ProfileHeader({ guess, admin }) {
                     ? 'https://myanimelist.net/profile/' + guess?.mal_connect?.myAnimeList_username
                     : false
                 }
+                target="_blank"
                 leftIcon={<FontAwesomeIcon icon={faPlug} />}
               >
                 {/*TODO: handle user haven't connected to MAL */}
