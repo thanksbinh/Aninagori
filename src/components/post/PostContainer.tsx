@@ -54,6 +54,7 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
                 content={post.content}
                 imageUrl={post.imageUrl}
                 videoUrl={post.videoUrl}
+                postId={post.id}
               />
               <PostAction
                 reactions={post.reactions}

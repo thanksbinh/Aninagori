@@ -39,6 +39,8 @@ const PostAction: FC<PostDynamicProps> = ({
 
   // Update post's reaction realtime
   useEffect(() => {
+    if (!postId) return;
+
     const postRef = doc(db, "posts", postId);
     const unsubscribe = onSnapshot(postRef, docSnap => {
       setReactions(docSnap?.data()?.reactions || [])

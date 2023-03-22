@@ -11,6 +11,7 @@ type PostStaticProps = {
   content?: string;
   imageUrl?: string;
   videoUrl?: string;
+  postId?: string;
 };
 
 const PostContent: FC<PostStaticProps> = ({
@@ -20,6 +21,7 @@ const PostContent: FC<PostStaticProps> = ({
   content,
   imageUrl,
   videoUrl,
+  postId
 }) => {
   return (
     <div className="flex flex-col flex-1 bg-ani-black rounded-2xl p-4 pb-0 rounded-b-none">
@@ -28,7 +30,9 @@ const PostContent: FC<PostStaticProps> = ({
           <Link href={"/user/" + authorName}><Avatar imageUrl={avatarUrl} altText={authorName} size={10} /></Link>
           <div>
             <Link href={"/user/" + authorName} className="font-bold text-[#dddede]">{authorName}</Link>
-            <p className="text-gray-500 text-sm">{timestamp}</p>
+            <br />
+            <Link href={"/post/" + postId} className="text-gray-500 text-sm hover:underline">{timestamp}</Link>
+            {/* <p className="text-gray-500 text-sm">{timestamp}</p> */}
           </div>
         </div>
         <div className="m-2">

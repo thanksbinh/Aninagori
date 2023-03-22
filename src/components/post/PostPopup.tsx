@@ -63,6 +63,7 @@ export default function PostPopup({ isOpen, onClose }: { isOpen: boolean, onClos
           content={post.content}
           imageUrl={post.imageUrl}
           videoUrl={post.videoUrl}
+          postId={post.id}
         />
         <PostAction
           reactions={post.reactions}
