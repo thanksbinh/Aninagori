@@ -18,6 +18,7 @@ import { get } from '@/app/api/apiServices/httpRequest';
 import { redirect } from 'next/navigation';
 import { generateCodeChallenge, generateCodeVerifier } from '@/app/api/auth/route';
 import { setCookie } from 'cookies-next';
+import ProfilEditPopUp from '../ProfileEditPopUp/ProfileEditPopUp';
 
 const cx = classNames.bind(styles);
 
@@ -32,6 +33,9 @@ function ProfileHeader({ guess, admin }) {
   const editBox = useRef();
   const editBoxWrapper = useRef();
   const { data: session } = useSession();
+  const [closeBox, setCloseBox] = useState(true);
+
+  console.log(closeBox);
 
   useEffect(() => {
     setCookie('username', admin.username);
@@ -40,94 +44,25 @@ function ProfileHeader({ guess, admin }) {
 
   return (
     <div className={cx('wrapper')}>
-      <div className={cx('modal')} ref={editBoxWrapper}>
+      <div
+        className={cx('modal', {
+          hidden: closeBox,
+          flex: !closeBox,
+        })}
+        ref={editBoxWrapper}
+      >
         <div className={cx('modal_overlay')}></div>
-        <div className={cx('modal_body')} ref={editBox}>
-          <h4 className={cx('edit-title')}>Edit your profile information</h4>
-          <div className={cx('form-group')}>
-            <h5 className={cx('form-title')}>Username: </h5>
-            <input
-              onChange={(e) => {
-                setUserName(e.target.value);
-              }}
-              className={cx('form-control')}
-              placeholder="Enter your display name"
-            ></input>
-          </div>
-          <div className={cx('form-group')}>
-            <h5 className={cx('form-title')}>Avatar link: </h5>
-            <input
-              onChange={(e) => {
-                setAvatar(e.target.value);
-              }}
-              className={cx('form-control')}
-              placeholder="Enter your avatar link"
-            ></input>
-          </div>
-          <div className={cx('form-group')}>
-            <h5 className={cx('form-title')}>Wallpaper link: </h5>
-            <input
-              onChange={async (e) => {
-                setWallpaper(e.target.value);
-              }}
-              className={cx('form-control')}
-              placeholder="Enter your wallpaper link"
-            ></input>
-          </div>
-          <div className={cx('form-btn')}>
-            <Button
-              small
-              primary
-              to={undefined}
-              href={undefined}
-              onClick={() => {
-                editBox.current.classList.add(cx('Fadeout'));
-                editBox.current.classList.remove(cx('Fadein'));
-                setTimeout(() => {
-                  editBox.current.classList.remove(cx('Fadeout'));
-                  editBoxWrapper.current.style.display = 'none';
-                }, 300);
-              }}
-              leftIcon={undefined}
-              rightIcon={undefined}
-            >
-              Close
-            </Button>
-            <Button
-              small
-              primary
-              to={undefined}
-              href={undefined}
-              onClick={async () => {
-                const docRef = doc(db, 'users', admin.id);
-                if (userName !== '') {
-                  await updateDoc(docRef, {
-                    name: userName,
-                  });
-                }
-                if (wallpaper !== '') {
-                  await updateDoc(docRef, {
-                    wallpaper: wallpaper,
-                  });
-                }
-                if (avatar !== '') {
-                  await updateDoc(docRef, {
-                    image: avatar,
-                  });
-                }
-                if (userName !== '' || wallpaper !== '' || avatar !== '') {
-                  location.reload();
-                } else {
-                  alert('Please fill up at least 1 fill :((');
-                }
-              }}
-              leftIcon={undefined}
-              rightIcon={undefined}
-            >
-              Submit
-            </Button>
-          </div>
-        </div>
+        <ProfilEditPopUp
+          ref={editBox}
+          setUserName={setUserName}
+          setAvatar={setAvatar}
+          setWallpaper={setWallpaper}
+          setCloseBox={setCloseBox}
+          admin={admin}
+          userName={userName}
+          wallpaper={wallpaper}
+          avatar={avatar}
+        />
       </div>
       <img
         src={guess.wallpaper || currentImage}
@@ -287,7 +222,7 @@ function ProfileHeader({ guess, admin }) {
               <Button
                 onClick={() => {
                   editBox.current.classList.add(cx('Fadein'));
-                  editBoxWrapper.current.style.display = 'flex';
+                  setCloseBox(false);
                 }}
                 small
                 primary

@@ -17,9 +17,10 @@ type PostFormProps = {
   avatarUrl: string;
   setOpen?: any;
   open?: any;
+  className?: any;
 };
 
-const PostForm: FC<PostFormProps> = ({ username, avatarUrl }) => {
+const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = '' }) => {
   const [open, setOpen] = useState(false);
 
   function openForm() {
@@ -29,7 +30,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl }) => {
   }
 
   return (
-    <div>
+    <div className={className}>
       <PostFormPopUp username={username} avatarUrl={avatarUrl} setOpen={setOpen} open={open} />
       <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl px-4 my-4">
         <div className="flex justify-between items-center mt-4">

@@ -13,6 +13,10 @@
     z-index: 3;
     width: 50%;
   }
+
+  & + div {
+    margin-top: 0 !important;
+  }
 }
 
 .modal_overlay {
