@@ -32,7 +32,6 @@ const PostContent: FC<PostStaticProps> = ({
             <Link href={"/user/" + authorName} className="font-bold text-[#dddede]">{authorName}</Link>
             <br />
             <Link href={"/post/" + postId} className="text-gray-500 text-sm hover:underline">{timestamp}</Link>
-            {/* <p className="text-gray-500 text-sm">{timestamp}</p> */}
           </div>
         </div>
         <div className="m-2">

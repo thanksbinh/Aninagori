@@ -1,28 +1,7 @@
-import { UserInfo } from "@/global/types";
-import { db } from '@/firebase/firebase-app';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { doc, getDoc } from 'firebase/firestore';
 import { getServerSession } from 'next-auth';
 import { PostForm, Posts } from '../../components';
-
-async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
-  if (!userId) return;
-
-  const docRef = doc(db, "users", userId);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    return {
-      "id": docSnap.id,
-      "username": docSnap.data().username,
-      "image": docSnap.data().image,
-      "is_admin": docSnap.data().is_admin,
-      "is_banned": docSnap.data().is_banned,
-    }
-  } else {
-    console.log("No such document in page/getUserInfo()!");
-  }
-}
+import { getUserInfo } from "@/global/getUserInfo";
 
 export default async function Home() {
   const session = await getServerSession(authOptions)

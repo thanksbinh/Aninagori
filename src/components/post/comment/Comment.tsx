@@ -112,7 +112,7 @@ const Comment = ({ comment, onParentReply }: { comment: CommentProps, onParentRe
 
         <div onClick={() => onReplyClick(comment.username)} className="font-bold text-gray-400 hover:cursor-pointer hover:underline">Reply</div>
 
-        <div className="text-gray-400 hover:cursor-pointer hover:underline">{comment!.timestamp}</div>
+        <Link href={"/post/" + postId + "/comment/" + (comment.id || comment.parentId)} className="text-gray-400 hover:cursor-pointer hover:underline">{comment!.timestamp}</Link>
       </div>
 
       {/* Replies and reply's form */}

@@ -3,30 +3,10 @@ import ContextProvider from "@/components/post/context/PostContext";
 import PostAction from "@/components/post/PostAction";
 import { formatDuration } from "@/components/utils/formatDuration";
 import { db } from "@/firebase/firebase-app";
-import { UserInfo } from "@/global/types";
+import { getUserInfo } from "@/global/getUserInfo";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { collection, doc, getDoc, getDocs, orderBy, query } from "firebase/firestore";
 import { getServerSession } from "next-auth";
-
-// Todo: Remove UserInfo fetch duplication
-async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
-  if (!userId) return;
-
-  const docRef = doc(db, "users", userId);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    return {
-      "id": docSnap.id,
-      "username": docSnap.data().username,
-      "image": docSnap.data().image,
-      "is_admin": docSnap.data().is_admin,
-      "is_banned": docSnap.data().is_banned,
-    }
-  } else {
-    console.log("No such document in page/getUserInfo()!");
-  }
-}
 
 async function fetchPost(postId: string) {
   if (!postId) return {};

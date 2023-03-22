@@ -9,7 +9,7 @@ import NavBar from '@/components/nav/NavBar';
 
 export const metadata: Metadata = {
   title: 'Aninagori',
-  description: 'Share your favourite Animemory with friends',
+  description: 'Share your favorite Animemory with friends',
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

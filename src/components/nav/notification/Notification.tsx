@@ -3,7 +3,7 @@
 import { formatDuration } from "@/components/utils/formatDuration";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
-import { UserInfo } from "../../../global/types";
+import { UserInfo } from "../../../global/UserInfo.types";
 import { Notification } from "./Notification.types";
 import { NotiContext } from "./NotificationBtn";
 import { markAsRead } from "./NotificationContainer";

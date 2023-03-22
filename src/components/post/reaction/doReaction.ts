@@ -1,5 +1,5 @@
 import { db } from '@/firebase/firebase-app';
-import { UserInfo } from '@/global/types';
+import { UserInfo } from '@/global/UserInfo.types';
 import { doc, updateDoc, arrayUnion, arrayRemove, Timestamp } from 'firebase/firestore';
 
 async function sentReaction(myUserInfo: UserInfo, myReaction: any, reactionToggle: boolean, authorName: string, content: string, postId: string, commentId?: string, reply?: any) {

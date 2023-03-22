@@ -21,10 +21,7 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
     if (!myComment.trim()) return;
 
     const lastComment = await sendComment(myUserInfo, myComment, authorName, content, postId)
-    setLastComment({
-      ...lastComment,
-      timestamp: "less than a minute ago",
-    })
+    setLastComment(lastComment)
 
     setMyComment("")
   }
@@ -34,10 +31,7 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
     if (!myComment.trim()) return;
 
     const lastComment = await sendReply(myUserInfo, myComment, postId, commentId!)
-    setLastComment({
-      ...lastComment,
-      timestamp: "less than a minute ago",
-    })
+    setLastComment(lastComment)
 
     setMyComment("")
   }

@@ -1,29 +1,10 @@
-import { db } from "@/firebase/firebase-app";
-import { doc, getDoc } from "firebase/firestore";
+import { getUserInfo } from "@/global/getUserInfo";
 import { BsChatLeftDotsFill } from 'react-icons/bs';
-import { UserInfo } from "../../global/types";
 import Button from "../button/Button";
 import Logo from "./Logo";
 import NotificationBtn from "./notification/NotificationBtn";
 import ProfilePicture from "./profilePicture/ProfilePicture";
 import SearchBar from "./SearchBar";
-
-async function getUserInfo(userId: string | undefined): Promise<UserInfo | undefined> {
-  if (!userId) return;
-
-  const docRef = doc(db, "users", userId);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    return {
-      "id": docSnap.id,
-      "username": docSnap.data().username,
-      "image": docSnap.data().image,
-    }
-  } else {
-    console.log("No such document in NavBar/getUserInfo()!");
-  }
-}
 
 export default async function NavBar({ myUserId }: { myUserId: string | undefined }) {
   const myUserInfo = await getUserInfo(myUserId)

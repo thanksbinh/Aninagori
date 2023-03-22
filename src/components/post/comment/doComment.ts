@@ -1,5 +1,5 @@
 import { db } from "@/firebase/firebase-app";
-import { UserInfo } from "@/global/types";
+import { UserInfo } from "@/global/UserInfo.types";
 import { collection, addDoc, updateDoc, doc, arrayUnion, serverTimestamp, Timestamp, getDoc } from "firebase/firestore";
 
 const sendComment = async (myUserInfo: UserInfo, commentStr: string, authorName: string, postContent: string, postId: string) => {
@@ -20,6 +20,7 @@ const sendComment = async (myUserInfo: UserInfo, commentStr: string, authorName:
 
   return {
     ...commentObject,
+    timestamp: "less than a minute ago",
     id: docAdd.id,
   };
 }
@@ -55,7 +56,8 @@ const sendReply = async (myUserInfo: UserInfo, replyStr: string, postId: string,
 
   return {
     ...content,
-    realTimestamp: Timestamp.fromDate(content.timestamp),
+    timestamp: "less than a minute ago",
+    realTimestamp: Timestamp.fromDate(content.timestamp).toJSON(),
     parentId: commentId,
   }
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { UserInfo } from '@/global/types';
+import { UserInfo } from '@/global/UserInfo.types';
 import React from 'react';
 
 interface PostContextType {
