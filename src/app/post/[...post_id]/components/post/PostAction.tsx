@@ -5,26 +5,28 @@ import { FC, useContext, useEffect, useRef, useState } from 'react';
 import { AiOutlineComment } from "react-icons/ai";
 import { RiAddCircleLine } from "react-icons/ri";
 
+import Avatar from "@/components/avatar/Avatar";
 import { db } from "@/firebase/firebase-app";
 import { useRouter } from "next/navigation";
 import { CommentProps } from "../comment/Comment.types";
 import CommentForm from "../comment/CommentForm";
 import Comments from "../comment/Comments";
 import { PostContext } from "../context/PostContext";
-import PostPopup from "./PostPopup";
 import Reaction from "../reaction/Reaction";
-import Avatar from "@/components/avatar/Avatar";
+import PostPopup from "./PostPopup";
 
 interface PostDynamicProps {
   reactions?: Object[];
   commentCountPromise?: Promise<number> | number;
   comments?: CommentProps[];
+  focusedComment?: string;
 };
 
 const PostAction: FC<PostDynamicProps> = ({
   reactions: reactions0 = [],
   commentCountPromise = 0,
   comments: comments0 = [],
+  focusedComment
 }) => {
   const { postId } = useContext(PostContext)
 
@@ -119,7 +121,7 @@ const PostAction: FC<PostDynamicProps> = ({
 
       {/* Comments and comment's form */}
       <div className="mx-2">
-        <Comments comments={comments} />
+        <Comments comments={comments} focusedComment={focusedComment} />
         <CommentForm setLastComment={setLastComment} inputRef={inputRef} />
       </div>
 

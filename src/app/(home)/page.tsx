@@ -1,8 +1,8 @@
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth';
 import { getUserInfo } from "@/global/getUserInfo";
-import PostForm from '../post/[...post_id]/components/post/PostForm';
-import Posts from '../post/[...post_id]/components/post/PostContainer';
+import PostForm from './components/PostForm';
+import Posts from './components/PostContainer';
 
 export default async function Home() {
   const session = await getServerSession(authOptions)

@@ -7,8 +7,9 @@ const Logo = () => {
   const router = useRouter()
 
   const handleOnClick = () => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     router.refresh()
+    console.log(window.location.href)
+    if (window.location.href == process.env.NEXT_PUBLIC_BASE_URL) window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }
 
   return (

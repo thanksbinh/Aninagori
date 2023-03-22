@@ -87,6 +87,7 @@ async function Post({ params }: { params: { post_id: string[] } }) {
             reactions={fetchedPost.reactions}
             commentCountPromise={fetchedComments.length}
             comments={fetchedComments}
+            focusedComment={(params.post_id.length > 1) ? params.post_id[2] : undefined}
           />
         </ContextProvider>
       </div>

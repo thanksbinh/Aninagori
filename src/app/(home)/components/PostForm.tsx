@@ -4,7 +4,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { HiPhoto, HiVideoCamera } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
-import { FC, useRef, useState } from "react";
+import { FC, useRef, useState, useEffect } from "react";
 import { db, storage } from "@/firebase/firebase-app";
 import { v4 } from "uuid"
 import Avatar from '@/components/avatar/Avatar';
@@ -20,6 +20,10 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, isBanned }) => {
   const [mediaUrl, setMediaUrl] = useState<any>(null);
   const [mediaType, setMediaType] = useState<string>("")
   const router = useRouter();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, [])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault()

@@ -36,14 +36,14 @@ export function noticationFilter(notiArray: Notification[]) {
       filteredArray.push(value[0])
     } else if (value.length >= 2) {
       const newNoti = {
-        title: value[0].title.replace(value[0].sender.username, value[value.length - 1].sender.username + " and " + (value.length == 2 ? value[0].sender.username : (value.length - 1) + " others")),
-        url: value[value.length - 1].url,
+        title: value[0].title.replace(value[0].sender.username, value[0].sender.username + " and " + (value.length == 2 ? value[value.length - 1].sender.username : (value.length - 1) + " others")),
+        url: value[0].url,
         sender: {
-          username: value[value.length - 1].sender.username,
-          image: value[value.length - 1].sender.image,
+          username: value[0].sender.username,
+          image: value[0].sender.image,
         },
         type: value[0].type,
-        timestamp: value[value.length - 1].timestamp,
+        timestamp: value[0].timestamp,
       }
       filteredArray.push(newNoti)
     }

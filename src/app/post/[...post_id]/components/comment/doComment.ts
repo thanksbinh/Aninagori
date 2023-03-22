@@ -69,14 +69,14 @@ const notifyComment = async (type: string, myUserInfo: UserInfo, rcvUsername: st
   } else if (type === "comment reply") {
     title = myUserInfo.username + ' replied to your comment: "' + commentStr.slice(0, 24) + (commentStr.length > 24 ? '..."' : ".")
   } else if (type === "comment mention") {
-    title = myUserInfo.username + ' mentioned you in a comment."'
+    title = myUserInfo.username + ' mentioned you in a comment.'
   }
 
   const notificationsRef = doc(db, 'notifications', rcvUsername);
   await updateDoc(notificationsRef, {
     recentNotifications: arrayUnion({
       title: title,
-      url: '/post/' + postId + '/comment/' + commentId,
+      url: '/post/' + postId + '/comment/' + commentId + (reply ? "&replies" : ""),
       sender: {
         username: myUserInfo.username,
         image: myUserInfo.image,

@@ -12,8 +12,8 @@ import { setCookie } from 'cookies-next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { Suspense } from 'react';
-import PostForm from '@/app/post/[...post_id]/components/post/PostForm';
-import Posts from '@/app/post/[...post_id]/components/post/PostContainer';
+import PostForm from '@/app/(home)/components/PostForm';
+import Posts from '@/app/(home)/components/PostContainer';
 
 const cx = classNames.bind(styles);
 

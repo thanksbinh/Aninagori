@@ -1,12 +1,12 @@
-import { useEffect, useContext, useState, useRef } from "react";
-import { PostContext } from "../context/PostContext";
-import CommentForm from "./CommentForm";
+import Avatar from "@/components/avatar/Avatar";
 import Link from "next/link";
+import { useContext, useEffect, useRef, useState } from "react";
+import { PostContext } from "../context/PostContext";
 import { sentReaction, sentReactionReply } from "../reaction/doReaction";
 import { CommentProps } from "./Comment.types";
-import Avatar from "@/components/avatar/Avatar";
+import CommentForm from "./CommentForm";
 
-const Comment = ({ comment, onParentReply }: { comment: CommentProps, onParentReply?: any }) => {
+const Comment = ({ comment, focused, onParentReply }: { comment: CommentProps, focused?: string, onParentReply?: any }) => {
   const { myUserInfo, postId } = useContext(PostContext)
 
   const [reactionToggle, setReactionToggle] = useState(false)
@@ -18,7 +18,21 @@ const Comment = ({ comment, onParentReply }: { comment: CommentProps, onParentRe
   const [openReplyForm, setOpenReplyForm] = useState(false)
   const [taggedUser, setTaggedUser] = useState("")
 
+  const ref = useRef<HTMLInputElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const [focusingType, setFocusingType] = useState(focused || "none")
+
+  useEffect(() => {
+    if (focusingType != "none" && ref.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const timeoutId = setTimeout(() => {
+        setFocusingType("none")
+      }, 2000)
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [ref.current, focusingType])
 
   useEffect(() => {
     if (!comment.reactions) return;
@@ -92,11 +106,11 @@ const Comment = ({ comment, onParentReply }: { comment: CommentProps, onParentRe
   }, [inputRef.current, taggedUser])
 
   return (
-    <div className="flex flex-col mt-4">
+    <div ref={ref} className="flex flex-col mt-4">
       {/* Comment content */}
       <div className="flex justify-between text-ani-text-gray">
         <Link href={"/user/" + comment!.username} className="min-w-fit"><Avatar imageUrl={comment!.avatarUrl} altText={comment!.username} size={8} /></Link>
-        <div className="rounded-2xl py-2 px-4 ml-2 w-full bg-ani-gray focus:outline-none caret-white">
+        <div className={`rounded-2xl py-2 px-4 ml-2 w-full focus:outline-none caret-white transition-colors duration-300 ease-out ${focusingType === "comment" ? "bg-gray-600" : "bg-ani-gray"}`}>
           <Link href={"/user/" + comment!.username} className="text-sm font-bold">{comment!.username}</Link>
           <br />
           {comment!.content}
@@ -112,7 +126,7 @@ const Comment = ({ comment, onParentReply }: { comment: CommentProps, onParentRe
 
         <div onClick={() => onReplyClick(comment.username)} className="font-bold text-gray-400 hover:cursor-pointer hover:underline">Reply</div>
 
-        <Link href={"/post/" + postId + "/comment/" + (comment.id || comment.parentId)} className="text-gray-400 hover:cursor-pointer hover:underline">{comment!.timestamp}</Link>
+        <Link href={"/post/" + postId + "/comment/" + (comment.id || comment.parentId + "&replies")} className="text-gray-400 hover:cursor-pointer hover:underline">{comment!.timestamp}</Link>
       </div>
 
       {/* Replies and reply's form */}
@@ -120,7 +134,7 @@ const Comment = ({ comment, onParentReply }: { comment: CommentProps, onParentRe
         {replies?.map((reply, index) => {
           return (
             <div key={index}>
-              <Comment comment={reply} onParentReply={onReplyClick} />
+              <Comment comment={reply} focused={(focusingType === "replies") ? "comment" : "none"} onParentReply={onReplyClick} />
             </div>
           )
         })}

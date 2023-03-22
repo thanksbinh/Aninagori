@@ -1,14 +1,14 @@
 import { getDocs, collection, query, orderBy, limit, getCountFromServer } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
 import { Suspense } from "react";
-import PostContent from "./PostContent";
-import PostAction from "./PostAction";
+import PostContent from "../../post/[...post_id]/components/post/PostContent";
+import PostAction from "../../post/[...post_id]/components/post/PostAction";
 import { formatDuration } from "@/components/utils/formatDuration";
 import { UserInfo } from "@/global/UserInfo.types";
-import ContextProvider from "../context/PostContext";
+import ContextProvider from "../../post/[...post_id]/components/context/PostContext";
 
 async function fetchPosts() {
-  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(1));
+  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(3));
   const querySnapshot = await getDocs(q);
   const fetchedPosts = querySnapshot.docs.map((doc) => {
     return {
