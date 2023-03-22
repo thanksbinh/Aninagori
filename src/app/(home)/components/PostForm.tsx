@@ -115,6 +115,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, isBanned }) => {
           />
         </div>
 
+
         <div className="mt-4 w-2/3">
           {mediaUrl && (
             mediaUrl.name.endsWith(".mp4") ? (
@@ -125,7 +126,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, isBanned }) => {
           )}
         </div>
 
-        <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-[#212833]">
+        <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-ani-light-gray">
           <label htmlFor="image-input" className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer">
             <HiPhoto className="w-5 h-5 fill-[#3BC361]" />
             <span>Photo/Gif</span>
@@ -150,7 +151,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, isBanned }) => {
             className="hidden"
           />
 
-          <button type="submit" className="flex flex-1 items-center justify-center space-x-1 text-[#fff] bg-[#377dff] hover:bg-[#0e5ef1] py-2 px-4 rounded-lg mt-1 mx-1">
+          <button type="submit" className="flex flex-1 items-center justify-center space-x-1 text-[#fff] bg-[#00b4d8] hover:bg-[#0e5ef1] py-2 px-4 rounded-lg mt-1 mx-1">
             <span>Share</span>
           </button>
         </div>

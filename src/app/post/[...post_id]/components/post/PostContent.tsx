@@ -39,7 +39,7 @@ const PostContent: FC<PostStaticProps> = ({
         </div>
       </div>
 
-      <p className="text-lg mt-4 mb-2 text-[#dddede] mx-2">{content}</p>
+      <p className="text-lg mt-4 mb-2 text-ani-text-gray mx-2">{content}</p>
       <div className="mt-4 mx-2">
         {imageUrl && <img src={imageUrl} alt={""} className="rounded-2xl" />}
         {videoUrl && <VideoComponent videoUrl={videoUrl} />}

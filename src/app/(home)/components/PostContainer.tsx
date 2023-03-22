@@ -8,7 +8,7 @@ import { UserInfo } from "@/global/UserInfo.types";
 import ContextProvider from "../../post/[...post_id]/components/context/PostContext";
 
 async function fetchPosts() {
-  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(3));
+  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(2));
   const querySnapshot = await getDocs(q);
   const fetchedPosts = querySnapshot.docs.map((doc) => {
     return {

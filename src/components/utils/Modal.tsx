@@ -17,7 +17,7 @@ export default function Modal({ isOpen, title, onClose, children }: ModalProps) 
             as={Dialog.Overlay}
             className="fixed inset-0 bg-black opacity-40"
           />
-          <div className="bg-white rounded-2xl border-2 border-gray-400 z-20">
+          <div className="bg-white rounded-2xl border-gray-400 z-20">
             <Dialog.Title as="h3" className="text-lg font-medium text-gray-900">
               {title}
             </Dialog.Title>
