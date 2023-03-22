@@ -1,10 +1,10 @@
 import { useEffect, useContext, useState, useRef } from "react";
-import Avatar from "../../avatar/Avatar";
 import { PostContext } from "../context/PostContext";
 import CommentForm from "./CommentForm";
 import Link from "next/link";
 import { sentReaction, sentReactionReply } from "../reaction/doReaction";
 import { CommentProps } from "./Comment.types";
+import Avatar from "@/components/avatar/Avatar";
 
 const Comment = ({ comment, onParentReply }: { comment: CommentProps, onParentReply?: any }) => {
   const { myUserInfo, postId } = useContext(PostContext)

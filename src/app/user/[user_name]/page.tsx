@@ -8,12 +8,12 @@ import AnimeFavorite from '@/app/user/[user_name]/profileComponent/AnimeFavorite
 import AnimeUpdate from '@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate';
 import { collection, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-app';
-import PostForm from '@/components/post/PostForm';
 import { setCookie } from 'cookies-next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { Suspense } from 'react';
-import { Posts } from '@/components';
+import PostForm from '@/app/post/[...post_id]/components/post/PostForm';
+import Posts from '@/app/post/[...post_id]/components/post/PostContainer';
 
 const cx = classNames.bind(styles);
 

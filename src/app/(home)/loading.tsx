@@ -1,4 +1,4 @@
-import { PostForm } from "@/components";
+import PostForm from "../post/[...post_id]/components/post/PostForm";
 
 export default function loading() {
   return (

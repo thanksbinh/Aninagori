@@ -1,12 +1,12 @@
-import { PostContent } from "@/components";
-import ContextProvider from "@/components/post/context/PostContext";
-import PostAction from "@/components/post/PostAction";
 import { formatDuration } from "@/components/utils/formatDuration";
 import { db } from "@/firebase/firebase-app";
 import { getUserInfo } from "@/global/getUserInfo";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { collection, doc, getDoc, getDocs, orderBy, query } from "firebase/firestore";
 import { getServerSession } from "next-auth";
+import ContextProvider from "./components/context/PostContext";
+import PostAction from "./components/post/PostAction";
+import PostContent from "./components/post/PostContent";
 
 async function fetchPost(postId: string) {
   if (!postId) return {};
@@ -85,7 +85,7 @@ async function Post({ params }: { params: { post_id: string[] } }) {
           />
           <PostAction
             reactions={fetchedPost.reactions}
-            commentCountPromise={fetchedComments.length as any}
+            commentCountPromise={fetchedComments.length}
             comments={fetchedComments}
           />
         </ContextProvider>

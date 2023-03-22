@@ -7,17 +7,17 @@ import { RiAddCircleLine } from "react-icons/ri";
 
 import { db } from "@/firebase/firebase-app";
 import { useRouter } from "next/navigation";
-import Avatar from "../avatar/Avatar";
-import { CommentProps } from "./comment/Comment.types";
-import CommentForm from "./comment/CommentForm";
-import Comments from "./comment/Comments";
-import { PostContext } from "./context/PostContext";
+import { CommentProps } from "../comment/Comment.types";
+import CommentForm from "../comment/CommentForm";
+import Comments from "../comment/Comments";
+import { PostContext } from "../context/PostContext";
 import PostPopup from "./PostPopup";
-import Reaction from "./reaction/Reaction";
+import Reaction from "../reaction/Reaction";
+import Avatar from "@/components/avatar/Avatar";
 
 interface PostDynamicProps {
   reactions?: Object[];
-  commentCountPromise?: Promise<number>;
+  commentCountPromise?: Promise<number> | number;
   comments?: CommentProps[];
 };
 
@@ -95,7 +95,7 @@ const PostAction: FC<PostDynamicProps> = ({
         <Reaction reactions={reactions} />
 
         <div className="flex">
-          <button title="comment" onClick={() => setPostExpand(true)} className="flex items-center space-x-1 text-gray-400 hover:text-[#3BC361]">
+          <button title="comment" onClick={onComment} className="flex items-center space-x-1 text-gray-400 hover:text-[#3BC361]">
             <AiOutlineComment className="w-5 h-5" />
           </button>
           <span className="text-gray-400 ml-2">{commentCount}</span>

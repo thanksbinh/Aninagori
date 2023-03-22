@@ -1,11 +1,11 @@
-import './globals.css';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import React from 'react'
+import React from 'react';
+import './globals.css';
 
 import { SessionProvider } from '@/app/SessionProvider';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import NavBar from '@/components/nav/NavBar';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 
 export const metadata: Metadata = {
   title: 'Aninagori',

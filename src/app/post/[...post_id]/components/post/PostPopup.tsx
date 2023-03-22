@@ -6,9 +6,9 @@ import { useContext, useEffect, useState } from "react";
 import PostContent from "./PostContent";
 import { db } from "@/firebase/firebase-app";
 import PostAction from "./PostAction"
-import { formatDuration } from "../utils/formatDuration";
-import Modal from "../utils/Modal";
-import { PostContext } from "./context/PostContext";
+import { PostContext } from "../context/PostContext";
+import { formatDuration } from "@/components/utils/formatDuration";
+import Modal from "@/components/utils/Modal";
 
 // Todo: Optimization
 export default function PostPopup({ isOpen, onClose }: { isOpen: boolean, onClose: any }) {

@@ -1,5 +1,5 @@
+import Avatar from "@/components/avatar/Avatar";
 import { FC, useContext, useState } from "react";
-import Avatar from "../../avatar/Avatar";
 import { PostContext } from "../context/PostContext";
 import { sendComment, sendReply } from "./doComment";
 

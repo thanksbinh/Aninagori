@@ -1,11 +1,11 @@
 import { getDocs, collection, query, orderBy, limit, getCountFromServer } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
-import { UserInfo } from "../../global/UserInfo.types";
-import { formatDuration } from "../utils/formatDuration";
 import { Suspense } from "react";
-import ContextProvider from "./context/PostContext";
 import PostContent from "./PostContent";
 import PostAction from "./PostAction";
+import { formatDuration } from "@/components/utils/formatDuration";
+import { UserInfo } from "@/global/UserInfo.types";
+import ContextProvider from "../context/PostContext";
 
 async function fetchPosts() {
   const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(1));

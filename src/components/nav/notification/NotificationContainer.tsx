@@ -3,6 +3,7 @@
 import { db } from "@/firebase/firebase-app";
 import { arrayRemove, arrayUnion, doc, onSnapshot, serverTimestamp, setDoc, Timestamp, updateDoc, writeBatch } from "firebase/firestore";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { SiThreedotjs } from "react-icons/si";
 import { UserInfo } from "../../../global/UserInfo.types";
 import FriendRequestComponent from "./FriendRequest";
 import NotificationComponent from "./Notification";
@@ -75,7 +76,7 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, sho
     <div className="absolute right-0 w-80 top-12 z-40 bg-white rounded-md shadow-lg">
       <div className="flex justify-between items-center px-4 pt-2">
         <h2 className="text-gray-800 font-semibold text-xl pt-4">Notification</h2>
-        <div className="hover:cursor-pointer hover:bg-gray-200 rounded-full p-2"><svg className="h-6 w-6 text-gray-500" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <circle cx="5" cy="12" r="1" />  <circle cx="12" cy="12" r="1" />  <circle cx="19" cy="12" r="1" /></svg></div>
+        <div className="hover:cursor-pointer rounded-full p-2"><SiThreedotjs color="gray" className="h-5 w-5" aria-hidden="true" /></div>
       </div>
       <div>
         {notification?.map((noti: Notification, i: number) =>
