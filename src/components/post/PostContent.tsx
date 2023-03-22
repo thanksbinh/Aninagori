@@ -1,7 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
+/* eslint-disable @next/next/no-img-element */
+import Link from 'next/link';
 import { FC } from 'react';
 import Avatar from '../avatar/Avatar';
+import PostOptions from './option/PostOptions';
 import { VideoComponent } from './Video';
 import classNames from 'classnames/bind';
 import styles from './PostContent.module.scss';
@@ -12,10 +14,10 @@ import { useState } from 'react';
 const cx = classNames.bind(styles);
 
 type PostStaticProps = {
-  authorName: string;
-  avatarUrl: string;
-  timestamp: string;
-  content: string;
+  authorName?: string;
+  avatarUrl?: string;
+  timestamp?: string;
+  content?: string;
   imageUrl?: string;
   videoUrl?: string;
   id: string;
@@ -28,8 +30,8 @@ type PostStaticProps = {
 };
 
 const PostContent: FC<PostStaticProps> = ({
-  authorName,
-  avatarUrl,
+  authorName = '',
+  avatarUrl = '',
   timestamp,
   content,
   imageUrl,
@@ -62,17 +64,20 @@ const PostContent: FC<PostStaticProps> = ({
         </>
       )}
       <div className="flex items-center space-x-4 mx-2">
-        <a href={'/user/' + authorName}>
+        <Link href={'/user/' + authorName}>
           <Avatar imageUrl={avatarUrl} altText={authorName} size={10} />
-        </a>
+        </Link>
         <div style={{ width: '430px' }}>
           <div className="flex item-center font-bold text-[#dddede]">
             <div className={cx('info-wrapper')}>
-              <a href={'/user/' + authorName} className={`${cx('user-name')}`}>
+              <Link href={'/user/' + authorName} className={`${cx('user-name')}`}>
                 {authorName}
-              </a>
+              </Link>
               <p className={cx('watch-status')}>{watchingProgess}</p>
               <AnimeName animeName={animeName} animeID={animeID as any} seen={episodesSeen} total={episodesTotal} />
+              <div className="m-2">
+                <PostOptions />
+              </div>
             </div>
           </div>
           <p className="text-gray-500 text-sm">{timestamp}</p>

@@ -1,7 +1,7 @@
 import { db } from "@/firebase/firebase-app";
-import { arrayRemove, arrayUnion, collection, doc, getDocs, onSnapshot, orderBy, query, updateDoc, where } from "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, doc, getDocs, limit, onSnapshot, orderBy, query, updateDoc, where } from "firebase/firestore";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { UserInfo } from "../NavBar";
+import { UserInfo } from "../../../global/types";
 import FriendRequestComponent, { FriendRequest } from "./FriendRequest"
 import NotificationComponent, { Notification } from "./Notification";
 
@@ -28,7 +28,7 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, set
       setUnreadFriendReq(count)
     })
 
-    const notificationsRef = query(collection(db, 'users', myUserInfo.id, "notifications"), orderBy("timestamp", "desc"));
+    const notificationsRef = query(collection(db, 'users', myUserInfo.id, "notifications"), orderBy("timestamp", "desc"), limit(5));
     const unsubscribe1 = onSnapshot(notificationsRef, docSnap => {
       let count = 0
       setNotification(docSnap.docs.map((doc: any) => {

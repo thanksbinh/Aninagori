@@ -8,12 +8,11 @@ import AnimeFavorite from '@/app/user/[user_name]/profileComponent/AnimeFavorite
 import AnimeUpdate from '@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate';
 import { collection, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-app';
-import PostForm from '@/components/post/PostForm';
 import { setCookie } from 'cookies-next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { Suspense } from 'react';
-import { Posts } from '@/components';
+import { PostForm, Posts } from '@/components';
 import * as apiServices from '@/app/api/apiServices/apiServicesConfig';
 import axios from 'axios';
 import { getAnimeInformation, getAnimeTotal } from '@/app/api/apiServices/getServices';
@@ -45,7 +44,7 @@ async function Profile({ params }: { params: { user_name: string } }) {
   return (
     <div className={cx('profile-wrapper')}>
       <div className={cx('profile-content')}>
-        <ProfileHeader guess={{ ...guessData }} admin={{ ...adminData }} />
+        <ProfileHeader guess={guessData} admin={adminData} />
         <div className={cx('profile-body-wrapper')}>
           <div className={cx('status-section')}>
             {guessData?.mal_connect ? (
@@ -71,7 +70,11 @@ async function Profile({ params }: { params: { user_name: string } }) {
           </div>
           <div className={cx('post-section')}>
             {isAdmin && (
-              <PostForm avatarUrl={session?.user?.image as string} username={guessData.name || guessData.username} />
+              <PostForm
+                avatarUrl={session?.user?.image as string}
+                username={guessData.name || guessData.username}
+                isBanned={!!adminData.is_banned}
+              />
             )}
             {/* @ts-expect-error Server Component
             <Posts myUserInfo={adminData} /> */}

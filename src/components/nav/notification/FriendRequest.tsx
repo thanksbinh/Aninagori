@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
-import { UserInfo } from "../NavBar";
-import { removeFriendRequest, beFriends } from "@/components/addFriend/friendRequest";
+import { UserInfo } from "../../../global/types";
+import { removeFriendRequest, beFriends } from "@/components/friend/friendAction";
 import { formatDuration } from "@/components/utils/formatDuration";
 import { useState } from "react";
 import { arrayRemove, arrayUnion, doc, Timestamp, updateDoc } from "firebase/firestore";
@@ -80,7 +80,7 @@ const FriendRequestComponent: React.FC<Props> = ({ notification, myUserInfo }) =
             {message}
           </div> :
           <div>
-            <button onClick={handleAcceptFriend} className="inline-block px-4 py-2 mt-2 mr-2 font-medium text-white bg-blue-500 rounded hover:bg-blue-600">
+            <button onClick={handleAcceptFriend} className="inline-block px-4 py-2 mt-2 mr-2 font-medium text-gray-400 bg-blue-500 rounded hover:bg-blue-600">
               Confirm
             </button>
             <button onClick={handleReject} className="inline-block px-4 py-2 mt-2 font-medium text-gray-700 bg-gray-200 rounded hover:bg-gray-300">

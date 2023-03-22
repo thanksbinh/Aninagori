@@ -2,7 +2,7 @@ import { formatDuration } from "@/components/utils/formatDuration";
 import { db } from "@/firebase/firebase-app";
 import { arrayRemove, arrayUnion, doc, Timestamp, updateDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { UserInfo } from "../NavBar";
+import { UserInfo } from "../../../global/types";
 
 export interface Notification {
   title: string;

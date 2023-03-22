@@ -1,54 +1,76 @@
-import { getDocs, collection, query, orderBy, getCountFromServer, limit } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-app';
-import { UserInfo } from '../nav/NavBar';
-import { formatDuration } from '../utils/formatDuration';
-import PostContent from './PostContent';
-import PostAction from './PostAction';
-import { Suspense } from 'react';
-import classNames from 'classnames/bind';
-import styles from './PostContent.module.scss';
-const cx = classNames.bind(styles);
+import { getDocs, collection, query, orderBy, limit, getCountFromServer } from "firebase/firestore";
+import { db } from "@/firebase/firebase-app";
+import { UserInfo } from "../../global/types";
+import { formatDuration } from "../utils/formatDuration";
+import { Suspense } from "react";
+import ContextProvider from "./context/PostContext";
+import { Post } from "./Post";
+import PostContent from "./PostContent";
+import PostAction from "./PostAction";
 
-export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
+async function fetchPosts() {
   const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'), limit(10));
   const querySnapshot = await getDocs(q);
   const fetchedPosts = querySnapshot.docs.map((doc) => {
     return {
       ...doc.data(),
+      lastComment: doc.data().lastComment && {
+        ...doc.data().lastComment,
+        timestamp: formatDuration(new Date().getTime() - doc.data().lastComment.timestamp.toDate().getTime()),
+      },
       timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
       id: doc.id,
     } as any;
   });
 
+  return fetchedPosts;
+}
+
+export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
+  const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'), limit(10));
+async function fetchPosts() {
+  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(10));
+  const querySnapshot = await getDocs(q);
+  const fetchedPosts = querySnapshot.docs.map((doc) => {
+    return {
+      ...doc.data(),
+      lastComment: doc.data().lastComment && {
+        ...doc.data().lastComment,
+        timestamp: formatDuration(new Date().getTime() - doc.data().lastComment.timestamp.toDate().getTime()),
+      },
+      timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
+      id: doc.id,
+    } as any;
+  });
+
+  return fetchedPosts;
+}
+
+export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
+  const fetchedPosts = await fetchPosts();
+
   return (
     <div className="flex flex-col">
-      {fetchedPosts.map((post, key) => {
-        if (key <= 3) {
-          return (
-            <>
-              <div key={post.id}>
-                <Suspense fallback={<div className="h-screen">Loading...</div>}>
-                  {/* @ts-expect-error Server Component */}
-                  <Post
-                    authorName={post.authorName}
-                    avatarUrl={post.avatarUrl}
-                    timestamp={post.timestamp}
-                    content={post.content}
-                    imageUrl={post.imageUrl}
-                    videoUrl={post.videoUrl}
-                    myUserInfo={myUserInfo}
-                    reactions={post.reactions}
-                    postAnimeData={post?.post_anime_data}
-                    id={post.id}
-                  />
-                </Suspense>
-              </div>
-            </>
-          );
-        } else {
-          return <></>;
-        }
-      })}
+      {fetchedPosts.map((post: any) => (
+        <div key={post.id}>
+        <ContextProvider key={post.id} myUserInfo={myUserInfo} authorName={post.authorName} postId={post.id}>
+          <Suspense fallback={<div className="mb-4"><PostContent content={"Loading..."} /><PostAction /></div>}>
+            {/* @ts-expect-error Server Component */}
+            <Post
+              authorName={post.authorName}
+              avatarUrl={post.avatarUrl}
+              timestamp={post.timestamp}
+              content={post.content}
+              imageUrl={post.imageUrl}
+              videoUrl={post.videoUrl}
+              reactions={post.reactions}
+              lastComment={post.lastComment}
+              id={post.id}
+            />
+          </Suspense>
+        </ContextProvider>
+        </div>
+      ))}
     </div>
   );
 }
@@ -97,8 +119,8 @@ async function Post(props: any) {
         id={props.id}
       />
       <PostAction
-        myUserInfo={props.myUserInfo}
         reactions={props.reactions}
+        myUserInfo={props.myUserInfo}
         commentCount={commentCount}
         comments={lastComment}
         postId={props.id}
