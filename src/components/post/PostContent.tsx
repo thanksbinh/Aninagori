@@ -75,9 +75,9 @@ const PostContent: FC<PostStaticProps> = ({
               </Link>
               <p className={cx('watch-status')}>{watchingProgess}</p>
               <AnimeName animeName={animeName} animeID={animeID as any} seen={episodesSeen} total={episodesTotal} />
-              <div className="m-2">
+              {/* <div className="m-2">
                 <PostOptions />
-              </div>
+              </div> */}
             </div>
           </div>
           <p className="text-gray-500 text-sm">{timestamp}</p>
@@ -95,7 +95,7 @@ const PostContent: FC<PostStaticProps> = ({
             draggable="false"
             src={imageUrl}
             alt={''}
-            className={`cursor-pointer rounded-2xl ${cx({ 'blur-3xl': spoiler })}`}
+            className={`cursor-pointer rounded-2xl ${cx({ 'blur-2xl': spoiler })}`}
           />
         )}
         {videoUrl && <VideoComponent videoUrl={videoUrl} className={cx('')} />}

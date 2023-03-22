@@ -5,7 +5,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { getServerSession } from 'next-auth';
 import { PostForm, Posts } from '../../components';
 
-async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
+export async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
   if (!userId) return;
 
   const docRef = doc(db, 'users', userId);

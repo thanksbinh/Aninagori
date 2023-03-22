@@ -16,11 +16,14 @@ import { PostForm, Posts } from '@/components';
 import * as apiServices from '@/app/api/apiServices/apiServicesConfig';
 import axios from 'axios';
 import { getAnimeInformation, getAnimeTotal } from '@/app/api/apiServices/getServices';
+import { getUserInfo } from '@/app/(home)/page';
 
 const cx = classNames.bind(styles);
 
 async function Profile({ params }: { params: { user_name: string } }) {
   const session = await getServerSession(authOptions);
+  const myUserId = (session as any)?.user?.id;
+  const myUserInfo = await getUserInfo(myUserId);
 
   // get admin information
   let adminData = {} as any;
@@ -70,14 +73,16 @@ async function Profile({ params }: { params: { user_name: string } }) {
           </div>
           <div className={cx('post-section')}>
             {isAdmin && (
-              <PostForm
-                avatarUrl={session?.user?.image as string}
-                username={guessData.name || guessData.username}
-                isBanned={!!adminData.is_banned}
-              />
+              <>
+                <PostForm
+                  avatarUrl={session?.user?.image as string}
+                  username={guessData.name || guessData.username}
+                  isBanned={!!adminData.is_banned}
+                />
+                {/* @ts-expect-error Server Component */}
+                <Posts myUserInfo={adminData} />
+              </>
             )}
-            {/* @ts-expect-error Server Component
-            <Posts myUserInfo={adminData} /> */}
           </div>
         </div>
       </div>
