@@ -28,6 +28,8 @@
 }
 
 .anime-name {
+  display: block;
+  width: 240px;
   font-weight: 500;
   cursor: pointer;
 
@@ -40,7 +42,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
 }
 
 .progress-bar {

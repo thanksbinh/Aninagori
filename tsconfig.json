@@ -41,9 +41,10 @@
     "middleware.ts",
     "src/app/route.js",
     "src/components/Navbar/Navbar.jsx",
-    "src/components/post/PostContent.tsx",
+    "src/components/post/postContent/PostContent.tsx",
     "src/app/profile/page.jsx",
-    "src/app/(home)/layout.tsx"
+    "src/app/(home)/layout.tsx",
+    "src/app/wrap/page.jsx"
   ],
   "exclude": ["node_modules"]
 }
