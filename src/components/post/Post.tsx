@@ -48,7 +48,6 @@ export default async function Post(props: any) {
         episodesSeen={props?.postAnimeData?.episodes_seen}
         episodesTotal={props?.postAnimeData?.total_episodes}
         tag={props?.postAnimeData?.tag}
-        id={props.id}
       />
       <PostAction reactions={props.reactions} commentCount={commentCount} comments={lastComment} />
     </div>

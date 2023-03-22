@@ -37,7 +37,7 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
             <Suspense
               fallback={
                 <div className="mb-4">
-                  <PostContent content={'Loading...'} id={''} />
+                  <PostContent content={'Loading...'} />
                   <PostAction />
                 </div>
               }
