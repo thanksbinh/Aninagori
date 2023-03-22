@@ -29,6 +29,9 @@ async function AnimeUpdate({ data }) {
         case 'on_hold':
           status = 'On Hold';
           break;
+        case 'dropped':
+          status = 'Dropped';
+          break;
         default:
           status = 'Unknow Status';
           break;

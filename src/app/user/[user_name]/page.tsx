@@ -79,10 +79,10 @@ async function Profile({ params }: { params: { user_name: string } }) {
                   username={guessData.name || guessData.username}
                   isBanned={!!adminData.is_banned}
                 />
-                {/* @ts-expect-error Server Component */}
-                <Posts myUserInfo={adminData} />
               </>
             )}
+            {/* @ts-expect-error Server Component */}
+            <Posts myUserInfo={adminData} />
           </div>
         </div>
       </div>
