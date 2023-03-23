@@ -29,7 +29,7 @@ export default async function FriendList() {
 
   return (
     <div className="relative">
-      <div className="flex justify-between items-center px-2 mb-4">
+      <div className="flex justify-between items-center pr-2 mb-4">
         <h2 className="text-ani-text-gray font-semibold text-xl">Friends</h2>
         <div className="hover:cursor-pointer rounded-full p-2">
           <SiThreedotjs className="h-5 w-5" aria-hidden="true" />

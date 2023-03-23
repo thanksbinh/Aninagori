@@ -14,7 +14,7 @@ const Logo = () => {
 
   return (
     <Link href="/" onClick={handleOnClick} className="text-lg font-semibold">
-      Aninagori
+      <img src="favicon.ico" alt="logo" className='h-10' />
     </Link>
   );
 };

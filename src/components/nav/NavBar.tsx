@@ -11,7 +11,7 @@ export default async function NavBar({ myUserId }: { myUserId: string | undefine
 
   return (
     <nav className="flex justify-between items-center px-8 fixed top-0 z-40 w-full h-14 header-fixed bg-ani-black shadow-md">
-      <div className="flex items-center gap-10">
+      <div className="flex gap-5">
         <Logo />
         <SearchBar />
       </div>
@@ -22,7 +22,7 @@ export default async function NavBar({ myUserId }: { myUserId: string | undefine
           </Button>
         </div>
         :
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <button title="message" className="flex item-center justify-center space-x-1 text-[#fff] bg-[#798597] hover:bg-[#94B0DD] p-3 rounded-full"><BsChatLeftDotsFill className="w-4 h-4" /></button>
           <NotificationBtn myUserInfo={myUserInfo} />
           <ProfilePicture myUserInfo={myUserInfo} />
