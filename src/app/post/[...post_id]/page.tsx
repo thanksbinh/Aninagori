@@ -6,7 +6,7 @@ import { collection, doc, getDoc, getDocs, orderBy, query } from "firebase/fires
 import { getServerSession } from "next-auth";
 import ContextProvider from "./components/context/PostContext";
 import PostAction from "./components/post/PostAction";
-import PostContent from "./components/post/PostContent";
+import PostContent from "./components/postContent/PostContent";
 
 async function fetchPost(postId: string) {
   if (!postId) return {};
@@ -81,6 +81,12 @@ async function Post({ params }: { params: { post_id: string[] } }) {
             content={fetchedPost.content}
             imageUrl={fetchedPost.imageUrl}
             videoUrl={fetchedPost.videoUrl}
+            animeID={fetchedPost?.post_anime_data?.anime_id}
+            animeName={fetchedPost?.post_anime_data?.anime_name}
+            watchingProgess={fetchedPost?.post_anime_data?.watching_progress}
+            episodesSeen={fetchedPost?.post_anime_data?.episodes_seen}
+            episodesTotal={fetchedPost?.post_anime_data?.total_episodes}
+            tag={fetchedPost?.post_anime_data?.tag}
             postId={fetchedPost.id}
           />
           <PostAction

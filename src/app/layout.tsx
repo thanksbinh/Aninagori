@@ -1,3 +1,4 @@
+import { refreshUserToken } from "@/components/utils/refreshToken";
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import React from 'react';
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
+  refreshUserToken(session)
   const myUserId = (session as any)?.user?.id
 
   return (
@@ -29,5 +31,5 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </main>
       </body>
     </html>
-  );
+  )
 }

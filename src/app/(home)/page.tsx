@@ -12,9 +12,14 @@ export default async function Home() {
   if (!myUserInfo) return null
 
   return (
-    <div className='flex justify-center pt-10'>
+    <div className="flex justify-center pt-10">
       <div className="flex flex-col lg:w-2/5 w-3/5">
-        <PostForm avatarUrl={myUserInfo.image} username={myUserInfo.username} isBanned={!!myUserInfo.is_banned} />
+        <PostForm
+          className="mt-4"
+          avatarUrl={myUserInfo.image}
+          username={myUserInfo.username}
+          isBanned={!!myUserInfo.is_banned}
+        />
 
         {/* @ts-expect-error Server Component */}
         <Posts myUserInfo={myUserInfo} />

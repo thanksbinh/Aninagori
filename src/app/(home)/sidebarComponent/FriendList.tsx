@@ -5,20 +5,20 @@ import { getServerSession } from 'next-auth';
 import { SiThreedotjs } from 'react-icons/si';
 
 interface Friend {
-  username: string;
-  image: string;
+  username: string
+  image: string
 }
 
 async function getFriendList(userId: string): Promise<Friend[] | undefined> {
-  if (!userId) return;
+  if (!userId) return
 
-  const docRef = doc(db, 'users', userId);
-  const docSnap = await getDoc(docRef);
+  const docRef = doc(db, "users", userId)
+  const docSnap = await getDoc(docRef)
 
   if (docSnap.exists()) {
-    return docSnap.data().friend_list;
+    return docSnap.data().friend_list
   } else {
-    console.log('No such document in NavBar/getUserInfo()!');
+    console.log("No such document in NavBar/getUserInfo()!")
   }
 }
 
@@ -41,7 +41,7 @@ export default async function FriendList() {
             <div className="flex items-center w-48">
               <img
                 className="rounded-full w-8 h-8 object-cover"
-                src={friend.image || '/bocchi.jpg'}
+                src={friend.image || "/bocchi.jpg"}
                 alt={friend.username}
               />
               <span className="ml-2 font-medium">{friend.username}</span>
@@ -50,5 +50,5 @@ export default async function FriendList() {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}

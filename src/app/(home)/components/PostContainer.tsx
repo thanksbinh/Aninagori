@@ -1,11 +1,11 @@
 import { getDocs, collection, query, orderBy, limit, getCountFromServer } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
 import { Suspense } from "react";
-import PostContent from "../../post/[...post_id]/components/post/PostContent";
 import PostAction from "../../post/[...post_id]/components/post/PostAction";
 import { formatDuration } from "@/components/utils/formatDuration";
 import { UserInfo } from "@/global/UserInfo.types";
 import ContextProvider from "../../post/[...post_id]/components/context/PostContext";
+import PostContent from "@/app/post/[...post_id]/components/postContent/PostContent";
 
 async function fetchPosts() {
   const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(2));
@@ -54,6 +54,12 @@ export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
                 content={post.content}
                 imageUrl={post.imageUrl}
                 videoUrl={post.videoUrl}
+                animeID={post?.post_anime_data?.anime_id}
+                animeName={post?.post_anime_data?.anime_name}
+                watchingProgess={post?.post_anime_data?.watching_progress}
+                episodesSeen={post?.post_anime_data?.episodes_seen}
+                episodesTotal={post?.post_anime_data?.total_episodes}
+                tag={post?.post_anime_data?.tag}
                 postId={post.id}
               />
               <PostAction

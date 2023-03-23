@@ -1,6 +1,6 @@
 import ContextProvider from "../post/[...post_id]/components/context/PostContext";
 import PostAction from "../post/[...post_id]/components/post/PostAction";
-import PostContent from "../post/[...post_id]/components/post/PostContent";
+import PostContent from "../post/[...post_id]/components/postContent/PostContent";
 import PostForm from "./components/PostForm";
 
 export default function loading() {

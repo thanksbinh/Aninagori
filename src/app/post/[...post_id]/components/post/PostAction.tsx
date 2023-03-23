@@ -20,7 +20,7 @@ interface PostDynamicProps {
   commentCountPromise?: Promise<number> | number;
   comments?: CommentProps[];
   focusedComment?: string;
-};
+}
 
 const PostAction: FC<PostDynamicProps> = ({
   reactions: reactions0 = [],
@@ -35,9 +35,9 @@ const PostAction: FC<PostDynamicProps> = ({
   const [comments, setComments] = useState<CommentProps[]>([])
   const [lastComment, setLastComment] = useState<CommentProps>()
 
-  const [postExpand, setPostExpand] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const router = useRouter()
+  const [postExpand, setPostExpand] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   // Update post's reaction realtime
   useEffect(() => {
@@ -49,9 +49,9 @@ const PostAction: FC<PostDynamicProps> = ({
     })
 
     return () => {
-      unsubscribe && unsubscribe()
+      unsubscribe && unsubscribe();
     };
-  }, [])
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -62,8 +62,8 @@ const PostAction: FC<PostDynamicProps> = ({
   }, [commentCountPromise])
 
   useEffect(() => {
-    (comments0.length != comments.length) && setComments(comments0)
-  }, [comments0])
+    comments0.length != comments.length && setComments(comments0);
+  }, [comments0]);
 
   useEffect(() => {
     if (!lastComment) return;
@@ -76,20 +76,28 @@ const PostAction: FC<PostDynamicProps> = ({
   }, [lastComment])
 
   const onComment = () => {
-    inputRef.current && inputRef.current.focus()
-  }
+    inputRef.current && inputRef.current.focus();
+  };
 
   const onPlanToWatch = () => {
-    console.log("Add to Plan to Watch")
-  }
+    console.log('Add to Plan to Watch');
+  };
 
   return (
     <div className="flex flex-col flex-1 bg-ani-black rounded-2xl p-4 pt-0 rounded-t-none">
       {/* Recent reactions */}
       <div className="flex my-4 mx-2">
-        {(reactions.length > 2 ? reactions.slice(reactions.length - 3) : reactions.slice(0)).reverse().map((user: any) =>
-          <Avatar className='liked-avatar' imageUrl={user.image} altText={user.username} size={5} key={user.username} />
-        )}
+        {(reactions.length > 2 ? reactions.slice(reactions.length - 3) : reactions.slice(0))
+          .reverse()
+          .map((user: any) => (
+            <Avatar
+              className="liked-avatar"
+              imageUrl={user.image}
+              altText={user.username}
+              size={5}
+              key={user.username}
+            />
+          ))}
       </div>
 
       {/* 3 post actions */}
@@ -97,25 +105,35 @@ const PostAction: FC<PostDynamicProps> = ({
         <Reaction reactions={reactions} />
 
         <div className="flex">
-          <button title="comment" onClick={onComment} className="flex items-center space-x-1 text-gray-400 hover:text-[#3BC361]">
+          <button
+            title="comment"
+            onClick={onComment}
+            className="flex items-center space-x-1 text-gray-400 hover:text-[#3BC361]"
+          >
             <AiOutlineComment className="w-5 h-5" />
           </button>
           <span className="text-gray-400 ml-2">{commentCount}</span>
         </div>
 
-        <button title="plan to watch" onClick={onPlanToWatch} className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]">
+        <button
+          title="plan to watch"
+          onClick={onPlanToWatch}
+          className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]"
+        >
           <RiAddCircleLine className="w-5 h-5" />
           <span>Plan to Watch</span>
         </button>
       </div>
 
       {/* Expand post */}
-      {(commentCount > comments.length) &&
+      {
+        (commentCount > comments.length) &&
         <div>
           <div onClick={() => setPostExpand(true)} className="mt-4 ml-2 text-sm font-bold text-gray-400 hover:cursor-pointer hover:underline">View more comments</div>
         </div>
       }
-      {postExpand &&
+      {
+        postExpand &&
         <PostPopup isOpen={postExpand} onClose={() => { setPostExpand(false); router.refresh(); }} />
       }
 
@@ -124,8 +142,7 @@ const PostAction: FC<PostDynamicProps> = ({
         <Comments comments={comments} focusedComment={focusedComment} />
         <CommentForm setLastComment={setLastComment} inputRef={inputRef} />
       </div>
-
-    </div>
+    </div >
   );
 };
 
