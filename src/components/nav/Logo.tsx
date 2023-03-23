@@ -14,7 +14,7 @@ const Logo = () => {
 
   return (
     <Link href="/" onClick={handleOnClick} className="text-lg font-semibold">
-      <img src="favicon.ico" alt="logo" className='h-10' />
+      <img src="logo.png" alt="logo" className='h-10' />
     </Link>
   );
 };

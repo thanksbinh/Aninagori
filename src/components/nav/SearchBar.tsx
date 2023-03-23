@@ -77,7 +77,7 @@ const SearchBar = () => {
         placeholder="Search"
         value={searchText}
         onChange={handleSearchTextChange}
-        className="bg-gray-100 rounded-full py-2 px-4 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring focus:ring-blue-300 w-72"
+        className="bg-gray-100 rounded-full py-2 px-4 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring focus:ring-blue-300 w-60"
       />
       {showResults && (
         <div className="absolute z-10 w-72 mt-1 bg-white rounded-lg shadow-lg">
