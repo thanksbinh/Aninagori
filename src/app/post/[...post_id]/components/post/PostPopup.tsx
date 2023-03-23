@@ -66,12 +66,12 @@ export default function PostPopup({ isOpen, onClose }: { isOpen: boolean; onClos
           content={post.content}
           imageUrl={post.imageUrl}
           videoUrl={post.videoUrl}
-          animeID={post?.postAnimeData?.anime_id}
-          animeName={post?.postAnimeData?.anime_name}
-          watchingProgess={post?.postAnimeData?.watching_progress}
-          episodesSeen={post?.postAnimeData?.episodes_seen}
-          episodesTotal={post?.postAnimeData?.total_episodes}
-          tag={post?.postAnimeData?.tag}
+          animeID={post?.post_anime_data?.anime_id}
+          animeName={post?.post_anime_data?.anime_name}
+          watchingProgess={post?.post_anime_data?.watching_progress}
+          episodesSeen={post?.post_anime_data?.episodes_seen}
+          episodesTotal={post?.post_anime_data?.total_episodes}
+          tag={post?.post_anime_data?.tag}
           postId={post.id}
         />
         <PostAction
