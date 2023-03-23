@@ -1,4 +1,4 @@
-import { getDocs, collection, query, orderBy, limit, getCountFromServer } from "firebase/firestore";
+import { getDocs, collection, query, orderBy, limit, getCountFromServer, where } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
 import { Suspense } from "react";
 import PostAction from "../../post/[...post_id]/components/post/PostAction";
@@ -7,8 +7,11 @@ import { UserInfo } from "@/global/UserInfo.types";
 import ContextProvider from "../../post/[...post_id]/components/context/PostContext";
 import PostContent from "@/app/post/[...post_id]/components/postContent/PostContent";
 
-async function fetchPosts() {
-  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(2));
+async function fetchPosts(username?: string) {
+  const q = (username) ?
+    query(collection(db, "posts"), where("authorName", "==", username), orderBy("timestamp", "desc"), limit(3)) :
+    query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(3))
+
   const querySnapshot = await getDocs(q);
   const fetchedPosts = querySnapshot.docs.map((doc) => {
     return {
@@ -32,8 +35,8 @@ async function fetchCommentCount(postId: string) {
   return commentCount;
 }
 
-export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
-  const fetchedPosts = await fetchPosts()
+export default async function Posts({ myUserInfo, profileUsername }: { myUserInfo: UserInfo, profileUsername?: string }) {
+  const fetchedPosts = await fetchPosts(profileUsername)
 
   return (
     <div className="flex flex-col">
