@@ -1,6 +1,6 @@
 'use client'
 
-import { collection, serverTimestamp, doc, addDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { collection, doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { FC, useState, useRef } from "react";
 import { db } from "@/firebase/firebase-app";
 import { useRouter } from "next/navigation";

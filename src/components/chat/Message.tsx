@@ -26,7 +26,7 @@ const Message: FC<MessageProps> = ({
 
 
   return (
-    <div className="flex flex-col mt-4 px-4 w-2/5">
+    <div className="flex flex-col mt-4 px-4 max-w-[75%]">
       <div className="flex gap-2 ml-12 my-2 text-xs font-bold text-gray-400"> {senderUsername} </div>
       {/* Message content */}
       <div className="flex flex-row items-center">
