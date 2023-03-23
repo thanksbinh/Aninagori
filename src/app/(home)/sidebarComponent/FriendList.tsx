@@ -1,7 +1,8 @@
-import { db } from "@/firebase/firebase-app"
-import { authOptions } from "@/pages/api/auth/[...nextauth]"
-import { doc, getDoc } from "firebase/firestore"
-import { getServerSession } from "next-auth"
+import { db } from '@/firebase/firebase-app';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import { doc, getDoc } from 'firebase/firestore';
+import { getServerSession } from 'next-auth';
+import { SiThreedotjs } from 'react-icons/si';
 
 interface Friend {
   username: string
@@ -28,24 +29,10 @@ export default async function FriendList() {
 
   return (
     <div className="relative">
-      <div className="flex justify-between items-center px-2 mb-4">
+      <div className="flex justify-between items-center pr-2 mb-4">
         <h2 className="text-ani-text-gray font-semibold text-xl">Friends</h2>
-        <div className="hover:cursor-pointer hover:bg-gray-200 rounded-full p-2">
-          <svg
-            className="h-6 w-6 text-gray-500"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            {" "}
-            <path stroke="none" d="M0 0h24v24H0z" /> <circle cx="5" cy="12" r="1" /> <circle cx="12" cy="12" r="1" />{" "}
-            <circle cx="19" cy="12" r="1" />
-          </svg>
+        <div className="hover:cursor-pointer rounded-full p-2">
+          <SiThreedotjs className="h-5 w-5" aria-hidden="true" />
         </div>
       </div>
       <div className="flex flex-col flex-wrap -mx-2">

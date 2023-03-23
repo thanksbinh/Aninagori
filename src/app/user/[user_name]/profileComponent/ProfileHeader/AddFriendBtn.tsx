@@ -1,14 +1,14 @@
-import { db } from "@/firebase/firebase-app"
-import { doc, getDoc } from "firebase/firestore"
-import { useEffect, useState, useRef } from "react"
-import { UserInfo } from "@/global/types"
-import { FriendRequest } from "@/components/nav/notification/FriendRequest"
-import { beFriends, makeFriendRequest, removeFriendRequest, unfriend } from "@/components/friend/friendAction"
-import Button from "@/components/button/Button"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faUser, faUserCheck, faUserMinus, faUserPlus } from "@fortawesome/free-solid-svg-icons"
-import { Menu, Transition } from "@headlessui/react"
-import { useRouter } from "next/navigation"
+import { db } from '@/firebase/firebase-app';
+import { doc, getDoc } from 'firebase/firestore';
+import { useEffect, useState, useRef } from 'react';
+import { UserInfo } from "@/global/UserInfo.types";
+import { beFriends, makeFriendRequest, removeFriendRequest, unfriend } from "@/components/friend/friendAction";
+import Button from '@/components/button/Button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faUserCheck, faUserMinus, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { Menu, Transition } from '@headlessui/react';
+import { useRouter } from 'next/navigation';
+import { Notification } from "@/components/nav/notification/Notification.types";
 
 export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: UserInfo; userInfo: UserInfo }) {
   const [content, setContent] = useState({ content: "Add friend", icon: faUserPlus })
@@ -30,18 +30,28 @@ export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: Use
   }, [])
 
   useEffect(() => {
-    // If requested
-    if ((userInfo as any)?.friend_request_list?.some((acc: any) => acc.username === myUserInfo.username)) {
-      setContent({ content: "Requesting...", icon: faUserMinus })
+    async function checkFriendStatus() {
+      const notificationsRef = doc(db, "notifications", userInfo.username)
+      const myNotificationsRef = doc(db, "notifications", myUserInfo.username)
+      const [notificationsDoc, myNotificationsDoc] = await Promise.all([getDoc(notificationsRef), getDoc(myNotificationsRef)])
+
+      // If requested
+      if (notificationsDoc.data()?.recentNotifications?.some((noti: Notification) => noti.sender.username === myUserInfo.username && noti.type === "friend request")) {
+        setContent({ content: 'Requesting...', icon: faUserMinus });
+        return;
+      }
+      // If friend
+      if ((userInfo as any)?.friend_list?.some((acc: any) => acc.username === myUserInfo.username)) {
+        setContent({ content: 'Friend', icon: faUser });
+        return;
+      }
+      // If requesting
+      if (myNotificationsDoc.data()?.recentNotifications?.some((noti: Notification) => noti.sender.username === userInfo.username && noti.type === "friend request"))
+        setContent({ content: 'Accept friend', icon: faUserCheck });
     }
-    // If friend
-    if ((userInfo as any)?.friend_list?.some((acc: any) => acc.username === myUserInfo.username)) {
-      setContent({ content: "Friend", icon: faUser })
-    }
-    // If requesting
-    if ((myUserInfo as any)?.friend_request_list?.some((acc: any) => acc.username === userInfo.username))
-      setContent({ content: "Accept friend", icon: faUserCheck })
-  }, [myUserInfo, userInfo])
+
+    myUserInfo.username && userInfo.username && checkFriendStatus()
+  }, [myUserInfo, userInfo]);
 
   const handleAddFriend = async () => {
     // not log in and click add friend btn => redirect to login step
@@ -56,26 +66,24 @@ export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: Use
       return
     }
 
-    const docRef = doc(db, "users", myUserInfo.id)
-    const docSnap = await getDoc(docRef)
+    const notificationsRef = doc(db, "notifications", myUserInfo.username)
+    const docSnap = await getDoc(notificationsRef);
     if (
       docSnap.exists() &&
-      docSnap
-        .data()
-        .friend_request_list?.map((doc: FriendRequest) => doc.username)
-        .includes(userInfo.username)
+      docSnap.data().recentNotifications?.some((noti: Notification) =>
+        noti.sender.username === userInfo.username && noti.type === "friend request")
     ) {
       beFriends(myUserInfo, userInfo)
       setContent({ content: "Friend", icon: faUser })
 
-      docSnap.data().friend_request_list.forEach((doc: FriendRequest) => {
-        if (doc.username === userInfo.username) {
-          removeFriendRequest(myUserInfo, doc)
+      docSnap.data().recentNotifications.forEach((doc: Notification) => {
+        if (doc.sender.username === userInfo.username) {
+          removeFriendRequest(myUserInfo, doc);
         }
       })
     } else {
-      makeFriendRequest(myUserInfo, userInfo.id)
-      setContent({ content: "Requesting...", icon: faUserMinus })
+      makeFriendRequest(myUserInfo, userInfo);
+      setContent({ content: 'Requesting...', icon: faUserMinus });
     }
   }
 
@@ -117,9 +125,8 @@ export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: Use
               {({ active }) => (
                 <button
                   onClick={handleUnfriend}
-                  className={`${
-                    active ? "bg-gray-100 text-gray-900" : "text-gray-700"
-                  } block px-4 text-sm w-full text-left h-7`}
+                  className={`${active ? "bg-gray-100 text-gray-900" : "text-gray-700"
+                    } block px-4 text-sm w-full text-left h-7`}
                 >
                   {"Sayonara."}
                 </button>

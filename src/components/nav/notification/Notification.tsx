@@ -1,21 +1,12 @@
-import { formatDuration } from "@/components/utils/formatDuration";
-import { db } from "@/firebase/firebase-app";
-import { arrayRemove, arrayUnion, doc, Timestamp, updateDoc } from "firebase/firestore";
-import { useRouter } from "next/navigation";
-import { UserInfo } from "../../../global/types";
+'use client'
 
-export interface Notification {
-  title: string;
-  url: string;
-  sender: {
-    id: string;
-    username: string;
-    image: string;
-  };
-  type: string;
-  timestamp: Timestamp;
-  read: boolean;
-}
+import { formatDuration } from "@/components/utils/formatDuration";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { UserInfo } from "../../../global/UserInfo.types";
+import { Notification } from "./Notification.types";
+import { NotiContext } from "./NotificationBtn";
+import { markAsRead } from "./NotificationContainer";
 
 interface Props {
   notification: Notification;
@@ -24,27 +15,22 @@ interface Props {
 
 const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) => {
   const router = useRouter()
+  const { setShowNotification } = useContext(NotiContext)
 
   const handleClickProfile = () => {
+    setShowNotification(false)
     router.push('/user/' + notification.sender.username)
+
+    if (!notification.read)
+      markAsRead(myUserInfo.username, notification)
   }
 
   const handleClickNoti = () => {
-    const userRef = doc(db, "users", myUserInfo.id);
-    if (notification.read) return;
-
-    updateDoc(userRef, {
-      notification: arrayRemove(notification)
-    });
-
-    updateDoc(userRef, {
-      notification: arrayUnion({
-        ...notification,
-        read: true
-      })
-    });
-
+    setShowNotification(false)
     router.push(notification.url)
+
+    if (!notification.read)
+      markAsRead(myUserInfo.username, notification)
   }
 
   return (

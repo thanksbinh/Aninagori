@@ -4,15 +4,18 @@ import qs from 'qs';
 
 export async function refreshUserToken(session: any) {
   if (!session?.user) return;
+
   const docRef = doc(db, 'users', (session?.user as any).id);
   const docSnap = await getDoc(docRef);
   const userData = docSnap.data();
   if (!userData?.mal_connect) return;
+
   const token_expire_time =
-    (userData?.mal_connect as any).createDate.seconds + (userData?.mal_connect as any).expiresIn;
+    (userData?.mal_connect as any).createDate?.seconds + (userData?.mal_connect as any).expiresIn;
   const current_timestamp_seconds = Math.floor(Date.now() / 1000);
   const is_token_expired = token_expire_time - current_timestamp_seconds < 1296000; // auto recess token after 15days
   if (!is_token_expired) return;
+
   const urlParamsOauth = {
     client_id: process.env.X_MAL_CLIENT_ID,
     client_secret: process.env.X_MAL_CLIENT_SECRET,

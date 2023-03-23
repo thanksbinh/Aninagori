@@ -8,7 +8,7 @@ import firebase from "firebase/compat/app";
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 const db = getFirestore(app);
-const storage = getStorage(app);;
+const storage = getStorage(app);
 const auth = getAuth();
 
 export { firebase, app, db, auth, storage }

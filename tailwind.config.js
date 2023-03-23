@@ -10,11 +10,18 @@ module.exports = {
   ],
   theme: {
     extend: {
+      backgroundImage: (theme) => ({
+        'login-bg': "url('/wallpaper.png')",
+      }),
       colors: {
-        'ani-gray': '#212733',
-        'ani-light-gray': '#4e5d78',
-        'ani-black': '#191c21',
-        'ani-text-gray': '#dddede'
+        // 'ani-gray': '#212733',
+        'ani-gray': '#191c21',
+        // 'ani-light-gray': '#4e5d78',
+        'ani-light-gray': '#373c47',
+        // 'ani-black': '#191c21',
+        'ani-black': '#212733',
+        // 'ani-text-gray': '#dddede'
+        'ani-text-gray': '#ffffff'
       },
     },
   },

@@ -1,7 +1,7 @@
 import { db } from "@/firebase/firebase-app";
-import { addDoc, arrayRemove, arrayUnion, collection, doc, serverTimestamp, updateDoc, writeBatch } from "firebase/firestore";
-import { UserInfo } from "../../global/types";
-import { FriendRequest } from "../nav/notification/FriendRequest";
+import { arrayRemove, arrayUnion, doc, updateDoc, writeBatch } from "firebase/firestore";
+import { UserInfo } from "../../global/UserInfo.types";
+import { Notification } from "../nav/notification/Notification.types";
 
 // Person's info remove from Self friend list and opposite
 async function unfriend(myUserInfo: UserInfo, userInfo: UserInfo) {
@@ -26,40 +26,44 @@ async function unfriend(myUserInfo: UserInfo, userInfo: UserInfo) {
   await batch.commit();
 }
 
-async function notifyFriendRequestAccept(myUserInfo: UserInfo, userId: string) {
-  const notificationsRef = collection(db, 'users', userId, "notifications");
-  await addDoc(notificationsRef, {
-    title: "You and " + myUserInfo.username + " are now friends!",
-    url: "/user/" + myUserInfo.username,
-    sender: {
-      id: myUserInfo.id,
-      username: myUserInfo.username,
-      image: myUserInfo.image,
-    },
-    type: "friend request accepted",
-    timestamp: serverTimestamp(),
-    read: null
-  });
-}
-
-// Self info -> Person's friend request list
-async function makeFriendRequest(myUserInfo: UserInfo, userId: string) {
-  const userRef = doc(db, 'users', userId);
-  await updateDoc(userRef, {
-    friend_request_list: arrayUnion({
-      id: myUserInfo.id,
-      username: myUserInfo.username,
-      image: myUserInfo.image,
+async function notifyFriendRequestAccept(myUserInfo: UserInfo, userInfo: UserInfo) {
+  const notificationsRef = doc(db, "notifications", userInfo.username);
+  await updateDoc(notificationsRef, {
+    recentNotifications: arrayUnion({
+      title: "You and " + myUserInfo.username + " are now friends!",
+      url: "/user/" + myUserInfo.username,
+      sender: {
+        id: myUserInfo.id,
+        username: myUserInfo.username,
+        image: myUserInfo.image,
+      },
+      type: "friend request accepted",
       timestamp: new Date(),
     })
   });
 }
 
+// Self info -> Person's friend request list
+async function makeFriendRequest(myUserInfo: UserInfo, userInfo: UserInfo) {
+  const notificationsRef = doc(db, "notifications", userInfo.username);
+  await updateDoc(notificationsRef, {
+    recentNotifications: arrayUnion({
+      sender: {
+        id: myUserInfo.id,
+        username: myUserInfo.username,
+        image: myUserInfo.image,
+      },
+      type: "friend request",
+      timestamp: new Date(),
+    }),
+  });
+}
+
 // Person's info remove from Self friend request list
-async function removeFriendRequest(myUserInfo: UserInfo, noti: FriendRequest) {
-  const myUserRef = doc(db, 'users', myUserInfo.id);
-  updateDoc(myUserRef, {
-    friend_request_list: arrayRemove(noti)
+async function removeFriendRequest(myUserInfo: UserInfo, noti: Notification) {
+  const notificationsRef = doc(db, "notifications", myUserInfo.username);
+  updateDoc(notificationsRef, {
+    recentNotifications: arrayRemove(noti)
   });
 }
 
@@ -85,10 +89,12 @@ async function addPersonToMyFriendList(myUserInfo: UserInfo, userInfo: UserInfo)
   });
 }
 
-function beFriends(myUserInfo: UserInfo, userInfo: UserInfo) {
-  addSelfToFriendList(myUserInfo, userInfo)
-  addPersonToMyFriendList(myUserInfo, userInfo)
-  notifyFriendRequestAccept(myUserInfo, userInfo.id)
+async function beFriends(myUserInfo: UserInfo, userInfo: UserInfo) {
+  await Promise.all([
+    addSelfToFriendList(myUserInfo, userInfo),
+    addPersonToMyFriendList(myUserInfo, userInfo),
+    notifyFriendRequestAccept(myUserInfo, userInfo),
+  ])
 }
 
 export { makeFriendRequest, removeFriendRequest, beFriends, unfriend }

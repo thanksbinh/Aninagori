@@ -4,7 +4,7 @@ import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import UsernamePopup from './UsernamePopup';
-import { UserInfo } from "../../../global/types";
+import { UserInfo } from "../../../global/UserInfo.types";
 
 interface Props {
     myUserInfo: UserInfo | undefined
@@ -29,7 +29,7 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
     }, []);
 
     useEffect(() => {
-        if (myUserInfo?.username === "guess")
+        if (!myUserInfo?.username)
             setOpenUsernamePopup(true)
     }, [myUserInfo])
 
@@ -56,7 +56,7 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
             />
             {isOpen &&
                 <div className="absolute top-14 right-8 z-40 w-56 py-2 bg-white rounded-md shadow-lg">
-                    {myUserInfo?.username === "guess" ?
+                    {myUserInfo?.username === "" ?
                         <button onClick={() => setOpenUsernamePopup(true)} className="px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left">Set username</button> :
                         <div className="px-4 py-2 text-gray-800">{myUserInfo?.username}</div>
                     }
