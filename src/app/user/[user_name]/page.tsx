@@ -14,6 +14,7 @@ import PostForm from "@/app/(home)/components/PostForm"
 import Posts from "@/app/(home)/components/PostContainer"
 import { getUserInfo } from "@/global/getUserInfo"
 import * as apiServices from "@/app/api/apiServices/apiServicesConfig"
+export const dynamic = "force-dynamic"
 
 const cx = classNames.bind(styles)
 
