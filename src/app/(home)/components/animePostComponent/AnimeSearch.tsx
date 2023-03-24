@@ -7,6 +7,7 @@ import "tippy.js/dist/tippy.css"
 import { get } from "@/app/api/apiServices/httpRequest"
 import { faCaretDown, faSpinner } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 const cx = classNames.bind(styles)
 
 function AnimeSearch(props: any, ref: any) {
@@ -33,7 +34,7 @@ function AnimeSearch(props: any, ref: any) {
     setLoading(true)
     const searchAnimeName = async () => {
       try {
-        const result = await get("api/anime/search", {
+        const result = await get(getProductionBaseUrl() + "/api/anime/search", {
           headers: {
             q: debouncedValue,
             offset: "0",

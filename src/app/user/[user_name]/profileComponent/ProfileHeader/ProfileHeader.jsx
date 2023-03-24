@@ -16,6 +16,7 @@ import { get } from "@/app/api/apiServices/httpRequest"
 import { generateCodeChallenge, generateCodeVerifier } from "@/app/api/auth/route"
 import { setCookie } from "cookies-next"
 import ProfilEditPopUp from "../ProfileEditPopUp/ProfileEditPopUp"
+import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 
 const cx = classNames.bind(styles)
 
@@ -31,8 +32,6 @@ function ProfileHeader({ guess, admin }) {
   const editBoxWrapper = useRef()
   const { data: session } = useSession()
   const [closeBox, setCloseBox] = useState(true)
-
-  console.log(closeBox)
 
   useEffect(() => {
     setCookie("username", admin.username)
@@ -150,7 +149,7 @@ function ProfileHeader({ guess, admin }) {
                             alt="avatar"
                             className={cx("friends-avatar")}
                             onClick={() => {
-                              window.location.href = process.env.NEXT_PUBLIC_BASE_URL + "/user/" + data.username
+                              window.location.href = getProductionBaseUrl() + "/user/" + data.username
                             }}
                             onError={({ currentTarget }) => {
                               currentTarget.onerror = null
@@ -174,7 +173,7 @@ function ProfileHeader({ guess, admin }) {
                     alt="avatar"
                     className={cx("friends-avatar")}
                     onClick={() => {
-                      window.location.href = process.env.NEXT_PUBLIC_BASE_URL + "/user/" + guess.username
+                      window.location.href = getProductionBaseUrl() + "/user/" + guess.username
                     }}
                   ></img>
                 </div>
@@ -192,7 +191,7 @@ function ProfileHeader({ guess, admin }) {
                     try {
                       const codeChallenge = generateCodeChallenge(generateCodeVerifier())
                       setCookie("codechallenge", codeChallenge)
-                      const result = await get("api/auth", {
+                      const result = await get(getProductionBaseUrl() + "/api/auth", {
                         headers: {
                           codeChallenge: codeChallenge,
                           userID: session.user?.id,
