@@ -70,15 +70,12 @@ async function Profile({ params }: { params: { user_name: string } }) {
           </div>
           <div className={cx("post-section")}>
             {isAdmin && (
-              <div>
-                <PostForm
-                  avatarUrl={session?.user?.image as string}
-                  username={guessData.name || guessData.username}
-                  isBanned={!!adminData.is_banned}
-                />
-              </div>
+              <PostForm
+                avatarUrl={session?.user?.image as string}
+                username={guessData.name || guessData.username}
+                isBanned={!!adminData.is_banned}
+              />
             )}
-            {/* @ts-expect-error Server Component */}
             <Posts myUserInfo={adminData} profileUsername={guessData.username} />
           </div>
         </div>

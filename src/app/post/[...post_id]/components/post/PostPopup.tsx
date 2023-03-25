@@ -16,6 +16,8 @@ export default function PostPopup({ isOpen, onClose }: { isOpen: boolean; onClos
   const { postId } = useContext(PostContext)
 
   useEffect(() => {
+    if (!postId) return;
+
     async function fetchData() {
       const postDoc = await getDoc(doc(db, "posts", postId))
       if (!postDoc.exists()) return

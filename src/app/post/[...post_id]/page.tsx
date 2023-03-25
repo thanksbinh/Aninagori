@@ -70,7 +70,7 @@ async function Post({ params }: { params: { post_id: string[] } }) {
       <div className="flex flex-col lg:w-2/5 w-3/5 mt-8 mb-2">
         <ContextProvider
           myUserInfo={myUserInfo}
-          content={fetchedPost.content}
+          content={fetchedPost.content || ""}
           authorName={fetchedPost.authorName}
           postId={fetchedPost.id}
         >

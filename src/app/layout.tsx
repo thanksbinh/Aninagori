@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 import React from 'react';
 import './globals.css';
 
-import { SessionProvider } from '@/app/SessionProvider';
+import { SessionProvider } from '@/app/(auth)/SessionProvider';
 import NavBar from '@/components/nav/NavBar';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 
