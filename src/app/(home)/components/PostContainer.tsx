@@ -1,38 +1,14 @@
 'use client'
 
-import { getDocs, collection, query, orderBy, limit, getCountFromServer, where, startAfter } from "firebase/firestore";
-import { db } from "@/firebase/firebase-app";
-import PostAction from "../../post/[...post_id]/components/post/PostAction";
-import { formatDuration } from "@/components/utils/formatDuration";
-import { UserInfo } from "@/global/UserInfo.types";
-import ContextProvider from "../../post/[...post_id]/components/context/PostContext";
 import PostContent from "@/app/post/[...post_id]/components/postContent/PostContent";
-import { useState } from "react"
+import { db } from "@/firebase/firebase-app";
+import { UserInfo } from "@/global/UserInfo.types";
+import { collection, getCountFromServer } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import InfiniteScroll from 'react-infinite-scroller';
-
-async function fetchPosts({ username, lastKey }: { username?: string, lastKey?: any }) {
-  const q = (username) ?
-    query(collection(db, "posts"), where("authorName", "==", username), orderBy("timestamp", "desc"), startAfter(lastKey), limit(1)) :
-    query(collection(db, "posts"), orderBy("timestamp", "desc"), startAfter(lastKey), limit(1))
-
-  const querySnapshot = await getDocs(q);
-  const fetchedPosts = querySnapshot.docs.map((doc) => {
-    return {
-      ...doc.data(),
-      lastComment: doc.data().lastComment && {
-        ...doc.data().lastComment,
-        timestamp: formatDuration(new Date().getTime() - doc.data().lastComment.timestamp.toDate().getTime()),
-      },
-      timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
-      id: doc.id
-    } as any
-  });
-
-  return {
-    posts: fetchedPosts,
-    lastKey: querySnapshot.docs[querySnapshot.docs.length - 1]
-  };
-}
+import ContextProvider from "../../post/[...post_id]/components/context/PostContext";
+import PostAction from "../../post/[...post_id]/components/post/PostAction";
+import { fetchAllData, fetchFriendData, fetchMyData, getFriendList, getLastView, updateLastView } from "./recommendPost";
 
 async function fetchCommentCount(postId: string) {
   const commentsRef = collection(db, "posts", postId, "comments")
@@ -45,16 +21,57 @@ export default function Posts({ myUserInfo, profileUsername }: { myUserInfo: Use
   const [posts, setPosts] = useState<any>([])
   const [hasMore, setHasMore] = useState(true)
   const [lastKey, setLastKey] = useState<any>({})
+  const [friendPostIds, setFriendPostIds] = useState<string[]>(["0"])
+  const [friendList, setFriendList] = useState<string[]>([])
+  const [hasMoreFriendPosts, setHasMoreFriendPosts] = useState(true)
+  const [lastView, setLastView] = useState<any>()
 
-  async function fetchData() {
-    const fetchedPosts = await fetchPosts({ username: profileUsername, lastKey: lastKey })
+  useEffect(() => {
+    async function fetchData() {
+      const [myFriendList, lastViewData] = await Promise.all([
+        getFriendList(myUserInfo),
+        getLastView(myUserInfo)
+      ])
+      updateLastView(myUserInfo)
+
+      setFriendList(myFriendList)
+      setLastView(lastViewData)
+      setHasMoreFriendPosts(myFriendList?.length > 0)
+    }
+
+    if (!profileUsername) fetchData()
+  }, [])
+
+  async function fetchPosts() {
+    let fetchedPosts;
+
+    if (profileUsername) {
+      fetchedPosts = await fetchMyData(profileUsername, lastKey)
+    }
+    else if (hasMoreFriendPosts) {
+      if (!lastView) return;
+
+      fetchedPosts = await fetchFriendData(myUserInfo, friendList, lastView, lastKey)
+
+      if (fetchedPosts.posts.length) {
+        setFriendPostIds([...friendPostIds, fetchedPosts.posts[0].id])
+      }
+      else {
+        fetchedPosts = await fetchAllData(friendPostIds, {})
+        setHasMoreFriendPosts(false)
+      }
+    }
+    else {
+      fetchedPosts = await fetchAllData(friendPostIds, lastKey)
+    }
+
     setPosts([...posts, ...fetchedPosts.posts]);
     (fetchedPosts.lastKey) ? setLastKey(fetchedPosts.lastKey) : setHasMore(false)
   }
 
   return (
     <InfiniteScroll
-      loadMore={fetchData}
+      loadMore={fetchPosts}
       hasMore={hasMore}
       loader={<div className="animate-pulse mb-4"><PostContent /><PostAction /></div>}
       initialLoad={true}

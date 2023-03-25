@@ -86,7 +86,6 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, sho
         {!notification?.length && <div className="flex items-center text-black bg-white rounded-lg px-4 py-4"> Empty! </div>}
       </div>
     </div>
-
   )
 }
 
