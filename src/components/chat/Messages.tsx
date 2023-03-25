@@ -2,35 +2,41 @@
 
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "../nav/NavBar";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import Message, { MessageProps } from "./Message";
 
-const Messages = ({ myUserInfo }: { myUserInfo: UserInfo }) => {
+const Messages = ({ myUserInfo, friend }: { myUserInfo: UserInfo, friend: string }) => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
 
   useEffect(() => {
     async function fetchData() {    
-      const messagesRef = collection(db, 'conversation');
+      const conversationRef = collection(db, 'conversation');
       const messagesQuery = query(
-        messagesRef, 
-        where('username1', 'in', [myUserInfo.username, 'niichan1403']),
-        where('username2', 'in', [myUserInfo.username, 'niichan1403'])
+        conversationRef,
+        where('username1', 'in', [myUserInfo.username, friend]),
+        where('username2', 'in', [myUserInfo.username, friend])
       );
-      const querySnapshot = await getDocs(messagesQuery);
-      
-      // Fetch messages from conversation  
-      const doc = querySnapshot.docs[0].data().messages || [];
-      const fetchedMessages: MessageProps[] = doc.map((obj : MessageProps) => ({
-        senderUsername: obj.senderUsername,
-        receiverUsername: obj.receiverUsername,
-        avatarUrl: obj.avatarUrl,
-        timestamp: obj.timestamp,
-        content: obj.content,
-        likes: obj.likes,
-      }));
-      setMessages(fetchedMessages);
+      const messageRef = (await getDocs(messagesQuery)).docs[0].ref;
+
+      const unsubscribe = onSnapshot(messageRef, (docSnap) => {
+        console.log(docSnap?.data())
+        const fetchedMessages: MessageProps[] = docSnap?.data()?.messages.map((obj : MessageProps) => ({
+          senderUsername: obj.senderUsername,
+          receiverUsername: obj.receiverUsername,
+          avatarUrl: obj.avatarUrl,
+          timestamp: obj.timestamp,
+          content: obj.content,
+          likes: obj.likes,
+        }));
+        setMessages(fetchedMessages);
+      })
+
+      return () => {
+        unsubscribe && unsubscribe()
+      };  
     }
+
     fetchData();
   }, []);
 

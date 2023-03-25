@@ -7,7 +7,7 @@ import PostAction from "./PostAction"
 import { Suspense } from "react";
 
 export default async function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
-  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(10));
+  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"), limit(3));
   const querySnapshot = await getDocs(q);
   const fetchedPosts = querySnapshot.docs.map((doc) => {
     return {

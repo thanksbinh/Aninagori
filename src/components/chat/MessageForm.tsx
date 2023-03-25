@@ -8,14 +8,12 @@ import { UserInfo } from "../nav/NavBar";
 
 interface Props {
   messageId?: string;
-  messages: Object[];
   conversationId: string;
   myUserInfo: UserInfo;
 };
 
 const MessageForm: FC<Props> = ({
   messageId,
-  messages,
   conversationId,
   myUserInfo,
 }) => {
@@ -33,7 +31,7 @@ const MessageForm: FC<Props> = ({
     console.log("Message sent:" + message);
   }
 
-  const onMessage = (e: any) => {
+  const onMessage = async (e: any) => {
     e.preventDefault()
 
     if (!myMessage.trim()) return;
@@ -47,7 +45,7 @@ const MessageForm: FC<Props> = ({
       likes: 0
     }
 
-    sendMessage(content)
+    await sendMessage(content)
 
     router.refresh()
 

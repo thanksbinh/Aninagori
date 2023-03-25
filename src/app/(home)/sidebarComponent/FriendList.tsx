@@ -5,7 +5,7 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { doc, getDoc } from 'firebase/firestore';
 import { getServerSession } from 'next-auth';
 
-interface Friend {
+export interface Friend {
   username: string;
   image: string;
 }
@@ -73,7 +73,7 @@ export default async function FriendList() {
       </div>
       <div className="flex flex-col flex-wrap -mx-2">
         {friendList?.map((friend) => (
-          <div>
+          <div key={friend.username}>
             <Friend username={friend.username} image={friend.image} myUserInfo={myUserInfo}/>
           </div>
         ))}
