@@ -32,7 +32,7 @@ const Friend: FC<FriendProps> = ({
           <span className="ml-2 font-medium">{username}</span>
         </div>
         {showChat && (
-            <ChatPopup myUserInfo={myUserInfo} showChat={showChat} setShowChat={setShowChat} recipient={username} />
+            <ChatPopup myUserInfo={myUserInfo} showChat={showChat} setShowChat={setShowChat} recipient={username} image={image} />
             //TODO: close chat with X button inside chat popup
         )}
       </div>

@@ -1,4 +1,4 @@
-import { arrayRemove, arrayUnion, doc, getDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, Timestamp, updateDoc } from "firebase/firestore";
 import { useEffect, useContext, useState, useRef } from "react";
 import { db } from "@/firebase/firebase-app";
 import Avatar from "../../avatar/Avatar";

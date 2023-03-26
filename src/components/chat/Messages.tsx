@@ -17,10 +17,17 @@ const Messages = ({ myUserInfo, friend }: { myUserInfo: UserInfo, friend: string
         where('username1', 'in', [myUserInfo.username, friend]),
         where('username2', 'in', [myUserInfo.username, friend])
       );
-      const messageRef = (await getDocs(messagesQuery)).docs[0].ref;
+      const querySnapshot = await getDocs(messagesQuery);
+      if (querySnapshot.empty) {
+        return;
+      }
+      
+      const messageRef = (querySnapshot).docs[0].ref;
 
       const unsubscribe = onSnapshot(messageRef, (docSnap) => {
-        console.log(docSnap?.data())
+        if (!docSnap.exists() || !docSnap.data()?.hasOwnProperty("messages")) {
+          return;
+        }
         const fetchedMessages: MessageProps[] = docSnap?.data()?.messages.map((obj : MessageProps) => ({
           senderUsername: obj.senderUsername,
           receiverUsername: obj.receiverUsername,
@@ -36,9 +43,8 @@ const Messages = ({ myUserInfo, friend }: { myUserInfo: UserInfo, friend: string
         unsubscribe && unsubscribe()
       };  
     }
-
     fetchData();
-  }, []);
+  }, [messages]);
 
   return (
       <div>

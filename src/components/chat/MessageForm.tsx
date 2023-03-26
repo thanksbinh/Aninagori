@@ -10,17 +10,19 @@ interface Props {
   messageId?: string;
   conversationId: string;
   myUserInfo: UserInfo;
+  friend: string;
 };
 
 const MessageForm: FC<Props> = ({
   messageId,
   conversationId,
   myUserInfo,
+  friend
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   
-  const [myMessage, setMyMessage] = useState("")
-  const router = useRouter()
+  const [myMessage, setMyMessage] = useState("");
+  const router = useRouter();
 
   // send message to conversation
   const sendMessage = async (message: any) => {
@@ -32,24 +34,24 @@ const MessageForm: FC<Props> = ({
   }
 
   const onMessage = async (e: any) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!myMessage.trim()) return;
 
     const content = {
       senderUsername: myUserInfo.username,
-      receiverUsername: 'niichan',
+      receiverUsername: friend,
       avatarUrl: myUserInfo.image,
       content: myMessage,
       timestamp: '',
       likes: 0
     }
 
-    await sendMessage(content)
+    await sendMessage(content);
 
-    router.refresh()
+    router.refresh();
 
-    setMyMessage("")
+    setMyMessage("");
   }
 
   return (
