@@ -44,7 +44,6 @@ const ChatPopup: React.FC<ChatPopupProps> = ({myUserInfo, showChat, setShowChat,
         getConversationId();
     }, []);
 
-
     const closeChat = () => {
         setShowChat(false);
     }
@@ -75,6 +74,6 @@ const ChatPopup: React.FC<ChatPopupProps> = ({myUserInfo, showChat, setShowChat,
         )}
         </>
     );
-}
+};
 
 export default ChatPopup;
