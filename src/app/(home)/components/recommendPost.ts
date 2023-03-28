@@ -1,15 +1,17 @@
 import { formatDuration } from "@/components/utils/formatDuration"
 import { db } from "@/firebase/firebase-app"
 import { UserInfo } from "@/global/UserInfo.types"
-import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs, limit, orderBy, query, startAfter, Timestamp, where } from "firebase/firestore"
+import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs, limit, orderBy, query, startAfter, Timestamp, where, arrayRemove, arrayUnion, updateDoc } from "firebase/firestore"
 
-async function getLastView(myUserInfo: UserInfo) {
-  const preferenceDoc = doc(db, "postPreferences", myUserInfo.username)
-  const snapshot = await getDoc(preferenceDoc)
-  if (!snapshot.exists()) {
-    await setDoc(preferenceDoc, { last_view: serverTimestamp() }, { merge: true })
+async function fetchPostPreference(myUserInfo: UserInfo) {
+  const prefRef = doc(db, "postPreferences", myUserInfo.username)
+  const postPreference = (await getDoc(prefRef))
+
+  if (!postPreference.exists()) {
+    await setDoc(prefRef, { last_view: serverTimestamp() }, { merge: true })
+    return { last_view: 1 }
   }
-  return snapshot.data()?.last_view || 1
+  return postPreference.data();
 }
 
 async function updateLastView(myUserInfo: UserInfo) {
@@ -49,13 +51,6 @@ function formatPostData(querySnapshot: any) {
   };
 }
 
-async function fetchProfilePosts(profileUsername: string, lastKey: any) {
-  const postQuery = query(collection(db, "posts"), where("authorName", "==", profileUsername), orderBy("timestamp", "desc"), startAfter(lastKey), limit(1))
-  const querySnapshot = await getDocs(postQuery)
-
-  return formatPostData(querySnapshot)
-}
-
 async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], lastView: Timestamp, lastKey: any) {
   const usernameList = friendList.slice(0)
   usernameList.push(myUserInfo.username)
@@ -81,9 +76,10 @@ async function fetchAllPosts(friendPostIds: string[], lastKey: any) {
   } while (true)
 }
 
-function getAnimePreferenceScore(myAnimeList: any, anime_id: string): number {
+function getAnimePreferenceScore(myAnimeList: any, animePreference: any, anime_id: string): number {
   const anime = myAnimeList?.find((anime: any) => anime.node.id === anime_id)
 
+  // Anime in myAnimeList
   if (anime?.list_status.status === "watching") return 0;
   if (anime?.list_status.status === "dropped") return 4;
   if (anime?.list_status.status === "completed") {
@@ -92,11 +88,9 @@ function getAnimePreferenceScore(myAnimeList: any, anime_id: string): number {
     return 2;
   }
 
-  if (!anime) {
-    return 10;
-  }
-
-  return 10;
+  // Anime in animePreference
+  const thisAnime = animePreference?.find((anime: any) => anime.id === anime_id)
+  return thisAnime ? thisAnime.potential : 10;
 }
 
-export { getLastView, updateLastView, getFriendList, fetchProfilePosts, fetchFriendPosts, fetchAllPosts, getAnimePreferenceScore, fetchMyAnimeList }
+export { fetchPostPreference, updateLastView, getFriendList, fetchFriendPosts, fetchAllPosts, getAnimePreferenceScore, fetchMyAnimeList }

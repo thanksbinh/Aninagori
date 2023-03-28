@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import InfiniteScroll from 'react-infinite-scroller';
 import ContextProvider from "../../post/[...post_id]/components/context/PostContext";
 import PostAction from "../../post/[...post_id]/components/post/PostAction";
-import { fetchAllPosts, fetchFriendPosts, fetchMyAnimeList, fetchProfilePosts, getAnimePreferenceScore, getFriendList, getLastView, updateLastView } from "./recommendPost";
+import { fetchAllPosts, fetchFriendPosts, fetchMyAnimeList, fetchPostPreference, getAnimePreferenceScore, getFriendList, updateLastView } from "./recommendPost";
 
 async function fetchCommentCount(postId: string) {
   const commentsRef = collection(db, "posts", postId, "comments")
@@ -17,67 +17,65 @@ async function fetchCommentCount(postId: string) {
   return commentCount;
 }
 
-export default function Posts({ myUserInfo, profileUsername }: { myUserInfo: UserInfo, profileUsername?: string }) {
+export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
   const [posts, setPosts] = useState<any>([])
   const [hasMore, setHasMore] = useState(true)
   const [lastKey, setLastKey] = useState<any>({})
   const [friendPostIds, setFriendPostIds] = useState<string[]>(["0"])
   const [friendList, setFriendList] = useState<string[]>([])
   const [hasMoreFriendPosts, setHasMoreFriendPosts] = useState(true)
-  const [lastView, setLastView] = useState<any>()
   const [myAnimeList, setMyAnimeList] = useState<any>([])
+  const [postPreference, setPostPreference] = useState<any>()
 
   useEffect(() => {
     async function fetchData() {
-      const [myFriendList, lastViewData, animeList] = await Promise.all([
+      const [myFriendList, postPreference] = await Promise.all([
         getFriendList(myUserInfo),
-        getLastView(myUserInfo),
-        fetchMyAnimeList(myUserInfo)
+        fetchPostPreference(myUserInfo)
       ])
+      setFriendList(myFriendList)
+      setHasMoreFriendPosts(myFriendList?.length > 0)
+
+      setPostPreference(postPreference)
       updateLastView(myUserInfo)
 
-      setFriendList(myFriendList)
-      setLastView(lastViewData)
+      const animeList = await fetchMyAnimeList(myUserInfo)
       setMyAnimeList(animeList?.animeList)
-
-      setHasMoreFriendPosts(myFriendList?.length > 0)
     }
 
-    if (!profileUsername) fetchData()
+    fetchData()
   }, [])
 
   function filterPosts(fetchedPosts: any) {
-    return Math.random() * 10 < getAnimePreferenceScore(myAnimeList, fetchedPosts.posts[0].post_anime_data?.anime_id)
+    return Math.random() * 10 < getAnimePreferenceScore(myAnimeList, postPreference?.animeList, fetchedPosts.posts[0].post_anime_data?.anime_id)
   }
 
   async function fetchPosts() {
+    if (!postPreference) return;
+
     let fetchedPosts;
-
-    if (profileUsername) {
-      fetchedPosts = await fetchProfilePosts(profileUsername, lastKey)
-    }
-    else if (hasMoreFriendPosts) {
-      if (!lastView) return;
-
-      fetchedPosts = await fetchFriendPosts(myUserInfo, friendList, lastView, lastKey)
+    if (hasMoreFriendPosts) {
+      fetchedPosts = await fetchFriendPosts(myUserInfo, friendList, postPreference.last_view, lastKey)
 
       if (fetchedPosts.posts.length) {
-        setFriendPostIds([...friendPostIds, fetchedPosts.posts[0].id])
-      }
-      else {
-        fetchedPosts = await fetchAllPosts(friendPostIds, {})
+        setFriendPostIds([...friendPostIds, ...fetchedPosts.posts.map((post: any) => post.id)])
+      } else {
         setHasMoreFriendPosts(false)
+        fetchedPosts = await fetchAllPosts(friendPostIds, {})
       }
-    }
-    else {
+    } else {
       fetchedPosts = await fetchAllPosts(friendPostIds, lastKey)
     }
 
-    // Post is from me or is not disliked
-    if ((fetchedPosts.posts[0].authorName === myUserInfo.username) || filterPosts(fetchedPosts)) {
-      setPosts([...posts, ...fetchedPosts.posts]);
+    // Post is from me or my friend or is not disliked
+    if (fetchedPosts.lastKey) {
+      if ((fetchedPosts.posts[0].authorName === myUserInfo.username) || friendList.includes(fetchedPosts.posts[0].authorName) || filterPosts(fetchedPosts)) {
+        setPosts([...posts, ...fetchedPosts.posts]);
+      }
+      setLastKey(fetchedPosts.lastKey)
+    } else {
+      setHasMore(false)
     }
-    (fetchedPosts.lastKey) ? setLastKey(fetchedPosts.lastKey) : setHasMore(false)
   }
 
   return (
@@ -94,6 +92,7 @@ export default function Posts({ myUserInfo, profileUsername }: { myUserInfo: Use
           myUserInfo={myUserInfo}
           content={post.content}
           authorName={post.authorName}
+          animeID={post.post_anime_data?.anime_id}
           postId={post.id}
         >
           <PostContent
@@ -105,7 +104,7 @@ export default function Posts({ myUserInfo, profileUsername }: { myUserInfo: Use
             videoUrl={post.videoUrl}
             animeID={post?.post_anime_data?.anime_id}
             animeName={post?.post_anime_data?.anime_name}
-            watchingProgess={post?.post_anime_data?.watching_progress}
+            watchingProgress={post?.post_anime_data?.watching_progress}
             episodesSeen={post?.post_anime_data?.episodes_seen}
             episodesTotal={post?.post_anime_data?.total_episodes}
             tag={post?.post_anime_data?.tag}
@@ -119,8 +118,7 @@ export default function Posts({ myUserInfo, profileUsername }: { myUserInfo: Use
           <div className="mb-4"></div>
         </ContextProvider>
       ))}
+
     </InfiniteScroll>
   );
 }
-
-

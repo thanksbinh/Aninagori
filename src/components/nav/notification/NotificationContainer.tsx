@@ -43,11 +43,10 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, sho
     const unsubscribe = onSnapshot(notificationsRef, docSnap => {
       if (!docSnap.exists()) {
         setDoc(notificationsRef, {}, { merge: true })
-        return;
+      } else {
+        docSnap.data().recentNotifications && setNotification(noticationFilter(docSnap.data().recentNotifications))
+        setLastRead(docSnap.data().lastRead)
       }
-
-      docSnap.data().recentNotifications && setNotification(noticationFilter(docSnap.data().recentNotifications))
-      setLastRead(docSnap.data().lastRead)
     })
 
     return () => {
