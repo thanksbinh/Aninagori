@@ -1,4 +1,6 @@
+import Friend from '@/components/chat/Friend';
 import { db } from '@/firebase/firebase-app';
+import { getUserInfo } from '@/global/getUserInfo';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { doc, getDoc } from 'firebase/firestore';
 import { getServerSession } from 'next-auth';
@@ -26,6 +28,10 @@ export default async function FriendList() {
   const session = await getServerSession(authOptions)
   const myUserId = (session as any)?.user?.id
   const friendList = await getFriendList(myUserId)
+  const myUserInfo = await getUserInfo(myUserId)
+
+  if (!myUserInfo) return null
+
 
   return (
     <div className="relative">
@@ -37,15 +43,8 @@ export default async function FriendList() {
       </div>
       <div className="flex flex-col flex-wrap -mx-2">
         {friendList?.map((friend) => (
-          <div key={friend.username} className="w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-4">
-            <div className="flex items-center w-48">
-              <img
-                className="rounded-full w-8 h-8 object-cover"
-                src={friend.image || "/bocchi.jpg"}
-                alt={friend.username}
-              />
-              <span className="ml-2 font-medium">{friend.username}</span>
-            </div>
+          <div key={friend.username}>
+            <Friend username={friend.username} image={friend.image} myUserInfo={myUserInfo}/>
           </div>
         ))}
       </div>
