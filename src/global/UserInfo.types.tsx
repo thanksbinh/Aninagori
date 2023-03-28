@@ -6,4 +6,5 @@ export interface UserInfo {
   "friend_list"?: Object[];
   "is_admin"?: boolean;
   "is_banned"?: boolean;
+  "mal_connect"?: any;
 }

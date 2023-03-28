@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import InfiniteScroll from 'react-infinite-scroller';
 import ContextProvider from "../../post/[...post_id]/components/context/PostContext";
 import PostAction from "../../post/[...post_id]/components/post/PostAction";
-import { fetchAllData, fetchFriendData, fetchMyData, getFriendList, getLastView, updateLastView } from "./recommendPost";
+import { fetchAllPosts, fetchFriendPosts, fetchMyAnimeList, fetchProfilePosts, getAnimePreferenceScore, getFriendList, getLastView, updateLastView } from "./recommendPost";
 
 async function fetchCommentCount(postId: string) {
   const commentsRef = collection(db, "posts", postId, "comments")
@@ -25,47 +25,58 @@ export default function Posts({ myUserInfo, profileUsername }: { myUserInfo: Use
   const [friendList, setFriendList] = useState<string[]>([])
   const [hasMoreFriendPosts, setHasMoreFriendPosts] = useState(true)
   const [lastView, setLastView] = useState<any>()
+  const [myAnimeList, setMyAnimeList] = useState<any>([])
 
   useEffect(() => {
     async function fetchData() {
-      const [myFriendList, lastViewData] = await Promise.all([
+      const [myFriendList, lastViewData, animeList] = await Promise.all([
         getFriendList(myUserInfo),
-        getLastView(myUserInfo)
+        getLastView(myUserInfo),
+        fetchMyAnimeList(myUserInfo)
       ])
       updateLastView(myUserInfo)
 
       setFriendList(myFriendList)
       setLastView(lastViewData)
+      setMyAnimeList(animeList?.animeList)
+
       setHasMoreFriendPosts(myFriendList?.length > 0)
     }
 
     if (!profileUsername) fetchData()
   }, [])
 
+  function filterPosts(fetchedPosts: any) {
+    return Math.random() * 10 < getAnimePreferenceScore(myAnimeList, fetchedPosts.posts[0].post_anime_data?.anime_id)
+  }
+
   async function fetchPosts() {
     let fetchedPosts;
 
     if (profileUsername) {
-      fetchedPosts = await fetchMyData(profileUsername, lastKey)
+      fetchedPosts = await fetchProfilePosts(profileUsername, lastKey)
     }
     else if (hasMoreFriendPosts) {
       if (!lastView) return;
 
-      fetchedPosts = await fetchFriendData(myUserInfo, friendList, lastView, lastKey)
+      fetchedPosts = await fetchFriendPosts(myUserInfo, friendList, lastView, lastKey)
 
       if (fetchedPosts.posts.length) {
         setFriendPostIds([...friendPostIds, fetchedPosts.posts[0].id])
       }
       else {
-        fetchedPosts = await fetchAllData(friendPostIds, {})
+        fetchedPosts = await fetchAllPosts(friendPostIds, {})
         setHasMoreFriendPosts(false)
       }
     }
     else {
-      fetchedPosts = await fetchAllData(friendPostIds, lastKey)
+      fetchedPosts = await fetchAllPosts(friendPostIds, lastKey)
     }
 
-    setPosts([...posts, ...fetchedPosts.posts]);
+    // Post is from me or is not disliked
+    if ((fetchedPosts.posts[0].authorName === myUserInfo.username) || filterPosts(fetchedPosts)) {
+      setPosts([...posts, ...fetchedPosts.posts]);
+    }
     (fetchedPosts.lastKey) ? setLastKey(fetchedPosts.lastKey) : setHasMore(false)
   }
 
