@@ -45,18 +45,17 @@ const Messages = ({ myUserInfo, friend }: { myUserInfo: UserInfo, friend: string
       const messageRef = (querySnapshot).docs[0].ref;
 
       const unsubscribe = onSnapshot(messageRef, (docSnap) => {
-        if (!docSnap.exists() || !docSnap.data()?.hasOwnProperty("messages")) {
-          return;
+        if (docSnap.exists() && docSnap.data()?.hasOwnProperty("messages")) {
+          const fetchedMessages: MessageProps[] = docSnap?.data()?.messages.map((obj : MessageProps) => ({
+            senderUsername: obj.senderUsername,
+            receiverUsername: obj.receiverUsername,
+            avatarUrl: obj.avatarUrl,
+            timestamp: obj.timestamp,
+            content: obj.content,
+            likes: obj.likes,
+          }));
+          setMessages(fetchedMessages);
         }
-        const fetchedMessages: MessageProps[] = docSnap?.data()?.messages.map((obj : MessageProps) => ({
-          senderUsername: obj.senderUsername,
-          receiverUsername: obj.receiverUsername,
-          avatarUrl: obj.avatarUrl,
-          timestamp: obj.timestamp,
-          content: obj.content,
-          likes: obj.likes,
-        }));
-        setMessages(fetchedMessages);
       })
 
       return () => {
