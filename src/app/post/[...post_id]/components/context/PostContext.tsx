@@ -7,7 +7,7 @@ interface PostContextType {
   myUserInfo: UserInfo;
   content: string;
   authorName: string;
-  animeID: string | undefined;
+  animeID?: string;
   postId: string;
 }
 
@@ -34,7 +34,7 @@ export default function ContextProvider({
   myUserInfo: UserInfo,
   content: string,
   authorName: string,
-  animeID: string | undefined,
+  animeID?: string,
   postId: string,
   children: React.ReactNode
 }) {

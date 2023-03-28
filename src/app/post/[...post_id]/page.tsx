@@ -72,6 +72,7 @@ async function Post({ params }: { params: { post_id: string[] } }) {
           myUserInfo={myUserInfo}
           content={fetchedPost.content || ""}
           authorName={fetchedPost.authorName}
+          animeID={fetchedPost?.post_anime_data?.anime_id}
           postId={fetchedPost.id}
         >
           <PostContent
@@ -83,7 +84,7 @@ async function Post({ params }: { params: { post_id: string[] } }) {
             videoUrl={fetchedPost.videoUrl}
             animeID={fetchedPost?.post_anime_data?.anime_id}
             animeName={fetchedPost?.post_anime_data?.anime_name}
-            watchingProgess={fetchedPost?.post_anime_data?.watching_progress}
+            watchingProgress={fetchedPost?.post_anime_data?.watching_progress}
             episodesSeen={fetchedPost?.post_anime_data?.episodes_seen}
             episodesTotal={fetchedPost?.post_anime_data?.total_episodes}
             tag={fetchedPost?.post_anime_data?.tag}
