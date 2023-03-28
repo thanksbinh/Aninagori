@@ -1,110 +1,98 @@
-import StatusWrapper from '../StatusWrapper/StatusWrapper';
-import classNames from 'classnames/bind';
-import styles from './AnimeStatus.module.scss';
-import { convertToPercent } from '../AnimeUpdate/AnimeUpdate';
-const cx = classNames.bind(styles);
+import StatusWrapper from "../StatusWrapper/StatusWrapper"
+import classNames from "classnames/bind"
+import styles from "./AnimeStatus.module.scss"
+import { convertToPercent } from "../AnimeUpdate/AnimeUpdate"
+const cx = classNames.bind(styles)
 
-function AnimeStatus({ data }) {
+function AnimeStatus({ statusData }) {
   return (
     <StatusWrapper title="Anime Stats">
-      {!!data.updates && (
-        <>
-          <div className={cx('stats-number')}>
-            <p>
-              Days: <span className={cx('highlight')}>{data.statistics.anime.days_watched}</span>
-            </p>
-            <p>
-              Mean Score: <span className={cx('highlight')}>{data.statistics.anime.mean_score}</span>
-            </p>
+      <div className={cx("stats-number")}>
+        <p>
+          Days: <span className={cx("highlight")}>{statusData.num_days_watched}</span>
+        </p>
+        <p>
+          Mean Score: <span className={cx("highlight")}>{statusData.mean_score}</span>
+        </p>
+      </div>
+      <div className={cx("progress-bar")}>
+        <ProgressChild
+          percent={convertToPercent(statusData.num_items_watching, statusData.num_items)}
+          color="#1CE318"
+        />
+        <ProgressChild
+          percent={convertToPercent(statusData.num_items_completed, statusData.num_items)}
+          color="#1C4CF2"
+        />
+        <ProgressChild percent={convertToPercent(statusData.num_items_on_hold, statusData.num_items)} color="#DBDE22" />
+        <ProgressChild percent={convertToPercent(statusData.num_items_dropped, statusData.num_items)} color="#E93030" />
+      </div>
+      <div className={cx("status-note")}>
+        <div className={cx("progress-note")}>
+          <StatusNoteChild
+            color="#1CE318"
+            title="Watching"
+            number={statusData.num_items_watching}
+            className={cx("note-child")}
+          />
+          <StatusNoteChild
+            color="#1C4CF2"
+            title="Completed"
+            number={statusData.num_items_completed}
+            className={cx("note-child")}
+          />
+          <StatusNoteChild
+            color="#DBDE22"
+            title="On-hold"
+            number={statusData.num_items_on_hold}
+            className={cx("note-child")}
+          />
+          <StatusNoteChild
+            color="#E93030"
+            title="Drop"
+            number={statusData.num_items_dropped}
+            className={cx("note-child")}
+          />
+          <StatusNoteChild
+            color="#757B85"
+            title="Plan to Watch"
+            number={statusData.num_items_plan_to_watch}
+            className={cx("note-child")}
+          />
+        </div>
+        <div className={cx("watch-note")}>
+          <div className={cx("watch-wrapper")}>
+            <span className={cx("watch-title")}>Total Entries</span>
+            <span className={cx("watch-number")}>{statusData.num_items}</span>
           </div>
-          <div className={cx('progress-bar')}>
-            <ProgressChild
-              percent={convertToPercent(data.statistics.anime.watching, data.statistics.anime.total_entries)}
-              color="#1CE318"
-            />
-            <ProgressChild
-              percent={convertToPercent(data.statistics.anime.completed, data.statistics.anime.total_entries)}
-              color="#1C4CF2"
-            />
-            <ProgressChild
-              percent={convertToPercent(data.statistics.anime.on_hold, data.statistics.anime.total_entries)}
-              color="#DBDE22"
-            />
-            <ProgressChild
-              percent={convertToPercent(data.statistics.anime.dropped, data.statistics.anime.total_entries)}
-              color="#E93030"
-            />
+          <div className={cx("watch-wrapper")}>
+            <span className={cx("watch-title")}>Rewatched</span>
+            <span className={cx("watch-number")}>{statusData.num_times_rewatched}</span>
           </div>
-          <div className={cx('status-note')}>
-            <div className={cx('progress-note')}>
-              <StatusNoteChild
-                color="#1CE318"
-                title="Watching"
-                number={data.statistics.anime.watching}
-                className={cx('note-child')}
-              />
-              <StatusNoteChild
-                color="#1C4CF2"
-                title="Completed"
-                number={data.statistics.anime.completed}
-                className={cx('note-child')}
-              />
-              <StatusNoteChild
-                color="#DBDE22"
-                title="On-hold"
-                number={data.statistics.anime.on_hold}
-                className={cx('note-child')}
-              />
-              <StatusNoteChild
-                color="#E93030"
-                title="Drop"
-                number={data.statistics.anime.dropped}
-                className={cx('note-child')}
-              />
-              <StatusNoteChild
-                color="#757B85"
-                title="Plan to Watch"
-                number={data.statistics.anime.plan_to_watch}
-                className={cx('note-child')}
-              />
-            </div>
-            <div className={cx('watch-note')}>
-              <div className={cx('watch-wrapper')}>
-                <span className={cx('watch-title')}>Total Entries</span>
-                <span className={cx('watch-number')}>{data.statistics.anime.total_entries}</span>
-              </div>
-              <div className={cx('watch-wrapper')}>
-                <span className={cx('watch-title')}>Rewatched</span>
-                <span className={cx('watch-number')}>{data.statistics.anime.rewatched}</span>
-              </div>
-              <div className={cx('watch-wrapper')}>
-                <span className={cx('watch-title')}>Episodes</span>
-                <span className={cx('watch-number')}>{data.statistics.anime.episodes_watched}</span>
-              </div>
-            </div>
+          <div className={cx("watch-wrapper")}>
+            <span className={cx("watch-title")}>Episodes</span>
+            <span className={cx("watch-number")}>{statusData.num_episodes}</span>
           </div>
-        </>
-      )}
+        </div>
+      </div>
     </StatusWrapper>
-  );
+  )
 }
 
 function StatusNoteChild({ color, title, number }) {
   return (
-    <div className={cx('status-wrapper')}>
-      <div className={cx('status-round')} style={{ backgroundColor: `${color}` }}></div>
-      <div className={cx('status-text-wrapper')}>
-        <p className={cx('status')}>{title}</p>
-        <p className={cx('status-number')}>{number}</p>
+    <div className={cx("status-wrapper")}>
+      <div className={cx("status-round")} style={{ backgroundColor: `${color}` }}></div>
+      <div className={cx("status-text-wrapper")}>
+        <p className={cx("status")}>{title}</p>
+        <p className={cx("status-number")}>{number}</p>
       </div>
     </div>
-  );
+  )
 }
 
-export function ProgressChild({ percent, color = '#1ce318', className }) {
-  return (
-    <div style={{ width: `${percent}%`, backgroundColor: `${color}`, height: '100%' }} className={className}></div>
-  );
+export function ProgressChild({ percent, color = "#1ce318", className }) {
+  return <div style={{ width: `${percent}%`, backgroundColor: `${color}`, height: "100%" }} className={className}></div>
 }
 
-export default AnimeStatus;
+export default AnimeStatus

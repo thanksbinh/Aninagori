@@ -1,42 +1,24 @@
-import Friend from '@/components/chat/Friend';
-import { UserInfo } from '@/components/nav/NavBar';
 import { db } from '@/firebase/firebase-app';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { doc, getDoc } from 'firebase/firestore';
 import { getServerSession } from 'next-auth';
+import { SiThreedotjs } from 'react-icons/si';
 
-export interface Friend {
-  username: string;
-  image: string;
+interface Friend {
+  username: string
+  image: string
 }
 
 async function getFriendList(userId: string): Promise<Friend[] | undefined> {
-  if (!userId) return;
+  if (!userId) return
 
-  const docRef = doc(db, 'users', userId);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    return docSnap.data().friend_list;
-  } else {
-    console.log('No such document in NavBar/getUserInfo()!');
-  }
-}
-
-async function getUserInfo(userId: string): Promise<UserInfo | undefined> {
-  if (!userId) return;
-
-  const docRef = doc(db, "users", userId);
-  const docSnap = await getDoc(docRef);
+  const docRef = doc(db, "users", userId)
+  const docSnap = await getDoc(docRef)
 
   if (docSnap.exists()) {
-    return {
-      "id": docSnap.id,
-      "username": docSnap.data().username,
-      "image": docSnap.data().image,
-    }
+    return docSnap.data().friend_list
   } else {
-    console.log("No such document in page/getUserInfo()!");
+    console.log("No such document in NavBar/getUserInfo()!")
   }
 }
 
@@ -51,33 +33,28 @@ export default async function FriendList() {
 
   return (
     <div className="relative">
-      <div className="flex justify-between items-center px-2 mb-4">
-        <h2 className="text-white font-semibold text-xl">Friends</h2>
-        <div className="hover:cursor-pointer hover:bg-gray-200 rounded-full p-2">
-          <svg
-            className="h-6 w-6 text-gray-500"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            {' '}
-            <path stroke="none" d="M0 0h24v24H0z" /> <circle cx="5" cy="12" r="1" /> <circle cx="12" cy="12" r="1" />{' '}
-            <circle cx="19" cy="12" r="1" />
-          </svg>
+      <div className="flex justify-between items-center pr-2 mb-4">
+        <h2 className="text-ani-text-gray font-semibold text-xl">Friends</h2>
+        <div className="hover:cursor-pointer rounded-full p-2">
+          <SiThreedotjs className="h-5 w-5" aria-hidden="true" />
         </div>
       </div>
       <div className="flex flex-col flex-wrap -mx-2">
         {friendList?.map((friend) => (
           <div key={friend.username}>
             <Friend username={friend.username} image={friend.image} myUserInfo={myUserInfo}/>
+          <div key={friend.username} className="w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-4">
+            <div className="flex items-center w-48">
+              <img
+                className="rounded-full w-8 h-8 object-cover"
+                src={friend.image || "/bocchi.jpg"}
+                alt={friend.username}
+              />
+              <span className="ml-2 font-medium">{friend.username}</span>
+            </div>
           </div>
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
