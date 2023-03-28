@@ -59,8 +59,47 @@
   }
 }
 
-.media-wrapper {
+.image-wrapper {
+  height: 100%;
+  padding: 0 151px;
+  border-radius: 10px;
+  margin-right: 10px;
+  background-position: 50%;
+  background-size: cover;
+  position: relative;
   &:hover .delete-icon {
     display: block;
+  }
+}
+
+.add-media {
+  height: 100%;
+  max-width: 302px;
+  padding: 0 149px;
+  border: 2px solid #3bc361;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-wrapper {
+  &:hover > .delete-icon {
+    display: block;
+  }
+
+  &::-webkit-scrollbar {
+    border-radius: 0;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: #333;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: #333;
   }
 }

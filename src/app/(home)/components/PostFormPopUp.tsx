@@ -9,7 +9,7 @@ import { v4 } from "uuid"
 import classNames from "classnames/bind"
 import styles from "./PostForm.module.scss"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCaretDown, faCircleXmark, faSpinner } from "@fortawesome/free-solid-svg-icons"
+import { faCaretDown, faCircleXmark, faFileCirclePlus, faImage, faSpinner } from "@fortawesome/free-solid-svg-icons"
 
 import Avatar from "@/components/avatar/Avatar"
 import AnimeWatchStatus from "./animePostComponent/AnimeWatchStatus"
@@ -29,7 +29,7 @@ type PostFormProps = {
 
 const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }) => {
   const inputRef = useRef<HTMLInputElement>(null)
-  const [mediaUrl, setMediaUrl] = useState<any>(null)
+  const [mediaUrl, setMediaUrl] = useState<any>([])
   const [mediaType, setMediaType] = useState<string>("")
   const [showScore, setShowScore] = useState<boolean>(false)
   const router = useRouter()
@@ -38,6 +38,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
   const animeEpisodes = useRef()
   const animeTag = useRef()
   const animeScore = useRef()
+  console.log(mediaUrl)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     const statusData = (animeStatus?.current as any).getAnimeStatus()
@@ -48,7 +49,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
     const scoreData = (animeScore?.current as any).getAnimeScore()
 
     e.preventDefault()
-    if (!inputRef.current?.value && !mediaUrl) {
+    if (!inputRef.current?.value && mediaUrl.length === 0) {
       console.log("error")
       return
     }
@@ -61,23 +62,23 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
       scoreData,
     )
 
-    const downloadMediaUrl = await uploadMedia()
-    await addDoc(collection(db, "posts"), {
-      authorName: username,
-      avatarUrl: avatarUrl,
-      timestamp: serverTimestamp(),
-      content: inputRef.current?.value || "",
-      imageUrl: mediaType === "image" ? downloadMediaUrl : "",
-      videoUrl: mediaType === "video" ? downloadMediaUrl : "",
-      post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? null : postAnimeData,
-      // Todo: Remove comments: 0
-      comments: 0,
-    })
+    // const downloadMediaUrl = await uploadMedia()
+    // await addDoc(collection(db, "posts"), {
+    //   authorName: username,
+    //   avatarUrl: avatarUrl,
+    //   timestamp: serverTimestamp(),
+    //   content: inputRef.current?.value || "",
+    //   imageUrl: mediaType === "image" ? downloadMediaUrl : "",
+    //   videoUrl: mediaType === "video" ? downloadMediaUrl : "",
+    //   post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? null : postAnimeData,
+    //   // Todo: Remove comments: 0
+    //   comments: 0,
+    // })
 
-    inputRef.current!.value = ""
-    setMediaUrl(null)
-    router.refresh()
-    setOpen(false)
+    // inputRef.current!.value = ""
+    // setMediaUrl(null)
+    // router.refresh()
+    // setOpen(false)
   }
 
   const uploadMedia = async () => {
@@ -90,18 +91,28 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
     return downloadMediaUrl
   }
 
-  const handleDeleteMedia = () => {
-    URL.revokeObjectURL(mediaUrl)
-    setMediaUrl("")
+  const handleDeleteMedia = (index: any) => {
+    URL.revokeObjectURL(mediaUrl[index])
+    setMediaUrl(mediaUrl.filter((_: any, i: any) => i !== index))
   }
 
   const handleMediaChange = (e: any, mediaType: string) => {
-    // Todo: multi media file
     const file = e.target.files[0]
     if (!file) return
-
-    setMediaType(mediaType)
-    setMediaUrl(file)
+    const fileType = file.type.split("/")[0]
+    if (mediaUrl.length !== 0 && mediaUrl[0].type.split("/")[0] !== fileType) {
+      setMediaType(fileType)
+      setMediaUrl([file])
+      alert("You can only upload image or video")
+      return
+    }
+    if (mediaUrl.length >= 10) {
+      alert("You can only upload 10 media files")
+      return
+    }
+    //TODO: -handle post a video after a video
+    setMediaType(fileType)
+    setMediaUrl([...mediaUrl, file])
   }
 
   return (
@@ -148,30 +159,73 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
           />
 
           <div className="mt-4 w-full flex items-center justify-center">
-            {mediaUrl &&
-              (mediaUrl.name.endsWith(".mp4") ? (
-                <div className={cx("media-wrapper") + " w-2/3 h-2/5 flex items-center justify-center relative"}>
-                  <video src={URL.createObjectURL(mediaUrl)} className="w-full object-contain rounded-xl" controls />
+            <input
+              type="file"
+              id="multi-media-input"
+              accept="video/*,image/*"
+              onChange={(e) => handleMediaChange(e, "image")}
+              className="hidden"
+            />
+            {mediaUrl.length > 0 ? (
+              mediaType === "video" ? (
+                <div className={cx("media-wrapper") + " w-2/3 h-2/5 flex items-center relative"}>
+                  <video src={URL.createObjectURL(mediaUrl[0])} className="w-full object-contain rounded-xl" controls />
                   <FontAwesomeIcon
-                    onClick={handleDeleteMedia}
+                    onClick={() => {
+                      handleDeleteMedia(0)
+                    }}
                     icon={faCircleXmark as any}
                     className={cx("delete-icon")}
                   />
                 </div>
               ) : (
-                <div className={cx("media-wrapper") + " w-2/3 h-64 flex items-center justify-center relative"}>
-                  <img
-                    src={URL.createObjectURL(mediaUrl)}
-                    className="w-full h-full object-cover object-center rounded-xl"
-                    alt={"image"}
-                  />
-                  <FontAwesomeIcon
-                    onClick={handleDeleteMedia}
-                    icon={faCircleXmark as any}
-                    className={cx("delete-icon")}
-                  />
+                <div
+                  className={
+                    cx("media-wrapper") +
+                    " w-full h-64 flex items-center relative overflow-x-auto bg-[#212833] rounded-xl px-4 py-4"
+                  }
+                >
+                  {mediaUrl.map((media: any, index: number) => {
+                    return (
+                      <div
+                        key={index}
+                        className={cx("image-wrapper")}
+                        style={{ backgroundImage: `url(${URL.createObjectURL(media)})` }}
+                      >
+                        <FontAwesomeIcon
+                          onClick={() => {
+                            handleDeleteMedia(index)
+                          }}
+                          icon={faCircleXmark as any}
+                          className={cx("delete-icon")}
+                        />
+                      </div>
+                    )
+                  })}
+                  <label htmlFor="multi-media-input" className={cx("add-media")}>
+                    <FontAwesomeIcon
+                      icon={faFileCirclePlus as any}
+                      className="text-[#3BC361] text-4xl hover:text-green-400"
+                    />
+                  </label>
                 </div>
-              ))}
+              )
+            ) : (
+              <>
+                <label
+                  className={
+                    cx("media-wrapper") +
+                    " w-full h-64 flex items-center justify-center relative hover:opacity-75 rounded-xl border-2 border-[#3BC361] cursor-pointer"
+                  }
+                  htmlFor="multi-media-input"
+                >
+                  <FontAwesomeIcon
+                    icon={faFileCirclePlus as any}
+                    className="text-[#3BC361] text-4xl hover:text-green-400"
+                  />
+                </label>
+              </>
+            )}
           </div>
 
           <AnimeTag tagArr={["Spoiler", "GoodStory", "BestWaifu"]} ref={animeTag} />
