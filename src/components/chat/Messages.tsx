@@ -8,7 +8,26 @@ import Message, { MessageProps } from "./Message";
 
 const Messages = ({ myUserInfo, friend }: { myUserInfo: UserInfo, friend: string }) => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
-  let prevSenderUsername = '';
+
+  const messagesList = messages.map((message, index) => {
+    const isFirstMessage = index === 0 || message.senderUsername !== messages[index - 1].senderUsername;
+    const isLastMessage = index === messages.length - 1 || message.senderUsername !== messages[index + 1].senderUsername;
+
+    return (
+      <Message
+          key={index}
+          receiverUsername={message.receiverUsername}
+          senderUsername={message.senderUsername}
+          avatarUrl={message.avatarUrl}
+          timestamp={message.timestamp}
+          content={message.content}
+          likes={message.likes}
+          myUserInfo={myUserInfo}
+          isFirstMessage={isFirstMessage}
+          isLastMessage={isLastMessage}
+      />
+    );
+  })
 
   useEffect(() => {
     async function fetchData() {    
@@ -49,19 +68,7 @@ const Messages = ({ myUserInfo, friend }: { myUserInfo: UserInfo, friend: string
 
   return (
       <div className="flex flex-1 flex-col">        
-          {messages.map((message, index) => (
-              <Message
-                  key={index}
-                  receiverUsername={message.receiverUsername}
-                  senderUsername={message.senderUsername}
-                  avatarUrl={message.avatarUrl}
-                  timestamp={message.timestamp}
-                  content={message.content}
-                  likes={message.likes}
-                  myUserInfo={myUserInfo}
-                  isFirstMessage={index === 0}
-              />
-          ))}
+          {messagesList}
       </div>
   )
 }
