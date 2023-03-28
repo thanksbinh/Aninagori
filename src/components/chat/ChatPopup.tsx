@@ -57,7 +57,7 @@ const ChatPopup: React.FC<ChatPopupProps> = ({myUserInfo, showChat, setShowChat,
                         <Avatar imageUrl={image} altText={myUserInfo.username} size={10} />
                     </div>
                     <div className="flex flex-1 flex-col pl-3">
-                        <p>Conversation name</p>
+                        <p>{recipient}</p>
                         <p>Active now</p>   
                     </div>
                     <div className="flex justify-center items-start">
