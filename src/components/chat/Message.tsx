@@ -2,7 +2,7 @@
 
 import { FC, useState } from "react";
 import Avatar from "../avatar/Avatar";
-import { UserInfo } from "../nav/NavBar";
+import { UserInfo } from "@/global/UserInfo.types";
 
 type MessageProps = {
   senderUsername: string;

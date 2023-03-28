@@ -2,7 +2,7 @@
 
 import { FC, useState } from "react";
 import ChatPopup from "./ChatPopup";
-import { UserInfo } from '@/components/nav/NavBar';
+import { UserInfo } from "@/global/UserInfo.types";
 
 export type FriendProps = {
     username: string;

@@ -3,7 +3,7 @@
 import Avatar from "../avatar/Avatar";
 import Messages from "./Messages";
 import MessageForm from "./MessageForm";
-import { UserInfo } from "../nav/NavBar";
+import { UserInfo } from "@/global/UserInfo.types";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";

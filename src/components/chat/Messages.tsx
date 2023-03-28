@@ -1,7 +1,7 @@
 'use client'
 
 import { db } from "@/firebase/firebase-app";
-import { UserInfo } from "../nav/NavBar";
+import { UserInfo } from "@/global/UserInfo.types";
 import { collection, getDocs, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import Message, { MessageProps } from "./Message";

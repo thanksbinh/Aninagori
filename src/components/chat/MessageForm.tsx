@@ -4,7 +4,7 @@ import { collection, doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { FC, useState, useRef } from "react";
 import { db } from "@/firebase/firebase-app";
 import { useRouter } from "next/navigation";
-import { UserInfo } from "../nav/NavBar";
+import { UserInfo } from "@/global/UserInfo.types";
 
 interface Props {
   messageId?: string;
