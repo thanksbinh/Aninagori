@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 const cx = classNames.bind(styles)
 
 function AnimeWatchStatus(props: any, ref: any) {
+  const { setShowScore } = props
   const [status, setStatus] = useState("Watching")
   const [isInputFocus, setIsInputFocus] = useState(false)
   const [boxOpen, setBoxOpen] = useState(false)
@@ -43,6 +44,7 @@ function AnimeWatchStatus(props: any, ref: any) {
             <div
               onClick={() => {
                 setChoice("Watching")
+                setShowScore(false)
               }}
               className={cx("option")}
             >
@@ -51,6 +53,7 @@ function AnimeWatchStatus(props: any, ref: any) {
             <div
               onClick={() => {
                 setChoice("Finished")
+                setShowScore(true)
               }}
               className={cx("option")}
             >
@@ -59,6 +62,7 @@ function AnimeWatchStatus(props: any, ref: any) {
             <div
               onClick={() => {
                 setChoice("Plan to watch")
+                setShowScore(false)
               }}
               className={cx("option")}
             >
@@ -67,6 +71,7 @@ function AnimeWatchStatus(props: any, ref: any) {
             <div
               onClick={() => {
                 setChoice("Drop")
+                setShowScore(false)
               }}
               className={cx("option")}
             >

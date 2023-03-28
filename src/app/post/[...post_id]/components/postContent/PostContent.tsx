@@ -25,6 +25,7 @@ type PostStaticProps = {
   episodesSeen?: number
   episodesTotal?: number
   tag?: string[]
+  score?: string
   postId?: string
 }
 
@@ -41,9 +42,9 @@ const PostContent: FC<PostStaticProps> = ({
   episodesSeen = 0,
   episodesTotal = 13,
   tag = [],
-  postId
+  postId,
+  score,
 }) => {
-
   const [spoiler, setSpoiler] = useState(tag.some((a: string) => a === "Spoiler"))
 
   return (
@@ -78,7 +79,17 @@ const PostContent: FC<PostStaticProps> = ({
               </div>
             </div>
           </div>
-          <Link href={"/post/" + postId} className="text-gray-500 text-sm hover:underline">{timestamp}</Link>
+          <div className="flex">
+            <Link href={"/post/" + postId} className="text-gray-500 text-sm hover:underline mr-2">
+              {timestamp}
+            </Link>
+            {score && (
+              <div className="text-gray-500 text-sm">
+                {" "}
+                - score: <span className="text-green-500">{score} / 10</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className={cx("tag-wrapper")}>

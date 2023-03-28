@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { HiPhoto, HiVideoCamera } from "react-icons/hi2"
@@ -15,6 +16,7 @@ import AnimeWatchStatus from "./animePostComponent/AnimeWatchStatus"
 import AnimeSearch from "./animePostComponent/AnimeSearch"
 import AnimeEpisodes from "./animePostComponent/AnimeEpisodes"
 import AnimeTag from "./animePostComponent/AnimeTag"
+import AnimeScore from "./animePostComponent/AnimeScore"
 
 const cx = classNames.bind(styles)
 
@@ -29,11 +31,13 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
   const inputRef = useRef<HTMLInputElement>(null)
   const [mediaUrl, setMediaUrl] = useState<any>(null)
   const [mediaType, setMediaType] = useState<string>("")
+  const [showScore, setShowScore] = useState<boolean>(false)
   const router = useRouter()
   const animeStatus = useRef()
   const animeSearch = useRef()
   const animeEpisodes = useRef()
   const animeTag = useRef()
+  const animeScore = useRef()
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     const statusData = (animeStatus?.current as any).getAnimeStatus()
@@ -41,13 +45,21 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
     const episodesData = (animeEpisodes?.current as any).getAnimeEpisodes()
     const totalEps = (animeEpisodes?.current as any).getAnimeTotal()
     const tagData = (animeTag?.current as any).getAnimeTag()
+    const scoreData = (animeScore?.current as any).getAnimeScore()
 
     e.preventDefault()
-    if ((!inputRef.current?.value && !mediaUrl) || (animeSearch?.current as any).getAnimeName().animeID === "") {
-      console.log("erroer")
+    if (!inputRef.current?.value && !mediaUrl) {
+      console.log("error")
       return
     }
-    const postAnimeData = handleAnimeInformationPosting(statusData, searchData, episodesData, tagData, totalEps)
+    const postAnimeData = handleAnimeInformationPosting(
+      statusData,
+      searchData,
+      episodesData,
+      tagData,
+      totalEps,
+      scoreData,
+    )
 
     const downloadMediaUrl = await uploadMedia()
     await addDoc(collection(db, "posts"), {
@@ -57,14 +69,14 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
       content: inputRef.current?.value || "",
       imageUrl: mediaType === "image" ? downloadMediaUrl : "",
       videoUrl: mediaType === "video" ? downloadMediaUrl : "",
-      post_anime_data: postAnimeData,
+      post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? null : postAnimeData,
       // Todo: Remove comments: 0
       comments: 0,
     })
 
     inputRef.current!.value = ""
     setMediaUrl(null)
-    location.reload()
+    router.refresh()
     setOpen(false)
   }
 
@@ -123,9 +135,10 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
             <h4 className="text-base font-bold ml-4">{username}</h4>
           </div>
           <div className={cx("status-wrapper")}>
-            <AnimeWatchStatus ref={animeStatus} />
+            <AnimeWatchStatus ref={animeStatus} setShowScore={setShowScore} />
             <AnimeSearch ref={animeSearch} animeEpsRef={animeEpisodes} />
-            <AnimeEpisodes ref={animeEpisodes} />
+            <AnimeScore ref={animeScore} style={showScore ? { display: "flex" } : { display: "none" }} />
+            <AnimeEpisodes ref={animeEpisodes} style={!showScore ? { display: "flex" } : { display: "none" }} />
           </div>
           <input
             type="text"
@@ -150,6 +163,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
                   <img
                     src={URL.createObjectURL(mediaUrl)}
                     className="w-full h-full object-cover object-center rounded-xl"
+                    alt={"image"}
                   />
                   <FontAwesomeIcon
                     onClick={handleDeleteMedia}
@@ -208,7 +222,14 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
 
 export default PostFormPopUp
 
-function handleAnimeInformationPosting(status: any, animeInformation: any, episodes: any, tag: any, totalEps: any) {
+function handleAnimeInformationPosting(
+  status: any,
+  animeInformation: any,
+  episodes: any,
+  tag: any,
+  totalEps: any,
+  score: any,
+) {
   const postAnimeData = {
     watching_progress: status,
     anime_name: animeInformation.animeName,
@@ -228,6 +249,7 @@ function handleAnimeInformationPosting(status: any, animeInformation: any, episo
     postAnimeData.watching_progress = "plan to watch"
     postAnimeData.episodes_seen = "0"
   } else if (status === "Finished") {
+    ;(postAnimeData as any).score = score
     postAnimeData.watching_progress = "have finished"
     postAnimeData.episodes_seen = postAnimeData.total_episodes
   } else if (status === "Drop") {

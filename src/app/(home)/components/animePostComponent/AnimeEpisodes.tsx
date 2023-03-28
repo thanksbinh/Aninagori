@@ -25,7 +25,7 @@ function AnimeEpisodes(props: any, ref: any) {
   }))
 
   return (
-    <div className={cx("status-component")} ref={ref}>
+    <div style={props.style} className={cx("status-component")} ref={ref}>
       <div className={cx("wrapper")}>
         <input
           onChange={(e) => {

@@ -14,7 +14,6 @@ import PostForm from "@/app/(home)/components/PostForm"
 import Posts from "@/app/(home)/components/PostContainer"
 import { getUserInfo } from "@/global/getUserInfo"
 import * as apiServices from "@/app/api/apiServices/apiServicesConfig"
-export const dynamic = "force-dynamic"
 
 const cx = classNames.bind(styles)
 
@@ -118,11 +117,13 @@ function getAnimeFavorite(mal_username: any) {
 }
 
 async function getUserAnimeUpdate(access_token: any, mal_username: any) {
-  const url = "https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status&limit=3&sort=list_updated_at"
+  const url =
+    "https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status,num_episodes&limit=3&sort=list_updated_at"
   const userUpdate = fetch(url, {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
+    cache: "no-store",
   }).then((res) => res.json())
   return userUpdate
 }
