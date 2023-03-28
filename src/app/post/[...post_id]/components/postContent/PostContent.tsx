@@ -99,13 +99,29 @@ const PostContent: FC<PostStaticProps> = ({
       </div>
       <p className="text-lg mx-2 mt-3 mb-2 text-[#dddede] mx-2)}">{content}</p>
       <div className="mt-4 mx-2 relative">
-        {imageUrl && (
-          <img
-            draggable="false"
-            src={imageUrl}
-            alt={""}
-            className={`cursor-pointer rounded-2xl ${cx({ "blur-2xl": spoiler })}`}
-          />
+        {typeof imageUrl === "object" ? (
+          <>
+            {(imageUrl as any).map((data: string, index: number) => {
+              return (
+                <img
+                  key={index}
+                  draggable="false"
+                  src={data}
+                  alt={""}
+                  className={`cursor-pointer rounded-2xl ${cx({ "blur-2xl": spoiler })}`}
+                />
+              )
+            })}
+          </>
+        ) : (
+          <>
+            <img
+              draggable="false"
+              src={imageUrl}
+              alt={""}
+              className={`cursor-pointer rounded-2xl ${cx({ "blur-2xl": spoiler })}`}
+            />
+          </>
         )}
         {videoUrl && <VideoComponent videoUrl={videoUrl} className={cx("")} />}
       </div>

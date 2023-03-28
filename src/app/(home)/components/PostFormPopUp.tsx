@@ -9,7 +9,7 @@ import { v4 } from "uuid"
 import classNames from "classnames/bind"
 import styles from "./PostForm.module.scss"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCaretDown, faCircleXmark, faFileCirclePlus, faImage, faSpinner } from "@fortawesome/free-solid-svg-icons"
+import { faCircleXmark, faFileCirclePlus } from "@fortawesome/free-solid-svg-icons"
 
 import Avatar from "@/components/avatar/Avatar"
 import AnimeWatchStatus from "./animePostComponent/AnimeWatchStatus"
@@ -38,7 +38,6 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
   const animeEpisodes = useRef()
   const animeTag = useRef()
   const animeScore = useRef()
-  console.log(mediaUrl)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     const statusData = (animeStatus?.current as any).getAnimeStatus()
@@ -62,32 +61,42 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
       scoreData,
     )
 
-    // const downloadMediaUrl = await uploadMedia()
-    // await addDoc(collection(db, "posts"), {
-    //   authorName: username,
-    //   avatarUrl: avatarUrl,
-    //   timestamp: serverTimestamp(),
-    //   content: inputRef.current?.value || "",
-    //   imageUrl: mediaType === "image" ? downloadMediaUrl : "",
-    //   videoUrl: mediaType === "video" ? downloadMediaUrl : "",
-    //   post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? null : postAnimeData,
-    //   // Todo: Remove comments: 0
-    //   comments: 0,
-    // })
+    const downloadMediaUrl = await uploadMedia()
 
-    // inputRef.current!.value = ""
-    // setMediaUrl(null)
-    // router.refresh()
-    // setOpen(false)
+    await addDoc(collection(db, "posts"), {
+      authorName: username,
+      avatarUrl: avatarUrl,
+      timestamp: serverTimestamp(),
+      content: inputRef.current?.value || "",
+      imageUrl: mediaType === "image" ? downloadMediaUrl : "",
+      videoUrl: mediaType === "video" ? downloadMediaUrl[0] : "",
+      post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? null : postAnimeData,
+      comments: 0,
+    })
+    inputRef.current!.value = ""
+    setMediaUrl([])
+    router.refresh()
+    setOpen(false)
   }
 
   const uploadMedia = async () => {
-    if (mediaUrl == null) return ""
+    if (mediaUrl.length === 0) return ""
+    const promise: any[] = []
+    mediaUrl.map((file: any, index: any) => {
+      const fileRef = ref(storage, `posts/${v4()}`)
+      const uploadTask = uploadBytes(fileRef, file)
+      promise.push(uploadTask)
+    })
 
-    const mediaRef = ref(storage, `posts/${mediaUrl.name + v4()}`)
-    const snapshot = await uploadBytes(mediaRef, mediaUrl)
-    const downloadMediaUrl = await getDownloadURL(snapshot.ref)
-
+    const downloadMediaUrl: any = await Promise.all(promise).then(async (snapshot) => {
+      const downloadUrl = ["link"]
+      downloadUrl.pop()
+      for (var i = 0; i < snapshot.length; i++) {
+        const dowloadUrlChild = await getDownloadURL(snapshot[i].ref)
+        downloadUrl.push(dowloadUrlChild)
+      }
+      return downloadUrl
+    })
     return downloadMediaUrl
   }
 
@@ -214,7 +223,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
               <>
                 <label
                   className={
-                    cx("media-wrapper") +
+                    cx("media-wrapper", { "no-media-wrapper": true }) +
                     " w-full h-64 flex items-center justify-center relative hover:opacity-75 rounded-xl border-2 border-[#3BC361] cursor-pointer"
                   }
                   htmlFor="multi-media-input"
@@ -292,7 +301,6 @@ function handleAnimeInformationPosting(
     total_episodes: parseInt(totalEps) === 0 ? "1" : totalEps + "",
     tag: tag,
   }
-  console.log(status)
 
   if (status === "Watching" && episodes === "0") {
     postAnimeData.watching_progress = "is watching"
@@ -312,7 +320,6 @@ function handleAnimeInformationPosting(
   if (postAnimeData.episodes_seen === postAnimeData.total_episodes) {
     postAnimeData.watching_progress = "have finished"
   }
-  console.log(postAnimeData)
 
   return postAnimeData
 }
