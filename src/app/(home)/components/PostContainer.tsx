@@ -47,7 +47,7 @@ export default async function Posts({
   return (
     <div className="flex flex-col">
       {fetchedPosts.map((post, index) => {
-        if (index === 0) {
+        if (index > -1) {
           return (
             <ContextProvider
               key={post.id}

@@ -75,6 +75,10 @@ body {
   overflow: hidden;
 }
 
+.nav.default-nav {
+  z-index: -1;
+}
+
 .liked-avatar:not(:first-child) {
   margin-left: -4.5px;
 }

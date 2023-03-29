@@ -70,7 +70,8 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
       content: inputRef.current?.value || "",
       imageUrl: mediaType === "image" ? downloadMediaUrl : "",
       videoUrl: mediaType === "video" ? downloadMediaUrl[0] : "",
-      post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? null : postAnimeData,
+      post_anime_data:
+        (animeSearch?.current as any).getAnimeName().animeID === "" ? { tag: postAnimeData.tag } : postAnimeData,
       comments: 0,
     })
     inputRef.current!.value = ""
@@ -248,7 +249,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
             )}
           </div>
 
-          <AnimeTag tagArr={["Spoiler", "GoodStory", "BestWaifu"]} ref={animeTag} />
+          <AnimeTag tagArr={["Spoiler", "GoodStory", "BestWaifu", "NSFW"]} ref={animeTag} />
 
           <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-[#212833]">
             <label
