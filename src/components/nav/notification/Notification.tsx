@@ -35,8 +35,7 @@ const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) =>
 
   return (
     <>
-    {notification.read ? (
-      <div className="flex items-center bg-white rounded-lg mt-1 mx-1 px-3 py-4 hover:cursor-pointer hover:bg-blue-100">
+      <div className="flex items-center bg-[#212733] rounded-lg mx-2 px-3 py-4 hover:cursor-pointer hover:bg-slate-50/25">
         <img
           src={notification.sender.image || '/bocchi.jpg'}
           alt={`${notification.sender.username}'s avatar`}
@@ -44,32 +43,14 @@ const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) =>
           className="h-10 w-10 rounded-full mr-4"
         />
         <div onClick={handleClickNoti}>
-          <p className="text-sm font-medium text-gray-900">
+          <p className={`text-sm font-medium text-white ${notification.read && "text-[#a5a5a5]"}`}>
             {notification.title}
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-[#377dff]">
             {formatDuration(new Date().getTime() - notification.timestamp.toDate().getTime())}
           </p>
         </div>
       </div>
-    ) : (
-      <div className="flex items-center bg-slate-200 rounded-lg mt-1 mx-1 px-3 py-4 hover:cursor-pointer hover:bg-slate-300">
-        <img
-          src={notification.sender.image || '/bocchi.jpg'}
-          alt={`${notification.sender.username}'s avatar`}
-          onClick={handleClickProfile}
-          className="h-10 w-10 rounded-full mr-4"
-        />
-        <div onClick={handleClickNoti}>
-          <p className="text-sm font-medium text-gray-900">
-            {notification.title}
-          </p>
-          <p className="text-xs text-gray-500">
-            {formatDuration(new Date().getTime() - notification.timestamp.toDate().getTime())}
-          </p>
-        </div>
-      </div>
-    )}
     </>
   );
 };
