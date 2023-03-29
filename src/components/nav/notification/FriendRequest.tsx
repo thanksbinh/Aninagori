@@ -24,12 +24,12 @@ const FriendRequestComponent: React.FC<Props> = ({ notification, myUserInfo }) =
 
     setMessage("Friend request accepted!")
     await beFriends(myUserInfo, { "id": notification.sender.id, "username": notification.sender.username, "image": notification.sender.image })
-    router.refresh()
 
     setTimeout(() => {
       setShowNotification(false)
       removeFriendRequest(myUserInfo, notification)
       setMessage('')
+      router.refresh()
     }, 3000)
   }
 
@@ -41,7 +41,8 @@ const FriendRequestComponent: React.FC<Props> = ({ notification, myUserInfo }) =
       setShowNotification(false)
       removeFriendRequest(myUserInfo, notification)
       setMessage('')
-    }, 1000)
+      router.refresh()
+    }, 3000)
   }
 
   const handleClickProfile = () => {
