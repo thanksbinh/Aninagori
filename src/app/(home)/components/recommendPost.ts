@@ -52,11 +52,16 @@ function formatPostData(querySnapshot: any) {
 }
 
 async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], lastView: Timestamp, lastKey: any) {
-  const usernameList = friendList.slice(0)
-  usernameList.push(myUserInfo.username)
+  const usernameList1 = [myUserInfo.username, ...friendList.slice(0, 9)];
+  const usernameList2 = friendList.slice(9);
 
-  const postQuery = query(collection(db, "posts"), where("authorName", "in", usernameList), where("timestamp", ">=", lastView), orderBy("timestamp", "desc"), startAfter(lastKey), limit(1))
-  const querySnapshot = await getDocs(postQuery)
+  let postQuery = query(collection(db, "posts"), where("authorName", "in", usernameList1), where("timestamp", ">=", lastView), orderBy("timestamp", "desc"), startAfter(lastKey), limit(1))
+  let querySnapshot = await getDocs(postQuery)
+
+  if (usernameList2.length && querySnapshot.empty) {
+    postQuery = query(collection(db, "posts"), where("authorName", "in", usernameList2), where("timestamp", ">=", lastView), orderBy("timestamp", "desc"), startAfter(lastKey), limit(1))
+    querySnapshot = await getDocs(postQuery)
+  }
 
   return formatPostData(querySnapshot)
 }
