@@ -62,7 +62,7 @@ const FriendRequestComponent: React.FC<Props> = ({ notification, myUserInfo }) =
           className="h-10 w-10 rounded-full mr-4"
         />
         <div>
-          <p className={`text-sm font-medium text-white ${(notification.read || message) && "text-[#a5a5a5]"}`}>
+          <p className={`text-sm font-medium ${(notification.read || message) ? "text-[#a5a5a5]" : "text-white"}`}>
             {notification.sender.username} sent you a friend request.
           </p>
           {message ?

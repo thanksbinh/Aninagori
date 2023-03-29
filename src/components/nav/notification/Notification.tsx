@@ -43,7 +43,7 @@ const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) =>
           className="h-10 w-10 rounded-full mr-4"
         />
         <div onClick={handleClickNoti}>
-          <p className={`text-sm font-medium text-white ${notification.read && "text-[#a5a5a5]"}`}>
+          <p className={`text-sm font-medium ${notification.read ? "text-[#a5a5a5]" : "text-white"}`}>
             {notification.title}
           </p>
           <p className="text-xs text-[#377dff]">
