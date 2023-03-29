@@ -75,8 +75,13 @@ body {
   overflow: hidden;
 }
 
+.react-slideshow-container:hover .nav.default-nav {
+  display: flex !important;
+}
+
 .nav.default-nav {
   z-index: -1;
+  display: none !important;
 }
 
 .liked-avatar:not(:first-child) {

@@ -143,7 +143,7 @@ const PostContent: FC<PostStaticProps> = ({
               </Slide>
               <div
                 style={spoiler ? { zIndex: "-1" } : {}}
-                className="absolute m-auto leading-8 text-center opacity-70 rounded-tr-2xl top-0 right-0 w-16 h-8 bg-slate-700 text-white"
+                className="absolute m-auto leading-6 text-center opacity-40 rounded-tr-2xl top-0 right-0 w-12 h-6 bg-slate-700 text-white"
               >
                 {index}/{(imageUrl as any).length}
               </div>
