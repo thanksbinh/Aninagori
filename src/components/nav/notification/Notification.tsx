@@ -34,22 +34,43 @@ const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) =>
   }
 
   return (
-    <div className="flex items-center bg-white rounded-lg px-3 py-4 hover:cursor-pointer hover:bg-gray-100">
-      <img
-        src={notification.sender.image || '/bocchi.jpg'}
-        alt={`${notification.sender.username}'s avatar`}
-        onClick={handleClickProfile}
-        className="h-10 w-10 rounded-full mr-4"
-      />
-      <div onClick={handleClickNoti}>
-        <p className="text-sm font-medium text-gray-900">
-          {notification.title}
-        </p>
-        <p className="text-xs text-gray-500">
-          {formatDuration(new Date().getTime() - notification.timestamp.toDate().getTime())} - {notification.read ? "read" : "not read"}
-        </p>
+    <>
+    {notification.read ? (
+      <div className="flex items-center bg-white rounded-lg mt-1 mx-1 px-3 py-4 hover:cursor-pointer hover:bg-blue-100">
+        <img
+          src={notification.sender.image || '/bocchi.jpg'}
+          alt={`${notification.sender.username}'s avatar`}
+          onClick={handleClickProfile}
+          className="h-10 w-10 rounded-full mr-4"
+        />
+        <div onClick={handleClickNoti}>
+          <p className="text-sm font-medium text-gray-900">
+            {notification.title}
+          </p>
+          <p className="text-xs text-gray-500">
+            {formatDuration(new Date().getTime() - notification.timestamp.toDate().getTime())}
+          </p>
+        </div>
       </div>
-    </div>
+    ) : (
+      <div className="flex items-center bg-slate-200 rounded-lg mt-1 mx-1 px-3 py-4 hover:cursor-pointer hover:bg-slate-300">
+        <img
+          src={notification.sender.image || '/bocchi.jpg'}
+          alt={`${notification.sender.username}'s avatar`}
+          onClick={handleClickProfile}
+          className="h-10 w-10 rounded-full mr-4"
+        />
+        <div onClick={handleClickNoti}>
+          <p className="text-sm font-medium text-gray-900">
+            {notification.title}
+          </p>
+          <p className="text-xs text-gray-500">
+            {formatDuration(new Date().getTime() - notification.timestamp.toDate().getTime())}
+          </p>
+        </div>
+      </div>
+    )}
+    </>
   );
 };
 
