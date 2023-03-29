@@ -35,7 +35,7 @@ const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) =>
 
   return (
     <>
-      <div className="flex items-center bg-[#212733] rounded-lg mx-2 px-3 py-4 hover:cursor-pointer hover:bg-slate-50/25">
+      <div className="flex items-center bg-ani-black rounded-lg mx-2 px-3 py-4 hover:cursor-pointer hover:bg-slate-50/25">
         <img
           src={notification.sender.image || '/bocchi.jpg'}
           alt={`${notification.sender.username}'s avatar`}
@@ -46,7 +46,7 @@ const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) =>
           <p className={`text-sm font-medium ${notification.read ? "text-[#a5a5a5]" : "text-white"}`}>
             {notification.title}
           </p>
-          <p className="text-xs text-[#377dff]">
+          <p className={`text-xs ${notification.read ? "text-[#a5a5a5]" : "text-[#377dff]"}`}>
             {formatDuration(new Date().getTime() - notification.timestamp.toDate().getTime())}
           </p>
         </div>
