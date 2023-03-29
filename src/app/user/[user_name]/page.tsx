@@ -19,8 +19,8 @@ const cx = classNames.bind(styles)
 
 async function Profile({ params }: { params: { user_name: string } }) {
   const session = await getServerSession(authOptions)
-  const myUserId = (session as any)?.user?.id
-  const myUserInfo = await getUserInfo(myUserId)
+  // const myUserId = (session as any)?.user?.id
+  // const myUserInfo = await getUserInfo(myUserId)
 
   // get admin information
   let adminData = {} as any
@@ -37,6 +37,8 @@ async function Profile({ params }: { params: { user_name: string } }) {
   const usersRef = collection(db, "users")
   const usernameQuery = query(usersRef, where("username", "==", params.user_name))
   const querySnapshot = await getDocs(usernameQuery)
+  if (querySnapshot.empty) return;
+
   const guessData = { ...querySnapshot.docs[0].data(), joined_date: "", id: querySnapshot.docs[0].id } as any
 
   // compare between admin and guess
@@ -70,11 +72,13 @@ async function Profile({ params }: { params: { user_name: string } }) {
           </div>
           <div className={cx("post-section")}>
             {isAdmin && (
-              <PostForm
-                avatarUrl={session?.user?.image as string}
-                username={guessData.name || guessData.username}
-                isBanned={!!adminData.is_banned}
-              />
+              <div>
+                <PostForm
+                  avatarUrl={adminData.image}
+                  username={guessData.name || guessData.username}
+                  isBanned={!!adminData.is_banned}
+                />
+              </div>
             )}
             <ProfilePosts myUserInfo={adminData} profileUsername={guessData.username} />
           </div>
