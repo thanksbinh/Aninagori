@@ -10,6 +10,8 @@ import { useState } from "react"
 import Avatar from "@/components/avatar/Avatar"
 import PostOptions from "../option/PostOptionsPopup"
 import { VideoComponent } from "../post/Video"
+import { Slide } from "react-slideshow-image"
+import "react-slideshow-image/dist/styles.css"
 const cx = classNames.bind(styles)
 
 type PostStaticProps = {
@@ -46,6 +48,7 @@ const PostContent: FC<PostStaticProps> = ({
   score,
 }) => {
   const [spoiler, setSpoiler] = useState(tag.some((a: string) => a === "Spoiler"))
+  const [index, setIndex] = useState(1)
 
   return (
     <div className="flex flex-col flex-1 bg-ani-black relative rounded-2xl p-4 pb-0 rounded-b-none">
@@ -101,17 +104,32 @@ const PostContent: FC<PostStaticProps> = ({
       <div className="mt-4 mx-2 relative">
         {typeof imageUrl === "object" ? (
           <>
-            {(imageUrl as any).map((data: string, index: number) => {
-              return (
-                <img
-                  key={index}
-                  draggable="false"
-                  src={data}
-                  alt={""}
-                  className={`cursor-pointer rounded-2xl ${cx({ "blur-2xl": spoiler })}`}
-                />
-              )
-            })}
+            <Slide
+              onStartChange={(from: number, to: number) => {
+                setIndex(to + 1)
+              }}
+              canSwipe={true}
+              autoplay={false}
+              transitionDuration={400}
+            >
+              {(imageUrl as any).map((data: string, index: number) => {
+                return (
+                  <img
+                    key={index}
+                    draggable="false"
+                    src={data}
+                    alt={""}
+                    onClick={() => {
+                      //TODO: handle view image in full screen
+                    }}
+                    className={`cursor-pointer rounded-2xl ${cx({ "blur-2xl": spoiler })}`}
+                  />
+                )
+              })}
+            </Slide>
+            <div className="absolute m-auto leading-8 text-center opacity-70 rounded-tr-2xl top-0 right-0 w-16 h-8 bg-slate-700 text-white">
+              {index}/{(imageUrl as any).length}
+            </div>
           </>
         ) : (
           <>

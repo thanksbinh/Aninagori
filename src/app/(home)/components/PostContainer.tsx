@@ -46,48 +46,52 @@ export default async function Posts({
 
   return (
     <div className="flex flex-col">
-      {fetchedPosts.map((post) => (
-        <ContextProvider
-          key={post.id}
-          myUserInfo={myUserInfo}
-          content={post.content}
-          authorName={post.authorName}
-          postId={post.id}
-        >
-          <Suspense
-            fallback={
-              <div className="mb-4">
-                <PostContent content={"Loading..."} />
-                <PostAction />
-              </div>
-            }
-          >
-            <div className="mb-4">
-              <PostContent
-                authorName={post.authorName}
-                avatarUrl={post.avatarUrl}
-                timestamp={post.timestamp}
-                content={post.content}
-                imageUrl={post.imageUrl}
-                videoUrl={post.videoUrl}
-                animeID={post?.post_anime_data?.anime_id}
-                animeName={post?.post_anime_data?.anime_name}
-                watchingProgess={post?.post_anime_data?.watching_progress}
-                episodesSeen={post?.post_anime_data?.episodes_seen}
-                episodesTotal={post?.post_anime_data?.total_episodes}
-                tag={post?.post_anime_data?.tag}
-                score={post?.post_anime_data?.score}
-                postId={post.id}
-              />
-              <PostAction
-                reactions={post.reactions}
-                commentCountPromise={fetchCommentCount(post.id)}
-                comments={post.lastComment ? [post.lastComment] : []}
-              />
-            </div>
-          </Suspense>
-        </ContextProvider>
-      ))}
+      {fetchedPosts.map((post, index) => {
+        if (index === 0) {
+          return (
+            <ContextProvider
+              key={post.id}
+              myUserInfo={myUserInfo}
+              content={post.content}
+              authorName={post.authorName}
+              postId={post.id}
+            >
+              <Suspense
+                fallback={
+                  <div className="mb-4">
+                    <PostContent content={"Loading..."} />
+                    <PostAction />
+                  </div>
+                }
+              >
+                <div className="mb-4">
+                  <PostContent
+                    authorName={post.authorName}
+                    avatarUrl={post.avatarUrl}
+                    timestamp={post.timestamp}
+                    content={post.content}
+                    imageUrl={post.imageUrl}
+                    videoUrl={post.videoUrl}
+                    animeID={post?.post_anime_data?.anime_id}
+                    animeName={post?.post_anime_data?.anime_name}
+                    watchingProgess={post?.post_anime_data?.watching_progress}
+                    episodesSeen={post?.post_anime_data?.episodes_seen}
+                    episodesTotal={post?.post_anime_data?.total_episodes}
+                    tag={post?.post_anime_data?.tag}
+                    score={post?.post_anime_data?.score}
+                    postId={post.id}
+                  />
+                  <PostAction
+                    reactions={post.reactions}
+                    commentCountPromise={fetchCommentCount(post.id)}
+                    comments={post.lastComment ? [post.lastComment] : []}
+                  />
+                </div>
+              </Suspense>
+            </ContextProvider>
+          )
+        }
+      })}
     </div>
   )
 }
