@@ -69,7 +69,7 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
 
     // Post is from me or my friend or is not disliked
     if (fetchedPosts.lastKey) {
-      if ((fetchedPosts.posts[0].authorName === myUserInfo.username) || friendList.includes(fetchedPosts.posts[0].authorName) || filterPosts(fetchedPosts)) {
+      if ((fetchedPosts.posts[0].authorName === myUserInfo.username) || friendList?.includes(fetchedPosts.posts[0].authorName) || filterPosts(fetchedPosts)) {
         setPosts([...posts, ...fetchedPosts.posts]);
       }
       setLastKey(fetchedPosts.lastKey)
