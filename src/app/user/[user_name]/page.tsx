@@ -11,9 +11,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { Suspense } from 'react';
 import PostForm from '@/app/(home)/components/PostForm';
-import Posts from '@/app/(home)/components/PostContainer';
 import { getUserInfo } from '@/global/getUserInfo';
 import * as apiServices from "@/app/api/apiServices/apiServicesConfig"
+import ProfilePosts from './profileComponent/posts/PostContainer';
 
 const cx = classNames.bind(styles)
 
@@ -70,16 +70,13 @@ async function Profile({ params }: { params: { user_name: string } }) {
           </div>
           <div className={cx("post-section")}>
             {isAdmin && (
-              <div>
-                <PostForm
-                  avatarUrl={session?.user?.image as string}
-                  username={guessData.name || guessData.username}
-                  isBanned={!!adminData.is_banned}
-                />
-              </div>
+              <PostForm
+                avatarUrl={session?.user?.image as string}
+                username={guessData.name || guessData.username}
+                isBanned={!!adminData.is_banned}
+              />
             )}
-            {/* @ts-expect-error Server Component */}
-            <Posts myUserInfo={adminData} profileUsername={guessData.username} />
+            <ProfilePosts myUserInfo={adminData} profileUsername={guessData.username} />
           </div>
         </div>
       </div>
@@ -119,6 +116,7 @@ function getAnimeFavorite(mal_username: any) {
 async function getUserAnimeUpdate(access_token: any, mal_username: any) {
   const url = "https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status&limit=3&sort=list_updated_at"
   const userUpdate = fetch(url, {
+    cache: 'no-store',
     headers: {
       Authorization: `Bearer ${access_token}`,
     },

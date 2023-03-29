@@ -7,15 +7,15 @@ const Logo = () => {
   const router = useRouter()
 
   const handleOnClick = () => {
-    router.refresh()
-    console.log(window.location.href)
-    if (window.location.href == process.env.NEXT_PUBLIC_BASE_URL) window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    // router.refresh()
+    // console.log(window.location.href)
+    // if (window.location.href == process.env.NEXT_PUBLIC_BASE_URL) window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }
 
   return (
-    <Link href="/" onClick={handleOnClick} className="text-lg font-semibold">
+    <a href="/" onClick={handleOnClick} className="text-lg font-semibold">
       <img src="logo.png" alt="logo" className='h-10' />
-    </Link>
+    </a>
   );
 };
 

@@ -1,0 +1,66 @@
+.modal {
+  display: flex;
+  position: fixed;
+  justify-content: center;
+  top: 56px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  animation: fadeIn linear 0.1s;
+  z-index: 30;
+
+  & > form {
+    z-index: 3;
+    width: 50%;
+  }
+
+  & + div {
+    margin-top: 0 !important;
+  }
+}
+
+.modal_overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.status-wrapper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  margin-top: 10px;
+}
+
+.close-post {
+  position: absolute;
+  top: 24px;
+  right: 9px;
+  font-size: 30px;
+  color: #444;
+
+  &:hover {
+    color: #777;
+  }
+}
+
+.delete-icon {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 30px;
+  cursor: pointer;
+  display: none;
+  color: black;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.media-wrapper {
+  &:hover .delete-icon {
+    display: block;
+  }
+}

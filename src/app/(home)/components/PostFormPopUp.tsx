@@ -58,8 +58,6 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
       imageUrl: mediaType === "image" ? downloadMediaUrl : "",
       videoUrl: mediaType === "video" ? downloadMediaUrl : "",
       post_anime_data: postAnimeData,
-      // Todo: Remove comments: 0
-      comments: 0,
     })
 
     inputRef.current!.value = ""
