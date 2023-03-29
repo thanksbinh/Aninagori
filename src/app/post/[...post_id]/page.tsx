@@ -54,7 +54,6 @@ async function fetchComments(postId: string) {
   return comments;
 }
 
-// Todo: realtime reactions/ comments
 async function Post({ params }: { params: { post_id: string[] } }) {
   const session = await getServerSession(authOptions)
   const myUserId = (session as any)?.user?.id

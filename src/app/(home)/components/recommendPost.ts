@@ -84,7 +84,7 @@ function getAnimePreferenceScore(myAnimeList: any, animePreference: any, anime_i
   if (anime?.list_status.status === "dropped") return 4;
   if (anime?.list_status.status === "completed") {
     if (anime?.list_status.score >= 8) return 10;
-    if (anime?.list_status.score >= 6) return 4;
+    if (anime?.list_status.score >= 6) return 5;
     return 2;
   }
 

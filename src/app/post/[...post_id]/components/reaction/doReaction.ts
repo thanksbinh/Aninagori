@@ -9,8 +9,8 @@ async function updateAnimePreference(myUserInfo: UserInfo, animeID: string | und
   const docSnap = await getDoc(docRef);
   if (!docSnap.exists()) return;
 
-  let thisAnimePreference = docSnap.data().animeList?.find((anime: any) => anime.id == animeID);
-  let thisAnimePotential = thisAnimePreference ? thisAnimePreference.potential : 10;
+  const thisAnimePreference = docSnap.data().animeList?.find((anime: any) => anime.id == animeID);
+  const thisAnimePotential = thisAnimePreference ? thisAnimePreference.potential : 10;
 
   if (thisAnimePreference) {
     await updateDoc(docRef, {
@@ -25,14 +25,14 @@ async function updateAnimePreference(myUserInfo: UserInfo, animeID: string | und
     await updateDoc(docRef, {
       animeList: arrayUnion({
         id: animeID,
-        potential: Math.min(thisAnimePotential + 4, 20)
+        potential: Math.min(thisAnimePotential + 2, 20)
       })
     });
   } else {
     await updateDoc(docRef, {
       animeList: arrayUnion({
         id: animeID,
-        potential: Math.max(thisAnimePotential - 2, 2)
+        potential: Math.max(thisAnimePotential - 1, 1)
       })
     });
   }
