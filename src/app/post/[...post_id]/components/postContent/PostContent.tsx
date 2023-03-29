@@ -71,7 +71,7 @@ const PostContent: FC<PostStaticProps> = ({
               })
             }}
           >
-            SPOILER
+            {tag.some((a: string) => a === "NSFW") ? "NSFW" : "Spoiler"}
           </div>
           <div className={cx("spoiler-overlay")}></div>
         </>
@@ -134,7 +134,9 @@ const PostContent: FC<PostStaticProps> = ({
                       onClick={() => {
                         //TODO: handle view image in full screen
                       }}
-                      className={`cursor-pointer rounded-2xl ${cx({ "blur-2xl": spoiler })}`}
+                      className={`cursor-pointer object-cover object-center rounded-2xl ${cx("post-image", {
+                        "blur-2xl": spoiler,
+                      })}`}
                     />
                   )
                 })}
@@ -154,7 +156,9 @@ const PostContent: FC<PostStaticProps> = ({
               onClick={() => {
                 //TODO: handle view image in full screen
               }}
-              className={`cursor-pointer rounded-2xl ${cx({ "blur-2xl": spoiler })}`}
+              className={`cursor-pointer object-cover object-center rounded-2xl ${cx("post-image", {
+                "blur-2xl": spoiler,
+              })}`}
             />
           )
         ) : (
@@ -163,11 +167,11 @@ const PostContent: FC<PostStaticProps> = ({
               draggable="false"
               src={imageUrl}
               alt={""}
-              className={`cursor-pointer rounded-2xl ${cx({ "blur-2xl": spoiler })}`}
+              className={`cursor-pointe rounded-2xl ${cx({ "blur-2xl": spoiler })}`}
             />
           </>
         )}
-        {videoUrl && <VideoComponent videoUrl={videoUrl} className={cx("")} />}
+        {videoUrl && <VideoComponent videoUrl={videoUrl} className={cx({ "blur-2xl": spoiler })} />}
       </div>
     </div>
   )
