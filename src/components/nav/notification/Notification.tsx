@@ -34,22 +34,24 @@ const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) =>
   }
 
   return (
-    <div className="flex items-center bg-white rounded-lg px-3 py-4 hover:cursor-pointer hover:bg-gray-100">
-      <img
-        src={notification.sender.image || '/bocchi.jpg'}
-        alt={`${notification.sender.username}'s avatar`}
-        onClick={handleClickProfile}
-        className="h-10 w-10 rounded-full mr-4"
-      />
-      <div onClick={handleClickNoti}>
-        <p className="text-sm font-medium text-gray-900">
-          {notification.title}
-        </p>
-        <p className="text-xs text-gray-500">
-          {formatDuration(new Date().getTime() - notification.timestamp.toDate().getTime())} - {notification.read ? "read" : "not read"}
-        </p>
+    <>
+      <div className="flex items-center bg-ani-black rounded-lg mx-2 px-3 py-4 hover:cursor-pointer hover:bg-slate-50/25">
+        <img
+          src={notification.sender.image || '/bocchi.jpg'}
+          alt={`${notification.sender.username}'s avatar`}
+          onClick={handleClickProfile}
+          className="h-10 w-10 rounded-full mr-4"
+        />
+        <div onClick={handleClickNoti}>
+          <p className={`text-sm font-medium ${notification.read ? "text-[#a5a5a5]" : "text-white"}`}>
+            {notification.title}
+          </p>
+          <p className={`text-xs ${notification.read ? "text-[#a5a5a5]" : "text-[#377dff]"}`}>
+            {formatDuration(new Date().getTime() - notification.timestamp.toDate().getTime())}
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
