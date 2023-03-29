@@ -79,6 +79,16 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
     setOpen(false)
   }
 
+  const handlePaste = (e: any) => {
+    const file = e.clipboardData.files[0]
+    if (file.type.indexOf("image") !== -1) {
+      const blob = file.slice(0, file.size, "image/png")
+      const fileUrl = new File([blob], "image.png", { type: "image/png" })
+      setMediaUrl([...mediaUrl, fileUrl])
+      setMediaType("image")
+    }
+  }
+
   const uploadMedia = async () => {
     if (mediaUrl.length === 0) return ""
     const promise: any[] = []
@@ -163,6 +173,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
           <input
             type="text"
             ref={inputRef}
+            onPaste={handlePaste}
             placeholder="Share your favourite Animemory now!"
             className="flex rounded-3xl py-3 px-4 w-full focus:outline-none bg-[#212833] caret-white"
           />
