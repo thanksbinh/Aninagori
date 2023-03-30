@@ -69,9 +69,9 @@ const FriendRequestComponent: React.FC<Props> = ({ notification, myUserInfo }) =
             <div className="text-xs text-gray-500">{message}</div> :
             <div>
               <button onClick={handleAcceptFriend} className="inline-block px-4 py-2 mt-2 mr-2 font-medium text-white bg-blue-500 rounded hover:bg-blue-600"> Confirm </button>
-              <button onClick={handleReject} className="inline-block px-4 py-2 mt-2 font-medium text-gray-700 bg-[#3a3b3c] rounded hover:bg-[#3a3b3c]/50"> Delete </button>
+              <button onClick={handleReject} className="inline-block px-4 py-2 mt-2 font-medium text-ani-text-gray bg-[#3a3b3c] rounded hover:bg-[#3a3b3c]/50"> Delete </button>
             </div>}
-          <p className={`mt-1 text-xs ${notification.read && "text-[#377dff]"}`}>
+          <p className={`mt-1 text-xs ${(!notification.read && !message) ? "text-[#377dff]" : "text-[#a5a5a5]"}`}>
             {formatDuration(new Date().getTime() - notification.timestamp.toDate().getTime())}
           </p>
         </div>

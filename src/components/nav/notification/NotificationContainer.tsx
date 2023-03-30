@@ -1,7 +1,7 @@
 'use client'
 
 import { db } from "@/firebase/firebase-app";
-import { arrayRemove, arrayUnion, doc, onSnapshot, serverTimestamp, setDoc, Timestamp, updateDoc, writeBatch } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, getDoc, onSnapshot, serverTimestamp, setDoc, Timestamp, updateDoc, writeBatch } from "firebase/firestore";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { SiThreedotjs } from "react-icons/si";
 import { UserInfo } from "../../../global/UserInfo.types";
@@ -18,14 +18,20 @@ interface Props {
 
 export async function markAsRead(username: string, notification: Notification) {
   const notificationsRef = doc(db, "notifications", username)
+
+  const recentNotifications = (await getDoc(notificationsRef)).data()?.recentNotifications
+  const thisOldNoti = recentNotifications?.find((noti: Notification) =>
+    (noti.timestamp.seconds === notification.timestamp.seconds) && (noti.url === notification.url)
+  )
+
   const batch = writeBatch(db);
 
   batch.update(notificationsRef, {
-    recentNotifications: arrayRemove(notification)
+    recentNotifications: arrayRemove(thisOldNoti)
   });
   batch.update(notificationsRef, {
     recentNotifications: arrayUnion({
-      ...notification,
+      ...thisOldNoti,
       read: true
     })
   });
