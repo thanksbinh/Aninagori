@@ -23,6 +23,13 @@ function AnimeTag(props: any, ref: any) {
         }
       }, [])
     },
+    resetAnimeTag: () => {
+      return setSelectedTag(
+        tagArr.map((data: any) => {
+          return { selected: false, text: data }
+        }),
+      )
+    },
   }))
   return (
     <div className={cx("tag-wrapper")} ref={ref}>

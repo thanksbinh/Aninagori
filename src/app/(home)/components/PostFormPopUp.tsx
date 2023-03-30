@@ -32,6 +32,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
   const [mediaUrl, setMediaUrl] = useState<any>([])
   const [mediaType, setMediaType] = useState<string>("")
   const [showScore, setShowScore] = useState<boolean>(false)
+  const [loadPosting, setLoadPosting] = useState<boolean>(false)
   const router = useRouter()
   const animeStatus = useRef()
   const animeSearch = useRef()
@@ -46,12 +47,14 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
     const totalEps = (animeEpisodes?.current as any).getAnimeTotal()
     const tagData = (animeTag?.current as any).getAnimeTag()
     const scoreData = (animeScore?.current as any).getAnimeScore()
+    const resetTag = (animeTag?.current as any).resetAnimeTag
 
     e.preventDefault()
     if (!inputRef.current?.value && mediaUrl.length === 0) {
-      console.log("error")
+      alert("Please write something or upload media 😭")
       return
     }
+    setLoadPosting(true)
     const postAnimeData = handleAnimeInformationPosting(
       statusData,
       searchData,
@@ -60,7 +63,6 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
       totalEps,
       scoreData,
     )
-
     const downloadMediaUrl = await uploadMedia()
 
     await addDoc(collection(db, "posts"), {
@@ -76,8 +78,10 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
     })
     inputRef.current!.value = ""
     setMediaUrl([])
-    router.refresh()
     setOpen(false)
+    setLoadPosting(false)
+    resetTag()
+    router.refresh()
   }
 
   const handlePaste = (e: any) => {
@@ -137,11 +141,15 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
 
   return (
     <div
-      onClick={() => {
-        setTimeout(() => {
-          setOpen(false)
-        }, 90)
-      }}
+      onClick={
+        loadPosting
+          ? () => {}
+          : () => {
+              setTimeout(() => {
+                setOpen(false)
+              }, 90)
+            }
+      }
       className={cx("modal")}
       style={open ? { display: "flex" } : { display: "none" }}
     >
@@ -150,13 +158,17 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
         onClick={(e) => {
           e.stopPropagation()
         }}
-        onSubmit={(e) => handleSubmit(e)}
+        onSubmit={loadPosting ? () => {} : (e) => handleSubmit(e)}
         className="relative"
       >
         <FontAwesomeIcon
-          onClick={() => {
-            setOpen(false)
-          }}
+          onClick={
+            loadPosting
+              ? () => {}
+              : () => {
+                  setOpen(false)
+                }
+          }
           icon={faCircleXmark as any}
           className={cx("close-post")}
         />
@@ -286,6 +298,21 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
               type="submit"
               className="flex flex-1 items-center justify-center space-x-1 text-[#fff] bg-[#377dff] hover:bg-[#0e5ef1] py-2 px-4 rounded-lg mt-1 mx-1"
             >
+              {loadPosting && (
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              )}
               <span>Share</span>
             </button>
           </div>

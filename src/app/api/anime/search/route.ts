@@ -12,3 +12,5 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: err })
   }
 }
+
+export const dynamic = "force-dynamic"
