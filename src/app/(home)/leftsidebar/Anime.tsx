@@ -19,7 +19,7 @@ export function AnimeComponent({ anime }: { anime: any }) {
   }
 
   return (
-    <div className='flex my-2'>
+    <div className='flex my-4'>
       <div className="flex-none">
         <a href={`https://myanimelist.net/anime/${anime.id}`}>
           <img src={anime.main_picture?.medium} alt="anime_picture" className='w-[85px] rounded-md mx-4' />
@@ -33,15 +33,15 @@ export function AnimeComponent({ anime }: { anime: any }) {
           </a>
         </h2>
 
-        <p className="text-sm">
+        <p className="text-sm text-gray-400">
           {formatMediaType(anime.media_type)} ({anime.num_episodes} eps)
         </p>
 
-        <p className="text-sm">
+        <p className="text-sm text-gray-400">
           Members: {formatNumber(anime.num_list_users)}
         </p>
 
-        <p className="text-sm">
+        <p className="text-sm text-gray-400">
           Score: {anime.mean || "N/A"}
         </p>
 

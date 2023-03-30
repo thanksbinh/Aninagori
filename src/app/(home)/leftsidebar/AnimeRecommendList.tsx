@@ -65,8 +65,7 @@ export default async function AnimeRecommendList({ myUserId }: { myUserId: strin
           <div>
             Nothing yet ...
           </div>
-        )
-        }
+        )}
       </div>
     </div>
   )

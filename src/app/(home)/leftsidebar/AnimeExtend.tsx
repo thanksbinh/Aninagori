@@ -7,9 +7,9 @@ export function AnimeExtend({ animeDetails }: { animeDetails: any }) {
   const [extend, setExtend] = useState(false)
 
   return (
-    <div className="w-full text-sm text-gray-400">
+    <div className="w-full ml-2">
       {!extend && animeDetails.length && (
-        <button onClick={() => setExtend(true)} className="hover:underline">
+        <button onClick={() => setExtend(true)} className="text-sm text-gray-400 hover:underline">
           See more ...
         </button>
       )}
