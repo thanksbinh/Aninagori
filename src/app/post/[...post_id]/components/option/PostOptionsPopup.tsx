@@ -61,7 +61,7 @@ const PostOptions = () => {
         leaveFrom="opacity-100 scale-100"
         leaveTo="opacity-0 scale-95"
       >
-        <Menu.Items static className="origin-top-right absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-ani-black ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items static className="origin-top-right absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-ani-gray ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="p-2">
             {postOptions.map((option) => (
               <Menu.Item key={option.name}>

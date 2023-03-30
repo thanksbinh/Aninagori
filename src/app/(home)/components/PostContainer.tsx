@@ -47,7 +47,9 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
   }, [])
 
   function filterPosts(fetchedPosts: any) {
-    return Math.random() * 10 < getAnimePreferenceScore(myAnimeList, postPreference?.animeList, fetchedPosts.posts[0].post_anime_data?.anime_id)
+    return (fetchedPosts.posts[0].authorName === myUserInfo.username) || //isFromMe
+      (friendList?.includes(fetchedPosts.posts[0].authorName)) || //isFromMyFriend
+      (Math.random() * 10 < getAnimePreferenceScore(myAnimeList, postPreference?.animeList, fetchedPosts.posts[0].post_anime_data?.anime_id)) //gachaTrue
   }
 
   async function fetchPosts() {
@@ -67,9 +69,8 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
       fetchedPosts = await fetchAllPosts(friendPostIds, lastKey)
     }
 
-    // Post is from me or my friend or is not disliked
     if (fetchedPosts.lastKey) {
-      if ((fetchedPosts.posts[0].authorName === myUserInfo.username) || friendList?.includes(fetchedPosts.posts[0].authorName) || filterPosts(fetchedPosts)) {
+      if (filterPosts(fetchedPosts)) {
         setPosts([...posts, ...fetchedPosts.posts]);
       }
       setLastKey(fetchedPosts.lastKey)

@@ -32,13 +32,13 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBa
   if (isBanned)
     return (
       <form>
-        <div className="flex flex-col item flex-1 bg-ani-black rounded-2xl px-4 my-4">
+        <div className="flex flex-col item flex-1 bg-ani-gray rounded-2xl px-4 my-4">
           <div className="flex justify-between items-center mt-4">
             <Avatar imageUrl={avatarUrl} altText={username} size={8} />
             <input
               type="text"
               disabled
-              className="flex rounded-3xl py-3 px-4 mx-2 w-full focus:outline-none bg-ani-gray caret-white"
+              className="flex rounded-3xl py-3 px-4 mx-2 w-full focus:outline-none bg-ani-black caret-white"
             />
           </div>
 
@@ -79,7 +79,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBa
   return (
     <div className={className}>
       <PostFormPopUp username={username} avatarUrl={avatarUrl} setOpen={setOpen} open={open} />
-      <div className="flex flex-col flex-1 bg-ani-black rounded-2xl px-4 my-4">
+      <div className="flex flex-col flex-1 bg-ani-gray rounded-2xl px-4 my-4">
         <div className="flex justify-between items-center mt-4">
           <Avatar imageUrl={avatarUrl} altText={username} size={8} />
           <div

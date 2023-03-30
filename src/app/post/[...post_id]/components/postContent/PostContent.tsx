@@ -47,7 +47,7 @@ const PostContent: FC<PostStaticProps> = ({
   const [spoiler, setSpoiler] = useState(tag.some((a: string) => a === "Spoiler"))
 
   return (
-    <div className="flex flex-col flex-1 bg-ani-black relative rounded-2xl p-4 pb-0 rounded-b-none">
+    <div className="flex flex-col flex-1 bg-ani-gray relative rounded-2xl p-4 pb-0 rounded-b-none">
       {spoiler && (
         <>
           <div

@@ -1,9 +1,7 @@
 import Friend from '@/components/chat/Friend';
 import { db } from '@/firebase/firebase-app';
 import { getUserInfo } from '@/global/getUserInfo';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { doc, getDoc } from 'firebase/firestore';
-import { getServerSession } from 'next-auth';
 import { SiThreedotjs } from 'react-icons/si';
 
 interface Friend {
@@ -11,7 +9,7 @@ interface Friend {
   image: string
 }
 
-async function getFriendList(userId: string): Promise<Friend[] | undefined> {
+async function getFriendList(userId?: string): Promise<Friend[] | undefined> {
   if (!userId) return
 
   const docRef = doc(db, "users", userId)
@@ -24,19 +22,15 @@ async function getFriendList(userId: string): Promise<Friend[] | undefined> {
   }
 }
 
-export default async function FriendList() {
-  const session = await getServerSession(authOptions)
-  const myUserId = (session as any)?.user?.id
+export default async function FriendList({ myUserId }: { myUserId: string | undefined }) {
   const friendList = await getFriendList(myUserId)
   const myUserInfo = await getUserInfo(myUserId)
-
   if (!myUserInfo) return null
-
 
   return (
     <div className="relative">
       <div className="flex justify-between items-center pr-2 mb-4">
-        <h2 className="text-ani-text-gray font-semibold text-xl">Friends</h2>
+        <h2 className="text-ani-text-main font-semibold text-xl">Friends</h2>
         <div className="hover:cursor-pointer rounded-full p-2">
           <SiThreedotjs className="h-5 w-5" aria-hidden="true" />
         </div>
@@ -44,7 +38,7 @@ export default async function FriendList() {
       <div className="flex flex-col flex-wrap -mx-2">
         {friendList?.map((friend) => (
           <div key={friend.username}>
-            <Friend username={friend.username} image={friend.image} myUserInfo={myUserInfo}/>
+            <Friend username={friend.username} image={friend.image} myUserInfo={myUserInfo} />
           </div>
         ))}
       </div>

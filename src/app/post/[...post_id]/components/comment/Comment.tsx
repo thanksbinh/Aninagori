@@ -108,7 +108,7 @@ const Comment = ({ comment, focused, onParentReply }: { comment: CommentProps, f
   return (
     <div ref={ref} className="flex flex-col mt-4">
       {/* Comment content */}
-      <div className="flex justify-between text-ani-text-gray">
+      <div className="flex justify-between text-ani-text-main">
         <Link href={"/user/" + comment!.username} className="min-w-fit"><Avatar imageUrl={comment!.avatarUrl} altText={comment!.username} size={8} /></Link>
         <div className={`rounded-2xl py-2 px-4 ml-2 w-full focus:outline-none caret-white transition-colors duration-300 ease-out ${focusingType === "comment" ? "bg-gray-600" : "bg-ani-light-gray"}`}>
           <Link href={"/user/" + comment!.username} className="text-sm font-bold">{comment!.username}</Link>
