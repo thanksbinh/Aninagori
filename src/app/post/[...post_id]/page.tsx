@@ -6,7 +6,7 @@ import { collection, doc, getDoc, getDocs, orderBy, query } from "firebase/fires
 import { getServerSession } from "next-auth";
 import ContextProvider from "./components/context/PostContext";
 import PostAction from "./components/post/PostAction";
-import PostContent from "./components/postContent/PostContent";
+import PostContent from "./components/post/PostContent";
 
 async function fetchPost(postId: string) {
   if (!postId) return {};

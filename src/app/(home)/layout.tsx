@@ -16,7 +16,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </div>
       </div>
 
-      <div className="w-2/5">{children}</div>
+      <div className="lg:w-2/5 md:w-3/5 sm:w-4/5 w-full">{children}</div>
 
       <div className="lg:block lg:flex-1 flex-shrink max-w-[320px]">
         <div className="hidden lg:block w-[320px] pt-16 px-2 h-screen fixed right-0 z-20 bg-ani-black">

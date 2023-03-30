@@ -1,5 +1,5 @@
 import PostAction from "../post/[...post_id]/components/post/PostAction";
-import PostContent from "../post/[...post_id]/components/postContent/PostContent";
+import PostContent from "../post/[...post_id]/components/post/PostContent";
 import PostForm from "./components/PostForm";
 
 export default function loading() {

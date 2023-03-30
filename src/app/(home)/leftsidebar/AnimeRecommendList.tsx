@@ -24,9 +24,14 @@ async function fetchPotentialAnimes(username: string) {
 }
 
 async function getAnimeDetail(animeId: string) {
-  const animeDetail = await fetch(process.env.NEXT_PUBLIC_BASE_URL + `api/anime/${animeId}`).then((res) => res.json())
+  const animeInfo = await fetch(
+    `https://api.myanimelist.net/v2/anime/${animeId}?fields=id,title,main_picture,mean,num_list_users,media_type,num_episodes`, {
+    headers: {
+      "X-MAL-Client-ID": process.env.X_MAL_CLIENT_ID as string,
+    },
+  }).then(res => res.json())
 
-  return animeDetail;
+  return animeInfo
 }
 
 export default async function AnimeRecommendList({ myUserId }: { myUserId: string | undefined }) {

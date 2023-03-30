@@ -8,7 +8,7 @@ import PostAction from "./PostAction"
 import { PostContext } from "../context/PostContext";
 import { formatDuration } from "@/components/utils/formatDuration";
 import Modal from "@/components/utils/Modal";
-import PostContent from "../postContent/PostContent"
+import PostContent from "./PostContent"
 
 // Todo: Optimization
 export default function PostPopup({ isOpen, onClose }: { isOpen: boolean; onClose: any }) {

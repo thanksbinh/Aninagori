@@ -1,6 +1,6 @@
 'use client'
 
-import PostContent from "@/app/post/[...post_id]/components/postContent/PostContent";
+import PostContent from "@/app/post/[...post_id]/components/post/PostContent";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
 import { collection, getCountFromServer } from "firebase/firestore";

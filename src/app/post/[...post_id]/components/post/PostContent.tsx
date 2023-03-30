@@ -9,7 +9,7 @@ import AnimeName from "../../../../(home)/components/animePostComponent/AnimeNam
 import { useState } from "react"
 import Avatar from "@/components/avatar/Avatar"
 import PostOptions from "../option/PostOptionsPopup"
-import { VideoComponent } from "../post/Video"
+import { VideoComponent } from "./Video"
 const cx = classNames.bind(styles)
 
 type PostStaticProps = {
@@ -62,7 +62,7 @@ const PostContent: FC<PostStaticProps> = ({
         </>
       )}
       <div className="flex items-center space-x-4 mx-2">
-        <Link href={"/user/" + authorName}>
+        <Link href={"/user/" + authorName} className="flex-shrink-0">
           <Avatar imageUrl={avatarUrl} altText={authorName} size={10} />
         </Link>
         <div style={{ width: "430px" }}>
