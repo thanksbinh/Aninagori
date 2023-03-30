@@ -16,7 +16,6 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
   refreshUserToken(session)
-  const myUserId = (session as any)?.user?.id
 
   return (
     <html lang="en">
@@ -25,7 +24,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <main className='bg-ani-gray'>
           <SessionProvider session={session}>
             {/* @ts-expect-error Server Component */}
-            <NavBar myUserId={myUserId} />
+            <NavBar myUserId={(session as any)?.user?.id} />
             {children}
           </SessionProvider>
         </main>
