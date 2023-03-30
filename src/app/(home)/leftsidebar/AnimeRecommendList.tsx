@@ -1,7 +1,8 @@
 import { db } from '@/firebase/firebase-app';
 import { getUserInfo } from '@/global/getUserInfo';
 import { doc, getDoc } from 'firebase/firestore';
-import { AnimeComponent } from './AnimeComponent';
+import { AnimeExtend } from './AnimeExtend';
+import { AnimeComponent } from './Anime';
 
 async function fetchMyAnimeIds(username: string) {
   const malRef = doc(db, "myAnimeList", username)
@@ -23,7 +24,7 @@ async function fetchPotentialAnimes(username: string) {
 }
 
 async function getAnimeDetail(animeId: string) {
-  const animeDetail = await fetch(`http://localhost:3000/api/anime/${animeId}`).then((res) => res.json())
+  const animeDetail = await fetch(process.env.NEXT_PUBLIC_BASE_URL + `api/anime/${animeId}`).then((res) => res.json())
 
   return animeDetail;
 }
@@ -39,8 +40,7 @@ export default async function AnimeRecommendList({ myUserId }: { myUserId: strin
 
   const recommendAnimes = potentialAnimes
     .filter((anime: any) => (!myAnimeIds.includes(anime.id) && anime.potential >= 10))
-    .sort((a: any, b: any) => b.potential - a.potential)
-    .slice(0, 3)
+    .sort(() => 0.5 - Math.random())
 
   const recommendAnimeDetailPromises = recommendAnimes.map((anime: any) => getAnimeDetail(anime.id))
   const recommendAnimeDetails = await Promise.all(recommendAnimeDetailPromises)
@@ -50,18 +50,18 @@ export default async function AnimeRecommendList({ myUserId }: { myUserId: strin
       <div className="flex justify-between items-center pl-2 mb-4">
         <h2 className="text-ani-text-main font-semibold text-xl">Anime you may like</h2>
       </div>
-      <div className="flex flex-col flex-wrap mx-2">
-        {recommendAnimeDetails.map((animeDetails: any, id: number) =>
-          animeDetails.error ? (
-            <div key={id}>
-              {animeDetails.error}
-            </div>
-          ) : (
-            <div key={animeDetails.id}>
-              <AnimeComponent animeDetails={animeDetails} />
-            </div>
-          )
-        )}
+      <div className="flex flex-col flex-wrap">
+        {recommendAnimeDetails.length > 0 ? (
+          <div>
+            <AnimeComponent anime={recommendAnimeDetails[0]} />
+            <AnimeExtend animeDetails={recommendAnimeDetails.slice(1)} />
+          </div>
+        ) : (
+          <div>
+            Nothing yet ...
+          </div>
+        )
+        }
       </div>
     </div>
   )
