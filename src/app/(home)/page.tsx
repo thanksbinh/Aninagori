@@ -23,7 +23,6 @@ export default async function Home() {
           isBanned={!!myUserInfo.is_banned}
           malAuthCode={myUserInfo?.auth_code}
         />
-        {/* @ts-expect-error Server Component */}
         <Posts myUserInfo={myUserInfo} />
       </div>
     </div>
