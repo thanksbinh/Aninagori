@@ -51,11 +51,11 @@ export default async function AnimeRecommendList({ myUserId }: { myUserId: strin
   const recommendAnimeDetails = await Promise.all(recommendAnimeDetailPromises)
 
   return (
-    <div className="relative">
+    <div className="h-full relative">
       <div className="flex justify-between items-center pl-2 mb-4">
         <h2 className="text-ani-text-main font-semibold text-xl">Anime you may like</h2>
       </div>
-      <div className="flex flex-col flex-wrap">
+      <div className="h-full overflow-y-auto flex flex-col flex-wrap">
         {recommendAnimeDetails.length > 0 ? (
           <div>
             <AnimeComponent anime={recommendAnimeDetails[0]} />

@@ -10,7 +10,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <div className="flex justify-center pt-4">
       <div className="xl:block xl:flex-1 flex-shrink max-w-[320px]">
-        <div className="hidden xl:block max-w-[320px] pt-16 px-2 h-screen fixed left-0 z-20 bg-ani-black">
+        <div className="hidden xl:block max-w-[320px] py-16 px-2 h-full fixed left-0 z-20 bg-ani-black">
           {/* @ts-expect-error Server Component */}
           <AnimeRecommendList myUserId={(session as any)?.user?.id} />
         </div>

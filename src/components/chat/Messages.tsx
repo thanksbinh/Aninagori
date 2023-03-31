@@ -6,31 +6,11 @@ import { collection, getDocs, onSnapshot, query, where } from "firebase/firestor
 import { useEffect, useState } from "react";
 import Message, { MessageProps } from "./Message";
 
-const Messages = ({ myUserInfo, friend }: { myUserInfo: UserInfo, friend: string }) => {
+const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, friend: string, avatarUrl: string }) => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
 
-  const messagesList = messages.map((message, index) => {
-    const isFirstMessage = index === 0 || message.senderUsername !== messages[index - 1].senderUsername;
-    const isLastMessage = index === messages.length - 1 || message.senderUsername !== messages[index + 1].senderUsername;
-
-    return (
-      <Message
-          key={index}
-          receiverUsername={message.receiverUsername}
-          senderUsername={message.senderUsername}
-          avatarUrl={message.avatarUrl}
-          timestamp={message.timestamp}
-          content={message.content}
-          likes={message.likes}
-          myUserInfo={myUserInfo}
-          isFirstMessage={isFirstMessage}
-          isLastMessage={isLastMessage}
-      />
-    );
-  })
-
   useEffect(() => {
-    async function fetchData() {    
+    async function fetchData() {
       const conversationRef = collection(db, 'conversation');
       const messagesQuery = query(
         conversationRef,
@@ -41,15 +21,13 @@ const Messages = ({ myUserInfo, friend }: { myUserInfo: UserInfo, friend: string
       if (querySnapshot.empty) {
         return;
       }
-      
+
       const messageRef = (querySnapshot).docs[0].ref;
 
       const unsubscribe = onSnapshot(messageRef, (docSnap) => {
         if (docSnap.exists() && docSnap.data()?.hasOwnProperty("messages")) {
-          const fetchedMessages: MessageProps[] = docSnap?.data()?.messages.map((obj : MessageProps) => ({
+          const fetchedMessages: MessageProps[] = docSnap?.data()?.messages.map((obj: MessageProps) => ({
             senderUsername: obj.senderUsername,
-            receiverUsername: obj.receiverUsername,
-            avatarUrl: obj.avatarUrl,
             timestamp: obj.timestamp,
             content: obj.content,
             likes: obj.likes,
@@ -60,15 +38,27 @@ const Messages = ({ myUserInfo, friend }: { myUserInfo: UserInfo, friend: string
 
       return () => {
         unsubscribe && unsubscribe()
-      };  
+      };
     }
     fetchData();
   }, []);
 
   return (
-      <div className="flex flex-1 flex-col">        
-          {messagesList}
-      </div>
+    <div className="flex flex-1 flex-col">
+      {messages?.map((message, index) => (
+        <Message
+          key={index}
+          senderUsername={message.senderUsername}
+          avatarUrl={avatarUrl}
+          timestamp={message.timestamp}
+          content={message.content}
+          likes={message.likes}
+          myUserInfo={myUserInfo}
+          isFirstMessage={index === 0 || message.senderUsername !== messages[index - 1].senderUsername}
+          isLastMessage={index === messages.length - 1 || message.senderUsername !== messages[index + 1].senderUsername}
+        />
+      ))}
+    </div>
   )
 }
 
