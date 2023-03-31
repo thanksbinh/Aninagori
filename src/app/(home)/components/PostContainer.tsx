@@ -1,20 +1,29 @@
-'use client'
-
-import PostContent from "@/app/post/[...post_id]/components/postContent/PostContent";
-import { db } from "@/firebase/firebase-app";
-import { UserInfo } from "@/global/UserInfo.types";
-import { collection, getCountFromServer } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import InfiniteScroll from 'react-infinite-scroller';
-import ContextProvider from "../../post/[...post_id]/components/context/PostContext";
-import PostAction from "../../post/[...post_id]/components/post/PostAction";
-import { fetchAllPosts, fetchFriendPosts, fetchMyAnimeList, fetchPostPreference, getAnimePreferenceScore, getFriendList, updateLastView } from "./recommendPost";
+"use client"
+import { getDocs, collection, query, orderBy, limit, getCountFromServer, where } from "firebase/firestore"
+import { db } from "@/firebase/firebase-app"
+import { Suspense } from "react"
+import PostAction from "../../post/[...post_id]/components/post/PostAction"
+import { formatDuration } from "@/components/utils/formatDuration"
+import { UserInfo } from "@/global/UserInfo.types"
+import ContextProvider from "../../post/[...post_id]/components/context/PostContext"
+import PostContent from "@/app/post/[...post_id]/components/postContent/PostContent"
+import { useEffect, useState } from "react"
+import InfiniteScroll from "react-infinite-scroller"
+import {
+  fetchAllPosts,
+  fetchFriendPosts,
+  fetchMyAnimeList,
+  fetchPostPreference,
+  getAnimePreferenceScore,
+  getFriendList,
+  updateLastView,
+} from "./recommendPost"
 
 async function fetchCommentCount(postId: string) {
   const commentsRef = collection(db, "posts", postId, "comments")
   const commentCount = (await getCountFromServer(commentsRef)).data().count
 
-  return commentCount;
+  return commentCount
 }
 
 export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
@@ -31,7 +40,7 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
     async function fetchData() {
       const [myFriendList, postPreference] = await Promise.all([
         getFriendList(myUserInfo),
-        fetchPostPreference(myUserInfo)
+        fetchPostPreference(myUserInfo),
       ])
       setFriendList(myFriendList)
       setHasMoreFriendPosts(myFriendList?.length > 0)
@@ -47,13 +56,16 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
   }, [])
 
   function filterPosts(fetchedPosts: any) {
-    return Math.random() * 10 < getAnimePreferenceScore(myAnimeList, postPreference?.animeList, fetchedPosts.posts[0].post_anime_data?.anime_id)
+    return (
+      Math.random() * 10 <
+      getAnimePreferenceScore(myAnimeList, postPreference?.animeList, fetchedPosts.posts[0].post_anime_data?.anime_id)
+    )
   }
 
   async function fetchPosts() {
-    if (!postPreference) return;
+    if (!postPreference) return
 
-    let fetchedPosts;
+    let fetchedPosts
     if (hasMoreFriendPosts) {
       fetchedPosts = await fetchFriendPosts(myUserInfo, friendList, postPreference.last_view, lastKey)
 
@@ -69,8 +81,12 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
 
     // Post is from me or my friend or is not disliked
     if (fetchedPosts.lastKey) {
-      if ((fetchedPosts.posts[0].authorName === myUserInfo.username) || friendList?.includes(fetchedPosts.posts[0].authorName) || filterPosts(fetchedPosts)) {
-        setPosts([...posts, ...fetchedPosts.posts]);
+      if (
+        fetchedPosts.posts[0].authorName === myUserInfo.username ||
+        friendList?.includes(fetchedPosts.posts[0].authorName) ||
+        filterPosts(fetchedPosts)
+      ) {
+        setPosts([...posts, ...fetchedPosts.posts])
       }
       setLastKey(fetchedPosts.lastKey)
     } else {
@@ -82,7 +98,12 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
     <InfiniteScroll
       loadMore={fetchPosts}
       hasMore={hasMore}
-      loader={<div className="animate-pulse mb-4"><PostContent /><PostAction /></div>}
+      loader={
+        <div className="animate-pulse mb-4">
+          <PostContent />
+          <PostAction />
+        </div>
+      }
       initialLoad={true}
       className="flex flex-col"
     >
@@ -96,6 +117,7 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
           postId={post.id}
         >
           <PostContent
+            key={post.id}
             authorName={post.authorName}
             avatarUrl={post.avatarUrl}
             timestamp={post.timestamp}
@@ -107,10 +129,12 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
             watchingProgress={post?.post_anime_data?.watching_progress}
             episodesSeen={post?.post_anime_data?.episodes_seen}
             episodesTotal={post?.post_anime_data?.total_episodes}
+            score={post?.post_anime_data?.score}
             tag={post?.post_anime_data?.tag}
             postId={post.id}
           />
           <PostAction
+            key={post.id}
             reactions={post.reactions}
             commentCountPromise={fetchCommentCount(post.id)}
             comments={post.lastComment ? [post.lastComment] : []}
@@ -118,7 +142,6 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
           <div className="mb-4"></div>
         </ContextProvider>
       ))}
-
     </InfiniteScroll>
-  );
+  )
 }

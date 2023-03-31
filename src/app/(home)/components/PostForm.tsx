@@ -2,10 +2,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { HiPhoto, HiVideoCamera } from "react-icons/hi2";
-import { FC, useState, useEffect } from "react";
-import Avatar from '@/components/avatar/Avatar';
-import PostFormPopUp from "./PostFormPopUp";
+import { HiPhoto, HiVideoCamera } from "react-icons/hi2"
+import { FC, useState, useEffect } from "react"
+import Avatar from "@/components/avatar/Avatar"
+import PostFormPopUp from "./PostFormPopUp"
 
 type PostFormProps = {
   username: string
@@ -13,14 +13,15 @@ type PostFormProps = {
   isBanned: boolean
   setOpen?: any
   open?: any
+  malAuthCode?: string
   className?: any
 }
 
-const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBanned }) => {
+const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBanned, malAuthCode }) => {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
   }, [])
 
   function openForm() {
@@ -78,7 +79,13 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBa
 
   return (
     <div className={className}>
-      <PostFormPopUp username={username} avatarUrl={avatarUrl} setOpen={setOpen} open={open} />
+      <PostFormPopUp
+        malAuthCode={malAuthCode}
+        username={username}
+        avatarUrl={avatarUrl}
+        setOpen={setOpen}
+        open={open}
+      />
       <div className="flex flex-col flex-1 bg-ani-black rounded-2xl px-4 my-4">
         <div className="flex justify-between items-center mt-4">
           <Avatar imageUrl={avatarUrl} altText={username} size={8} />
@@ -122,8 +129,8 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBa
             <span>Share</span>
           </button>
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   )
 }
 
