@@ -82,7 +82,9 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
       }),
     ]
 
+    // post have anime data
     if (!!postAnimeData.anime_id) {
+      // user connect with MAL
       if (!!malAuthCode) {
         const promiseUpdateMAL = fetch(getProductionBaseUrl() + "/api/updatestatus/" + postAnimeData.anime_id, {
           headers: {
@@ -96,19 +98,24 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
       } else {
         console.log("User havent connect to MAL")
       }
-      const result = await Promise.all(promisePost)
     }
-    router.refresh()
-    inputRef.current!.value = ""
-    setMediaUrl([])
-    setOpen(false)
-    setLoadPosting(false)
-    resetTag()
+    const result = await Promise.all(promisePost)
+    location.reload()
+    // inputRef.current!.value = ""
+    // setMediaUrl([])
+    // setOpen(false)
+    // setLoadPosting(false)
+    // resetTag()
   }
 
   const handlePaste = (e: any) => {
     const file = e.clipboardData.files[0]
-    if (file.type.indexOf("image") !== -1) {
+    var clipboardData = e.clipboardData
+    var types = clipboardData.types
+    if (types.includes("text/plain")) {
+      return
+    }
+    if (file?.type?.indexOf("image") !== -1) {
       const blob = file.slice(0, file.size, "image/png")
       const fileUrl = new File([blob], "image.png", { type: "image/png" })
       setMediaUrl([...mediaUrl, fileUrl])

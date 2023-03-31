@@ -125,7 +125,6 @@ async function getUserAnimeUpdate(access_token: any, mal_username: any) {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
-    cache: "no-store",
   }).then((res) => res.json())
   return userUpdate
 }
