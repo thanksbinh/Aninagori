@@ -12,11 +12,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleXmark, faFileCirclePlus } from "@fortawesome/free-solid-svg-icons"
 
 import Avatar from "@/components/avatar/Avatar"
-import AnimeWatchStatus from "./animePostComponent/AnimeWatchStatus"
-import AnimeSearch from "./animePostComponent/AnimeSearch"
-import AnimeEpisodes from "./animePostComponent/AnimeEpisodes"
-import AnimeTag from "./animePostComponent/AnimeTag"
-import AnimeScore from "./animePostComponent/AnimeScore"
+import AnimeWatchStatus from "./animePostComponent/AnimeWatchStatus/AnimeWatchStatus"
+import AnimeSearch from "./animePostComponent/AnimeSearch/AnimeSearch"
+import AnimeEpisodes from "./animePostComponent/AnimeEpisodes/AnimeEpisodes"
+import AnimeTag from "./animePostComponent/AnimeTag/AnimeTag"
+import AnimeScore from "./animePostComponent/AnimeScore/AnimeScore"
+import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 
 const cx = classNames.bind(styles)
 
@@ -25,9 +26,10 @@ type PostFormProps = {
   avatarUrl: string
   setOpen?: any
   open?: any
+  malAuthCode?: string
 }
 
-const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }) => {
+const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, malAuthCode }) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const [mediaUrl, setMediaUrl] = useState<any>([])
   const [mediaType, setMediaType] = useState<string>("")
@@ -63,25 +65,45 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
       totalEps,
       scoreData,
     )
-    const downloadMediaUrl = await uploadMedia()
 
-    await addDoc(collection(db, "posts"), {
-      authorName: username,
-      avatarUrl: avatarUrl,
-      timestamp: serverTimestamp(),
-      content: inputRef.current?.value || "",
-      imageUrl: mediaType === "image" ? downloadMediaUrl : "",
-      videoUrl: mediaType === "video" ? downloadMediaUrl[0] : "",
-      post_anime_data:
-        (animeSearch?.current as any).getAnimeName().animeID === "" ? { tag: postAnimeData.tag } : postAnimeData,
-      comments: 0,
-    })
+    const downloadMediaUrl = await uploadMedia()
+    //TODO: promise.all post + update MAL watch status
+    const promisePost = [
+      addDoc(collection(db, "posts"), {
+        authorName: username,
+        avatarUrl: avatarUrl,
+        timestamp: serverTimestamp(),
+        content: inputRef.current?.value || "",
+        imageUrl: mediaType === "image" ? downloadMediaUrl : "",
+        videoUrl: mediaType === "video" ? downloadMediaUrl[0] : "",
+        post_anime_data:
+          (animeSearch?.current as any).getAnimeName().animeID === "" ? { tag: postAnimeData.tag } : postAnimeData,
+        comments: 0,
+      }),
+    ]
+
+    if (!!postAnimeData.anime_id) {
+      if (!!malAuthCode) {
+        const promiseUpdateMAL = fetch(getProductionBaseUrl() + "/api/updatestatus/" + postAnimeData.anime_id, {
+          headers: {
+            status: convertWatchStatus(postAnimeData.watching_progress),
+            episode: postAnimeData.episodes_seen,
+            score: (postAnimeData as any).score,
+            auth_code: malAuthCode,
+          } as any,
+        }).then((res) => res.json())
+        promisePost.push(promiseUpdateMAL)
+      } else {
+        console.log("User havent connect to MAL")
+      }
+      const result = await Promise.all(promisePost)
+    }
+    router.refresh()
     inputRef.current!.value = ""
     setMediaUrl([])
     setOpen(false)
     setLoadPosting(false)
     resetTag()
-    router.refresh()
   }
 
   const handlePaste = (e: any) => {
@@ -305,7 +327,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open }
                   fill="none"
                   viewBox="0 0 24 24"
                 >
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path
                     className="opacity-75"
                     fill="currentColor"
@@ -361,4 +383,23 @@ function handleAnimeInformationPosting(
   }
 
   return postAnimeData
+}
+
+function convertWatchStatus(watchStatus: string) {
+  switch (watchStatus) {
+    case "is watching":
+      return "watching"
+      break
+    case "have dropped":
+      return "dropped"
+      break
+    case "plan to watch":
+      return "plan_to_watch"
+      break
+    case "have finished":
+      return "completed"
+      break
+    default:
+      break
+  }
 }

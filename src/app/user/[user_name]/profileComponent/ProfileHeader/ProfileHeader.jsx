@@ -241,7 +241,6 @@ function ProfileHeader({ guess, admin }) {
                 target="_blank"
                 leftIcon={<FontAwesomeIcon icon={faPlug} />}
               >
-                {/*TODO: handle user haven't connected to MAL */}
                 {guess?.mal_connect?.myAnimeList_username ? "Visit MAL profile" : "....Feature"}
               </Button>
               <AddFriendBtn myUserInfo={admin} userInfo={guess}>

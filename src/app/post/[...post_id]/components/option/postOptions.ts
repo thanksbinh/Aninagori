@@ -21,12 +21,7 @@ export async function moveToTrash(postId: string) {
 
   if (postDoc.data()?.imageUrl && typeof postDoc.data()?.imageUrl === "object") {
     const imageProimseArray = postDoc.data()?.imageUrl.map((image: string) => deleteMediaFiles(image))
-    await Promise.all([
-      await deleteCollection(postId),
-      await Promise.all(imageProimseArray),
-      await deleteMediaFiles(postDoc.data()?.imageUrl, postDoc.data()?.videoUrl),
-      await deleteDoc(postRef),
-    ])
+    await Promise.all([await deleteCollection(postId), await Promise.all(imageProimseArray), await deleteDoc(postRef)])
     return
   }
 

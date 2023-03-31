@@ -37,7 +37,7 @@ async function Profile({ params }: { params: { user_name: string } }) {
   const usersRef = collection(db, "users")
   const usernameQuery = query(usersRef, where("username", "==", params.user_name))
   const querySnapshot = await getDocs(usernameQuery)
-  const guessData = { ...querySnapshot.docs[0].data(), joined_date: "", id: querySnapshot.docs[0].id } as any
+  const guessData = { ...querySnapshot.docs[0]?.data(), joined_date: "", id: querySnapshot.docs[0].id } as any
 
   // compare between admin and guess
   const isAdmin = !querySnapshot.empty && !!session?.user && params.user_name === adminData.username
