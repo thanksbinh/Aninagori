@@ -1,6 +1,42 @@
 import { db } from '@/firebase/firebase-app';
 import { UserInfo } from '@/global/UserInfo.types';
-import { doc, updateDoc, arrayUnion, arrayRemove, Timestamp } from 'firebase/firestore';
+import { doc, updateDoc, arrayUnion, arrayRemove, Timestamp, getDoc } from 'firebase/firestore';
+
+async function updateAnimePreference(myUserInfo: UserInfo, animeID: string | undefined, hasReaction: boolean) {
+  if (!animeID) return;
+
+  const docRef = doc(db, 'postPreferences', myUserInfo.username);
+  const docSnap = await getDoc(docRef);
+  if (!docSnap.exists()) return;
+
+  const thisAnimePreference = docSnap.data().animeList?.find((anime: any) => anime.id == animeID);
+  const thisAnimePotential = thisAnimePreference ? thisAnimePreference.potential : 10;
+
+  if (thisAnimePreference) {
+    await updateDoc(docRef, {
+      animeList: arrayRemove({
+        id: animeID,
+        potential: thisAnimePotential
+      })
+    });
+  }
+
+  if (hasReaction) {
+    await updateDoc(docRef, {
+      animeList: arrayUnion({
+        id: animeID,
+        potential: Math.min(thisAnimePotential + 2, 20)
+      })
+    });
+  } else {
+    await updateDoc(docRef, {
+      animeList: arrayUnion({
+        id: animeID,
+        potential: Math.max(thisAnimePotential - 1, 1)
+      })
+    });
+  }
+}
 
 async function sentReaction(myUserInfo: UserInfo, myReaction: any, reactionToggle: boolean, authorName: string, content: string, postId: string, commentId?: string, reply?: any) {
   const docRef = commentId ?
@@ -68,4 +104,4 @@ async function notifyReaction(myUserInfo: UserInfo, rcvUsername: string, content
   });
 }
 
-export { sentReaction, sentReactionReply }
+export { sentReaction, sentReactionReply, updateAnimePreference }

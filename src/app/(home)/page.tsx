@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { getUserInfo } from "@/global/getUserInfo"
 import PostForm from "./components/PostForm"
 import Posts from "./components/PostContainer"
+import { getUserAnimeUpdate } from "./components/getUserAnimeUpdate"
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
@@ -10,6 +11,7 @@ export default async function Home() {
   const myUserInfo = await getUserInfo(myUserId)
 
   if (!myUserInfo) return null
+  await getUserAnimeUpdate(myUserInfo)
 
   return (
     <div className="flex justify-center pt-10">
@@ -21,7 +23,6 @@ export default async function Home() {
           isBanned={!!myUserInfo.is_banned}
           malAuthCode={myUserInfo?.auth_code}
         />
-
         {/* @ts-expect-error Server Component */}
         <Posts myUserInfo={myUserInfo} />
       </div>

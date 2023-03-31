@@ -7,6 +7,7 @@ import { forwardRef } from "react"
 import { doc, updateDoc } from "firebase/firestore"
 import { db } from "@/firebase/firebase-app"
 import "tippy.js/dist/tippy.css"
+import { updateAvatarUrl } from "./updateAvatarUrl"
 const cx = classNames.bind(styles)
 
 function ProfilEditPopUp(props: any, ref: any) {
@@ -81,9 +82,7 @@ function ProfilEditPopUp(props: any, ref: any) {
               })
             }
             if (avatar !== "") {
-              await updateDoc(docRef, {
-                image: avatar,
-              })
+              await updateAvatarUrl(admin.id, avatar)
             }
             if (userName !== "" || wallpaper !== "" || avatar !== "") {
               location.reload()

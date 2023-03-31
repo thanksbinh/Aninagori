@@ -15,6 +15,7 @@ async function getUserInfo(userId: string | undefined): Promise<UserInfo | undef
       image: docSnap.data().image,
       is_admin: docSnap.data().is_admin,
       is_banned: docSnap.data().is_banned,
+      mal_connect: docSnap.data().mal_connect,
       auth_code: docSnap.data()?.mal_connect?.accessToken,
     }
   } else {

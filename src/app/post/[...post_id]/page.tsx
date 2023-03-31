@@ -54,7 +54,6 @@ async function fetchComments(postId: string) {
   return comments;
 }
 
-// Todo: realtime reactions/ comments
 async function Post({ params }: { params: { post_id: string[] } }) {
   const session = await getServerSession(authOptions)
   const myUserId = (session as any)?.user?.id
@@ -70,8 +69,9 @@ async function Post({ params }: { params: { post_id: string[] } }) {
       <div className="flex flex-col lg:w-2/5 w-3/5 mt-8 mb-2">
         <ContextProvider
           myUserInfo={myUserInfo}
-          content={fetchedPost.content}
+          content={fetchedPost?.content || ""}
           authorName={fetchedPost.authorName}
+          animeID={fetchedPost?.post_anime_data?.anime_id}
           postId={fetchedPost.id}
         >
           <PostContent
@@ -83,7 +83,7 @@ async function Post({ params }: { params: { post_id: string[] } }) {
             videoUrl={fetchedPost.videoUrl}
             animeID={fetchedPost?.post_anime_data?.anime_id}
             animeName={fetchedPost?.post_anime_data?.anime_name}
-            watchingProgess={fetchedPost?.post_anime_data?.watching_progress}
+            watchingProgress={fetchedPost?.post_anime_data?.watching_progress}
             episodesSeen={fetchedPost?.post_anime_data?.episodes_seen}
             episodesTotal={fetchedPost?.post_anime_data?.total_episodes}
             tag={fetchedPost?.post_anime_data?.tag}

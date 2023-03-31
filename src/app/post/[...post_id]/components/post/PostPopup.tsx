@@ -16,6 +16,8 @@ export default function PostPopup({ isOpen, onClose }: { isOpen: boolean; onClos
   const { postId } = useContext(PostContext)
 
   useEffect(() => {
+    if (!postId) return;
+
     async function fetchData() {
       const postDoc = await getDoc(doc(db, "posts", postId))
       if (!postDoc.exists()) return
@@ -68,7 +70,7 @@ export default function PostPopup({ isOpen, onClose }: { isOpen: boolean; onClos
           videoUrl={post.videoUrl}
           animeID={post?.post_anime_data?.anime_id}
           animeName={post?.post_anime_data?.anime_name}
-          watchingProgess={post?.post_anime_data?.watching_progress}
+          watchingProgress={post?.post_anime_data?.watching_progress}
           episodesSeen={post?.post_anime_data?.episodes_seen}
           episodesTotal={post?.post_anime_data?.total_episodes}
           tag={post?.post_anime_data?.tag}

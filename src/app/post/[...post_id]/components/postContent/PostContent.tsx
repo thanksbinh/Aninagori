@@ -22,7 +22,7 @@ type PostStaticProps = {
   videoUrl?: string
   animeID?: number
   animeName?: string
-  watchingProgess?: string
+  watchingProgress?: string
   episodesSeen?: number
   episodesTotal?: number
   tag?: string[]
@@ -39,7 +39,7 @@ const PostContent: FC<PostStaticProps> = ({
   videoUrl,
   animeID = "12403",
   animeName = "Unknowned Anime",
-  watchingProgess = "is sharing",
+  watchingProgress = "is sharing",
   episodesSeen = 0,
   episodesTotal = 13,
   tag = [],
@@ -86,7 +86,7 @@ const PostContent: FC<PostStaticProps> = ({
               <Link href={"/user/" + authorName} className={`${cx("user-name")}`}>
                 {authorName}
               </Link>
-              <p className={cx("watch-status")}>{watchingProgess}</p>
+              <p className={cx("watch-status")}>{watchingProgress}</p>
               <AnimeName animeName={animeName} animeID={animeID as any} seen={episodesSeen} total={episodesTotal} />
               <div className={cx("post-option")}>
                 <PostOptions />

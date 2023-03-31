@@ -21,6 +21,9 @@ export function noticationFilter(notiArray: Notification[]) {
       // Gộp các thông báo của cùng 1 người
       url = thisNoti.url + "/type=comment_mention/user/" + thisNoti.sender.username
     }
+    else if (thisNoti.type === "friend request accepted") {
+      url = thisNoti.url + "/type=friend_request_accepted/user/" + thisNoti.sender.username
+    }
 
     if (notiMap.has(url) && notiMap.get(url).some((noti: Notification) => noti.sender.username === thisNoti.sender.username)) {
 
@@ -44,6 +47,7 @@ export function noticationFilter(notiArray: Notification[]) {
         },
         type: value[0].type,
         timestamp: value[0].timestamp,
+        read: value[0].read,
       }
       filteredArray.push(newNoti)
     }

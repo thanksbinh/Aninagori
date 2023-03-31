@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import Link from "next/link"
@@ -8,7 +9,9 @@ const Logo = () => {
 
   const handleOnClick = () => {
     router.refresh()
-    if (window.location.href == window.location.origin + "/") window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
+    console.log(window.location.href)
+    if (window.location.href == process.env.NEXT_PUBLIC_BASE_URL)
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
   }
 
   return (

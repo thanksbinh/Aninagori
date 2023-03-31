@@ -1,16 +1,30 @@
-import { useContext, useEffect, useState } from "react"
+import { useIsVisible } from "@/components/utils/useIsInViewport"
+import { useContext, useEffect, useRef, useState } from "react"
 import { HiHeart, HiOutlineHeart } from "react-icons/hi2"
 import { PostContext } from "../context/PostContext"
-import { sentReaction } from "./doReaction"
+import { sentReaction, updateAnimePreference } from "./doReaction"
 
 const Reaction = ({ reactions }: { reactions: Object[] }) => {
-  const { myUserInfo, content, authorName, postId } = useContext(PostContext)
+  const { myUserInfo, content, authorName, animeID, postId } = useContext(PostContext)
 
   const [reactionToggle, setReactionToggle] = useState(reactions.some((e: any) => e.username === myUserInfo.username))
+  const [read, setRead] = useState(false)
+
+  const ref = useRef(null)
+  const visible = useIsVisible(ref)
 
   useEffect(() => {
     reactions.length && setReactionToggle(reactions.some((e: any) => e.username === myUserInfo.username))
   }, [reactions])
+
+  useEffect(() => {
+    if (!postId) return;
+
+    if (visible && !read) {
+      setRead(true)
+      updateAnimePreference(myUserInfo, animeID, reactionToggle)
+    }
+  }, [visible])
 
   const onReaction = async () => {
     const myReaction = {
@@ -19,12 +33,13 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
       type: "heart"
     }
 
-    setReactionToggle(!reactionToggle)
     sentReaction(myUserInfo, myReaction, reactionToggle, authorName, content, postId)
+    updateAnimePreference(myUserInfo, animeID, !reactionToggle)
+    setReactionToggle(!reactionToggle)
   }
 
   return (
-    <div className="flex">
+    <div ref={ref} className="flex">
       <button title="react" onClick={onReaction} className="flex items-center space-x-1 text-gray-400 hover:text-[#F14141]">
         {reactionToggle ? <HiHeart className="w-5 h-5 fill-[#F14141]" /> : <HiOutlineHeart className="w-5 h-5" />}
       </button>

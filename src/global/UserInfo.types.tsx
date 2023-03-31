@@ -6,4 +6,5 @@ export interface UserInfo {
   is_admin?: boolean
   is_banned?: boolean
   auth_code?: string
+  mal_connect?: any
 }
