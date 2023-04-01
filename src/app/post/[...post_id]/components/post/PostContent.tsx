@@ -57,7 +57,7 @@ const PostContent: FC<PostStaticProps> = ({
   }, [])
 
   return (
-    <div className="flex flex-col flex-1 bg-ani-black relative rounded-2xl p-4 pb-0 rounded-b-none" ref={ref as any}>
+    <div className="flex flex-col flex-1 bg-ani-gray relative rounded-2xl p-4 pb-0 rounded-b-none" ref={ref as any}>
       {spoiler && (
         <>
           <div

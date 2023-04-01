@@ -84,7 +84,7 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
       loadMore={fetchPosts}
       hasMore={hasMore}
       loader={
-        <div className="animate-pulse mb-4">
+        <div key={0} className="animate-pulse mb-4">
           <PostContent />
           <PostAction />
         </div>
@@ -102,7 +102,6 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
           postId={post.id}
         >
           <PostContent
-            key={post.id}
             authorName={post.authorName}
             avatarUrl={post.avatarUrl}
             timestamp={post.timestamp}
@@ -119,7 +118,6 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
             postId={post.id}
           />
           <PostAction
-            key={post.id}
             reactions={post.reactions}
             commentCountPromise={fetchCommentCount(post.id)}
             comments={post.lastComment ? [post.lastComment] : []}

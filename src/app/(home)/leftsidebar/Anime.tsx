@@ -21,14 +21,14 @@ export function AnimeComponent({ anime }: { anime: any }) {
   return (
     <div className='flex my-4'>
       <div className="flex-none">
-        <a href={`https://myanimelist.net/anime/${anime.id}`}>
+        <a href={`https://myanimelist.net/anime/${anime.id}`} target="_blank">
           <img src={anime.main_picture?.medium} alt="anime_picture" className='w-[85px] rounded-md mx-4' />
         </a>
       </div>
 
       <div>
         <h2 className="flex-auto text-ani-text-main hover:underline text-sm font-bold">
-          <a href={`https://myanimelist.net/anime/${anime.id}`}>
+          <a href={`https://myanimelist.net/anime/${anime.id}`} target="_blank">
             {anime.title}
           </a>
         </h2>
