@@ -9,6 +9,8 @@ export async function GET(request: Request) {
     const result: any = await getAnimeList(String(search_name), parseInt(offset), parseInt(limit))
     return NextResponse.json(result.data)
   } catch (err) {
-    return NextResponse.json({ error: "cant find anime name" })
+    return NextResponse.json({ error: err })
   }
 }
+
+export const dynamic = "force-dynamic"

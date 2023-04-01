@@ -1,9 +1,9 @@
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { getServerSession } from 'next-auth';
-import { getUserInfo } from "@/global/getUserInfo";
-import PostForm from './components/PostForm';
-import Posts from './components/PostContainer';
-import { getUserAnimeUpdate } from './components/getUserAnimeUpdate';
+import { authOptions } from "@/pages/api/auth/[...nextauth]"
+import { getServerSession } from "next-auth"
+import { getUserInfo } from "@/global/getUserInfo"
+import PostForm from "./components/PostForm"
+import Posts from "./components/PostContainer"
+import { getUserAnimeUpdate } from "./components/getUserAnimeUpdate"
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
@@ -20,6 +20,7 @@ export default async function Home() {
         avatarUrl={myUserInfo.image}
         username={myUserInfo.username}
         isBanned={!!myUserInfo.is_banned}
+        malAuthCode={myUserInfo?.auth_code}
       />
 
       <Posts myUserInfo={myUserInfo} />

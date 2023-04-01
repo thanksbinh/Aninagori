@@ -13,7 +13,6 @@ async function AnimeUpdate({ data }) {
     const id = updateArr.map((e) => {
       return getAnimeTotal(e.node.id)
     })
-    const totalArr = await Promise.all([id[0], id[1], id[2]])
     const newUpdateArr = updateArr.map((data, index) => {
       let status = data.list_status.status
       switch (status) {
@@ -40,7 +39,6 @@ async function AnimeUpdate({ data }) {
         status = "Re Watching"
       }
       data.list_status.status = status
-      data.list_status.num_episodes_total = totalArr[index].data.num_episodes
       return data
     })
     data = newUpdateArr
@@ -70,16 +68,13 @@ async function AnimeUpdate({ data }) {
                   <div className={cx("progress-bar")}>
                     <ProgressChild
                       className={cx("progress-percent")}
-                      percent={convertToPercent(
-                        anime.list_status.num_episodes_watched,
-                        anime.list_status.num_episodes_total,
-                      )}
+                      percent={convertToPercent(anime.list_status.num_episodes_watched, anime.node.num_episodes)}
                     ></ProgressChild>
                   </div>
                   <div className={cx("status-wrapper")}>
                     {anime.list_status.status}{" "}
                     <span className={cx("highlight")}>{anime.list_status.num_episodes_watched}</span>/
-                    {anime.list_status.num_episodes_total} - Scored{" "}
+                    {anime.node.num_episodes} - Scored{" "}
                     <span className={cx("highlight")}>{anime.list_status.score}</span>
                   </div>
                 </div>

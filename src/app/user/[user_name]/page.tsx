@@ -1,19 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
-import classNames from 'classnames/bind';
-import styles from './Profile.module.scss';
-import ProfileHeader from '@/app/user/[user_name]/profileComponent/ProfileHeader/ProfileHeader';
-import AnimeStatus from '@/app/user/[user_name]/profileComponent/AnimeStatus/AnimeStatus';
-import AnimeFavorite from '@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite';
-import AnimeUpdate from '@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate';
-import { collection, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-app';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { Suspense } from 'react';
-import PostForm from '@/app/(home)/components/PostForm';
-import { getUserInfo } from '@/global/getUserInfo';
+import classNames from "classnames/bind"
+import styles from "./Profile.module.scss"
+import ProfileHeader from "@/app/user/[user_name]/profileComponent/ProfileHeader/ProfileHeader"
+import AnimeStatus from "@/app/user/[user_name]/profileComponent/AnimeStatus/AnimeStatus"
+import AnimeFavorite from "@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite"
+import AnimeUpdate from "@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate"
+import { collection, doc, getDoc, query, where, getDocs } from "firebase/firestore"
+import { db } from "@/firebase/firebase-app"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/pages/api/auth/[...nextauth]"
+import { Suspense } from "react"
+import PostForm from "@/app/(home)/components/PostForm"
+import { getUserInfo } from "@/global/getUserInfo"
 import * as apiServices from "@/app/api/apiServices/apiServicesConfig"
-import ProfilePosts from './profileComponent/posts/PostContainer';
+import ProfilePosts from "./profileComponent/posts/PostContainer"
 
 const cx = classNames.bind(styles)
 
@@ -37,7 +37,7 @@ async function Profile({ params }: { params: { user_name: string } }) {
   const usersRef = collection(db, "users")
   const usernameQuery = query(usersRef, where("username", "==", params.user_name))
   const querySnapshot = await getDocs(usernameQuery)
-  if (querySnapshot.empty) return;
+  if (querySnapshot.empty) return
 
   const guessData = { ...querySnapshot.docs[0].data(), joined_date: "", id: querySnapshot.docs[0].id } as any
 
@@ -118,9 +118,10 @@ function getAnimeFavorite(mal_username: any) {
 }
 
 async function getUserAnimeUpdate(access_token: any, mal_username: any) {
-  const url = "https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status&limit=3&sort=list_updated_at"
+  const url =
+    "https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status,num_episodes&limit=3&sort=list_updated_at"
   const userUpdate = fetch(url, {
-    cache: 'no-store',
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${access_token}`,
     },

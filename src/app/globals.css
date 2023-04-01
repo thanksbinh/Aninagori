@@ -2,10 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@200;300;400;500;600;700&family=Roboto:wght@100;300;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@200;300;400;500;600;700&family=Roboto:wght@100;300;700&display=swap");
 
 :root {
-  --font-family: 'Inter', sans-serif;
+  --font-family: "Inter", sans-serif;
   --gradient-text: linear-gradient(89.97deg, #ae67fa 1.84%, #f49867 102.67%);
   --primary-color: #191c21;
   --text-color: white;
@@ -66,8 +66,22 @@ body {
   line-height: 22px;
 }
 
-.tippy-box[data-placement^='bottom']>.tippy-arrow {
+.tippy-box[data-placement^="bottom"] > .tippy-arrow {
   top: -1px;
+}
+
+.react-slideshow-container {
+  border-radius: 1rem /* 16px */;
+  overflow: hidden;
+}
+
+.react-slideshow-container:hover .nav.default-nav {
+  display: flex !important;
+}
+
+.nav.default-nav {
+  z-index: -1;
+  display: none !important;
 }
 
 .liked-avatar:not(:first-child) {
