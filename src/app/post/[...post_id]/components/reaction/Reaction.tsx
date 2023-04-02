@@ -72,7 +72,7 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
       type: type
     }
 
-    sentReaction(myUserInfo, myReaction, reactionToggle, authorName, content, postId)
+    sentReaction(myUserInfo, myReaction, reactionToggle, authorName, content, postId, reactions)
     updateAnimePreference(myUserInfo, animeID, !reactionToggle)
     if (reactionType === type)
       setReactionToggle(!reactionToggle)
