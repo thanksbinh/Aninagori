@@ -1,9 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
-import { HiPhoto, HiVideoCamera } from "react-icons/hi2"
+import { HiPhotograph } from "@react-icons/all-files/hi/HiPhotograph"
+import { BsCameraVideoFill } from "@react-icons/all-files/bs/BsCameraVideoFill"
 import { useRouter } from "next/navigation"
-import { FC, useRef, useState } from "react"
+import { FC, useContext, useRef, useState } from "react"
 import { db, storage } from "@/firebase/firebase-app"
 import { v4 } from "uuid"
 import classNames from "classnames/bind"
@@ -18,6 +19,8 @@ import AnimeEpisodes from "./animePostComponent/AnimeEpisodes/AnimeEpisodes"
 import AnimeTag from "./animePostComponent/AnimeTag/AnimeTag"
 import AnimeScore from "./animePostComponent/AnimeScore/AnimeScore"
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
+import { HomeContext } from "../HomeContext"
+import { updateStatusOnFriendLists } from "./functions/syncUpdates"
 
 const cx = classNames.bind(styles)
 
@@ -41,6 +44,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
   const animeEpisodes = useRef()
   const animeTag = useRef()
   const animeScore = useRef()
+  const { myUserInfo } = useContext(HomeContext)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     const statusData = (animeStatus?.current as any).getAnimeStatus()
@@ -82,25 +86,31 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
       }),
     ]
 
-    // post have anime data
-    if (!!postAnimeData.anime_id) {
-      // user connect with MAL
-      if (!!malAuthCode) {
-        const promiseUpdateMAL = fetch(getProductionBaseUrl() + "/api/updatestatus/" + postAnimeData.anime_id, {
-          headers: {
-            status: convertWatchStatus(postAnimeData.watching_progress),
-            episode: postAnimeData.episodes_seen,
-            score: (postAnimeData as any).score,
-            auth_code: malAuthCode,
-          } as any,
-        }).then((res) => res.json())
-        promisePost.push(promiseUpdateMAL)
-      } else {
-        console.log("User havent connect to MAL")
+    try {
+      // post have anime data
+      if (!!postAnimeData.anime_id) {
+        // user connect with MAL
+        if (!!malAuthCode) {
+          const promiseUpdateMAL = fetch(getProductionBaseUrl() + "/api/updatestatus/" + postAnimeData.anime_id, {
+            headers: {
+              status: convertWatchStatus(postAnimeData.watching_progress),
+              episode: postAnimeData.episodes_seen,
+              score: (postAnimeData as any).score,
+              auth_code: malAuthCode,
+            } as any,
+          }).then((res) => res.json())
+          promisePost.push(promiseUpdateMAL)
+        } else {
+          console.log("User havent connect to MAL")
+        }
+        // Update status on friend list
+        updateStatusOnFriendLists(myUserInfo, { ...postAnimeData, status: convertWatchStatus(postAnimeData.watching_progress) })
       }
+      const result = await Promise.all(promisePost)
+      location.reload()
+    } catch (error) {
+      console.log(error)
     }
-    const result = await Promise.all(promisePost)
-    location.reload()
     // inputRef.current!.value = ""
     // setMediaUrl([])
     // setOpen(false)
@@ -172,12 +182,12 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
     <div
       onClick={
         loadPosting
-          ? () => {}
+          ? () => { }
           : () => {
-              setTimeout(() => {
-                setOpen(false)
-              }, 90)
-            }
+            setTimeout(() => {
+              setOpen(false)
+            }, 90)
+          }
       }
       className={cx("modal")}
       style={open ? { display: "flex" } : { display: "none" }}
@@ -187,16 +197,16 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
         onClick={(e) => {
           e.stopPropagation()
         }}
-        onSubmit={loadPosting ? () => {} : (e) => handleSubmit(e)}
+        onSubmit={loadPosting ? () => { } : (e) => handleSubmit(e)}
         className="relative"
       >
         <FontAwesomeIcon
           onClick={
             loadPosting
-              ? () => {}
+              ? () => { }
               : () => {
-                  setOpen(false)
-                }
+                setOpen(false)
+              }
           }
           icon={faCircleXmark as any}
           className={cx("close-post")}
@@ -297,7 +307,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
               htmlFor="image-input"
               className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer"
             >
-              <HiPhoto className="w-5 h-5 fill-[#3BC361]" />
+              <HiPhotograph className="w-5 h-5 fill-[#3BC361]" />
               <span>Photo/Gif</span>
             </label>
             <input
@@ -312,7 +322,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
               htmlFor="video-input"
               className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer"
             >
-              <HiVideoCamera className="w-5 h-5 fill-[#FF1D43]" />
+              <BsCameraVideoFill className="w-5 h-5 fill-[#FF1D43]" />
               <span>Video</span>
             </label>
             <input
@@ -379,7 +389,7 @@ function handleAnimeInformationPosting(
     postAnimeData.watching_progress = "plan to watch"
     postAnimeData.episodes_seen = "0"
   } else if (status === "Finished") {
-    ;(postAnimeData as any).score = score
+    ; (postAnimeData as any).score = score
     postAnimeData.watching_progress = "have finished"
     postAnimeData.episodes_seen = postAnimeData.total_episodes
   } else if (status === "Drop") {
@@ -396,16 +406,12 @@ function convertWatchStatus(watchStatus: string) {
   switch (watchStatus) {
     case "is watching":
       return "watching"
-      break
     case "have dropped":
       return "dropped"
-      break
     case "plan to watch":
       return "plan_to_watch"
-      break
     case "have finished":
       return "completed"
-      break
     default:
       break
   }

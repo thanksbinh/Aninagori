@@ -1,6 +1,6 @@
 import Avatar from "@/components/avatar/Avatar";
 import { FC, useContext, useState } from "react";
-import { PostContext } from "../context/PostContext";
+import { PostContext } from "../../PostContext";
 import { sendComment, sendReply } from "./doComment";
 
 interface Props {

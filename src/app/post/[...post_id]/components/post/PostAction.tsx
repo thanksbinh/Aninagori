@@ -2,8 +2,8 @@
 
 import { doc, onSnapshot } from "firebase/firestore";
 import { FC, useContext, useEffect, useRef, useState } from 'react';
-import { AiOutlineComment } from "react-icons/ai";
-import { RiAddCircleLine } from "react-icons/ri";
+import { AiOutlineComment } from "@react-icons/all-files/ai/AiOutlineComment";
+import { RiAddCircleLine } from "@react-icons/all-files/ri/RiAddCircleLine";
 
 import Avatar from "@/components/avatar/Avatar";
 import { db } from "@/firebase/firebase-app";
@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { CommentProps } from "../comment/Comment.types";
 import CommentForm from "../comment/CommentForm";
 import Comments from "../comment/Comments";
-import { PostContext } from "../context/PostContext";
+import { PostContext } from "../../PostContext";
 import Reaction from "../reaction/Reaction";
 import PostPopup from "./PostPopup";
 

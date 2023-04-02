@@ -23,21 +23,25 @@ export async function refreshUserToken(session: any) {
     refresh_token: (userData?.mal_connect as any).refreshToken,
   };
   const urlEncodedParams = qs.stringify(urlParamsOauth);
-  const res = await fetch('https://myanimelist.net/v1/oauth2/token', {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: urlEncodedParams,
-  });
-  const result = await res.json();
-  await updateDoc(docRef, {
-    mal_connect: {
-      myAnimeList_username: userData?.mal_connect.myAnimeList_username,
-      accessToken: result.access_token,
-      refreshToken: result.refresh_token,
-      expiresIn: result.expires_in,
-      createDate: serverTimestamp(),
-    },
-  });
+  try {
+    const res = await fetch('https://myanimelist.net/v1/oauth2/token', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: urlEncodedParams,
+    });
+    const result = await res.json();
+    await updateDoc(docRef, {
+      mal_connect: {
+        myAnimeList_username: userData?.mal_connect.myAnimeList_username,
+        accessToken: result.access_token,
+        refreshToken: result.refresh_token,
+        expiresIn: result.expires_in,
+        createDate: serverTimestamp(),
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }

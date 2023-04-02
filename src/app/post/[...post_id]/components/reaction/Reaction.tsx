@@ -1,7 +1,8 @@
 import { useIsVisible } from "@/components/utils/useIsInViewport"
 import { useContext, useEffect, useRef, useState } from "react"
-import { HiHeart, HiOutlineHeart } from "react-icons/hi2"
-import { PostContext } from "../context/PostContext"
+import { HiHeart } from "@react-icons/all-files/hi/HiHeart"
+import { HiOutlineHeart } from "@react-icons/all-files/hi/HiOutlineHeart"
+import { PostContext } from "../../PostContext"
 import { sentReaction, updateAnimePreference } from "./doReaction"
 
 const Reaction = ({ reactions }: { reactions: Object[] }) => {
