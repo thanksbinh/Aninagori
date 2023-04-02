@@ -14,17 +14,16 @@ export default async function Home() {
   await getUserAnimeUpdate(myUserInfo)
 
   return (
-    <div className="flex justify-center pt-10">
-      <div className="flex flex-col lg:w-2/5 w-3/5">
-        <PostForm
-          className="mt-4"
-          avatarUrl={myUserInfo.image}
-          username={myUserInfo.username}
-          isBanned={!!myUserInfo.is_banned}
-          malAuthCode={myUserInfo?.auth_code}
-        />
-        <Posts myUserInfo={myUserInfo} />
-      </div>
+    <div className="flex flex-col pt-10">
+      <PostForm
+        className="mt-4"
+        avatarUrl={myUserInfo.image}
+        username={myUserInfo.username}
+        isBanned={!!myUserInfo.is_banned}
+        malAuthCode={myUserInfo?.auth_code}
+      />
+
+      <Posts myUserInfo={myUserInfo} />
     </div>
   )
 }

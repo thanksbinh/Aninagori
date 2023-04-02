@@ -2,7 +2,7 @@
 
 import ContextProvider from "@/app/post/[...post_id]/components/context/PostContext";
 import PostAction from "@/app/post/[...post_id]/components/post/PostAction";
-import PostContent from "@/app/post/[...post_id]/components/postContent/PostContent";
+import PostContent from "@/app/post/[...post_id]/components/post/PostContent";
 import { formatDuration } from "@/components/utils/formatDuration";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";

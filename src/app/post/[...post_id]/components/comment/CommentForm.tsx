@@ -40,8 +40,8 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
     return (
       <div className="flex items-center mt-4">
         <Avatar imageUrl={myUserInfo.image} altText={myUserInfo.username} size={8} />
-        <form className="rounded-2xl py-2 px-4 ml-2 w-full bg-ani-gray caret-white" >
-          <input disabled className="w-full bg-ani-gray focus:outline-none caret-white" />
+        <form className="rounded-2xl py-2 px-4 ml-2 w-full bg-ani-black caret-white" >
+          <input disabled className="w-full bg-ani-black focus:outline-none caret-white" />
         </form>
       </div>
     );

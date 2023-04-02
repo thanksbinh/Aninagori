@@ -20,8 +20,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <head />
-      <body className='bg-ani-gray'>
-        <main className='bg-ani-gray'>
+      <body>
+        <main className='bg-ani-black'>
           <SessionProvider session={session}>
             {/* @ts-expect-error Server Component */}
             <NavBar myUserId={(session as any)?.user?.id} />

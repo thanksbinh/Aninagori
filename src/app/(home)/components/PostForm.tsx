@@ -33,7 +33,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBa
   if (isBanned)
     return (
       <form>
-        <div className="flex flex-col item flex-1 bg-ani-black rounded-2xl px-4 my-4">
+        <div className="flex flex-col item flex-1 bg-ani-gray rounded-2xl px-4 my-4">
           <div className="flex justify-between items-center mt-4">
             <Avatar imageUrl={avatarUrl} altText={username} size={8} />
             <input
@@ -86,7 +86,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBa
         setOpen={setOpen}
         open={open}
       />
-      <div className="flex flex-col flex-1 bg-ani-black rounded-2xl px-4 my-4">
+      <div className="flex flex-col flex-1 bg-ani-gray rounded-2xl px-4 my-4">
         <div className="flex justify-between items-center mt-4">
           <Avatar imageUrl={avatarUrl} altText={username} size={8} />
           <div

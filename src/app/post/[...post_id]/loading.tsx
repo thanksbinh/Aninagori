@@ -1,6 +1,6 @@
 // import ContextProvider from "./components/context/PostContext";
 import PostAction from "./components/post/PostAction";
-import PostContent from "./components/postContent/PostContent";
+import PostContent from "./components/post/PostContent";
 
 export default function loading() {
   return (

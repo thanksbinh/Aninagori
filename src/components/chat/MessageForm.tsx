@@ -5,6 +5,7 @@ import { FC, useState, useRef } from "react";
 import { db } from "@/firebase/firebase-app";
 import { useRouter } from "next/navigation";
 import { UserInfo } from "@/global/UserInfo.types";
+import { setLastRead } from "./setLastRead";
 
 interface Props {
   messageId?: string;
@@ -20,7 +21,7 @@ const MessageForm: FC<Props> = ({
   friend
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  
+
   const [myMessage, setMyMessage] = useState("");
   const router = useRouter();
 
@@ -40,23 +41,23 @@ const MessageForm: FC<Props> = ({
 
     const content = {
       senderUsername: myUserInfo.username,
-      receiverUsername: friend,
-      avatarUrl: myUserInfo.image,
       content: myMessage,
-      timestamp: '',
+      timestamp: new Date(),
       likes: 0
     }
 
     await sendMessage(content);
 
-    router.refresh();
-
     setMyMessage("");
+  }
+
+  const onFormFocus = () => {
+    setLastRead(myUserInfo, conversationId)
   }
 
   return (
     <div className="flex items-center my-4 pr-4 pl-2">
-      <form onSubmit={onMessage} className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] caret-white" >
+      <form onFocus={onFormFocus} onSubmit={onMessage} className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] caret-white" >
         <input
           type="text"
           placeholder="Say something..."

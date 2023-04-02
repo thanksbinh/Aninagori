@@ -10,8 +10,8 @@ export default async function NavBar({ myUserId }: { myUserId: string | undefine
   const myUserInfo = await getUserInfo(myUserId)
 
   return (
-    <nav className="flex justify-between items-center px-8 fixed top-0 z-40 w-full h-14 header-fixed bg-ani-black shadow-md">
-      <div className="flex gap-5">
+    <nav className="flex justify-between items-center px-8 fixed top-0 z-40 w-full h-14 header-fixed bg-ani-gray shadow-md">
+      <div className="flex items-center gap-5">
         <Logo />
         <SearchBar />
       </div>

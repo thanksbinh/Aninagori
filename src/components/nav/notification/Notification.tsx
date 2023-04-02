@@ -35,7 +35,7 @@ const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) =>
 
   return (
     <>
-      <div className="flex items-center bg-ani-black rounded-lg mx-2 px-3 py-4 hover:cursor-pointer hover:bg-slate-50/25">
+      <div className="flex items-center bg-ani-gray rounded-lg mx-2 px-3 py-4 hover:cursor-pointer hover:bg-slate-50/25">
         <img
           src={notification.sender.image || '/bocchi.jpg'}
           alt={`${notification.sender.username}'s avatar`}

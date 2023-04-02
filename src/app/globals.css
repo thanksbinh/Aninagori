@@ -42,6 +42,7 @@ body {
   /* font-size: 1.6rem; */
   color: var(--text-color);
   font-family: var(--font-family);
+  background-color: #191c21;
 }
 
 .section__margin {
@@ -66,12 +67,14 @@ body {
   line-height: 22px;
 }
 
-.tippy-box[data-placement^="bottom"] > .tippy-arrow {
+.tippy-box[data-placement^="bottom"]>.tippy-arrow {
   top: -1px;
 }
 
 .react-slideshow-container {
-  border-radius: 1rem /* 16px */;
+  border-radius: 1rem
+    /* 16px */
+  ;
   overflow: hidden;
 }
 

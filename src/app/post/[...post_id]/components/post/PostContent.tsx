@@ -52,19 +52,19 @@ const PostContent: FC<PostStaticProps> = ({
 
   useEffect(() => {
     if (spoiler) {
-      ;(ref.current as any).querySelector('[aria-roledescription="carousel"]')?.classList.add("blur-2xl")
+      ; (ref.current as any).querySelector('[aria-roledescription="carousel"]')?.classList.add("blur-2xl")
     }
   }, [])
 
   return (
-    <div className="flex flex-col flex-1 bg-ani-black relative rounded-2xl p-4 pb-0 rounded-b-none" ref={ref as any}>
+    <div className="flex flex-col flex-1 bg-ani-gray relative rounded-2xl p-4 pb-0 rounded-b-none" ref={ref as any}>
       {spoiler && (
         <>
           <div
             className={cx("spoiler-button")}
             onClick={() => {
               setSpoiler(false)
-              ;(ref.current as any).querySelector('[aria-roledescription="carousel"]')?.classList.remove("blur-2xl")
+                ; (ref.current as any).querySelector('[aria-roledescription="carousel"]')?.classList.remove("blur-2xl")
               const navElements = (ref.current as any).querySelectorAll(".nav.default-nav")
               navElements.forEach((navElement: any) => {
                 navElement.style = "z-index: 1 !important;"
@@ -77,7 +77,7 @@ const PostContent: FC<PostStaticProps> = ({
         </>
       )}
       <div className="flex items-center space-x-4 mx-2">
-        <Link href={"/user/" + authorName}>
+        <Link href={"/user/" + authorName} className="flex-shrink-0">
           <Avatar imageUrl={avatarUrl} altText={authorName} size={10} />
         </Link>
         <div style={{ width: "430px" }}>

@@ -3,7 +3,7 @@ import { UserInfo } from '@/global/UserInfo.types';
 import { doc, updateDoc, arrayUnion, arrayRemove, Timestamp, getDoc } from 'firebase/firestore';
 
 async function updateAnimePreference(myUserInfo: UserInfo, animeID: string | undefined, hasReaction: boolean) {
-  if (!animeID) return;
+  if (!animeID || !myUserInfo.id) return;
 
   const docRef = doc(db, 'postPreferences', myUserInfo.username);
   const docSnap = await getDoc(docRef);
