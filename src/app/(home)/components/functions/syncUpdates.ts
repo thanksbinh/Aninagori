@@ -1,6 +1,6 @@
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
-import { setDoc, doc, collection, getDocs, query, where, updateDoc, arrayRemove, arrayUnion, serverTimestamp, writeBatch } from "firebase/firestore";
+import { setDoc, doc, collection, getDocs, query, where, arrayRemove, arrayUnion, serverTimestamp, writeBatch } from "firebase/firestore";
 import { getFriendList } from "./fetchData";
 
 export async function updateLastView(myUserInfo: UserInfo) {
@@ -32,17 +32,15 @@ async function updateMyAnimeList(myUserInfo: UserInfo, userUpdate: any) {
 }
 
 export async function updateStatusOnFriendLists(myUserInfo: UserInfo, postAnimeData: any) {
-  console.log(myUserInfo, postAnimeData)
+  if (postAnimeData.status === "plan_to_watch") return;
 
   const myFriendList = await getFriendList(myUserInfo)
-  console.log(myFriendList)
 
   const friendsDocsPromises = myFriendList.map((friend: any) => {
     const docQuery = query(collection(db, "users"), where("username", "==", friend.username))
     return getDocs(docQuery)
   })
   const friendsDocs = await Promise.all(friendsDocsPromises)
-  console.log(friendsDocs)
 
   const updatePromises = friendsDocs.map((friendDoc: any) => {
     if (!friendDoc.empty) {
@@ -70,10 +68,9 @@ export async function updateStatusOnFriendLists(myUserInfo: UserInfo, postAnimeD
     }
   })
   await Promise.all(updatePromises)
-  console.log(updatePromises)
 }
 
-export async function syncAnimeUpdate(myUserInfo: UserInfo, myFriendList: any, myAnimeList: any) {
+export async function syncAnimeUpdate(myUserInfo: UserInfo, myAnimeList: any) {
   if (!myUserInfo.mal_connect) {
     if (!myAnimeList) {
       await setDoc(doc(db, "myAnimeList", myUserInfo.username), {

@@ -22,7 +22,7 @@ export default async function Home() {
     fetchMyAnimeList(myUserInfo)
   ])
 
-  syncAnimeUpdate(myUserInfo, myFriendList, myAnimeList)
+  syncAnimeUpdate(myUserInfo, myAnimeList)
   updateLastView(myUserInfo)
 
   return (
