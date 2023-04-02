@@ -101,7 +101,7 @@ const PostAction: FC<PostDynamicProps> = ({
       </div>
 
       {/* 3 post actions */}
-      <div className="flex items-center justify-between border-t border-b border-ani-light-gray py-2 mx-2">
+      <div className="flex items-center justify-between border-t border-b border-ani-light-gray mx-2">
         <Reaction reactions={reactions} />
 
         <div className="flex">
