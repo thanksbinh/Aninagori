@@ -4,6 +4,12 @@ import { HiHeart, HiOutlineHeart } from "react-icons/hi2"
 import { PostContext } from "../context/PostContext"
 import { sentReaction, updateAnimePreference } from "./doReaction"
 
+interface ReactionItem {
+  id: number;
+  name: string;
+  image: string;
+}
+
 const Reaction = ({ reactions }: { reactions: Object[] }) => {
   const { myUserInfo, content, authorName, animeID, postId } = useContext(PostContext)
 
@@ -13,8 +19,9 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
   const ref = useRef(null)
   const visible = useIsVisible(ref)
 
-  const [showReactions, setShowReactions] = useState(false);
   const [reactionType, setReactionType] = useState("")
+  const [showReactions, setShowReactions] = useState(false);
+  const [hoveredReaction, setHoveredReaction] = useState<ReactionItem | null>(null);
 
   const refClick = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -37,10 +44,10 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
     };
   }, []);
 
-  const reactionList = [
+  const reactionList: ReactionItem[] = [
     { id: 1, name: "Naisu", image: "/reactions/Naisu.png" },
     { id: 2, name: "Kawaii", image: "/reactions/Kawaii.png" },
-    { id: 3, name: "Uwooaaghh", image: "/reactions/Uwooaaghh.png" },
+    { id: 3, name: "Haha", image: "/reactions/Uwooaaghh.png" },
     { id: 4, name: "Wow", image: "/reactions/Wow.png" },
     { id: 5, name: "Kakkoii", image: "/reactions/Kakkoii.png" },
     { id: 6, name: "Nani", image: "/reactions/Nani.png" },
@@ -83,9 +90,7 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
   return (
     <div ref={ref} className={`relative flex ${!reactionToggle ? "my-3" : ""}`}>
       <div className="flex justify-center items-center" ref={refClick}>
-        <button title="react" className="flex items-center space-x-1 text-gray-400 hover:text-[#F14141]"
-          onMouseEnter={onMouseEnter} onClick={() => onReaction("Naisu")}
-        >
+        <button title="react" className="flex items-center space-x-1 text-gray-400 hover:text-[#F14141]" onMouseEnter={onMouseEnter} onClick={() => onReaction("Naisu")}>
           {reactionToggle
             ? (
               <div className="w-12 h-12 rounded-full flex justify center item center">
@@ -99,9 +104,14 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
             {isOpen && (
               <div className="bg-white rounded-lg shadow-lg flex p-2" onMouseLeave={() => setShowReactions(false)}>
                 {reactionList.map((reaction) => (
-                  <div key={reaction.id} className="relative w-12 h-12 mx-2 rounded-full hover:scale-[1.2] transition-all duration-200">
-                    <img className="w-full h-auto" src={reaction.image} alt={reaction.name} />
-                    <button className="absolute inset-0 p-2 rounded-full" onClick={() => onReaction(reaction.name)}></button>
+                  <div className="relative flex flex-col items-center justify-center">
+                    {hoveredReaction?.id === reaction.id &&
+                      <div className="flex flex-col absolute -top-12 bg-black text-white p-1 rounded-lg">{reaction.name}</div>
+                    }
+                    <div key={reaction.id} className="flex relative w-12 h-12 mx-2 rounded-full hover:scale-[1.2] transition-all duration-200" onMouseEnter={() => setHoveredReaction(reaction)} onMouseLeave={() => setHoveredReaction(null)}>
+                      <img className="w-full h-auto" src={reaction.image} alt={reaction.name} />
+                      <button className="absolute inset-0 p-2 rounded-full" onClick={() => onReaction(reaction.name)}></button>
+                    </div>
                   </div>
                 ))}
               </div>
