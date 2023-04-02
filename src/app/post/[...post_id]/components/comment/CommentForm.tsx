@@ -18,6 +18,8 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
 
   const onComment = async (e: any) => {
     e.preventDefault()
+
+    if (!myUserInfo.username) return alert("You need to login to comment")
     if (!myComment.trim()) return;
 
     const lastComment = await sendComment(myUserInfo, myComment, authorName, content, postId)
@@ -28,6 +30,8 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
 
   const onReply = async (e: any) => {
     e.preventDefault()
+
+    if (!myUserInfo.username) return alert("You need to login to reply")
     if (!myComment.trim()) return;
 
     const lastComment = await sendReply(myUserInfo, myComment, postId, commentId!)

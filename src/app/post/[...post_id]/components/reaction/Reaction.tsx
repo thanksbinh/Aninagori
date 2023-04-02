@@ -28,6 +28,8 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
   }, [visible])
 
   const onReaction = async () => {
+    if (!myUserInfo.username) return alert("You need to login to react")
+
     const myReaction = {
       username: myUserInfo.username,
       image: myUserInfo.image, // Might be removed
