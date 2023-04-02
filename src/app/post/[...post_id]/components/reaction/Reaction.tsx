@@ -102,7 +102,7 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
         {showReactions && (
           <div className="absolute top-0 -mt-16 flex justify-between items-start w-full">
             {isOpen && (
-              <div className="bg-white rounded-lg shadow-lg flex p-2" onMouseLeave={() => setShowReactions(false)}>
+              <div className="bg-white rounded-lg shadow-lg flex p-2 scale-in-bl" onMouseLeave={() => setShowReactions(false)}>
                 {reactionList.map((reaction) => (
                   <div className="relative flex flex-col items-center justify-center">
                     {hoveredReaction?.id === reaction.id &&
