@@ -1,6 +1,6 @@
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
-import { setDoc, doc, collection, getDocs, query, where, updateDoc, arrayRemove, arrayUnion, serverTimestamp } from "firebase/firestore";
+import { setDoc, doc, collection, getDocs, query, where, updateDoc, arrayRemove, arrayUnion, serverTimestamp, writeBatch } from "firebase/firestore";
 import { getFriendList } from "./fetchData";
 
 export async function updateLastView(myUserInfo: UserInfo) {
@@ -50,22 +50,23 @@ export async function updateStatusOnFriendLists(myUserInfo: UserInfo, postAnimeD
       const oldInfo = friendDoc.docs[0].data().friend_list.find((info: any) => info.username === myUserInfo.username)
 
       if (!oldInfo) return;
+      const batch = writeBatch(db)
 
-      return Promise.all([
-        updateDoc(docRef, {
-          friend_list: arrayRemove(oldInfo)
-        }),
-        updateDoc(docRef, {
-          friend_list: arrayUnion({
-            ...oldInfo,
-            anime_status: {
-              status: postAnimeData.status,
-              updated_at: new Date(),
-              title: postAnimeData.anime_name,
-            }
-          })
-        }),
-      ])
+      batch.update(docRef, {
+        friend_list: arrayRemove(oldInfo)
+      })
+      batch.update(docRef, {
+        friend_list: arrayUnion({
+          ...oldInfo,
+          anime_status: {
+            status: postAnimeData.status,
+            updated_at: new Date(),
+            title: postAnimeData.anime_name,
+          }
+        })
+      })
+
+      return batch.commit()
     }
   })
   await Promise.all(updatePromises)
