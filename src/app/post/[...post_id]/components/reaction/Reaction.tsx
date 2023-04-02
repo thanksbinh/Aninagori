@@ -1,8 +1,8 @@
 import { useIsVisible } from "@/components/utils/useIsInViewport"
 import { useContext, useEffect, useRef, useState } from "react"
-import { HiHeart, HiOutlineHeart } from "react-icons/hi2"
+import { HiOutlineHeart } from "react-icons/hi2"
 import { PostContext } from "../context/PostContext"
-import { sentReaction, updateAnimePreference } from "./doReaction"
+import { sentReactionOnPost, updateAnimePreference } from "./doReaction"
 
 interface ReactionItem {
   id: number;
@@ -79,7 +79,7 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
       type: type
     }
 
-    sentReaction(myUserInfo, myReaction, reactionToggle, authorName, content, postId, reactions)
+    sentReactionOnPost(myUserInfo, myReaction, reactionToggle, authorName, content, postId, reactions)
     updateAnimePreference(myUserInfo, animeID, !reactionToggle)
     if (reactionType === type)
       setReactionToggle(!reactionToggle)
@@ -104,11 +104,11 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
             {isOpen && (
               <div className="bg-white rounded-lg shadow-lg flex p-2 scale-in-bl" onMouseLeave={() => setShowReactions(false)}>
                 {reactionList.map((reaction) => (
-                  <div className="relative flex flex-col items-center justify-center">
+                  <div key={reaction.id} className="relative flex flex-col items-center justify-center">
                     {hoveredReaction?.id === reaction.id &&
                       <div className="flex flex-col absolute -top-12 bg-black text-white p-1 rounded-lg">{reaction.name}</div>
                     }
-                    <div key={reaction.id} className="flex relative w-12 h-12 mx-2 rounded-full hover:scale-[1.2] transition-all duration-200" onMouseEnter={() => setHoveredReaction(reaction)} onMouseLeave={() => setHoveredReaction(null)}>
+                    <div className="flex relative w-12 h-12 mx-2 rounded-full hover:scale-[1.2] transition-all duration-200" onMouseEnter={() => setHoveredReaction(reaction)} onMouseLeave={() => setHoveredReaction(null)}>
                       <img className="w-full h-auto" src={reaction.image} alt={reaction.name} />
                       <button className="absolute inset-0 p-2 rounded-full" onClick={() => onReaction(reaction.name)}></button>
                     </div>
