@@ -1,5 +1,5 @@
 import { db } from "@/firebase/firebase-app";
-import { arrayRemove, arrayUnion, doc, updateDoc, writeBatch } from "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, doc, getDocs, updateDoc, writeBatch } from "firebase/firestore";
 import { UserInfo } from "../../global/UserInfo.types";
 import { Notification } from "../nav/notification/Notification.types";
 
@@ -11,16 +11,10 @@ async function unfriend(myUserInfo: UserInfo, userInfo: UserInfo) {
   const userRef = doc(db, 'users', userInfo.id);
 
   batch.update(myUserRef, {
-    friend_list: arrayRemove({
-      username: userInfo.username,
-      image: userInfo.image,
-    })
+    friend_list: arrayRemove(myUserInfo?.friend_list?.find((info: any) => info.username === userInfo.username))
   });
   batch.update(userRef, {
-    friend_list: arrayRemove({
-      username: myUserInfo.username,
-      image: myUserInfo.image,
-    })
+    friend_list: arrayRemove(userInfo?.friend_list?.find((info: any) => info.username === myUserInfo.username))
   });
 
   await batch.commit();

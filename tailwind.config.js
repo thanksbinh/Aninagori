@@ -14,13 +14,9 @@ module.exports = {
         'login-bg': "url('/wallpaper.png')",
       }),
       colors: {
-        // 'ani-black': '#212733',
         'ani-black': '#191c21',
-        // 'ani-light-gray': '#4e5d78',
         'ani-light-gray': '#373c47',
-        // 'ani-gray': '#191c21',
         'ani-gray': '#212733',
-        // 'ani-text-main': '#dddede'
         'ani-text-main': '#ffffff'
       },
     },

@@ -3,8 +3,8 @@
 import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
-import { SiThreedotjs } from "react-icons/si";
-import { PostContext } from "../context/PostContext";
+import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
+import { PostContext } from "../../PostContext";
 import { adminOptions, authorOptions, guestOptions } from "./userTypes";
 
 interface option {
@@ -50,7 +50,7 @@ const PostOptions = () => {
   return (
     <Menu as="div" ref={ref} className="relative inline-block text-left z-30">
       <Menu.Button onClick={() => setIsOpen(!isOpen)}>
-        <SiThreedotjs className="h-5 w-5" aria-hidden="true" />
+        <BsThreeDots className="h-5 w-5" aria-hidden="true" />
       </Menu.Button>
       <Transition
         show={isOpen}

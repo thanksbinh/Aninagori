@@ -1,6 +1,6 @@
 'use client'
 
-import { RiAddCircleLine } from "react-icons/ri"
+import { RiAddCircleLine } from "@react-icons/all-files/ri/RiAddCircleLine"
 
 export function AnimeComponent({ anime }: { anime: any }) {
   function formatMediaType(media_type: string) {

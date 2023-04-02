@@ -1,6 +1,6 @@
 'use client'
 
-import { formatDuration } from "@/components/utils/formatDuration";
+import { formatDuration } from "@/components/utils/format";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { UserInfo } from "../../../global/UserInfo.types";

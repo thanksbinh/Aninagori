@@ -1,7 +1,7 @@
 import { useIsVisible } from "@/components/utils/useIsInViewport"
 import { useContext, useEffect, useRef, useState } from "react"
-import { HiOutlineHeart } from "react-icons/hi2"
-import { PostContext } from "../context/PostContext"
+import { HiOutlineHeart } from "@react-icons/all-files/hi/HiOutlineHeart"
+import { PostContext } from "../../PostContext"
 import { sentReactionOnPost, updateAnimePreference } from "./doReaction"
 
 interface ReactionItem {
@@ -73,6 +73,8 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
   }, [visible])
 
   const onReaction = async (type: string) => {
+    if (!myUserInfo.username) return alert("You need to login to react")
+
     const myReaction = {
       username: myUserInfo.username,
       image: myUserInfo.image, // Might be removed

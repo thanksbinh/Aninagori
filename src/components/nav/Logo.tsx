@@ -18,7 +18,7 @@ const Logo = () => {
 
   return (
     <Link href="/" onClick={handleOnClick} className="text-lg font-semibold">
-      <Image src={logo} alt="logo" width={135} height={65} />
+      <Image src={logo} alt="logo" width={135} height={65} priority />
     </Link>
   )
 }

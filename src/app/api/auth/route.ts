@@ -40,40 +40,44 @@ export async function GET(request: Request, { params }: { params: any }) {
     code: authCode as any,
   }
   const urlEncodedParams = qs.stringify(urlParamsOauth)
-  const res = await fetch("https://myanimelist.net/v1/oauth2/token", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: urlEncodedParams,
-  })
-  const result = await res.json()
-
-  //4: Save Access Token and RefreshToken
-  const docRef = doc(db, "users", obj.userID)
-  //5: Get User information and saved info to firebase
-  const accessToken = result.access_token
-  const url = "https://api.myanimelist.net/v2/users/@me?fields=anime_statistics"
-  fetch(url, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-    .then((response) => response.json())
-    .then(async (data) => {
-      const res = await updateDoc(docRef, {
-        mal_connect: {
-          myAnimeList_username: data.name,
-          accessToken: result.access_token,
-          refreshToken: result.refresh_token,
-          expiresIn: result.expires_in,
-          createDate: serverTimestamp(),
-        },
-      })
-      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}user/${obj.username}`)
+  try {
+    const res = await fetch("https://myanimelist.net/v1/oauth2/token", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: urlEncodedParams,
     })
-    .catch((error) => console.error(error))
-  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}user/${obj.username}`)
+    const result = await res.json()
+
+    //4: Save Access Token and RefreshToken
+    const docRef = doc(db, "users", obj.userID)
+    //5: Get User information and saved info to firebase
+    const accessToken = result.access_token
+    const url = "https://api.myanimelist.net/v2/users/@me?fields=anime_statistics"
+    fetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+      .then((response) => response.json())
+      .then(async (data) => {
+        const res = await updateDoc(docRef, {
+          mal_connect: {
+            myAnimeList_username: data.name,
+            accessToken: result.access_token,
+            refreshToken: result.refresh_token,
+            expiresIn: result.expires_in,
+            createDate: serverTimestamp(),
+          },
+        })
+        return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}user/${obj.username}`)
+      })
+      .catch((error) => console.error(error))
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}user/${obj.username}`)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export const getServerSideProps = ({ req, res }: { req: any; res: any }) => {
