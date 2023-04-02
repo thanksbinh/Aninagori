@@ -1,14 +1,22 @@
-'use client'
+"use client"
 
-import PostContent from "@/app/post/[...post_id]/components/post/PostContent";
-import { db } from "@/firebase/firebase-app";
-import { UserInfo } from "@/global/UserInfo.types";
-import { collection, getCountFromServer } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import InfiniteScroll from 'react-infinite-scroller';
-import ContextProvider from "../../post/[...post_id]/components/context/PostContext";
-import PostAction from "../../post/[...post_id]/components/post/PostAction";
-import { fetchAllPosts, fetchFriendPosts, fetchMyAnimeList, fetchPostPreference, getAnimePreferenceScore, getFriendList, updateLastView } from "./recommendPost";
+import PostContent from "@/app/post/[...post_id]/components/post/PostContent"
+import { db } from "@/firebase/firebase-app"
+import { UserInfo } from "@/global/UserInfo.types"
+import { collection, getCountFromServer } from "firebase/firestore"
+import { useEffect, useState } from "react"
+import InfiniteScroll from "react-infinite-scroller"
+import ContextProvider from "../../post/[...post_id]/components/context/PostContext"
+import PostAction from "../../post/[...post_id]/components/post/PostAction"
+import {
+  fetchAllPosts,
+  fetchFriendPosts,
+  fetchMyAnimeList,
+  fetchPostPreference,
+  getAnimePreferenceScore,
+  getFriendList,
+  updateLastView,
+} from "./recommendPost"
 
 async function fetchCommentCount(postId: string) {
   const commentsRef = collection(db, "posts", postId, "comments")
@@ -42,14 +50,16 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
       const animeList = await fetchMyAnimeList(myUserInfo)
       setMyAnimeList(animeList?.animeList)
     }
-
     fetchData()
   }, [])
 
   function filterPosts(fetchedPosts: any) {
-    return (fetchedPosts.posts[0].authorName === myUserInfo.username) || //isFromMe
-      (friendList?.includes(fetchedPosts.posts[0].authorName)) || //isFromMyFriend
-      (Math.random() * 10 < getAnimePreferenceScore(myAnimeList, postPreference?.animeList, fetchedPosts.posts[0].post_anime_data?.anime_id)) //gachaTrue
+    return (
+      fetchedPosts.posts[0].authorName === myUserInfo.username || //isFromMe
+      friendList?.includes(fetchedPosts.posts[0].authorName) || //isFromMyFriend
+      Math.random() * 10 <
+        getAnimePreferenceScore(myAnimeList, postPreference?.animeList, fetchedPosts.posts[0].post_anime_data?.anime_id)
+    ) //gachaTrue
   }
 
   async function fetchPosts() {
@@ -71,7 +81,7 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
 
     if (fetchedPosts.lastKey) {
       if (filterPosts(fetchedPosts)) {
-        setPosts([...posts, ...fetchedPosts.posts]);
+        setPosts([...posts, ...fetchedPosts.posts])
       }
       setLastKey(fetchedPosts.lastKey)
     } else {

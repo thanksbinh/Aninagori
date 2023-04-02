@@ -1,14 +1,14 @@
-'use client';
+"use client"
 
-import { UserInfo } from '@/global/UserInfo.types';
-import React from 'react';
+import { UserInfo } from "@/global/UserInfo.types"
+import React from "react"
 
 interface PostContextType {
-  myUserInfo: UserInfo;
-  content: string;
-  authorName: string;
-  animeID?: string;
-  postId: string;
+  myUserInfo: UserInfo
+  content: string
+  authorName: string
+  animeID?: string
+  postId: string
 }
 
 export const PostContext = React.createContext<PostContextType>({
@@ -20,8 +20,8 @@ export const PostContext = React.createContext<PostContextType>({
   content: "",
   authorName: "",
   animeID: "",
-  postId: ""
-});
+  postId: "",
+})
 
 export default function ContextProvider({
   myUserInfo,
@@ -29,18 +29,16 @@ export default function ContextProvider({
   authorName,
   animeID,
   postId,
-  children
+  children,
 }: {
-  myUserInfo: UserInfo,
-  content: string,
-  authorName: string,
-  animeID?: string,
-  postId: string,
+  myUserInfo: UserInfo
+  content: string
+  authorName: string
+  animeID?: string
+  postId: string
   children: React.ReactNode
 }) {
   return (
-    <PostContext.Provider value={{ myUserInfo, content, authorName, animeID, postId }} >
-      {children}
-    </PostContext.Provider>
-  );
+    <PostContext.Provider value={{ myUserInfo, content, authorName, animeID, postId }}>{children}</PostContext.Provider>
+  )
 }

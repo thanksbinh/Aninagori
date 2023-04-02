@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { collection, addDoc, serverTimestamp } from "firebase/firestore"
+import { collection, addDoc, serverTimestamp, updateDoc, doc, arrayUnion } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { HiPhoto, HiVideoCamera } from "react-icons/hi2"
 import { useRouter } from "next/navigation"
@@ -18,6 +18,7 @@ import AnimeEpisodes from "./animePostComponent/AnimeEpisodes/AnimeEpisodes"
 import AnimeTag from "./animePostComponent/AnimeTag/AnimeTag"
 import AnimeScore from "./animePostComponent/AnimeScore/AnimeScore"
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
+import { convertWatchStatus, getDateNow, handleAnimeInformationPosting } from "@/components/utils/postingUtils"
 
 const cx = classNames.bind(styles)
 
@@ -49,7 +50,6 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
     const totalEps = (animeEpisodes?.current as any).getAnimeTotal()
     const tagData = (animeTag?.current as any).getAnimeTag()
     const scoreData = (animeScore?.current as any).getAnimeScore()
-    const resetTag = (animeTag?.current as any).resetAnimeTag
 
     e.preventDefault()
     if (!inputRef.current?.value && mediaUrl.length === 0) {
@@ -96,16 +96,37 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
         }).then((res) => res.json())
         promisePost.push(promiseUpdateMAL)
       } else {
-        console.log("User havent connect to MAL")
+        // user not connect with MAL
+        const myAnimeListRef = doc(db, "myAnimeList", username)
+        const dateNow = getDateNow()
+        const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + postAnimeData.anime_id).then(
+          (res) => res.json(),
+        )
+        const animeData = {
+          list_status: {
+            is_rewatching: false,
+            num_episodes_watched: postAnimeData.episodes_seen,
+            score: !!(postAnimeData as any).score ? (postAnimeData as any).score : 0,
+            status: convertWatchStatus(postAnimeData.watching_progress),
+            updated_at: dateNow,
+          },
+          node: {
+            id: postAnimeData.anime_id,
+            main_picture: animeInformation.main_picture,
+            title: animeInformation.title,
+          },
+        }
+        const myAnimeListPromise = updateDoc(myAnimeListRef, {
+          last_updated: dateNow,
+          animeList: arrayUnion(animeData),
+        })
+        promisePost.push(myAnimeListPromise as any)
+        console.log("user not connect with MAL")
       }
     }
     const result = await Promise.all(promisePost)
+    setLoadPosting(false)
     location.reload()
-    // inputRef.current!.value = ""
-    // setMediaUrl([])
-    // setOpen(false)
-    // setLoadPosting(false)
-    // resetTag()
   }
 
   const handlePaste = (e: any) => {
@@ -352,61 +373,3 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
 }
 
 export default PostFormPopUp
-
-function handleAnimeInformationPosting(
-  status: any,
-  animeInformation: any,
-  episodes: any,
-  tag: any,
-  totalEps: any,
-  score: any,
-) {
-  const postAnimeData = {
-    watching_progress: status,
-    anime_name: animeInformation.animeName,
-    anime_id: animeInformation.animeID,
-    episodes_seen: episodes,
-    total_episodes: parseInt(totalEps) === 0 ? "1" : totalEps + "",
-    tag: tag,
-  }
-
-  if (status === "Watching" && episodes === "0") {
-    postAnimeData.watching_progress = "is watching"
-    postAnimeData.episodes_seen = "1"
-  } else if (status === "Watching") {
-    postAnimeData.watching_progress = "is watching"
-  } else if (status === "Plan to watch") {
-    postAnimeData.watching_progress = "plan to watch"
-    postAnimeData.episodes_seen = "0"
-  } else if (status === "Finished") {
-    ;(postAnimeData as any).score = score
-    postAnimeData.watching_progress = "have finished"
-    postAnimeData.episodes_seen = postAnimeData.total_episodes
-  } else if (status === "Drop") {
-    postAnimeData.watching_progress = "have dropped"
-  }
-  if (postAnimeData.episodes_seen === postAnimeData.total_episodes) {
-    postAnimeData.watching_progress = "have finished"
-  }
-
-  return postAnimeData
-}
-
-function convertWatchStatus(watchStatus: string) {
-  switch (watchStatus) {
-    case "is watching":
-      return "watching"
-      break
-    case "have dropped":
-      return "dropped"
-      break
-    case "plan to watch":
-      return "plan_to_watch"
-      break
-    case "have finished":
-      return "completed"
-      break
-    default:
-      break
-  }
-}
