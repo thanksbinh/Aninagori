@@ -32,18 +32,24 @@ async function updateMyAnimeList(myUserInfo: UserInfo, userUpdate: any) {
 }
 
 export async function updateStatusOnFriendLists(myUserInfo: UserInfo, postAnimeData: any) {
+  console.log(myUserInfo, postAnimeData)
+
   const myFriendList = await getFriendList(myUserInfo)
+  console.log(myFriendList)
 
   const friendsDocsPromises = myFriendList.map((friend: any) => {
     const docQuery = query(collection(db, "users"), where("username", "==", friend.username))
     return getDocs(docQuery)
   })
   const friendsDocs = await Promise.all(friendsDocsPromises)
+  console.log(friendsDocs)
 
   const updatePromises = friendsDocs.map((friendDoc: any) => {
     if (!friendDoc.empty) {
       const docRef = friendDoc.docs[0].ref
       const oldInfo = friendDoc.docs[0].data().friend_list.find((info: any) => info.username === myUserInfo.username)
+
+      if (!oldInfo) return;
 
       return Promise.all([
         updateDoc(docRef, {
@@ -51,7 +57,8 @@ export async function updateStatusOnFriendLists(myUserInfo: UserInfo, postAnimeD
         }),
         updateDoc(docRef, {
           friend_list: arrayUnion({
-            ...oldInfo, anime_status: {
+            ...oldInfo,
+            anime_status: {
               status: postAnimeData.status,
               updated_at: new Date(),
               title: postAnimeData.anime_name,
@@ -62,6 +69,7 @@ export async function updateStatusOnFriendLists(myUserInfo: UserInfo, postAnimeD
     }
   })
   await Promise.all(updatePromises)
+  console.log(updatePromises)
 }
 
 export async function syncAnimeUpdate(myUserInfo: UserInfo, myFriendList: any, myAnimeList: any) {

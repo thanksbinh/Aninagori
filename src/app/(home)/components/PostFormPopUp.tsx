@@ -84,7 +84,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
           (animeSearch?.current as any).getAnimeName().animeID === "" ? { tag: postAnimeData.tag } : postAnimeData,
         comments: 0,
       }),
-    ]
+    ] as any
 
     try {
       // post have anime data
@@ -104,7 +104,8 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
           console.log("User havent connect to MAL")
         }
         // Update status on friend list
-        updateStatusOnFriendLists(myUserInfo, { ...postAnimeData, status: convertWatchStatus(postAnimeData.watching_progress) })
+        promisePost.push(updateStatusOnFriendLists(myUserInfo, { ...postAnimeData, status: convertWatchStatus(postAnimeData.watching_progress) }))
+
       }
       const result = await Promise.all(promisePost)
       location.reload()
