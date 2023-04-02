@@ -1,9 +1,8 @@
 import { useIsVisible } from "@/components/utils/useIsInViewport"
 import { useContext, useEffect, useRef, useState } from "react"
-import { HiHeart } from "@react-icons/all-files/hi/HiHeart"
 import { HiOutlineHeart } from "@react-icons/all-files/hi/HiOutlineHeart"
 import { PostContext } from "../../PostContext"
-import { sentReaction, updateAnimePreference } from "./doReaction"
+import { sentReactionOnPost, updateAnimePreference } from "./doReaction"
 
 interface ReactionItem {
   id: number;
