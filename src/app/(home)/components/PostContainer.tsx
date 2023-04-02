@@ -129,6 +129,7 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
           />
           <PostAction
             reactions={post.reactions}
+            animeID={post?.post_anime_data?.anime_id}
             commentCountPromise={fetchCommentCount(post.id)}
             comments={post.lastComment ? [post.lastComment] : []}
           />

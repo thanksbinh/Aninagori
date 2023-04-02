@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { collection, addDoc, serverTimestamp, updateDoc, doc, arrayUnion } from "firebase/firestore"
+import { collection, addDoc, serverTimestamp, updateDoc, doc, arrayUnion, setDoc } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { HiPhoto, HiVideoCamera } from "react-icons/hi2"
 import { useRouter } from "next/navigation"
@@ -18,7 +18,12 @@ import AnimeEpisodes from "./animePostComponent/AnimeEpisodes/AnimeEpisodes"
 import AnimeTag from "./animePostComponent/AnimeTag/AnimeTag"
 import AnimeScore from "./animePostComponent/AnimeScore/AnimeScore"
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
-import { convertWatchStatus, getDateNow, handleAnimeInformationPosting } from "@/components/utils/postingUtils"
+import {
+  adjustAnimeListArray,
+  convertWatchStatus,
+  getDateNow,
+  handleAnimeInformationPosting,
+} from "@/components/utils/postingUtils"
 
 const cx = classNames.bind(styles)
 
@@ -116,9 +121,11 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
             title: animeInformation.title,
           },
         }
-        const myAnimeListPromise = updateDoc(myAnimeListRef, {
+        // check if anime already in list, if in list, update that anime node
+        const animeDataAfterCheck = await adjustAnimeListArray(username, animeData)
+        const myAnimeListPromise = setDoc(myAnimeListRef, {
           last_updated: dateNow,
-          animeList: arrayUnion(animeData),
+          animeList: animeDataAfterCheck,
         })
         promisePost.push(myAnimeListPromise as any)
         console.log("user not connect with MAL")

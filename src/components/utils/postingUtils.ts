@@ -1,3 +1,6 @@
+import { db } from "@/firebase/firebase-app"
+import { doc, getDoc } from "firebase/firestore"
+
 export function getDateNow() {
   const now = new Date().toISOString().slice(0, -5) + "+00:00"
   return now
@@ -59,4 +62,26 @@ export function convertWatchStatus(watchStatus: string) {
     default:
       break
   }
+}
+
+// check if an anime have update before or not
+export async function adjustAnimeListArray(username: any, animeData: any) {
+  const myAnimeListRef = doc(db, "myAnimeList", username)
+  const myAnimeList = (await getDoc(myAnimeListRef)).data()
+  var canMerge = true
+  // no anime list data
+  if (!!!myAnimeList?.animeList) return [animeData]
+  const newDataArray = myAnimeList?.animeList.map((anime: any) => {
+    if (anime.node.id === animeData.node.id) {
+      canMerge = false
+      return animeData
+    }
+    return anime
+  })
+  // if anime data is not in the list
+  if (canMerge) {
+    return [animeData, ...myAnimeList?.animeList]
+  }
+  // if anime data is in the list
+  return newDataArray
 }

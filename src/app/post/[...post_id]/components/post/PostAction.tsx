@@ -1,32 +1,37 @@
-'use client';
+"use client"
 
-import { doc, onSnapshot } from "firebase/firestore";
-import { FC, useContext, useEffect, useRef, useState } from 'react';
-import { AiOutlineComment } from "react-icons/ai";
-import { RiAddCircleLine } from "react-icons/ri";
+import { arrayUnion, doc, onSnapshot, setDoc, updateDoc } from "firebase/firestore"
+import { FC, useContext, useEffect, useRef, useState } from "react"
+import { AiOutlineCheckCircle, AiOutlineComment, AiOutlineLoading, AiOutlineLoading3Quarters } from "react-icons/ai"
+import { RiAddCircleLine, RiCheckboxCircleLine } from "react-icons/ri"
 
-import Avatar from "@/components/avatar/Avatar";
-import { db } from "@/firebase/firebase-app";
-import { useRouter } from "next/navigation";
-import { CommentProps } from "../comment/Comment.types";
-import CommentForm from "../comment/CommentForm";
-import Comments from "../comment/Comments";
-import { PostContext } from "../context/PostContext";
-import Reaction from "../reaction/Reaction";
-import PostPopup from "./PostPopup";
+import Avatar from "@/components/avatar/Avatar"
+import { db } from "@/firebase/firebase-app"
+import { useRouter } from "next/navigation"
+import { CommentProps } from "../comment/Comment.types"
+import CommentForm from "../comment/CommentForm"
+import Comments from "../comment/Comments"
+import { PostContext } from "../context/PostContext"
+import Reaction from "../reaction/Reaction"
+import PostPopup from "./PostPopup"
+import { adjustAnimeListArray, convertWatchStatus, getDateNow } from "@/components/utils/postingUtils"
+import { useSession } from "next-auth/react"
+import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 
 interface PostDynamicProps {
-  reactions?: Object[];
-  commentCountPromise?: Promise<number> | number;
-  comments?: CommentProps[];
-  focusedComment?: string;
+  reactions?: Object[]
+  commentCountPromise?: Promise<number> | number
+  comments?: CommentProps[]
+  focusedComment?: string
+  animeID?: any
 }
 
 const PostAction: FC<PostDynamicProps> = ({
   reactions: reactions0 = [],
   commentCountPromise = 0,
   comments: comments0 = [],
-  focusedComment
+  focusedComment,
+  animeID,
 }) => {
   const { postId } = useContext(PostContext)
 
@@ -34,24 +39,26 @@ const PostAction: FC<PostDynamicProps> = ({
   const [commentCount, setCommentCount] = useState(0)
   const [comments, setComments] = useState<CommentProps[]>([])
   const [lastComment, setLastComment] = useState<CommentProps>()
-
-  const [postExpand, setPostExpand] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
+  const { data: session } = useSession()
+  const [postExpand, setPostExpand] = useState(false)
+  const [loadingPlanToWatch, setLoadingPlanTowatch] = useState(false)
+  const [planTowatch, setPlanTowatch] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
 
   // Update post's reaction realtime
   useEffect(() => {
-    if (!postId) return;
+    if (!postId) return
 
-    const postRef = doc(db, "posts", postId);
-    const unsubscribe = onSnapshot(postRef, docSnap => {
+    const postRef = doc(db, "posts", postId)
+    const unsubscribe = onSnapshot(postRef, (docSnap) => {
       setReactions(docSnap?.data()?.reactions || [])
     })
 
     return () => {
-      unsubscribe && unsubscribe();
-    };
-  }, []);
+      unsubscribe && unsubscribe()
+    }
+  }, [])
 
   useEffect(() => {
     async function fetchData() {
@@ -62,26 +69,51 @@ const PostAction: FC<PostDynamicProps> = ({
   }, [commentCountPromise])
 
   useEffect(() => {
-    comments0.length != comments.length && setComments(comments0);
-  }, [comments0]);
+    comments0.length != comments.length && setComments(comments0)
+  }, [comments0])
 
   useEffect(() => {
-    if (!lastComment) return;
+    if (!lastComment) return
 
     setCommentCount(commentCount + 1)
-    setComments([
-      ...comments,
-      lastComment
-    ])
+    setComments([...comments, lastComment])
   }, [lastComment])
 
   const onComment = () => {
-    inputRef.current && inputRef.current.focus();
-  };
+    inputRef.current && inputRef.current.focus()
+  }
 
-  const onPlanToWatch = () => {
-    console.log('Add to Plan to Watch');
-  };
+  const onPlanToWatch = async () => {
+    if (!!!animeID) {
+      alert("You can't plan to watch anime without name 😥")
+      return
+    }
+    setLoadingPlanTowatch(true)
+    const dateNow = getDateNow()
+    const myAnimeListRef = doc(db, "myAnimeList", session?.user?.name as any)
+    const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + animeID).then((res) => res.json())
+    const animeData = {
+      list_status: {
+        is_rewatching: false,
+        num_episodes_watched: 0,
+        score: 0,
+        status: "plan_to_watch",
+        updated_at: dateNow,
+      },
+      node: {
+        id: animeID,
+        main_picture: animeInformation.main_picture,
+        title: animeInformation.title,
+      },
+    }
+    const animeDataAfterCheck = await adjustAnimeListArray(session?.user?.name, animeData)
+    const myAnimeListPromise = await setDoc(myAnimeListRef, {
+      last_updated: dateNow,
+      animeList: animeDataAfterCheck,
+    })
+    setLoadingPlanTowatch(false)
+    setPlanTowatch(true)
+  }
 
   return (
     <div className="flex flex-col flex-1 bg-ani-gray rounded-2xl p-4 pt-0 rounded-t-none">
@@ -115,35 +147,61 @@ const PostAction: FC<PostDynamicProps> = ({
           <span className="text-gray-400 ml-2">{commentCount}</span>
         </div>
 
-        <button
-          title="plan to watch"
-          onClick={onPlanToWatch}
-          className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]"
-        >
-          <RiAddCircleLine className="w-5 h-5" />
-          <span>Plan to Watch</span>
-        </button>
+        {planTowatch && (
+          <button title="plan to watch" onClick={onPlanToWatch} className="flex items-center space-x-1 text-[#3BC361]">
+            <RiCheckboxCircleLine className="w-5 h-5" />
+            <span>Plan to Watch</span>
+          </button>
+        )}
+        {!planTowatch && !loadingPlanToWatch && (
+          <button
+            title="plan to watch"
+            onClick={onPlanToWatch}
+            className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]"
+          >
+            <RiAddCircleLine className="w-5 h-5" />
+            <span>Plan to Watch</span>
+          </button>
+        )}
+        {loadingPlanToWatch && (
+          <button
+            title="set plan to watch this anime..."
+            className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]"
+          >
+            <AiOutlineLoading3Quarters className="w-5 h-5 animate-spin" />
+            <span>Set plan to watch this anime</span>
+          </button>
+        )}
       </div>
 
       {/* Expand post */}
-      {
-        (commentCount > comments.length) &&
+      {commentCount > comments.length && (
         <div>
-          <div onClick={() => setPostExpand(true)} className="mt-4 ml-2 text-sm font-bold text-gray-400 hover:cursor-pointer hover:underline">View more comments</div>
+          <div
+            onClick={() => setPostExpand(true)}
+            className="mt-4 ml-2 text-sm font-bold text-gray-400 hover:cursor-pointer hover:underline"
+          >
+            View more comments
+          </div>
         </div>
-      }
-      {
-        postExpand &&
-        <PostPopup isOpen={postExpand} onClose={() => { setPostExpand(false); router.refresh(); }} />
-      }
+      )}
+      {postExpand && (
+        <PostPopup
+          isOpen={postExpand}
+          onClose={() => {
+            setPostExpand(false)
+            router.refresh()
+          }}
+        />
+      )}
 
       {/* Comments and comment's form */}
       <div className="mx-2">
         <Comments comments={comments} focusedComment={focusedComment} />
         <CommentForm setLastComment={setLastComment} inputRef={inputRef} />
       </div>
-    </div >
-  );
-};
+    </div>
+  )
+}
 
-export default PostAction;
+export default PostAction
