@@ -20,7 +20,7 @@ export default async function Home() {
         avatarUrl={myUserInfo.image}
         username={myUserInfo.username}
         isBanned={!!myUserInfo.is_banned}
-        malAuthCode={myUserInfo?.auth_code}
+        malAuthCode={myUserInfo?.mal_connect?.accessToken}
       />
 
       <Posts myUserInfo={myUserInfo} />

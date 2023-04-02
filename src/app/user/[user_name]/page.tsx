@@ -77,6 +77,7 @@ async function Profile({ params }: { params: { user_name: string } }) {
                   avatarUrl={adminData.image}
                   username={guessData.name || guessData.username}
                   isBanned={!!adminData.is_banned}
+                  malAuthCode={adminData?.mal_connect?.accessToken}
                 />
               </div>
             )}

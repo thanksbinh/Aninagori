@@ -16,7 +16,6 @@ async function getUserInfo(userId: string | undefined): Promise<UserInfo | undef
       is_admin: docSnap.data().is_admin,
       is_banned: docSnap.data().is_banned,
       mal_connect: docSnap.data().mal_connect,
-      auth_code: docSnap.data()?.mal_connect?.accessToken,
     }
   } else {
     console.log("No such document in NavBar/getUserInfo()!")
