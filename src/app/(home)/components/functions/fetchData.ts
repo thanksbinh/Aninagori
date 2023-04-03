@@ -5,7 +5,7 @@ import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"
 async function getFriendList(myUserInfo: UserInfo): Promise<string[]> {
   const userDoc = doc(db, "users", myUserInfo.id)
   const snapshot = await getDoc(userDoc)
-  return snapshot.data()?.friend_list.reverse() || []
+  return snapshot.data()?.friend_list?.reverse() || []
 }
 
 async function fetchMyAnimeList(myUserInfo: UserInfo) {
