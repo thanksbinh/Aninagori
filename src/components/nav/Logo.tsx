@@ -11,8 +11,8 @@ const Logo = () => {
 
   const handleOnClick = () => {
     router.refresh()
-    console.log(window.location.href)
-    if (window.location.href == process.env.NEXT_PUBLIC_BASE_URL)
+
+    if (window.location.href == window.location.origin + "/")
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
   }
 

@@ -1,18 +1,16 @@
-import { NextApiRequest, NextApiResponse } from "next"
 import { createHash } from "crypto"
-import axios from "axios"
-import { NextResponse, NextRequest } from "next/server"
-import { cookies } from "next/headers"
+import { NextResponse } from "next/server"
 import { db } from "@/firebase/firebase-app"
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore"
 import qs from "qs"
 
 const MYANIMELIST_CLIENT_ID = process.env.X_MAL_CLIENT_ID + ""
 const MYANIMELIST_CLIENT_SECRET = process.env.X_MAL_CLIENT_SECRET + ""
-const REDIRECT_URI = `${process.env.NEXT_PUBLIC_BASE_URL}api/auth`
-import { firebase } from "@/firebase/firebase-app"
 
 export async function GET(request: Request, { params }: { params: any }) {
+  const url = new URL(request.url)
+  const origin = `${url.protocol}//${url.hostname}${url.port ? ":" + url.port : ""}`
+  const REDIRECT_URI = `${origin}/api/auth`
   //first step of auth
   if (request.url === REDIRECT_URI) {
     const urlRedirect = `https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id=${MYANIMELIST_CLIENT_ID}&code_challenge=${request.headers.get(
@@ -71,10 +69,10 @@ export async function GET(request: Request, { params }: { params: any }) {
             createDate: serverTimestamp(),
           },
         })
-        return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}user/${obj.username}`)
+        return NextResponse.redirect(`${origin}/user/${obj.username}`)
       })
       .catch((error) => console.error(error))
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}user/${obj.username}`)
+    return NextResponse.redirect(`${origin}/user/${obj.username}`)
   } catch (error) {
     console.log(error)
   }
