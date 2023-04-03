@@ -9,6 +9,7 @@ import { faUser, faUserCheck, faUserMinus, faUserPlus } from '@fortawesome/free-
 import { Menu, Transition } from '@headlessui/react';
 import { useRouter } from 'next/navigation';
 import { Notification } from "@/components/nav/notification/Notification.types";
+import getProductionBaseUrl from '@/components/utils/getProductionBaseURL';
 
 export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: UserInfo; userInfo: UserInfo }) {
   const [content, setContent] = useState({ content: "Add friend", icon: faUserPlus })
@@ -56,7 +57,7 @@ export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: Use
   const handleAddFriend = async () => {
     // not log in and click add friend btn => redirect to login step
     if (!myUserInfo.id) {
-      window.location.href = process.env.NEXT_PUBLIC_BASE_URL as any
+      window.location.href = getProductionBaseUrl() + "/";
       return
     }
 
