@@ -44,8 +44,9 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any, myUserInfo: 
       }).then((res) => {
         setLoading(false)
         setDonePLanToWatch(true);
+        return;
       })
-
+      return;
     }
     // user not connect to MAL
     const dateNow = getDateNow()
