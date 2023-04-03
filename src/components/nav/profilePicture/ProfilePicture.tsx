@@ -29,7 +29,7 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
     }, []);
 
     useEffect(() => {
-        if (!myUserInfo?.username)
+        if (myUserInfo?.username === "guess")
             setOpenUsernamePopup(true)
     }, [myUserInfo])
 
