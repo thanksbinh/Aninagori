@@ -29,7 +29,7 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
     }, []);
 
     useEffect(() => {
-        if (!myUserInfo?.username)
+        if (myUserInfo?.username === "guess")
             setOpenUsernamePopup(true)
     }, [myUserInfo])
 
@@ -56,7 +56,7 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
             />
             {isOpen &&
                 <div className="absolute top-14 right-8 z-40 w-56 py-2 bg-ani-gray rounded-md shadow-lg">
-                    {myUserInfo?.username === "" ?
+                    {myUserInfo?.username === "guess" ?
                         <button onClick={() => setOpenUsernamePopup(true)} className="px-4 py-2 text-ani-text-main hover:bg-slate-50/25 w-full text-left">Set username</button> :
                         <div className="px-4 py-2 text-ani-text-main">{myUserInfo?.username}</div>
                     }

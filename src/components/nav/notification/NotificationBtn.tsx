@@ -49,7 +49,7 @@ const NotificationBtn: React.FC<Props> = ({ myUserInfo }) => {
         )}
       </button>
       <div className={showNotification ? "" : "hidden"}>
-        {myUserInfo &&
+        {myUserInfo?.username &&
           <NotiContext.Provider value={{ showNotification, setShowNotification }}>
             <NotificationContainer myUserInfo={myUserInfo} setUnreadNoti={setUnreadNoti} showNotification={showNotification} />
           </NotiContext.Provider>

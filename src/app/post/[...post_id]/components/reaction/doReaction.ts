@@ -52,7 +52,7 @@ async function sentReactionOnPost(myUserInfo: UserInfo, myReaction: any, reactio
   } else {
     const currentReaction = reactions2.find((e: any) => e.username === myUserInfo.username) as any
 
-    if (currentReaction.type === myReaction.type){
+    if (currentReaction?.type === myReaction.type) {
       await updateDoc(docRef, {
         reactions: arrayRemove(myReaction)
       });
@@ -63,12 +63,12 @@ async function sentReactionOnPost(myUserInfo: UserInfo, myReaction: any, reactio
       });
       await updateDoc(docRef, {
         reactions: arrayUnion(myReaction)
-      });  
+      });
     }
   }
 }
 
-async function sentReaction(myUserInfo: UserInfo, myReaction: any, reactionToggle: boolean, authorName: string, content: string, postId: string, commentId?: string){
+async function sentReaction(myUserInfo: UserInfo, myReaction: any, reactionToggle: boolean, authorName: string, content: string, postId: string, commentId?: string) {
   const docRef = commentId ?
     doc(db, 'posts', postId, 'comments', commentId) :
     doc(db, 'posts', postId)
