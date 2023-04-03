@@ -7,13 +7,12 @@ import AnimeFavorite from "@/app/user/[user_name]/profileComponent/AnimeFavorite
 import AnimeUpdate from "@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate"
 import { collection, doc, getDoc, query, where, getDocs } from "firebase/firestore"
 import { db } from "@/firebase/firebase-app"
-import { getServerSession } from "next-auth"
 import { authOptions } from "@/pages/api/auth/[...nextauth]"
 import { Suspense } from "react"
 import PostForm from "@/app/(home)/components/PostForm"
-import { getUserInfo } from "@/global/getUserInfo"
 import * as apiServices from "@/app/api/apiServices/apiServicesConfig"
 import ProfilePosts from "./profileComponent/posts/PostContainer"
+import { getServerSession } from "next-auth/next"
 
 const cx = classNames.bind(styles)
 

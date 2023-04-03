@@ -6,10 +6,11 @@ import { db } from "@/firebase/firebase-app"
 import { doc, setDoc } from "firebase/firestore"
 import { useSession } from "next-auth/react"
 import { useState } from "react"
-import { AiOutlineCheckCircle, AiOutlineLoading3Quarters } from "react-icons/ai"
-import { RiAddCircleLine, RiCheckboxCircleLine } from "react-icons/ri"
+import { AiOutlineLoading3Quarters } from "@react-icons/all-files/ai/AiOutlineLoading3Quarters"
+import { RiAddCircleLine } from "@react-icons/all-files/ri/RiAddCircleLine"
+import { RiCheckboxCircleLine } from "@react-icons/all-files/ri/RiCheckboxCircleLine"
 
-export function AnimeComponent({ anime }: { anime: any }) {
+export function AnimeComponent({ anime, myUserInfo }: { anime: any, myUserInfo: any }) {
   const [loading, setLoading] = useState(false)
   const [donePlanToWatch, setDonePLanToWatch] = useState(false)
   const { data: session } = useSession()
@@ -31,7 +32,22 @@ export function AnimeComponent({ anime }: { anime: any }) {
 
   async function handlePlanToWatch() {
     setLoading(true)
-    console.log("watchingg")
+    // user have connected to MAL
+    if (!!myUserInfo?.mal_connect?.accessToken) {
+      fetch(getProductionBaseUrl() + "/api/updatestatus/" + anime.id, {
+        headers: {
+          status: 'plan_to_watch',
+          episode: "0",
+          score: "0",
+          auth_code: myUserInfo?.mal_connect?.accessToken,
+        } as any,
+      }).then((res) => {
+        setLoading(false)
+        setDonePLanToWatch(true);
+      })
+
+    }
+    // user not connect to MAL
     const dateNow = getDateNow()
     const myAnimeListRef = doc(db, "myAnimeList", session?.user?.name as any)
     const animeData = {

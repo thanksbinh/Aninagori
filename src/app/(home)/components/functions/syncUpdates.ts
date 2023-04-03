@@ -1,7 +1,18 @@
-import { db } from "@/firebase/firebase-app";
-import { UserInfo } from "@/global/UserInfo.types";
-import { setDoc, doc, collection, getDocs, query, where, arrayRemove, arrayUnion, serverTimestamp, writeBatch } from "firebase/firestore";
-import { getFriendList } from "./fetchData";
+import { db } from "@/firebase/firebase-app"
+import { UserInfo } from "@/global/UserInfo.types"
+import {
+  setDoc,
+  doc,
+  collection,
+  getDocs,
+  query,
+  where,
+  arrayRemove,
+  arrayUnion,
+  serverTimestamp,
+  writeBatch,
+} from "firebase/firestore"
+import { getFriendList } from "./fetchData"
 
 export async function updateLastView(myUserInfo: UserInfo) {
   const preferenceDoc = doc(db, "postPreferences", myUserInfo.username)
@@ -10,29 +21,34 @@ export async function updateLastView(myUserInfo: UserInfo) {
 
 async function needUpdate(myUserInfo: UserInfo, myAnimeList: any): Promise<boolean | undefined> {
   try {
-    const urlCheck = "https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status&limit=1&sort=list_updated_at"
+    const urlCheck =
+      "https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status&limit=1&sort=list_updated_at"
     const userUpdateCheck = await fetch(urlCheck, {
-      cache: 'no-store',
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${myUserInfo.mal_connect?.accessToken}`,
       },
     }).then((res) => res.json())
 
-    if (userUpdateCheck?.data[0].list_status.updated_at != myAnimeList?.last_updated) return true;
+    if (userUpdateCheck?.data[0].list_status.updated_at != myAnimeList?.last_updated) return true
   } catch (error) {
     console.log(error)
   }
 }
 
 async function updateMyAnimeList(myUserInfo: UserInfo, userUpdate: any) {
-  await setDoc(doc(db, "myAnimeList", myUserInfo.username), {
-    animeList: userUpdate.data,
-    last_updated: userUpdate.data[0].list_status.updated_at,
-  }, { merge: true })
+  await setDoc(
+    doc(db, "myAnimeList", myUserInfo.username),
+    {
+      animeList: userUpdate.data,
+      last_updated: userUpdate.data[0].list_status.updated_at,
+    },
+    { merge: true },
+  )
 }
 
 export async function updateStatusOnFriendLists(myUserInfo: UserInfo, postAnimeData: any) {
-  if (postAnimeData.status === "plan_to_watch") return;
+  if (postAnimeData.status === "plan_to_watch") return
 
   const myFriendList = await getFriendList(myUserInfo)
 
@@ -47,11 +63,11 @@ export async function updateStatusOnFriendLists(myUserInfo: UserInfo, postAnimeD
       const docRef = friendDoc.docs[0].ref
       const oldInfo = friendDoc.docs[0].data().friend_list.find((info: any) => info.username === myUserInfo.username)
 
-      if (!oldInfo) return;
+      if (!oldInfo) return
       const batch = writeBatch(db)
 
       batch.update(docRef, {
-        friend_list: arrayRemove(oldInfo)
+        friend_list: arrayRemove(oldInfo),
       })
       batch.update(docRef, {
         friend_list: arrayUnion({
@@ -60,8 +76,8 @@ export async function updateStatusOnFriendLists(myUserInfo: UserInfo, postAnimeD
             status: postAnimeData.status,
             updated_at: new Date(),
             title: postAnimeData.anime_name,
-          }
-        })
+          },
+        }),
       })
 
       return batch.commit()
@@ -73,14 +89,18 @@ export async function updateStatusOnFriendLists(myUserInfo: UserInfo, postAnimeD
 export async function syncAnimeUpdate(myUserInfo: UserInfo, myAnimeList: any) {
   if (!myUserInfo.mal_connect) {
     if (!myAnimeList) {
-      await setDoc(doc(db, "myAnimeList", myUserInfo.username), {
-        last_updated: null,
-      }, { merge: true })
+      await setDoc(
+        doc(db, "myAnimeList", myUserInfo.username),
+        {
+          last_updated: null,
+        },
+        { merge: true },
+      )
     }
-    return;
+    return
   }
   if (!(await needUpdate(myUserInfo, myAnimeList))) {
-    return;
+    return
   }
 
   try {

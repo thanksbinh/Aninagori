@@ -1,22 +1,13 @@
 "use client"
 
-import PostContent from "@/app/post/[...post_id]/components/post/PostContent"
-import { db } from "@/firebase/firebase-app"
-import { UserInfo } from "@/global/UserInfo.types"
-import { collection, getCountFromServer } from "firebase/firestore"
-import { useEffect, useState } from "react"
-import InfiniteScroll from "react-infinite-scroller"
-import ContextProvider from "../../post/[...post_id]/components/context/PostContext"
-import PostAction from "../../post/[...post_id]/components/post/PostAction"
-import {
-  fetchAllPosts,
-  fetchFriendPosts,
-  fetchMyAnimeList,
-  fetchPostPreference,
-  getAnimePreferenceScore,
-  getFriendList,
-  updateLastView,
-} from "./recommendPost"
+import PostContent from "@/app/post/[...post_id]/components/post/PostContent";
+import { db } from "@/firebase/firebase-app";
+import { collection, getCountFromServer } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import InfiniteScroll from 'react-infinite-scroller';
+import ContextProvider from "../../post/[...post_id]/PostContext";
+import PostAction from "../../post/[...post_id]/components/post/PostAction";
+import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "./functions/recommendPost";
 
 async function fetchCommentCount(postId: string) {
   const commentsRef = collection(db, "posts", postId, "comments")
@@ -110,6 +101,9 @@ export default function Posts({ myUserInfo, myFriendList, myAnimeList, postPrefe
           />
           <PostAction
             reactions={post.reactions}
+            myUserInfo={myUserInfo}
+            animeName={post?.post_anime_data?.anime_name}
+            malAuthCode={myUserInfo?.mal_connect?.accessToken}
             animeID={post?.post_anime_data?.anime_id}
             commentCountPromise={fetchCommentCount(post.id)}
             comments={post.lastComment ? [post.lastComment] : []}

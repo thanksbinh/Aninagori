@@ -1,10 +1,11 @@
 "use client"
 
-import { arrayUnion, doc, onSnapshot, setDoc, updateDoc } from "firebase/firestore"
+import { doc, onSnapshot, setDoc } from "firebase/firestore"
 import { FC, useContext, useEffect, useRef, useState } from "react"
-import { AiOutlineCheckCircle, AiOutlineComment, AiOutlineLoading, AiOutlineLoading3Quarters } from "react-icons/ai"
-import { RiAddCircleLine, RiCheckboxCircleLine } from "react-icons/ri"
-
+import { AiOutlineLoading3Quarters } from "@react-icons/all-files/ai/AiOutlineLoading3Quarters"
+import { AiOutlineComment } from "@react-icons/all-files/ai/AiOutlineComment"
+import { RiAddCircleLine } from "@react-icons/all-files/ri/RiAddCircleLine"
+import { RiCheckboxCircleLine } from "@react-icons/all-files/ri/RiCheckboxCircleLine"
 import Avatar from "@/components/avatar/Avatar"
 import { db } from "@/firebase/firebase-app"
 import { useRouter } from "next/navigation"
@@ -17,13 +18,15 @@ import PostPopup from "./PostPopup"
 import { adjustAnimeListArray, convertWatchStatus, getDateNow } from "@/components/utils/postingUtils"
 import { useSession } from "next-auth/react"
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
-
 interface PostDynamicProps {
   reactions?: Object[]
   commentCountPromise?: Promise<number> | number
   comments?: CommentProps[]
   focusedComment?: string
   animeID?: any
+  malAuthCode?: any,
+  myUserInfo?: any,
+  animeName?: any
 }
 
 const PostAction: FC<PostDynamicProps> = ({
@@ -32,9 +35,11 @@ const PostAction: FC<PostDynamicProps> = ({
   comments: comments0 = [],
   focusedComment,
   animeID,
+  malAuthCode,
+  myUserInfo,
+  animeName
 }) => {
   const { postId } = useContext(PostContext)
-
   const [reactions, setReactions] = useState(reactions0)
   const [commentCount, setCommentCount] = useState(0)
   const [comments, setComments] = useState<CommentProps[]>([])
@@ -88,7 +93,23 @@ const PostAction: FC<PostDynamicProps> = ({
       alert("You can't plan to watch anime without name 😥")
       return
     }
+    // user have connect to MAL
     setLoadingPlanTowatch(true)
+    if (!!malAuthCode) {
+      fetch(getProductionBaseUrl() + "/api/updatestatus/" + animeID, {
+        headers: {
+          status: 'plan_to_watch',
+          episode: "0",
+          score: "0",
+          auth_code: malAuthCode,
+        } as any,
+      }).then((res) => {
+        setLoadingPlanTowatch(false)
+        setPlanTowatch(true)
+      })
+      return
+    }
+    // user not connect to MAL
     const dateNow = getDateNow()
     const myAnimeListRef = doc(db, "myAnimeList", session?.user?.name as any)
     const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + animeID).then((res) => res.json())
