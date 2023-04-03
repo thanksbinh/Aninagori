@@ -69,10 +69,10 @@ export async function GET(request: Request, { params }: { params: any }) {
             createDate: serverTimestamp(),
           },
         })
-        return NextResponse.redirect(`${origin}/user/${obj.username}`)
+        return NextResponse.redirect(`${origin}`)
       })
       .catch((error) => console.error(error))
-    return NextResponse.redirect(`${origin}/user/${obj.username}`)
+    return NextResponse.redirect(`${origin}`)
   } catch (error) {
     console.log(error)
   }
