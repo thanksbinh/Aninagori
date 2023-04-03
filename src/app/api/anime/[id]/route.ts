@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
-import { getAnimeInformation } from '../../apiServices/getServices';
+import { NextResponse } from "next/server"
+import { getAnimeInformation } from "../../apiServices/getServices"
 
 export async function GET(request: Request, { params }: { params: any }) {
-  const id = params.id;
-  const result: any = await getAnimeInformation(id);
+  const id = params.id
+  const result: any = await getAnimeInformation(id)
 
-  return NextResponse.json(result.data);
+  return NextResponse.json(result.data)
 }

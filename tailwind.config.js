@@ -9,7 +9,17 @@ module.exports = {
     './src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: (theme) => ({
+        'login-bg': "url('/wallpaper.png')",
+      }),
+      colors: {
+        'ani-black': '#191c21',
+        'ani-light-gray': '#373c47',
+        'ani-gray': '#212733',
+        'ani-text-main': '#ffffff'
+      },
+    },
   },
   plugins: [],
 };

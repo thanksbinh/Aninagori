@@ -2,17 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@200;300;400;500;600;700&family=Roboto:wght@100;300;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@200;300;400;500;600;700&family=Roboto:wght@100;300;700&display=swap");
 
 :root {
-  --font-family: 'Inter', sans-serif;
+  --font-family: "Inter", sans-serif;
   --gradient-text: linear-gradient(89.97deg, #ae67fa 1.84%, #f49867 102.67%);
   --primary-color: #191c21;
   --text-color: white;
-}
-
-.section__padding {
-  padding: 2rem 3rem;
 }
 
 .setBackground {
@@ -35,16 +31,14 @@
 
 html {
   /* font-size: 62.5%; */
+  height: 100%;
 }
 
 body {
   /* font-size: 1.6rem; */
   color: var(--text-color);
   font-family: var(--font-family);
-}
-
-.section__margin {
-  margin: 4rem 6rem;
+  background-color: #191c21;
 }
 
 .gradient__text {
@@ -65,12 +59,24 @@ body {
   line-height: 22px;
 }
 
-.tippy-arrow {
-  color: rgba(84, 84, 84, 1) !important;
+.tippy-box[data-placement^="bottom"]>.tippy-arrow {
+  top: -1px;
 }
 
-.tippy-box[data-placement^='bottom'] > .tippy-arrow {
-  top: -1px;
+.react-slideshow-container {
+  border-radius: 1rem
+    /* 16px */
+  ;
+  overflow: hidden;
+}
+
+.react-slideshow-container:hover .nav.default-nav {
+  display: flex !important;
+}
+
+.nav.default-nav {
+  z-index: -1;
+  display: none !important;
 }
 
 .liked-avatar:not(:first-child) {
@@ -95,4 +101,70 @@ body {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(-10px, 0);
+  }
+
+  50% {
+    transform: translate(10px, 0);
+  }
+
+  75% {
+    transform: translate(-10px, 0);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.5s infinite;
+}
+
+/* scale in bottom left animation */
+.scale-in-bl {
+	-webkit-animation: scale-in-bl 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+	        animation: scale-in-bl 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+ @-webkit-keyframes scale-in-bl {
+  0% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+    -webkit-transform-origin: 0% 100%;
+            transform-origin: 0% 100%;
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-transform-origin: 0% 100%;
+            transform-origin: 0% 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in-bl {
+  0% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+    -webkit-transform-origin: 0% 100%;
+            transform-origin: 0% 100%;
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-transform-origin: 0% 100%;
+            transform-origin: 0% 100%;
+    opacity: 1;
+  }
 }

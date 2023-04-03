@@ -2,10 +2,10 @@ import NextAuth, { NextAuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { FirestoreAdapter } from "@next-auth/firebase-adapter"
-import { signInWithCustomToken, signInWithEmailAndPassword } from "firebase/auth"
+import { signInWithEmailAndPassword } from "firebase/auth"
 import { auth, db } from "@/firebase/firebase-app"
-import { getAuth } from "firebase-admin/auth"
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore"
+import { cert } from "firebase-admin/app"
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -48,7 +48,13 @@ export const authOptions: NextAuthOptions = {
     pages: {
         signIn: '/login'
     },
-    adapter: FirestoreAdapter(firebaseConfig),
+    adapter: FirestoreAdapter({
+        credential: cert({
+            projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+            privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        })
+    }),
     session: {
         strategy: "jwt"
     },
@@ -62,7 +68,7 @@ export const authOptions: NextAuthOptions = {
             if (isNewUser == true) {
                 try {
                     const userRef = doc(db, 'users', token.sub!);
-                    updateDoc(userRef, { joined_date: serverTimestamp(), username: "guess" });
+                    await updateDoc(userRef, { joined_date: serverTimestamp(), username: "guess" });
                 } catch (error) {
                     console.log(error)
                 }

@@ -1,20 +1,12 @@
-import { db } from "@/firebase/firebase-app";
-import { arrayRemove, arrayUnion, doc, Timestamp, updateDoc } from "firebase/firestore";
-import { useRouter } from "next/navigation";
-import { UserInfo } from "../NavBar";
+'use client'
 
-export interface Notification {
-  title: string;
-  url: string;
-  sender: {
-    id: string;
-    username: string;
-    image: string;
-  };
-  type: string;
-  timestamp: Timestamp;
-  read: boolean;
-}
+import { formatDuration } from "@/components/utils/format";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { UserInfo } from "../../../global/UserInfo.types";
+import { Notification } from "./Notification.types";
+import { NotiContext } from "./NotificationBtn";
+import { markAsRead } from "./NotificationContainer";
 
 interface Props {
   notification: Notification;
@@ -23,68 +15,44 @@ interface Props {
 
 const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) => {
   const router = useRouter()
+  const { setShowNotification } = useContext(NotiContext)
 
   const handleClickProfile = () => {
+    setShowNotification(false)
     router.push('/user/' + notification.sender.username)
+
+    if (!notification.read)
+      markAsRead(myUserInfo.username, notification)
   }
 
   const handleClickNoti = () => {
-    const userRef = doc(db, "users", myUserInfo.id);
-    if (notification.read) return;
-
-    updateDoc(userRef, {
-      notification: arrayRemove(notification)
-    });
-
-    updateDoc(userRef, {
-      notification: arrayUnion({
-        ...notification,
-        read: true
-      })
-    });
-
+    setShowNotification(false)
     router.push(notification.url)
+
+    if (!notification.read)
+      markAsRead(myUserInfo.username, notification)
   }
 
   return (
-    <div className="flex items-center bg-white rounded-lg px-3 py-4 hover:cursor-pointer hover:bg-gray-100">
-      <img
-        src={notification.sender.image || '/bocchi.jpg'}
-        alt={`${notification.sender.username}'s avatar`}
-        onClick={handleClickProfile}
-        className="h-10 w-10 rounded-full mr-4"
-      />
-      <div onClick={handleClickNoti}>
-        <p className="text-sm font-medium text-gray-900">
-          {notification.title}
-        </p>
-        <p className="text-xs text-gray-500">
-          {formatDuration(new Date().getTime() - notification.timestamp.toDate().getTime())} - {notification.read ? "read" : "not read"}
-        </p>
+    <>
+      <div className="flex items-center bg-ani-gray rounded-lg mx-2 px-3 py-4 hover:cursor-pointer hover:bg-slate-50/25">
+        <img
+          src={notification.sender.image || '/bocchi.jpg'}
+          alt={`${notification.sender.username}'s avatar`}
+          onClick={handleClickProfile}
+          className="h-10 w-10 rounded-full mr-4"
+        />
+        <div onClick={handleClickNoti}>
+          <p className={`text-sm font-medium ${notification.read ? "text-[#a5a5a5]" : "text-white"}`}>
+            {notification.title}
+          </p>
+          <p className={`text-xs ${notification.read ? "text-[#a5a5a5]" : "text-[#377dff]"}`}>
+            {formatDuration(new Date().getTime() - notification.timestamp.toDate().getTime())}
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
-
-export function formatDuration(milliseconds: number): string {
-  const seconds = Math.floor(milliseconds / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  if (days > 0) {
-    return `${days} day${days > 1 ? 's' : ''} ago`;
-  }
-
-  if (hours > 0) {
-    return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-  }
-
-  if (minutes > 0) {
-    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-  }
-
-  return 'less than a minute ago';
-}
 
 export default NotificationComponent;
