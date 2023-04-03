@@ -10,21 +10,29 @@ interface ReactionItem {
   image: string;
 }
 
-const Reaction = ({ reactions }: { reactions: Object[] }) => {
+const reactionList: ReactionItem[] = [
+  { id: 1, name: "Naisu", image: "/reactions/Naisu.png" },
+  { id: 2, name: "Kawaii", image: "/reactions/Kawaii.png" },
+  { id: 3, name: "Haha", image: "/reactions/Uwooaaghh.png" },
+  { id: 4, name: "Wow", image: "/reactions/Wow.png" },
+  { id: 5, name: "Kakkoii", image: "/reactions/Kakkoii.png" },
+  { id: 6, name: "Nani", image: "/reactions/Nani.png" },
+];
+
+const Reaction = ({ reactions, setReactions }: { reactions: any, setReactions: any }) => {
   const { myUserInfo, content, authorName, animeID, postId } = useContext(PostContext)
 
   const [reactionToggle, setReactionToggle] = useState(reactions.some((e: any) => e.username === myUserInfo.username))
-  const [read, setRead] = useState(false)
+  const [reactionType, setReactionType] = useState(reactions.find((e: any) => e.username === myUserInfo.username)?.type)
+
+  const [showReactions, setShowReactions] = useState(false);
+  const [hoveredReaction, setHoveredReaction] = useState<ReactionItem | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const refClick = useRef<HTMLDivElement>(null);
 
   const ref = useRef(null)
   const visible = useIsVisible(ref)
-
-  const [reactionType, setReactionType] = useState("")
-  const [showReactions, setShowReactions] = useState(false);
-  const [hoveredReaction, setHoveredReaction] = useState<ReactionItem | null>(null);
-
-  const refClick = useRef<HTMLDivElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [read, setRead] = useState(false)
 
   function onMouseEnter() {
     setIsOpen(true);
@@ -44,23 +52,11 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
     };
   }, []);
 
-  const reactionList: ReactionItem[] = [
-    { id: 1, name: "Naisu", image: "/reactions/Naisu.png" },
-    { id: 2, name: "Kawaii", image: "/reactions/Kawaii.png" },
-    { id: 3, name: "Haha", image: "/reactions/Uwooaaghh.png" },
-    { id: 4, name: "Wow", image: "/reactions/Wow.png" },
-    { id: 5, name: "Kakkoii", image: "/reactions/Kakkoii.png" },
-    { id: 6, name: "Nani", image: "/reactions/Nani.png" },
-  ];
-
   useEffect(() => {
-    if (reactions.length) {
-      const myReaction = reactions.find((e: any) => e.username === myUserInfo.username) as any
-      if (!myReaction) return;
+    if (!reactions) return;
 
-      setReactionToggle(true)
-      setReactionType(myReaction.type)
-    }
+    setReactionToggle(reactions.some((e: any) => e.username === myUserInfo.username))
+    setReactionType(reactions.find((e: any) => e.username === myUserInfo.username)?.type)
   }, [reactions])
 
   useEffect(() => {
@@ -83,14 +79,14 @@ const Reaction = ({ reactions }: { reactions: Object[] }) => {
 
     sentReactionOnPost(myUserInfo, myReaction, reactionToggle, authorName, content, postId, reactions)
     updateAnimePreference(myUserInfo, animeID, !reactionToggle)
-    if (reactionType === type)
-      setReactionToggle(!reactionToggle)
-    else
-      setReactionType(type)
+
+    let newReactions = reactions.filter((e: any) => e.username !== myUserInfo.username);
+    (!reactionToggle || (reactionType != type)) && (newReactions = [...newReactions, myReaction])
+    setReactions(newReactions)
   }
 
   return (
-    <div ref={ref} className={`relative flex ${!reactionToggle ? "my-3" : ""}`}>
+    <div ref={ref} className={`relative flex ${!reactionToggle ? "py-3 px-3" : ""}`}>
       <div className="flex justify-center items-center" ref={refClick}>
         <button title="react" className="flex items-center space-x-1 text-gray-400 hover:text-[#F14141]" onMouseEnter={onMouseEnter} onClick={() => onReaction("Naisu")}>
           {reactionToggle

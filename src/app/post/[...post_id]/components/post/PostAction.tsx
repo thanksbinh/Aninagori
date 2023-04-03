@@ -1,17 +1,14 @@
 'use client';
 
-import { doc, onSnapshot } from "firebase/firestore";
-import { FC, useContext, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { AiOutlineComment } from "@react-icons/all-files/ai/AiOutlineComment";
 import { RiAddCircleLine } from "@react-icons/all-files/ri/RiAddCircleLine";
 
 import Avatar from "@/components/avatar/Avatar";
-import { db } from "@/firebase/firebase-app";
 import { useRouter } from "next/navigation";
 import { CommentProps } from "../comment/Comment.types";
 import CommentForm from "../comment/CommentForm";
 import Comments from "../comment/Comments";
-import { PostContext } from "../../PostContext";
 import Reaction from "../reaction/Reaction";
 import PostPopup from "./PostPopup";
 
@@ -28,8 +25,6 @@ const PostAction: FC<PostDynamicProps> = ({
   comments: comments0 = [],
   focusedComment
 }) => {
-  const { postId } = useContext(PostContext)
-
   const [reactions, setReactions] = useState(reactions0)
   const [commentCount, setCommentCount] = useState(0)
   const [comments, setComments] = useState<CommentProps[]>([])
@@ -38,20 +33,6 @@ const PostAction: FC<PostDynamicProps> = ({
   const [postExpand, setPostExpand] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-
-  // Update post's reaction realtime
-  useEffect(() => {
-    if (!postId) return;
-
-    const postRef = doc(db, "posts", postId);
-    const unsubscribe = onSnapshot(postRef, docSnap => {
-      setReactions(docSnap?.data()?.reactions || [])
-    })
-
-    return () => {
-      unsubscribe && unsubscribe();
-    };
-  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -102,7 +83,7 @@ const PostAction: FC<PostDynamicProps> = ({
 
       {/* 3 post actions */}
       <div className="flex items-center justify-between border-t border-b border-ani-light-gray mx-2">
-        <Reaction reactions={reactions} />
+        <Reaction reactions={reactions} setReactions={setReactions} />
 
         <div className="flex">
           <button
@@ -118,7 +99,7 @@ const PostAction: FC<PostDynamicProps> = ({
         <button
           title="plan to watch"
           onClick={onPlanToWatch}
-          className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]"
+          className="flex items-center px-3 space-x-1 text-gray-400 hover:text-[#E5DE3D]"
         >
           <RiAddCircleLine className="w-5 h-5" />
           <span>Plan to Watch</span>
