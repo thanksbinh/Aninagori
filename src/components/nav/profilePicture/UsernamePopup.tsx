@@ -19,6 +19,7 @@ const UsernamePopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
 			const userRef = doc(db, 'users', (session as any).data.user?.id);
 			await updateDoc(userRef, { username: values.username });
 			router.refresh();
+			onClose()
 
 		} catch (error) {
 			console.log(error)
@@ -85,7 +86,6 @@ const UsernamePopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
 								</button>
 							) : (
 								<button
-									onClick={onClose}
 									type="submit"
 									disabled={formik.isSubmitting}
 									className="bg-blue-500 hover:bg-blue-700 text-ani-text-main font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
