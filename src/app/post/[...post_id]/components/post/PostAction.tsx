@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation"
 import { CommentProps } from "../comment/Comment.types"
 import CommentForm from "../comment/CommentForm"
 import Comments from "../comment/Comments"
-import { PostContext } from "../context/PostContext"
+import { PostContext } from "../../PostContext"
 import Reaction from "../reaction/Reaction"
 import PostPopup from "./PostPopup"
 import { adjustAnimeListArray, convertWatchStatus, getDateNow } from "@/components/utils/postingUtils"
@@ -133,7 +133,7 @@ const PostAction: FC<PostDynamicProps> = ({
       </div>
 
       {/* 3 post actions */}
-      <div className="flex items-center justify-between border-t border-b border-ani-light-gray py-2 mx-2">
+      <div className="flex items-center justify-between border-t border-b border-ani-light-gray mx-2">
         <Reaction reactions={reactions} />
 
         <div className="flex">

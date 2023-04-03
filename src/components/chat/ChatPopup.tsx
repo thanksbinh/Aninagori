@@ -4,21 +4,22 @@ import Avatar from "../avatar/Avatar";
 import Messages from "./Messages";
 import MessageForm from "./MessageForm";
 import { UserInfo } from "@/global/UserInfo.types";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { IoCloseOutline } from "react-icons/io5";
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
+import { MdClose } from "@react-icons/all-files/md/MdClose";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
+import { HomeContext } from "@/app/(home)/HomeContext";
 
 interface ChatPopupProps {
-    myUserInfo: UserInfo,
     showChat: boolean,
     setShowChat: Dispatch<SetStateAction<boolean>>,
     recipient: string,
     image: string
 }
 
-const ChatPopup: React.FC<ChatPopupProps> = ({ myUserInfo, showChat, setShowChat, recipient, image }) => {
+const ChatPopup: React.FC<ChatPopupProps> = ({ showChat, setShowChat, recipient, image }) => {
     const [conversationId, setConversationId] = useState("");
+    const { myUserInfo } = useContext(HomeContext)
 
     useEffect(() => {
         async function getConversationId() {
@@ -62,7 +63,7 @@ const ChatPopup: React.FC<ChatPopupProps> = ({ myUserInfo, showChat, setShowChat
                         </div>
                         <div className="flex justify-center items-start">
                             <div className="p-2 rounded-full hover:bg-[#212833]">
-                                <IoCloseOutline onClick={closeChat} />
+                                <MdClose onClick={closeChat} />
                             </div>
                         </div>
                     </div>

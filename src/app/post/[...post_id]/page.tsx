@@ -1,10 +1,10 @@
-import { formatDuration } from "@/components/utils/formatDuration";
+import { formatDuration } from "@/components/utils/format";
 import { db } from "@/firebase/firebase-app";
 import { getUserInfo } from "@/global/getUserInfo";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { collection, doc, getDoc, getDocs, orderBy, query } from "firebase/firestore";
 import { getServerSession } from "next-auth";
-import ContextProvider from "./components/context/PostContext";
+import ContextProvider from "./PostContext";
 import PostAction from "./components/post/PostAction";
 import PostContent from "./components/post/PostContent";
 

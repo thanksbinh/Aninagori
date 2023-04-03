@@ -106,12 +106,16 @@ async function AnimeComponent({ mal_username, access_token }: { mal_username: st
 }
 
 function getAnimeStatus(access_token: any) {
-  const url = "https://api.myanimelist.net/v2/users/@me?fields=anime_statistics"
-  return fetch(url, {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-  }).then((res) => res.json())
+  try {
+    const url = "https://api.myanimelist.net/v2/users/@me?fields=anime_statistics"
+    return fetch(url, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    }).then((res) => res.json())
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 function getAnimeFavorite(mal_username: any) {
@@ -119,15 +123,19 @@ function getAnimeFavorite(mal_username: any) {
 }
 
 async function getUserAnimeUpdate(access_token: any, mal_username: any) {
-  const url =
-    "https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status,num_episodes&limit=3&sort=list_updated_at"
-  const userUpdate = fetch(url, {
-    cache: "no-store",
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-  }).then((res) => res.json())
-  return userUpdate
+  try {
+    const url =
+      "https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status,num_episodes&limit=3&sort=list_updated_at"
+    const userUpdate = fetch(url, {
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    }).then((res) => res.json())
+    return userUpdate
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export default Profile

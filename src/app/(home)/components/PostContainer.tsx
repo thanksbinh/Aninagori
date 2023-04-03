@@ -25,41 +25,22 @@ async function fetchCommentCount(postId: string) {
   return commentCount
 }
 
-export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
+export default function Posts({ myUserInfo, myFriendList, myAnimeList, postPreference }: any) {
   const [posts, setPosts] = useState<any>([])
   const [hasMore, setHasMore] = useState(true)
   const [lastKey, setLastKey] = useState<any>({})
   const [friendPostIds, setFriendPostIds] = useState<string[]>(["0"])
-  const [friendList, setFriendList] = useState<string[]>([])
-  const [hasMoreFriendPosts, setHasMoreFriendPosts] = useState(true)
-  const [myAnimeList, setMyAnimeList] = useState<any>([])
-  const [postPreference, setPostPreference] = useState<any>()
+  const [myFriendUsernameList, setMyFriendUsernameList] = useState<string[]>([])
+  const [hasMoreFriendPosts, setHasMoreFriendPosts] = useState(myFriendList?.length > 0)
 
   useEffect(() => {
-    async function fetchData() {
-      const [myFriendList, postPreference] = await Promise.all([
-        getFriendList(myUserInfo),
-        fetchPostPreference(myUserInfo),
-      ])
-      setFriendList(myFriendList)
-      setHasMoreFriendPosts(myFriendList?.length > 0)
-
-      setPostPreference(postPreference)
-      updateLastView(myUserInfo)
-
-      const animeList = await fetchMyAnimeList(myUserInfo)
-      setMyAnimeList(animeList?.animeList)
-    }
-    fetchData()
-  }, [])
+    myFriendList && setMyFriendUsernameList(myFriendList.map((friend: any) => friend.username))
+  }, [myFriendList])
 
   function filterPosts(fetchedPosts: any) {
-    return (
-      fetchedPosts.posts[0].authorName === myUserInfo.username || //isFromMe
-      friendList?.includes(fetchedPosts.posts[0].authorName) || //isFromMyFriend
-      Math.random() * 10 <
-        getAnimePreferenceScore(myAnimeList, postPreference?.animeList, fetchedPosts.posts[0].post_anime_data?.anime_id)
-    ) //gachaTrue
+    return (fetchedPosts.posts[0].authorName === myUserInfo.username) || //isFromMe
+      (myFriendUsernameList?.includes(fetchedPosts.posts[0].authorName)) || //isFromMyFriend
+      (Math.random() * 10 < getAnimePreferenceScore(myAnimeList, postPreference?.animeList, fetchedPosts.posts[0].post_anime_data?.anime_id)) //gachaTrue
   }
 
   async function fetchPosts() {
@@ -67,7 +48,7 @@ export default function Posts({ myUserInfo }: { myUserInfo: UserInfo }) {
 
     let fetchedPosts
     if (hasMoreFriendPosts) {
-      fetchedPosts = await fetchFriendPosts(myUserInfo, friendList, postPreference.last_view, lastKey)
+      fetchedPosts = await fetchFriendPosts(myUserInfo, myFriendUsernameList, postPreference.last_view, lastKey)
 
       if (fetchedPosts.posts.length) {
         setFriendPostIds([...friendPostIds, ...fetchedPosts.posts.map((post: any) => post.id)])

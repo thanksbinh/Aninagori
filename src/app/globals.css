@@ -11,10 +11,6 @@
   --text-color: white;
 }
 
-.section__padding {
-  padding: 2rem 3rem;
-}
-
 .setBackground {
   width: 100vw;
   height: 100vh;
@@ -43,10 +39,6 @@ body {
   color: var(--text-color);
   font-family: var(--font-family);
   background-color: #191c21;
-}
-
-.section__margin {
-  margin: 4rem 6rem;
 }
 
 .gradient__text {
@@ -135,4 +127,44 @@ body {
 
 .animate-shake {
   animation: shake 0.5s infinite;
+}
+
+/* scale in bottom left animation */
+.scale-in-bl {
+	-webkit-animation: scale-in-bl 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+	        animation: scale-in-bl 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+ @-webkit-keyframes scale-in-bl {
+  0% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+    -webkit-transform-origin: 0% 100%;
+            transform-origin: 0% 100%;
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-transform-origin: 0% 100%;
+            transform-origin: 0% 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in-bl {
+  0% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+    -webkit-transform-origin: 0% 100%;
+            transform-origin: 0% 100%;
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-transform-origin: 0% 100%;
+            transform-origin: 0% 100%;
+    opacity: 1;
+  }
 }

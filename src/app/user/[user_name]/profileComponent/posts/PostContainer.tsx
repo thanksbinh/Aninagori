@@ -1,9 +1,9 @@
 'use client'
 
-import ContextProvider from "@/app/post/[...post_id]/components/context/PostContext";
+import ContextProvider from "@/app/post/[...post_id]/PostContext";
 import PostAction from "@/app/post/[...post_id]/components/post/PostAction";
 import PostContent from "@/app/post/[...post_id]/components/post/PostContent";
-import { formatDuration } from "@/components/utils/formatDuration";
+import { formatDuration } from "@/components/utils/format";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
 import { collection, getCountFromServer, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";

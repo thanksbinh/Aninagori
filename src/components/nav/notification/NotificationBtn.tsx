@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import NotificationContainer from "./NotificationContainer";
-import { BsBellFill } from 'react-icons/bs';
+import { BsBellFill } from '@react-icons/all-files/bs/BsBellFill';
 
 interface UserInfo {
   "id": string,

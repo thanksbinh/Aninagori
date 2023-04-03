@@ -1,36 +1,7 @@
-import { formatDuration } from "@/components/utils/formatDuration"
-import { db } from "@/firebase/firebase-app"
-import { UserInfo } from "@/global/UserInfo.types"
-import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs, limit, orderBy, query, startAfter, Timestamp, where, arrayRemove, arrayUnion, updateDoc } from "firebase/firestore"
-
-async function fetchPostPreference(myUserInfo: UserInfo) {
-  const prefRef = doc(db, "postPreferences", myUserInfo.username)
-  const postPreference = (await getDoc(prefRef))
-
-  if (!postPreference.exists()) {
-    await setDoc(prefRef, { last_view: serverTimestamp() }, { merge: true })
-    return { last_view: 1 }
-  }
-  return postPreference.data();
-}
-
-async function updateLastView(myUserInfo: UserInfo) {
-  const preferenceDoc = doc(db, "postPreferences", myUserInfo.username)
-  await setDoc(preferenceDoc, { last_view: serverTimestamp() }, { merge: true })
-}
-
-async function getFriendList(myUserInfo: UserInfo): Promise<string[]> {
-  const userDoc = doc(db, "users", myUserInfo.id)
-  const snapshot = await getDoc(userDoc)
-  return snapshot.data()?.friend_list?.map((friend: any) => friend.username)
-}
-
-async function fetchMyAnimeList(myUserInfo: UserInfo) {
-  const malRef = doc(db, "myAnimeList", myUserInfo.username)
-  const myAnimeList = (await getDoc(malRef)).data()
-
-  return myAnimeList;
-}
+import { formatDuration } from "@/components/utils/format";
+import { db } from "@/firebase/firebase-app";
+import { UserInfo } from "@/global/UserInfo.types";
+import { collection, getDocs, limit, orderBy, query, startAfter, Timestamp, where } from "firebase/firestore";
 
 function formatPostData(querySnapshot: any) {
   const fetchedPosts = querySnapshot.docs.map((doc: any) => {
@@ -51,15 +22,17 @@ function formatPostData(querySnapshot: any) {
   };
 }
 
-async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], lastView: Timestamp, lastKey: any) {
+async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], lastView: any, lastKey: any) {
   const usernameList1 = [myUserInfo.username, ...friendList.slice(0, 9)];
   const usernameList2 = friendList.slice(9);
 
-  let postQuery = query(collection(db, "posts"), where("authorName", "in", usernameList1), where("timestamp", ">=", lastView), orderBy("timestamp", "desc"), startAfter(lastKey), limit(1))
+  const lastViewTimestamp = new Timestamp(lastView.seconds, lastView.nanoseconds)
+
+  let postQuery = query(collection(db, "posts"), where("authorName", "in", usernameList1), where("timestamp", ">=", lastViewTimestamp), orderBy("timestamp", "desc"), startAfter(lastKey), limit(1))
   let querySnapshot = await getDocs(postQuery)
 
   if (usernameList2.length && querySnapshot.empty) {
-    postQuery = query(collection(db, "posts"), where("authorName", "in", usernameList2), where("timestamp", ">=", lastView), orderBy("timestamp", "desc"), startAfter(lastKey), limit(1))
+    postQuery = query(collection(db, "posts"), where("authorName", "in", usernameList2), where("timestamp", ">=", lastViewTimestamp), orderBy("timestamp", "desc"), startAfter(lastKey), limit(1))
     querySnapshot = await getDocs(postQuery)
   }
 
@@ -98,4 +71,4 @@ function getAnimePreferenceScore(myAnimeList: any, animePreference: any, anime_i
   return thisAnime ? thisAnime.potential : 10;
 }
 
-export { fetchPostPreference, updateLastView, getFriendList, fetchFriendPosts, fetchAllPosts, getAnimePreferenceScore, fetchMyAnimeList }
+export { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore }

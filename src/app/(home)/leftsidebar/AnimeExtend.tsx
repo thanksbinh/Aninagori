@@ -8,7 +8,7 @@ export function AnimeExtend({ animeDetails }: { animeDetails: any }) {
 
   return (
     <div className="w-full">
-      {!extend && animeDetails.length && (
+      {!extend && !!animeDetails.length && (
         <button onClick={() => setExtend(true)} className="text-sm text-gray-400 hover:underline ml-2">
           See more ...
         </button>

@@ -2,7 +2,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { HiPhoto, HiVideoCamera } from "react-icons/hi2"
+import { HiPhotograph } from "@react-icons/all-files/hi/HiPhotograph"
+import { BsCameraVideoFill } from "@react-icons/all-files/bs/BsCameraVideoFill"
 import { FC, useState, useEffect } from "react"
 import Avatar from "@/components/avatar/Avatar"
 import PostFormPopUp from "./PostFormPopUp"
@@ -14,10 +15,9 @@ type PostFormProps = {
   setOpen?: any
   open?: any
   malAuthCode?: string
-  className?: any
 }
 
-const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBanned, malAuthCode }) => {
+const PostForm: FC<PostFormProps> = ({ username, avatarUrl, isBanned, malAuthCode }) => {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBa
               htmlFor="image-input"
               className="flex flex-1 items-center justify-center space-x-1 text-[#fff] py-2 px-4 rounded-lg mt-1 mx-1"
             >
-              <HiPhoto className="w-5 h-5" />
+              <HiPhotograph className="w-5 h-5" />
               <span>Photo/Gif</span>
             </label>
 
@@ -61,7 +61,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBa
               htmlFor="video-input"
               className="flex flex-1 items-center justify-center space-x-1 text-[#fff] py-2 px-4 rounded-lg mt-1 mx-1"
             >
-              <HiVideoCamera className="w-5 h-5" />
+              <BsCameraVideoFill className="w-5 h-5" />
               <span>Video</span>
             </label>
 
@@ -78,7 +78,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBa
     )
 
   return (
-    <div className={className}>
+    <div className="mt-4">
       <PostFormPopUp
         malAuthCode={malAuthCode}
         username={username}
@@ -106,7 +106,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBa
             }}
             className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer"
           >
-            <HiPhoto className="w-5 h-5 fill-[#3BC361]" />
+            <HiPhotograph className="w-5 h-5 fill-[#3BC361]" />
             <span>Photo/Gif</span>
           </label>
 
@@ -116,7 +116,7 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, className = "", isBa
             }}
             className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer"
           >
-            <HiVideoCamera className="w-5 h-5 fill-[#FF1D43]" />
+            <BsCameraVideoFill className="w-5 h-5 fill-[#FF1D43]" />
             <span>Video</span>
           </label>
 
