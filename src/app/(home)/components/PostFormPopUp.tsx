@@ -1,32 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
-import { collection, addDoc, serverTimestamp, updateDoc, doc, arrayUnion, setDoc } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
-import { HiPhotograph } from "@react-icons/all-files/hi/HiPhotograph"
-import { BsCameraVideoFill } from "@react-icons/all-files/bs/BsCameraVideoFill"
-import { useRouter } from "next/navigation"
 import { FC, useContext, useRef, useState } from "react"
-import { db, storage } from "@/firebase/firebase-app"
+import { storage } from "@/firebase/firebase-app"
 import { v4 } from "uuid"
 import classNames from "classnames/bind"
 import styles from "./PostForm.module.scss"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCircleXmark, faFileCirclePlus } from "@fortawesome/free-solid-svg-icons"
-
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons"
 import Avatar from "@/components/avatar/Avatar"
-import AnimeWatchStatus from "./animePostComponent/AnimeWatchStatus/AnimeWatchStatus"
-import AnimeSearch from "./animePostComponent/AnimeSearch/AnimeSearch"
-import AnimeEpisodes from "./animePostComponent/AnimeEpisodes/AnimeEpisodes"
-import AnimeTag from "./animePostComponent/AnimeTag/AnimeTag"
-import AnimeScore from "./animePostComponent/AnimeScore/AnimeScore"
-import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
+import { AnimeEpisodes, AnimeScore, AnimeSearch, AnimeTag, AnimeWatchStatus } from './animePostComponent'
 import { HomeContext } from "../HomeContext"
-import { updateStatusOnFriendLists } from "./functions/syncUpdates"
-import {
-  adjustAnimeListArray,
-  convertWatchStatus,
-  getDateNow,
-  handleAnimeInformationPosting,
-} from "@/components/utils/postingUtils"
+import { handleSubmitForm } from "@/components/utils/postingUtils"
+import PostFormMediaDisplay from "./postMediaComponent/PostFormMediaDisplay"
+import PostButtonArea from "./postButtonArea/PostButtonArea"
 
 const cx = classNames.bind(styles)
 
@@ -44,107 +30,12 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
   const [mediaType, setMediaType] = useState<string>("")
   const [showScore, setShowScore] = useState<boolean>(false)
   const [loadPosting, setLoadPosting] = useState<boolean>(false)
-  const router = useRouter()
   const animeStatus = useRef()
   const animeSearch = useRef()
   const animeEpisodes = useRef()
   const animeTag = useRef()
   const animeScore = useRef()
   const { myUserInfo } = useContext(HomeContext)
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
-    const statusData = (animeStatus?.current as any).getAnimeStatus()
-    const searchData = (animeSearch?.current as any).getAnimeName()
-    const episodesData = (animeEpisodes?.current as any).getAnimeEpisodes()
-    const totalEps = (animeEpisodes?.current as any).getAnimeTotal()
-    const tagData = (animeTag?.current as any).getAnimeTag()
-    const scoreData = (animeScore?.current as any).getAnimeScore()
-
-    e.preventDefault()
-    if (!inputRef.current?.value && mediaUrl.length === 0) {
-      alert("Please write something or upload media 😭")
-      return
-    }
-    setLoadPosting(true)
-    const postAnimeData = handleAnimeInformationPosting(
-      statusData,
-      searchData,
-      episodesData,
-      tagData,
-      totalEps,
-      scoreData,
-    )
-
-    const downloadMediaUrl = await uploadMedia()
-    //TODO: promise.all post + update MAL watch status
-    const promisePost = [
-      addDoc(collection(db, "posts"), {
-        authorName: username,
-        avatarUrl: avatarUrl,
-        timestamp: serverTimestamp(),
-        content: inputRef.current?.value || "",
-        imageUrl: mediaType === "image" ? downloadMediaUrl : "",
-        videoUrl: mediaType === "video" ? downloadMediaUrl[0] : "",
-        post_anime_data:
-          (animeSearch?.current as any).getAnimeName().animeID === "" ? { tag: postAnimeData.tag } : postAnimeData,
-        comments: 0,
-      }),
-    ] as any
-
-    try {
-      // post have anime data
-      if (!!postAnimeData.anime_id) {
-        // user connect with MAL
-        if (!!malAuthCode) {
-          const promiseUpdateMAL = fetch(getProductionBaseUrl() + "/api/updatestatus/" + postAnimeData.anime_id, {
-            headers: {
-              status: convertWatchStatus(postAnimeData.watching_progress),
-              episode: postAnimeData.episodes_seen,
-              score: (postAnimeData as any).score,
-              auth_code: malAuthCode,
-            } as any,
-          }).then((res) => res.json())
-          promisePost.push(promiseUpdateMAL)
-        } else {
-          // user not connect with MAL
-          const myAnimeListRef = doc(db, "myAnimeList", username)
-          const dateNow = getDateNow()
-          const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + postAnimeData.anime_id).then(
-            (res) => res.json(),
-          )
-          const animeData = {
-            list_status: {
-              is_rewatching: false,
-              num_episodes_watched: postAnimeData.episodes_seen,
-              score: !!(postAnimeData as any).score ? (postAnimeData as any).score : 0,
-              status: convertWatchStatus(postAnimeData.watching_progress),
-              updated_at: dateNow,
-            },
-            node: {
-              id: postAnimeData.anime_id,
-              main_picture: animeInformation.main_picture,
-              title: animeInformation.title,
-            },
-          }
-          // check if anime already in list, if in list, update that anime node
-          const animeDataAfterCheck = await adjustAnimeListArray(username, animeData)
-          const myAnimeListPromise = setDoc(myAnimeListRef, {
-            last_updated: dateNow,
-            animeList: animeDataAfterCheck,
-          })
-          promisePost.push(myAnimeListPromise as any)
-          console.log("user not connect with MAL")
-        }
-        // Update status on friend list
-        promisePost.push(updateStatusOnFriendLists(myUserInfo, { ...postAnimeData, status: convertWatchStatus(postAnimeData.watching_progress) }))
-      }
-      const result = await Promise.all(promisePost)
-      setLoadPosting(false)
-      location.reload()
-    } catch (err) {
-      console.log(err);
-    }
-  }
 
   const handlePaste = (e: any) => {
     const file = e.clipboardData.files[0]
@@ -187,7 +78,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
     setMediaUrl(mediaUrl.filter((_: any, i: any) => i !== index))
   }
 
-  const handleMediaChange = (e: any, mediaType: string) => {
+  const handleMediaChange = (e: any) => {
     const file = e.target.files[0]
     if (!file) return
     const fileType = file.type.split("/")[0]
@@ -225,7 +116,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
         onClick={(e) => {
           e.stopPropagation()
         }}
-        onSubmit={loadPosting ? () => { } : (e) => handleSubmit(e)}
+        onSubmit={loadPosting ? () => { } : (e) => handleSubmitForm(e, animeStatus, animeSearch, animeEpisodes, animeTag, animeScore, inputRef, mediaUrl, setLoadPosting, uploadMedia, username, avatarUrl, mediaType, malAuthCode, myUserInfo,)}
         className="relative"
       >
         <FontAwesomeIcon
@@ -258,131 +149,11 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
             className="flex rounded-3xl py-3 px-4 w-full focus:outline-none bg-[#212833] caret-white"
           />
 
-          <div className="mt-4 w-full flex items-center justify-center">
-            <input
-              type="file"
-              id="multi-media-input"
-              accept="video/*,image/*"
-              onChange={(e) => handleMediaChange(e, "image")}
-              className="hidden"
-            />
-            {mediaUrl.length > 0 ? (
-              mediaType === "video" ? (
-                <div className={cx("media-wrapper") + " w-2/3 h-2/5 flex items-center relative"}>
-                  <video src={URL.createObjectURL(mediaUrl[0])} className="w-full object-contain rounded-xl" controls />
-                  <FontAwesomeIcon
-                    onClick={() => {
-                      handleDeleteMedia(0)
-                    }}
-                    icon={faCircleXmark as any}
-                    className={cx("delete-icon")}
-                  />
-                </div>
-              ) : (
-                <div
-                  className={
-                    cx("media-wrapper") +
-                    " w-full h-64 flex items-center relative overflow-x-auto bg-[#212833] rounded-xl px-4 py-4"
-                  }
-                >
-                  {mediaUrl.map((media: any, index: number) => {
-                    return (
-                      <div
-                        key={index}
-                        className={cx("image-wrapper")}
-                        style={{ backgroundImage: `url(${URL.createObjectURL(media)})` }}
-                      >
-                        <FontAwesomeIcon
-                          onClick={() => {
-                            handleDeleteMedia(index)
-                          }}
-                          icon={faCircleXmark as any}
-                          className={cx("delete-icon")}
-                        />
-                      </div>
-                    )
-                  })}
-                  <label htmlFor="multi-media-input" className={cx("add-media")}>
-                    <FontAwesomeIcon
-                      icon={faFileCirclePlus as any}
-                      className="text-[#3BC361] text-4xl hover:text-green-400"
-                    />
-                  </label>
-                </div>
-              )
-            ) : (
-              <>
-                <label
-                  className={
-                    cx("media-wrapper", { "no-media-wrapper": true }) +
-                    " w-full h-64 flex items-center justify-center relative hover:opacity-75 rounded-xl border-2 border-[#3BC361] cursor-pointer"
-                  }
-                  htmlFor="multi-media-input"
-                >
-                  <FontAwesomeIcon
-                    icon={faFileCirclePlus as any}
-                    className="text-[#3BC361] text-4xl hover:text-green-400"
-                  />
-                </label>
-              </>
-            )}
-          </div>
+          <PostFormMediaDisplay mediaUrl={mediaUrl} mediaType={mediaType} handleDeleteMedia={handleDeleteMedia} handleMediaChange={handleMediaChange} />
 
           <AnimeTag tagArr={["Spoiler", "GoodStory", "BestWaifu", "NSFW"]} ref={animeTag} />
 
-          <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-[#212833]">
-            <label
-              htmlFor="image-input"
-              className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer"
-            >
-              <HiPhotograph className="w-5 h-5 fill-[#3BC361]" />
-              <span>Photo/Gif</span>
-            </label>
-            <input
-              type="file"
-              id="image-input"
-              accept="image/*"
-              onChange={(e) => handleMediaChange(e, "image")}
-              className="hidden"
-            />
-
-            <label
-              htmlFor="video-input"
-              className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer"
-            >
-              <BsCameraVideoFill className="w-5 h-5 fill-[#FF1D43]" />
-              <span>Video</span>
-            </label>
-            <input
-              type="file"
-              id="video-input"
-              accept="video/*"
-              onChange={(e) => handleMediaChange(e, "video")}
-              className="hidden"
-            />
-
-            <button
-              type="submit"
-              className="flex flex-1 items-center justify-center space-x-1 text-[#fff] bg-[#377dff] hover:bg-[#0e5ef1] py-2 px-4 rounded-lg mt-1 mx-1"
-            >
-              {loadPosting && (
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              )}
-              <span>Share</span>
-            </button>
-          </div>
+          <PostButtonArea loadPosting={loadPosting} handleMediaChange={handleMediaChange} />
         </div>
       </form>
     </div>
