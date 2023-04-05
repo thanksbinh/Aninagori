@@ -12,7 +12,6 @@ export function handleAnimeInformationPosting(
   status: any,
   animeInformation: any,
   episodes: any,
-  tag: any,
   totalEps: any,
   score: any,
 ) {
@@ -22,7 +21,6 @@ export function handleAnimeInformationPosting(
     anime_id: animeInformation.animeID,
     episodes_seen: episodes,
     total_episodes: parseInt(totalEps) === 0 ? "1" : totalEps + "",
-    tag: tag,
   }
 
   if (status === "Watching" && episodes === "0") {
@@ -118,14 +116,7 @@ export async function handleSubmitForm(
     return
   }
   setLoadPosting(true)
-  const postAnimeData = handleAnimeInformationPosting(
-    statusData,
-    searchData,
-    episodesData,
-    tagData,
-    totalEps,
-    scoreData,
-  )
+  const postAnimeData = handleAnimeInformationPosting(statusData, searchData, episodesData, totalEps, scoreData)
 
   const downloadMediaUrl = await uploadMedia()
   //TODO: promise.all post + update MAL watch status
@@ -137,8 +128,8 @@ export async function handleSubmitForm(
       content: inputRef.current?.value || "",
       imageUrl: mediaType === "image" ? downloadMediaUrl : "",
       videoUrl: mediaType === "video" ? downloadMediaUrl[0] : "",
-      post_anime_data:
-        (animeSearch?.current as any).getAnimeName().animeID === "" ? { tag: postAnimeData.tag } : postAnimeData,
+      tag: tagData,
+      post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? {} : postAnimeData,
       comments: 0,
     }),
   ] as any
