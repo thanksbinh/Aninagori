@@ -36,7 +36,7 @@ export default async function Home() {
         </div>
 
         <div className="lg:w-2/5 md:w-3/5 sm:w-4/5 w-full">
-          <div className="flex flex-col pt-10">
+          <div className="h-screen flex flex-col pt-10">
             <PostForm
               avatarUrl={myUserInfo.image}
               username={myUserInfo.username}
