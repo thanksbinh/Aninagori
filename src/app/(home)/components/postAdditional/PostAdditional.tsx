@@ -104,8 +104,7 @@ function ChooseDate({ data, setData, type, progress }: { data: any; setData: any
         }}
       >
         <div
-          className="relative cursor-pointer px-8 py-2 rounded-lg bg-[#4e5d78] text-center"
-          style={type === "Year" ? { width: "100px !important" } : { width: "83px !important" }}
+          className={`${type === "Year" ? "w-[100px]" : "w-[83px]"} relative cursor-pointer px-8 py-2 rounded-lg bg-[#4e5d78] text-center`}
           onClick={() => {
             setData(
               progress === "start" ? { ...data, openStart: !data.openStart } : { ...data, openEnd: !data.openEnd },
