@@ -88,6 +88,10 @@ body {
   width: 10px;
 }
 
+.anime-recommend-list ::-webkit-scrollbar {
+  width: 0px;
+}
+
 /* Track */
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
@@ -131,23 +135,24 @@ body {
 
 /* scale in bottom left animation */
 .scale-in-bl {
-	-webkit-animation: scale-in-bl 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-	        animation: scale-in-bl 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  -webkit-animation: scale-in-bl 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  animation: scale-in-bl 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
- @-webkit-keyframes scale-in-bl {
+@-webkit-keyframes scale-in-bl {
   0% {
     -webkit-transform: scale(0);
-            transform: scale(0);
+    transform: scale(0);
     -webkit-transform-origin: 0% 100%;
-            transform-origin: 0% 100%;
+    transform-origin: 0% 100%;
     opacity: 1;
   }
+
   100% {
     -webkit-transform: scale(1);
-            transform: scale(1);
+    transform: scale(1);
     -webkit-transform-origin: 0% 100%;
-            transform-origin: 0% 100%;
+    transform-origin: 0% 100%;
     opacity: 1;
   }
 }
@@ -155,16 +160,17 @@ body {
 @keyframes scale-in-bl {
   0% {
     -webkit-transform: scale(0);
-            transform: scale(0);
+    transform: scale(0);
     -webkit-transform-origin: 0% 100%;
-            transform-origin: 0% 100%;
+    transform-origin: 0% 100%;
     opacity: 1;
   }
+
   100% {
     -webkit-transform: scale(1);
-            transform: scale(1);
+    transform: scale(1);
     -webkit-transform-origin: 0% 100%;
-            transform-origin: 0% 100%;
+    transform-origin: 0% 100%;
     opacity: 1;
   }
 }
