@@ -41,11 +41,15 @@ body {
   background-color: #191c21;
 }
 
-.gradient__text {
+.gradient-text {
   background: var(--gradient-text);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.landing-header {
+  font-family: "Manrope", sans-serif !important;
 }
 
 .tippy-box {
