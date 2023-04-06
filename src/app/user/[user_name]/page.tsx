@@ -137,4 +137,6 @@ async function getUserAnimeUpdate(access_token: any, mal_username: any) {
   }
 }
 
+export const fetchCache = 'force-no-store'
 export default Profile
+

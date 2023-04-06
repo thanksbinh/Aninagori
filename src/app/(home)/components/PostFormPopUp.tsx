@@ -7,12 +7,12 @@ import classNames from "classnames/bind"
 import styles from "./PostForm.module.scss"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons"
-import Avatar from "@/components/avatar/Avatar"
-import { AnimeEpisodes, AnimeScore, AnimeSearch, AnimeTag, AnimeWatchStatus } from './animePostComponent'
 import { HomeContext } from "../HomeContext"
 import { handleSubmitForm } from "@/components/utils/postingUtils"
-import PostFormMediaDisplay from "./postMediaComponent/PostFormMediaDisplay"
 import PostButtonArea from "./postButtonArea/PostButtonArea"
+import PostAdditional from "./postAdditional/PostAdditional"
+import PostBasic from "./postBasic/PostBasic"
+import { AnimeWatchStatus, AnimeSearch, AnimeScore, AnimeEpisodes } from "./animePostComponent"
 
 const cx = classNames.bind(styles)
 
@@ -30,6 +30,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
   const [mediaType, setMediaType] = useState<string>("")
   const [showScore, setShowScore] = useState<boolean>(false)
   const [loadPosting, setLoadPosting] = useState<boolean>(false)
+  const [basicPostingInfo, setBasicPostingInfo] = useState<boolean>(true)
   const animeStatus = useRef()
   const animeSearch = useRef()
   const animeEpisodes = useRef()
@@ -99,41 +100,45 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
 
   return (
     <div
-      onClick={
-        loadPosting
-          ? () => { }
-          : () => {
-            setTimeout(() => {
-              setOpen(false)
-            }, 90)
-          }
-      }
+      onClick={loadPosting ? () => { } : () => { setTimeout(() => { setOpen(false) }, 90) }}
       className={cx("modal")}
       style={open ? { display: "flex" } : { display: "none" }}
     >
       <div className={cx("modal_overlay")}></div>
       <form
-        onClick={(e) => {
-          e.stopPropagation()
-        }}
-        onSubmit={loadPosting ? () => { } : (e) => handleSubmitForm(e, animeStatus, animeSearch, animeEpisodes, animeTag, animeScore, inputRef, mediaUrl, setLoadPosting, uploadMedia, username, avatarUrl, mediaType, malAuthCode, myUserInfo,)}
+        onClick={(e) => { e.stopPropagation() }}
+        onSubmit={
+          loadPosting ? () => { } : (e) => handleSubmitForm(e, animeStatus, animeSearch, animeEpisodes, animeTag, animeScore,
+            inputRef, mediaUrl, setLoadPosting, uploadMedia, username, avatarUrl,
+            mediaType, malAuthCode, myUserInfo,
+          )
+        }
         className="relative"
       >
         <FontAwesomeIcon
-          onClick={
-            loadPosting
-              ? () => { }
-              : () => {
-                setOpen(false)
-              }
-          }
+          onClick={loadPosting ? () => { } : () => { setOpen(false) }}
           icon={faCircleXmark as any}
-          className={cx("close-post")}
+          className={`${cx("close-post")} z-20`}
         />
-        <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl px-4 my-4">
-          <div className="flex justify-start mt-4 px-2 mb-4 items-start">
-            <Avatar imageUrl={avatarUrl} altText={username} size={10} />
-            <h4 className="text-base font-bold ml-4">{username}</h4>
+        <div className="flex flex-col flex-1 bg-[#191c21] rounded-2xl px-4 my-4 transition ease-in-out duration-200">
+          <div className="flex justify-between my-2 relative">
+            <div
+              className="hover:bg-[#212833] cursor-pointer w-1/2 py-5 text-lg font-bold text-center border-b-2 border-[#212833]"
+              onClick={() => { setBasicPostingInfo(true) }}
+            >
+              Basic
+            </div>
+            <div
+              className="hover:bg-[#212833] cursor-pointer w-1/2 py-5 text-lg font-bold text-center border-b-2 border-[#212833]"
+              onClick={() => { setBasicPostingInfo(false) }}
+            >
+              Advanced
+            </div>
+            <div className="absolute right-1/2 top-1/2 -translate-y-1/2 h-5/6 border border-[#212833]"></div>
+            <div
+              className="absolute transition-all ease-linear duration-200 bottom-0 w-1/2 h-1 bg-[#3BC361] opacity-70"
+              style={basicPostingInfo ? { left: "0" } : { left: "50%" }}
+            ></div>
           </div>
           <div className={cx("status-wrapper")}>
             <AnimeWatchStatus ref={animeStatus} setShowScore={setShowScore} />
@@ -141,19 +146,22 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
             <AnimeScore ref={animeScore} style={showScore ? { display: "flex" } : { display: "none" }} />
             <AnimeEpisodes ref={animeEpisodes} style={!showScore ? { display: "flex" } : { display: "none" }} />
           </div>
-          <input
-            type="text"
-            ref={inputRef}
-            onPaste={handlePaste}
-            placeholder="Share your favourite Animemory now!"
-            className="flex rounded-3xl py-3 px-4 w-full focus:outline-none bg-[#212833] caret-white"
+          <PostBasic
+            basicPostingInfo={basicPostingInfo}
+            animeTag={animeTag}
+            inputRef={inputRef}
+            handlePaste={handlePaste}
+            mediaUrl={mediaUrl}
+            mediaType={mediaType}
+            handleDeleteMedia={handleDeleteMedia}
+            handleMediaChange={handleMediaChange}
           />
-
-          <PostFormMediaDisplay mediaUrl={mediaUrl} mediaType={mediaType} handleDeleteMedia={handleDeleteMedia} handleMediaChange={handleMediaChange} />
-
-          <AnimeTag tagArr={["Spoiler", "GoodStory", "BestWaifu", "NSFW"]} ref={animeTag} />
-
-          <PostButtonArea loadPosting={loadPosting} handleMediaChange={handleMediaChange} />
+          <PostAdditional className={basicPostingInfo ? "hidden" : "flex"} />
+          <PostButtonArea
+            setBasicPostingInfo={setBasicPostingInfo}
+            loadPosting={loadPosting}
+            handleMediaChange={handleMediaChange}
+          />
         </div>
       </form>
     </div>

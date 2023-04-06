@@ -10,7 +10,7 @@ import { AiOutlineLoading3Quarters } from "@react-icons/all-files/ai/AiOutlineLo
 import { RiAddCircleLine } from "@react-icons/all-files/ri/RiAddCircleLine"
 import { RiCheckboxCircleLine } from "@react-icons/all-files/ri/RiCheckboxCircleLine"
 
-export function AnimeComponent({ anime, myUserInfo }: { anime: any, myUserInfo: any }) {
+export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: any }) {
   const [loading, setLoading] = useState(false)
   const [donePlanToWatch, setDonePLanToWatch] = useState(false)
   const { data: session } = useSession()
@@ -36,17 +36,17 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any, myUserInfo: 
     if (!!myUserInfo?.mal_connect?.accessToken) {
       fetch(getProductionBaseUrl() + "/api/updatestatus/" + anime.id, {
         headers: {
-          status: 'plan_to_watch',
+          status: "plan_to_watch",
           episode: "0",
           score: "0",
           auth_code: myUserInfo?.mal_connect?.accessToken,
         } as any,
       }).then((res) => {
         setLoading(false)
-        setDonePLanToWatch(true);
-        return;
+        setDonePLanToWatch(true)
+        return
       })
-      return;
+      return
     }
     // user not connect to MAL
     const dateNow = getDateNow()
@@ -77,25 +77,25 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any, myUserInfo: 
   return (
     <div className="flex my-4">
       <div className="flex-none">
-        <a href={`https://myanimelist.net/anime/${anime.id}`} target="_blank">
-          <img src={anime.main_picture?.medium} alt="anime_picture" className="w-[85px] rounded-md mx-4" />
+        <a href={`https://myanimelist.net/anime/${anime?.id}`} target="_blank">
+          <img src={anime?.main_picture?.medium} alt="anime_picture" className="w-[85px] rounded-md mx-4" />
         </a>
       </div>
 
       <div>
         <h2 className="flex-auto text-ani-text-main hover:underline text-sm font-bold">
-          <a href={`https://myanimelist.net/anime/${anime.id}`} target="_blank">
-            {anime.title}
+          <a href={`https://myanimelist.net/anime/${anime?.id}`} target="_blank">
+            {anime?.title}
           </a>
         </h2>
 
         <p className="text-sm text-gray-400">
-          {formatMediaType(anime.media_type)} ({anime.num_episodes} eps)
+          {formatMediaType(anime?.media_type)} ({anime.num_episodes} eps)
         </p>
 
-        <p className="text-sm text-gray-400">Members: {formatNumber(anime.num_list_users)}</p>
+        <p className="text-sm text-gray-400">Members: {formatNumber(anime?.num_list_users)}</p>
 
-        <p className="text-sm text-gray-400">Score: {anime.mean || "N/A"}</p>
+        <p className="text-sm text-gray-400">Score: {anime?.mean || "N/A"}</p>
 
         {!donePlanToWatch && !loading && (
           <button

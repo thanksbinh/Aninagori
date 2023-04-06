@@ -52,6 +52,15 @@ function AnimeWatchStatus(props: any, ref: any) {
             </div>
             <div
               onClick={() => {
+                setChoice("Re-watching")
+                setShowScore(false)
+              }}
+              className={cx("option")}
+            >
+              Re-watching
+            </div>
+            <div
+              onClick={() => {
                 setChoice("Finished")
                 setShowScore(true)
               }}

@@ -1,7 +1,15 @@
 import { BsCameraVideoFill } from "@react-icons/all-files/bs/BsCameraVideoFill"
 import { HiPhotograph } from "@react-icons/all-files/hi/HiPhotograph"
 
-function PostButtonArea({ handleMediaChange, loadPosting }: { handleMediaChange: any; loadPosting: boolean }) {
+function PostButtonArea({
+    handleMediaChange,
+    loadPosting,
+    setBasicPostingInfo,
+}: {
+    handleMediaChange: any
+    loadPosting: boolean
+    setBasicPostingInfo: any
+}) {
     return (
         <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-[#212833]">
             <label
@@ -11,7 +19,16 @@ function PostButtonArea({ handleMediaChange, loadPosting }: { handleMediaChange:
                 <HiPhotograph className="w-5 h-5 fill-[#3BC361]" />
                 <span>Photo/Gif</span>
             </label>
-            <input type="file" id="image-input" accept="image/*" onChange={(e) => handleMediaChange(e)} className="hidden" />
+            <input
+                type="file"
+                id="image-input"
+                accept="image/*"
+                onChange={(e) => {
+                    handleMediaChange(e)
+                    setBasicPostingInfo(true)
+                }}
+                className="hidden"
+            />
 
             <label
                 htmlFor="video-input"
@@ -20,7 +37,16 @@ function PostButtonArea({ handleMediaChange, loadPosting }: { handleMediaChange:
                 <BsCameraVideoFill className="w-5 h-5 fill-[#FF1D43]" />
                 <span>Video</span>
             </label>
-            <input type="file" id="video-input" accept="video/*" onChange={(e) => handleMediaChange(e)} className="hidden" />
+            <input
+                type="file"
+                id="video-input"
+                accept="video/*"
+                onChange={(e) => {
+                    handleMediaChange(e)
+                    setBasicPostingInfo(true)
+                }}
+                className="hidden"
+            />
 
             <button
                 type="submit"
