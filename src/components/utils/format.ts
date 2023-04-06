@@ -22,3 +22,8 @@ export function formatDuration(milliseconds: number, shortForm?: boolean): strin
   if (shortForm) return `1m`;
   return 'less than a minute ago';
 }
+
+export function shortenString(str: string, length: number): string {
+  if (str.length <= length) return str;
+  return str.slice(0, length - 3) + '...';
+}

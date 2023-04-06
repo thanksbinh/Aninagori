@@ -1,3 +1,4 @@
+import { shortenString } from "@/components/utils/format";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
 import { collection, addDoc, updateDoc, doc, arrayUnion, serverTimestamp, Timestamp, getDoc } from "firebase/firestore";
@@ -62,12 +63,12 @@ const sendReply = async (myUserInfo: UserInfo, replyStr: string, postId: string,
   }
 }
 
-const notifyComment = async (type: string, myUserInfo: UserInfo, rcvUsername: string, commentStr: string, postId: string, commentId: string, reply?: boolean) => {
+const notifyComment = async (type: string, myUserInfo: UserInfo, rcvUsername: string, content: string, postId: string, commentId: string, reply?: boolean) => {
   let title = ""
   if (type === "post comment") {
-    title = myUserInfo.username + ' commented to your post: "' + commentStr.slice(0, 24) + (commentStr.length > 24 ? '..."' : ".")
+    title = myUserInfo.username + ' commented to your post' + ((content.length) ? (': "' + shortenString(content, 24) + '"') : '.')
   } else if (type === "comment reply") {
-    title = myUserInfo.username + ' replied to your comment: "' + commentStr.slice(0, 24) + (commentStr.length > 24 ? '..."' : ".")
+    title = myUserInfo.username + ' replied to your comment' + ((content.length) ? (': "' + shortenString(content, 24) + '"') : '.')
   } else if (type === "comment mention") {
     title = myUserInfo.username + ' mentioned you in a comment.'
   }

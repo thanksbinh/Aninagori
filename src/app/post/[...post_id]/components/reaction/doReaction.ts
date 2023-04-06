@@ -1,3 +1,4 @@
+import { shortenString } from '@/components/utils/format';
 import { db } from '@/firebase/firebase-app';
 import { UserInfo } from '@/global/UserInfo.types';
 import { doc, updateDoc, arrayUnion, arrayRemove, Timestamp, getDoc } from 'firebase/firestore';
@@ -119,10 +120,17 @@ async function sentReactionReply(myUserInfo: UserInfo, replyReactions: Object[],
 }
 
 async function notifyReaction(myUserInfo: UserInfo, rcvUsername: string, content: string, postId: string, commentId?: string) {
+  let title = ""
+  if (!!commentId) {
+    title = myUserInfo.username + ' reacted to your comment' + ((content.length) ? (': "' + shortenString(content, 24) + '"') : '.')
+  } else {
+    title = myUserInfo.username + ' reacted to your post' + ((content.length) ? (': "' + shortenString(content, 24) + '"') : '.')
+  }
+
   const notificationsRef = doc(db, 'notifications', rcvUsername);
   await updateDoc(notificationsRef, {
     recentNotifications: arrayUnion({
-      title: myUserInfo.username + ' reacted to your ' + (commentId ? 'comment: "' : 'post: "') + content.slice(0, 24) + (content.length > 24 ? '..."' : ""),
+      title: title,
       url: '/post/' + postId + (commentId ? '/comment/' + commentId : ''),
       sender: {
         username: myUserInfo.username,

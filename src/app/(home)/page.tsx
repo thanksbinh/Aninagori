@@ -26,10 +26,10 @@ export default async function Home() {
   updateLastView(myUserInfo)
 
   return (
-    <div className="flex justify-center pt-4">
+    <div className="flex justify-between pt-4">
       <ContextProvider myUserInfo={myUserInfo}>
         <div className="xl:block xl:flex-1 flex-shrink max-w-[320px]">
-          <div className="hidden xl:block max-w-[320px] py-16 px-2 h-full fixed left-0 z-20 bg-ani-black">
+          <div className="hidden xl:block max-w-[360px] py-16 px-2 h-full fixed left-0 z-20 bg-ani-black">
             {/* @ts-expect-error Server Component */}
             <AnimeRecommendList myUsername={myUserInfo.username} potentialAnimes={postPreference.animeList} />
           </div>

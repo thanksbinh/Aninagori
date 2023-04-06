@@ -1,12 +1,12 @@
 'use client'
 
 import { useRouter } from "next/navigation";
-import { UserInfo } from "../../../global/UserInfo.types";
+import { UserInfo } from "../../global/UserInfo.types";
 import { removeFriendRequest, beFriends } from "@/components/friend/friendAction";
 import { formatDuration } from "@/components/utils/format";
 import { useContext, useState } from "react";
 import { Notification } from "./Notification.types";
-import { NotiContext } from "./NotificationBtn";
+import { NotiContext } from "../nav/NotificationBtn";
 import { markAsRead } from "./NotificationContainer";
 
 interface Props {

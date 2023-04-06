@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserCheck, faUserMinus, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { Menu, Transition } from '@headlessui/react';
 import { useRouter } from 'next/navigation';
-import { Notification } from "@/components/nav/notification/Notification.types";
+import { Notification } from "@/components/notification/Notification.types";
 import getProductionBaseUrl from '@/components/utils/getProductionBaseURL';
 
 export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: UserInfo; userInfo: UserInfo }) {

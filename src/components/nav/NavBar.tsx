@@ -2,8 +2,8 @@ import { getUserInfo } from "@/global/getUserInfo";
 import { BsChatDotsFill } from '@react-icons/all-files/bs/BsChatDotsFill';
 import Button from "../button/Button";
 import Logo from "./Logo";
-import NotificationBtn from "./notification/NotificationBtn";
-import ProfilePicture from "./profilePicture/ProfilePicture";
+import NotificationBtn from "./NotificationBtn";
+import ProfilePicture from "./ProfilePicture";
 import SearchBar from "./SearchBar";
 
 export default async function NavBar({ myUserId }: { myUserId: string | undefined }) {

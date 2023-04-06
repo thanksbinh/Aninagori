@@ -1,7 +1,7 @@
 import { db } from "@/firebase/firebase-app";
 import { arrayRemove, arrayUnion, doc, getDoc, updateDoc, writeBatch } from "firebase/firestore";
 import { UserInfo } from "../../global/UserInfo.types";
-import { Notification } from "../nav/notification/Notification.types";
+import { Notification } from "../notification/Notification.types";
 
 // Person's info remove from Self friend list and opposite
 async function unfriend(myUserInfo: UserInfo, userInfo: UserInfo) {
