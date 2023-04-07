@@ -3,8 +3,8 @@
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import UsernamePopup from './UsernamePopup';
-import { UserInfo } from "../../../global/UserInfo.types";
+import UsernamePopup from '../utils/UsernamePopup';
+import { UserInfo } from "../../global/UserInfo.types";
 
 interface Props {
     myUserInfo: UserInfo | undefined

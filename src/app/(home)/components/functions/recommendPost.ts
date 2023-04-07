@@ -28,11 +28,11 @@ async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], last
 
   const lastViewTimestamp = new Timestamp(lastView.seconds, lastView.nanoseconds)
 
-  let postQuery = query(collection(db, "posts"), where("authorName", "in", usernameList1), where("timestamp", ">=", lastViewTimestamp), orderBy("timestamp", "desc"), startAfter(lastKey), limit(1))
+  let postQuery = query(collection(db, "posts"), where("authorName", "in", usernameList1), where("timestamp", ">=", lastViewTimestamp), orderBy("timestamp", "desc"), startAfter(lastKey), limit(2))
   let querySnapshot = await getDocs(postQuery)
 
   if (usernameList2.length && querySnapshot.empty) {
-    postQuery = query(collection(db, "posts"), where("authorName", "in", usernameList2), where("timestamp", ">=", lastViewTimestamp), orderBy("timestamp", "desc"), startAfter(lastKey), limit(1))
+    postQuery = query(collection(db, "posts"), where("authorName", "in", usernameList2), where("timestamp", ">=", lastViewTimestamp), orderBy("timestamp", "desc"), startAfter(lastKey), limit(2))
     querySnapshot = await getDocs(postQuery)
   }
 
@@ -42,12 +42,18 @@ async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], last
 async function fetchAllPosts(friendPostIds: string[], lastKey: any) {
   let copyLastKey = lastKey
   do {
-    const postQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"), startAfter(copyLastKey), limit(1))
-    const querySnapshot = await getDocs(postQuery)
+    const postQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"), startAfter(copyLastKey), limit(2))
+    let querySnapshot = await getDocs(postQuery) as any
 
-    if (friendPostIds.includes(querySnapshot.docs[0].id)) {
-      copyLastKey = querySnapshot.docs[0]
-    } else {
+    querySnapshot = {
+      ...querySnapshot,
+      docs: querySnapshot.docs.filter((doc: any) => {
+        copyLastKey = doc
+        return !friendPostIds.includes(doc.id)
+      })
+    }
+
+    if (querySnapshot.docs.length) {
       return formatPostData(querySnapshot)
     }
 

@@ -3,9 +3,9 @@
 import { formatDuration } from "@/components/utils/format";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
-import { UserInfo } from "../../../global/UserInfo.types";
+import { UserInfo } from "../../global/UserInfo.types";
 import { Notification } from "./Notification.types";
-import { NotiContext } from "./NotificationBtn";
+import { NotiContext } from "../nav/NotificationBtn";
 import { markAsRead } from "./NotificationContainer";
 
 interface Props {
@@ -27,7 +27,7 @@ const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) =>
 
   const handleClickNoti = () => {
     setShowNotification(false)
-    router.push(notification.url)
+    router.push(notification.url + "/timestamp=" + new Date().getTime())
 
     if (!notification.read)
       markAsRead(myUserInfo.username, notification)

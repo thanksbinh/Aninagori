@@ -1,20 +1,23 @@
 import { db } from "@/firebase/firebase-app";
-import { arrayRemove, arrayUnion, collection, doc, getDocs, updateDoc, writeBatch } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, getDoc, updateDoc, writeBatch } from "firebase/firestore";
 import { UserInfo } from "../../global/UserInfo.types";
-import { Notification } from "../nav/notification/Notification.types";
+import { Notification } from "../notification/Notification.types";
 
 // Person's info remove from Self friend list and opposite
 async function unfriend(myUserInfo: UserInfo, userInfo: UserInfo) {
-  const batch = writeBatch(db);
-
   const myUserRef = doc(db, 'users', myUserInfo.id);
   const userRef = doc(db, 'users', userInfo.id);
 
+  const myFriendList = (await getDoc(myUserRef)).data()?.friend_list;
+  const userFriendList = (await getDoc(userRef)).data()?.friend_list;
+
+  const batch = writeBatch(db);
+
   batch.update(myUserRef, {
-    friend_list: arrayRemove(myUserInfo?.friend_list?.find((info: any) => info.username === userInfo.username))
+    friend_list: arrayRemove(myFriendList?.find((info: any) => info.username === userInfo.username))
   });
   batch.update(userRef, {
-    friend_list: arrayRemove(userInfo?.friend_list?.find((info: any) => info.username === myUserInfo.username))
+    friend_list: arrayRemove(userFriendList?.find((info: any) => info.username === myUserInfo.username))
   });
 
   await batch.commit();
