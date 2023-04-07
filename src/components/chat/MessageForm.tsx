@@ -3,7 +3,6 @@
 import { collection, doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { FC, useState, useRef } from "react";
 import { db } from "@/firebase/firebase-app";
-import { useRouter } from "next/navigation";
 import { UserInfo } from "@/global/UserInfo.types";
 import { setLastRead } from "./setLastRead";
 
@@ -23,7 +22,6 @@ const MessageForm: FC<Props> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [myMessage, setMyMessage] = useState("");
-  const router = useRouter();
 
   // send message to conversation
   const sendMessage = async (message: any) => {
