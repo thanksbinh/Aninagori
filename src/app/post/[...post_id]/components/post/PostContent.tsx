@@ -46,13 +46,14 @@ const PostContent: FC<PostStaticProps> = ({
   postId,
   score,
 }) => {
+  //TODO: changing post-content to Server Component
   const [spoiler, setSpoiler] = useState(tag.some((a: string) => a === "Spoiler" || a === "NSFW"))
   const [index, setIndex] = useState(1)
   const ref = useRef()
 
   useEffect(() => {
     if (spoiler) {
-      ;(ref.current as any).querySelector('[aria-roledescription="carousel"]')?.classList.add("blur-2xl")
+      ; (ref.current as any).querySelector('[aria-roledescription="carousel"]')?.classList.add("blur-2xl")
     }
   }, [])
 
@@ -100,7 +101,7 @@ const PostContent: FC<PostStaticProps> = ({
               className={cx("spoiler-button")}
               onClick={() => {
                 setSpoiler(false)
-                ;(ref.current as any).querySelector('[aria-roledescription="carousel"]')?.classList.remove("blur-2xl")
+                  ; (ref.current as any).querySelector('[aria-roledescription="carousel"]')?.classList.remove("blur-2xl")
                 const navElements = (ref.current as any).querySelectorAll(".nav.default-nav")
                 navElements.forEach((navElement: any) => {
                   navElement.style = "z-index: 1 !important;"

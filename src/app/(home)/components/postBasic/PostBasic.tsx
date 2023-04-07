@@ -1,25 +1,25 @@
 import { AnimeTag } from "../animePostComponent";
 import PostFormMediaDisplay from "../postMediaComponent/PostFormMediaDisplay";
-import classNames from "classnames/bind"
-import styles from "../PostForm.module.scss"
-
-
-const cx = classNames.bind(styles)
 
 function PostBasic(
-    { basicPostingInfo, animeTag, inputRef, handlePaste, mediaUrl, mediaType, handleDeleteMedia, handleMediaChange }
-        : { basicPostingInfo: boolean, animeTag: any, inputRef: any, handlePaste: any, mediaUrl: any, mediaType: string, handleDeleteMedia: any, handleMediaChange: any }) {
+    { setBasicPosting, basicPosting, animeTag, inputRef, handlePaste, mediaUrl, mediaType, handleDeleteMedia, handleMediaChange }
+        : { setBasicPosting: any, basicPosting: any, animeTag: any, inputRef: any, handlePaste: any, mediaUrl: any, mediaType: string, handleDeleteMedia: any, handleMediaChange: any }) {
     return (
-        <div className={basicPostingInfo ? "flex flex-col" : "hidden"}>
+        <div className="flex flex-col">
             <input
                 type="text"
                 ref={inputRef}
                 onPaste={handlePaste}
                 placeholder="Share your favourite Animemory now!"
-                className="flex rounded-3xl py-3 px-4 w-full focus:outline-none bg-[#212833] caret-white"
+                className="flex rounded-3xl mt-5 mb-4 py-3 px-4 w-full focus:outline-none bg-[#212833] caret-white"
             />
-            <PostFormMediaDisplay mediaUrl={mediaUrl} mediaType={mediaType} handleDeleteMedia={handleDeleteMedia} handleMediaChange={handleMediaChange} />
+            <PostFormMediaDisplay mediaUrl={mediaUrl} mediaType={mediaType} handleDeleteMedia={handleDeleteMedia} />
             <AnimeTag tagArr={["Spoiler", "GoodStory", "BestWaifu", "NSFW"]} ref={animeTag} />
+            <p
+                className="whitespace-nowrap ml-2 my-3 text-ani-text-main cursor-pointer font-bold underline text-sm opacity-80 hover:opacity-100"
+                onClick={() => { setBasicPosting(!basicPosting) }}>
+                {basicPosting ? "More details..." : "Fewer details..."}
+            </p>
         </div>
     );
 }

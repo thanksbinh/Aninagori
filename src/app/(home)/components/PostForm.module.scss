@@ -30,7 +30,7 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 16px;
-  margin-top: 10px;
+  margin-top: 4px;
 }
 
 .close-post {
@@ -114,5 +114,25 @@
 
   &:hover {
     opacity: 1;
+  }
+}
+
+.scroll-custom {
+  // CSS to add smooth transition on height change
+  transition: height 0.3s ease-in-out;
+
+  &::-webkit-scrollbar {
+    border-radius: 0;
+    width: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: #4e5d78;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: #191c21;
   }
 }

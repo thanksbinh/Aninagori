@@ -42,8 +42,10 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
           auth_code: myUserInfo?.mal_connect?.accessToken,
         } as any,
       }).then((res) => {
+        console.log(res);
         setLoading(false)
         setDonePLanToWatch(true)
+        //TODO: hide plan to watch anime
         return
       })
       return
