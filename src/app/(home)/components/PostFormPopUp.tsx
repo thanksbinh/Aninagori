@@ -105,18 +105,19 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
         }
         // Update status on friend list
         promisePost.push(updateStatusOnFriendLists(myUserInfo, { ...postAnimeData, status: convertWatchStatus(postAnimeData.watching_progress) }))
-
       }
       const result = await Promise.all(promisePost)
-      location.reload()
+      // location.reload()
     } catch (error) {
       console.log(error)
+    } finally {
+      inputRef.current!.value = ""
+      setMediaUrl([])
+      setOpen(false)
+      setLoadPosting(false)
+      resetTag()
+      router.refresh()
     }
-    // inputRef.current!.value = ""
-    // setMediaUrl([])
-    // setOpen(false)
-    // setLoadPosting(false)
-    // resetTag()
   }
 
   const handlePaste = (e: any) => {

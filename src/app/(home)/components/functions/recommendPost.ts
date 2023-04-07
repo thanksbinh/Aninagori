@@ -26,7 +26,7 @@ async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], last
   const usernameList1 = [myUserInfo.username, ...friendList.slice(0, 9)];
   const usernameList2 = friendList.slice(9);
 
-  const lastViewTimestamp = new Timestamp(lastView.seconds, lastView.nanoseconds)
+  const lastViewTimestamp = new Timestamp(lastView?.seconds, lastView?.nanoseconds)
 
   let postQuery = query(collection(db, "posts"), where("authorName", "in", usernameList1), where("timestamp", ">=", lastViewTimestamp), orderBy("timestamp", "desc"), startAfter(lastKey), limit(2))
   let querySnapshot = await getDocs(postQuery)
