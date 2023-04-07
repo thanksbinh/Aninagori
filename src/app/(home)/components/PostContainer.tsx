@@ -25,11 +25,28 @@ export default function Posts({ myUserInfo, myFriendList, myAnimeList, postPrefe
   const [hasMoreFriendPosts, setHasMoreFriendPosts] = useState(myFriendList?.length > 0)
 
   useEffect(() => {
-    fetchPosts()
+    const logo = document.getElementById("logo")
+
+    logo?.addEventListener("click", () => refreshPosts())
+    return logo?.removeEventListener("click", () => refreshPosts())
   }, [])
 
   useEffect(() => {
-    myFriendList && setMyFriendUsernameList(myFriendList.map((friend: any) => friend.username))
+    async function init() {
+      await fetchPosts()
+    }
+
+    if (posts.length < 2) {
+      init()
+    }
+  }, [posts])
+
+  useEffect(() => {
+    if (myFriendUsernameList.length == myFriendList.length) {
+      refreshPosts()
+    } else {
+      setMyFriendUsernameList(myFriendList.map((friend: any) => friend.username))
+    }
   }, [myFriendList])
 
   function filterPosts(fetchedPosts: any) {
@@ -38,6 +55,14 @@ export default function Posts({ myUserInfo, myFriendList, myAnimeList, postPrefe
         (myFriendUsernameList?.includes(post.authorName)) || //isFromMyFriend
         (Math.random() * 10 < getAnimePreferenceScore(myAnimeList, postPreference?.animeList, post.post_anime_data?.anime_id))) //gachaTrue
     })
+  }
+
+  async function refreshPosts() {
+    setPosts([])
+    setLastKey({})
+    setHasMore(true)
+    setHasMoreFriendPosts(true)
+    setFriendPostIds(["0"])
   }
 
   async function fetchPosts() {

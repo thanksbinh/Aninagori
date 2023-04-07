@@ -122,9 +122,9 @@ async function sentReactionReply(myUserInfo: UserInfo, replyReactions: Object[],
 async function notifyReaction(myUserInfo: UserInfo, rcvUsername: string, content: string, postId: string, commentId?: string) {
   let title = ""
   if (!!commentId) {
-    title = myUserInfo.username + ' reacted to your comment' + ((content.length) ? (': "' + shortenString(content, 24) + '"') : '.')
+    title = myUserInfo.username + ' reacted to your comment' + ((content.length) ? `: "${shortenString(content, 24)}"` : `.`)
   } else {
-    title = myUserInfo.username + ' reacted to your post' + ((content.length) ? (': "' + shortenString(content, 24) + '"') : '.')
+    title = myUserInfo.username + ' reacted to your post' + ((content.length) ? `: "${shortenString(content, 24)}"` : `.`)
   }
 
   const notificationsRef = doc(db, 'notifications', rcvUsername);
