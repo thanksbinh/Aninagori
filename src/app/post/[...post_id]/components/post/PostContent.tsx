@@ -5,12 +5,12 @@ import { FC, useEffect, useRef, useState } from "react"
 import classNames from "classnames/bind"
 import styles from "./PostContent.module.scss"
 import "tippy.js/dist/tippy.css"
-import AnimeName from "../../../../(home)/components/animePostComponent/AnimeName/AnimeName"
 import Avatar from "@/components/avatar/Avatar"
 import PostOptions from "../option/PostOptionsPopup"
 import { VideoComponent } from "../post/Video"
 import { Slide } from "react-slideshow-image"
 import "react-slideshow-image/dist/styles.css"
+import AnimeName from "../animeName/AnimeName"
 const cx = classNames.bind(styles)
 
 type PostStaticProps = {

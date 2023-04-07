@@ -13,14 +13,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleXmark, faFileCirclePlus } from "@fortawesome/free-solid-svg-icons"
 
 import Avatar from "@/components/avatar/Avatar"
-import AnimeWatchStatus from "./animePostComponent/AnimeWatchStatus/AnimeWatchStatus"
-import AnimeSearch from "./animePostComponent/AnimeSearch/AnimeSearch"
-import AnimeEpisodes from "./animePostComponent/AnimeEpisodes/AnimeEpisodes"
-import AnimeTag from "./animePostComponent/AnimeTag/AnimeTag"
-import AnimeScore from "./animePostComponent/AnimeScore/AnimeScore"
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 import { HomeContext } from "../HomeContext"
 import { updateStatusOnFriendLists } from "./functions/syncUpdates"
+import AnimeEpisodes from "./postForm/animePostComponent/AnimeEpisodes/AnimeEpisodes"
+import AnimeScore from "./postForm/animePostComponent/AnimeScore/AnimeScore"
+import AnimeSearch from "./postForm/animePostComponent/AnimeSearch/AnimeSearch"
+import AnimeTag from "./postForm/animePostComponent/AnimeTag/AnimeTag"
+import AnimeWatchStatus from "./postForm/animePostComponent/AnimeWatchStatus/AnimeWatchStatus"
 
 const cx = classNames.bind(styles)
 

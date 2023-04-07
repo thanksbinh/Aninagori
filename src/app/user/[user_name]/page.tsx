@@ -10,10 +10,10 @@ import { db } from "@/firebase/firebase-app"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/pages/api/auth/[...nextauth]"
 import { Suspense } from "react"
-import PostForm from "@/app/(home)/components/PostForm"
 import { getUserInfo } from "@/global/getUserInfo"
 import * as apiServices from "@/app/api/apiServices/apiServicesConfig"
 import ProfilePosts from "./profileComponent/posts/PostContainer"
+import PostForm from "@/app/(home)/components/PostForm"
 
 const cx = classNames.bind(styles)
 
