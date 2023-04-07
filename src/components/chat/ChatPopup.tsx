@@ -52,7 +52,7 @@ const ChatPopup: React.FC<ChatPopupProps> = ({ showChat, setShowChat, recipient,
     return (
         <>
             {showChat && (
-                <div className="fixed right-80 bottom-0 w-96 h-2/3 flex flex-col bg-[#191c21] mt-8 rounded-t-2xl">
+                <div className="fixed right-80 bottom-0 w-96 h-2/3 flex flex-col bg-[#191c21] mt-8 rounded-t-2xl cursor-default">
                     <div className="flex p-2 bg-[#4e5d78] rounded-t-2xl">
                         <div className="flex justify-center items-center">
                             <Avatar imageUrl={image} altText={myUserInfo.username} size={10} />
