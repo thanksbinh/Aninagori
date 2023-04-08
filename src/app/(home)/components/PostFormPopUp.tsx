@@ -66,7 +66,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
                 e, animeStatus, animeSearch, animeEpisodes, animeTag,
                 animeScore, inputRef, mediaUrl, setLoadPosting, username,
                 avatarUrl, mediaType, malAuthCode, myUserInfo, postAdditional,
-                router, setMediaUrl, setOpen
+                router, setMediaUrl, setOpen, setBasicPostingInfo
               )
         }
         className="relative"

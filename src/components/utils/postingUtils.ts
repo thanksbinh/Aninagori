@@ -122,6 +122,7 @@ export async function handleSubmitForm(
   router: any,
   setMediaUrl: any,
   setOpen: any,
+  setBasicPostingInfo: any,
 ): Promise<void> {
   e.preventDefault()
   const statusData = (animeStatus?.current as any).getAnimeStatus()
@@ -243,6 +244,7 @@ export async function handleSubmitForm(
     inputRef.current!.value = ""
     setLoadPosting(false)
     setOpen(false)
+    setBasicPostingInfo(true)
     setMediaUrl([])
     resetTag()
     resetAdditionalPost()
