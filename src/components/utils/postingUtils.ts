@@ -127,7 +127,9 @@ export async function handleSubmitForm(
   e.preventDefault()
   const statusData = (animeStatus?.current as any).getAnimeStatus()
   const searchData = (animeSearch?.current as any).getAnimeName()
+  const resetAnimeSearch = (animeSearch?.current as any).resetAnimeSearch
   const episodesData = (animeEpisodes?.current as any).getAnimeEpisodes()
+  const setAnimeEpisodes = (animeEpisodes?.current as any).setAnimeEpisodes
   const totalEps = (animeEpisodes?.current as any).getAnimeTotal()
   const tagData = (animeTag?.current as any).getAnimeTag()
   const resetTag = (animeTag?.current as any).resetAnimeTag
@@ -248,6 +250,8 @@ export async function handleSubmitForm(
     setMediaUrl([])
     resetTag()
     resetAdditionalPost()
+    resetAnimeSearch()
+    setAnimeEpisodes("0")
     router.refresh()
   }
 }

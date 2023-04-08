@@ -9,6 +9,7 @@ import { AiOutlineLoading3Quarters } from "@react-icons/all-files/ai/AiOutlineLo
 import { RiAddCircleLine } from "@react-icons/all-files/ri/RiAddCircleLine"
 import { RiCheckboxCircleLine } from "@react-icons/all-files/ri/RiCheckboxCircleLine"
 import { useRouter } from "next/navigation"
+import { AnimeOptions } from "./AnimeOptions"
 
 export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: any }) {
   const [loading, setLoading] = useState(false)
@@ -85,55 +86,57 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
   }
 
   return !hide ? (
-    <div className="flex my-4">
-      <div className="flex-none">
-        <a href={`https://myanimelist.net/anime/${anime?.id}`} target="_blank">
-          <img src={anime?.main_picture?.medium} alt="anime_picture" className="w-[85px] rounded-md mx-4" />
-        </a>
-      </div>
-
-      <div>
-        <h2 className="flex-auto text-ani-text-main hover:underline text-sm font-bold">
+    <AnimeOptions anime={anime}>
+      <div className="flex">
+        <div className="flex-none">
           <a href={`https://myanimelist.net/anime/${anime?.id}`} target="_blank">
-            {anime?.title}
+            <img src={anime?.main_picture?.medium} alt="anime_picture" className="w-[85px] rounded-md mx-4" />
           </a>
-        </h2>
+        </div>
 
-        <p className="text-sm text-gray-400">
-          {formatMediaType(anime?.media_type)} ({anime.num_episodes} eps)
-        </p>
+        <div>
+          <h2 className="flex-auto text-ani-text-main hover:underline text-sm font-bold">
+            <a href={`https://myanimelist.net/anime/${anime?.id}`} target="_blank">
+              {anime?.title}
+            </a>
+          </h2>
 
-        <p className="text-sm text-gray-400">Members: {formatNumber(anime?.num_list_users)}</p>
+          <p className="text-sm text-gray-400">
+            {formatMediaType(anime?.media_type)} ({anime.num_episodes} eps)
+          </p>
 
-        <p className="text-sm text-gray-400">Score: {anime?.mean || "N/A"}</p>
+          <p className="text-sm text-gray-400">Members: {formatNumber(anime?.num_list_users)}</p>
 
-        {!donePlanToWatch && !loading && (
-          <button
-            title="plan to watch"
-            onClick={handlePlanToWatch}
-            className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D] text-sm"
-          >
-            <RiAddCircleLine className="w-4 h-4" />
-            <span>Plan to Watch</span>
-          </button>
-        )}
-        {donePlanToWatch && (
-          <button title="plan to watch" className="flex items-center space-x-1 text-[#3BC361]">
-            <RiCheckboxCircleLine className="w-4 h-4" />
-            <span>Plan to Watch</span>
-          </button>
-        )}
-        {loading && (
-          <button
-            title="set plan to watch this anime..."
-            className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]"
-          >
-            <AiOutlineLoading3Quarters className="w-4 h-4 animate-spin" />
-            <span>Set plan to watch</span>
-          </button>
-        )}
+          <p className="text-sm text-gray-400">Score: {anime?.mean || "N/A"}</p>
+
+          {!donePlanToWatch && !loading && (
+            <button
+              title="plan to watch"
+              onClick={handlePlanToWatch}
+              className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D] text-sm"
+            >
+              <RiAddCircleLine className="w-4 h-4" />
+              <span>Plan to Watch</span>
+            </button>
+          )}
+          {donePlanToWatch && (
+            <button title="plan to watch" className="flex items-center space-x-1 text-[#3BC361]">
+              <RiCheckboxCircleLine className="w-4 h-4" />
+              <span>Plan to Watch</span>
+            </button>
+          )}
+          {loading && (
+            <button
+              title="set plan to watch this anime..."
+              className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]"
+            >
+              <AiOutlineLoading3Quarters className="w-4 h-4 animate-spin" />
+              <span>Set plan to watch</span>
+            </button>
+          )}
+        </div>
       </div>
-    </div>
+    </AnimeOptions>
   ) : (
     <></>
   )
