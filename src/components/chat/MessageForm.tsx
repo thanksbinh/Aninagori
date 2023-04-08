@@ -49,13 +49,13 @@ const MessageForm: FC<Props> = ({
     setMyMessage("");
   }
 
-  const onFormFocus = () => {
+  const onFormClick = () => {
     setLastRead(myUserInfo, conversationId)
   }
 
   return (
     <div className="flex items-center my-4 pr-4 pl-2">
-      <form onFocus={onFormFocus} onSubmit={onMessage} className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] caret-white" >
+      <form onClick={onFormClick} onSubmit={onMessage} className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] caret-white" >
         <input
           type="text"
           placeholder="Say something..."

@@ -8,6 +8,7 @@ import Message, { MessageProps } from "./Message";
 
 const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, friend: string, avatarUrl: string }) => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
+  const [seenStatus, setSeenStatus] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -32,6 +33,15 @@ const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, fri
             content: obj.content,
             likes: obj.likes,
           }));
+
+          const fieldName = docSnap.data()?.username1 === myUserInfo.username ? "user1LastRead" : "user2LastRead";
+          if ((fieldName === "user1LastRead" && docSnap.data()?.user2LastRead > docSnap.data()?.user1LastRead) ||
+            (fieldName === "user2LastRead" && docSnap.data()?.user1LastRead > docSnap.data()?.user2LastRead)) {
+            setSeenStatus(true);
+          } else {
+            setSeenStatus(false)
+          }
+
           setMessages(fetchedMessages);
         }
       })
@@ -58,6 +68,11 @@ const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, fri
           isLastMessage={index === messages.length - 1 || message.senderUsername !== messages[index + 1].senderUsername}
         />
       ))}
+      {seenStatus && (
+        <div className={`flex flex-row-reverse text-white text-xs ${(messages[messages.length - 1].senderUsername === myUserInfo.username) ? "" : "hidden"}`}>
+          <p className="flex mr-4">seen ✓</p>
+        </div>
+      )}
     </div>
   )
 }
