@@ -27,6 +27,7 @@ async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], last
   const usernameList2 = friendList.slice(9)
 
   const lastViewTimestamp = new Timestamp(lastView?.seconds, lastView?.nanoseconds)
+  const lastViewTimestamp = new Timestamp(lastView?.seconds, lastView?.nanoseconds)
 
   let postQuery = query(
     collection(db, "posts"),
@@ -56,12 +57,18 @@ async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], last
 async function fetchAllPosts(friendPostIds: string[], lastKey: any) {
   let copyLastKey = lastKey
   do {
-    const postQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"), startAfter(copyLastKey), limit(1))
-    const querySnapshot = await getDocs(postQuery)
+    const postQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"), startAfter(copyLastKey), limit(2))
+    let querySnapshot = (await getDocs(postQuery)) as any
 
-    if (friendPostIds.includes(querySnapshot.docs[0].id)) {
-      copyLastKey = querySnapshot.docs[0]
-    } else {
+    querySnapshot = {
+      ...querySnapshot,
+      docs: querySnapshot.docs.filter((doc: any) => {
+        copyLastKey = doc
+        return !friendPostIds.includes(doc.id)
+      }),
+    }
+
+    if (querySnapshot.docs.length) {
       return formatPostData(querySnapshot)
     }
   } while (true)

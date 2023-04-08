@@ -39,23 +39,55 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
 
   return (
     <div
-      onClick={loadPosting ? () => { } : () => { setTimeout(() => { setOpen(false) }, 90) }}
+      onClick={
+        loadPosting
+          ? () => {}
+          : () => {
+              setTimeout(() => {
+                setOpen(false)
+              }, 90)
+            }
+      }
       className={cx("modal")}
       style={open ? { display: "flex" } : { display: "none" }}
     >
       <div className={cx("modal_overlay")}></div>
       <form
-        onClick={(e) => { e.stopPropagation() }}
+        onClick={(e) => {
+          e.stopPropagation()
+        }}
         onSubmit={
-          loadPosting ? () => { } : (e) => handleSubmitForm(e, animeStatus, animeSearch, animeEpisodes, animeTag, animeScore,
-            inputRef, mediaUrl, setLoadPosting, username, avatarUrl,
-            mediaType, malAuthCode, myUserInfo, postAdditional
-          )
+          loadPosting
+            ? () => {}
+            : (e) =>
+                handleSubmitForm(
+                  e,
+                  animeStatus,
+                  animeSearch,
+                  animeEpisodes,
+                  animeTag,
+                  animeScore,
+                  inputRef,
+                  mediaUrl,
+                  setLoadPosting,
+                  username,
+                  avatarUrl,
+                  mediaType,
+                  malAuthCode,
+                  myUserInfo,
+                  postAdditional,
+                )
         }
         className="relative"
       >
         <FontAwesomeIcon
-          onClick={loadPosting ? () => { } : () => { setOpen(false) }}
+          onClick={
+            loadPosting
+              ? () => {}
+              : () => {
+                  setOpen(false)
+                }
+          }
           icon={faCircleXmark as any}
           className={`${cx("close-post")} z-20`}
           fill="white"
@@ -66,7 +98,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
             <Avatar imageUrl={avatarUrl} altText={username} size={10} />
             <h4 className="text-base font-bold ml-4">{username}</h4>
           </div>
-          <div className={`flex flex-col px-4 max-h-[78vh] overflow-y-auto ${cx('scroll-custom')}`}>
+          <div className={`flex flex-col px-4 max-h-[78vh] overflow-y-auto ${cx("scroll-custom")}`}>
             <div className={cx("status-wrapper")}>
               <AnimeWatchStatus ref={animeStatus} setShowScore={setShowScore} />
               <AnimeSearch ref={animeSearch} animeEpsRef={animeEpisodes} />
@@ -78,17 +110,29 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
               basicPosting={basicPostingInfo}
               animeTag={animeTag}
               inputRef={inputRef}
-              handlePaste={(e: any) => { handlePaste(e, setMediaUrl, setMediaType, mediaUrl) }}
+              handlePaste={(e: any) => {
+                handlePaste(e, setMediaUrl, setMediaType, mediaUrl)
+              }}
               mediaUrl={mediaUrl}
               mediaType={mediaType}
-              handleDeleteMedia={(e: any) => { handleDeleteMedia(e, mediaUrl, setMediaUrl) }}
-              handleMediaChange={(e: any) => { handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl) }}
+              handleDeleteMedia={(e: any) => {
+                handleDeleteMedia(e, mediaUrl, setMediaUrl)
+              }}
+              handleMediaChange={(e: any) => {
+                handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl)
+              }}
             />
-            <PostAdditional ref={postAdditional} basicPostingInfo={basicPostingInfo} className={basicPostingInfo ? "hidden" : "flex"} />
+            <PostAdditional
+              ref={postAdditional}
+              basicPostingInfo={basicPostingInfo}
+              className={basicPostingInfo ? "hidden" : "flex"}
+            />
             <PostButtonArea
               setBasicPostingInfo={setBasicPostingInfo}
               loadPosting={loadPosting}
-              handleMediaChange={(e: any) => { handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl) }}
+              handleMediaChange={(e: any) => {
+                handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl)
+              }}
             />
           </div>
         </div>

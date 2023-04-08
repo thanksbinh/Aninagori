@@ -71,7 +71,7 @@ async function Profile({ params }: { params: { user_name: string } }) {
           </div>
           <div className={cx("post-section")}>
             {isAdmin && (
-              <div>
+              <div className="-mt-4">
                 <PostForm
                   avatarUrl={adminData.image}
                   username={guessData.name || guessData.username}

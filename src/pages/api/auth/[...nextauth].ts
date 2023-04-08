@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
       if (isNewUser == true) {
         try {
           const userRef = doc(db, "users", token.sub!)
-          updateDoc(userRef, { joined_date: serverTimestamp(), username: "" })
+          await updateDoc(userRef, { joined_date: serverTimestamp(), username: "guess" })
         } catch (error) {
           console.log(error)
         }

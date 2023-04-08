@@ -24,8 +24,8 @@ interface PostDynamicProps {
   comments?: CommentProps[]
   focusedComment?: string
   animeID?: any
-  malAuthCode?: any,
-  myUserInfo?: any,
+  malAuthCode?: any
+  myUserInfo?: any
   animeName?: any
 }
 
@@ -37,7 +37,7 @@ const PostAction: FC<PostDynamicProps> = ({
   animeID,
   malAuthCode,
   myUserInfo,
-  animeName
+  animeName,
 }) => {
   const { postId } = useContext(PostContext)
   const [reactions, setReactions] = useState(reactions0)
@@ -98,7 +98,7 @@ const PostAction: FC<PostDynamicProps> = ({
     if (!!malAuthCode) {
       fetch(getProductionBaseUrl() + "/api/updatestatus/" + animeID, {
         headers: {
-          status: 'plan_to_watch',
+          status: "plan_to_watch",
           episode: "0",
           score: "0",
           auth_code: malAuthCode,
@@ -155,7 +155,7 @@ const PostAction: FC<PostDynamicProps> = ({
 
       {/* 3 post actions */}
       <div className="flex items-center justify-between border-t border-b border-ani-light-gray mx-2">
-        <Reaction reactions={reactions} />
+        <Reaction reactions={reactions} setReactions={setReactions} />
 
         <div className="flex">
           <button

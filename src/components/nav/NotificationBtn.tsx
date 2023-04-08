@@ -1,22 +1,13 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from "react";
-import NotificationContainer from "./NotificationContainer";
+import NotificationContainer from "../notification/NotificationContainer";
 import { BsBellFill } from '@react-icons/all-files/bs/BsBellFill';
-
-interface UserInfo {
-  "id": string,
-  "username": string,
-  "image": string,
-}
-
-interface Props {
-  myUserInfo: UserInfo | undefined
-}
+import { UserInfo } from "@/global/UserInfo.types";
 
 export const NotiContext = React.createContext<any>({});
 
-const NotificationBtn: React.FC<Props> = ({ myUserInfo }) => {
+const NotificationBtn = ({ myUserInfo }: { myUserInfo: UserInfo | undefined }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [showNotification, setShowNotification] = useState(false);
   const [unreadNoti, setUnreadNoti] = useState(0);
@@ -49,7 +40,7 @@ const NotificationBtn: React.FC<Props> = ({ myUserInfo }) => {
         )}
       </button>
       <div className={showNotification ? "" : "hidden"}>
-        {myUserInfo &&
+        {myUserInfo?.username &&
           <NotiContext.Provider value={{ showNotification, setShowNotification }}>
             <NotificationContainer myUserInfo={myUserInfo} setUnreadNoti={setUnreadNoti} showNotification={showNotification} />
           </NotiContext.Provider>

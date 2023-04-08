@@ -4,7 +4,7 @@ import { db } from "@/firebase/firebase-app";
 import { arrayRemove, arrayUnion, doc, getDoc, onSnapshot, serverTimestamp, setDoc, Timestamp, updateDoc, writeBatch } from "firebase/firestore";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
-import { UserInfo } from "../../../global/UserInfo.types";
+import { UserInfo } from "../../global/UserInfo.types";
 import FriendRequestComponent from "./FriendRequest";
 import NotificationComponent from "./Notification";
 import { Notification } from "./Notification.types";

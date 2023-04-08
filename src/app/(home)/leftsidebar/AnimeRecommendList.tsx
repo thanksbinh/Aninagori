@@ -16,7 +16,7 @@ async function fetchMyAnimeIds(username: string | undefined) {
   return myAnimeIds || [];
 }
 
-async function getAnimeDetail(animeId: string) {
+async function getAnimeDetail(animeId: string, potential: number) {
   try {
     const animeInfo = await fetch(
       `https://api.myanimelist.net/v2/anime/${animeId}?fields=id,title,main_picture,mean,num_list_users,media_type,num_episodes`, {
@@ -25,7 +25,7 @@ async function getAnimeDetail(animeId: string) {
       },
     }).then(res => res.json())
 
-    return animeInfo
+    return { ...animeInfo, potential: potential }
   } catch (error) {
     console.log(error)
   }
@@ -35,14 +35,14 @@ export default async function AnimeRecommendList({ myUsername, potentialAnimes, 
   const myAnimeIds = await fetchMyAnimeIds(myUsername)
 
   const recommendAnimes = potentialAnimes
-    ?.filter((anime: any) => (!myAnimeIds.includes(anime.id) && anime.potential >= 10))
-    .sort(() => 0.5 - Math.random())
+    ?.filter((anime: any) => (!myAnimeIds.includes(anime.id) && anime.potential >= 12))
+    .sort((a: any, b: any) => b.potential - a.potential)
 
-  const recommendAnimeDetailPromises = recommendAnimes?.map((anime: any) => getAnimeDetail(anime.id))
+  const recommendAnimeDetailPromises = recommendAnimes?.map((anime: any) => getAnimeDetail(anime.id, anime.potential))
   const recommendAnimeDetails = !!recommendAnimeDetailPromises && await Promise.all(recommendAnimeDetailPromises)
 
   return (
-    <div className="h-full relative">
+    <div className="h-full anime-recommend-list relative">
       <div className="flex justify-between items-center pl-2 mb-4">
         <h2 className="text-ani-text-main font-semibold text-xl">Anime you may like</h2>
       </div>
