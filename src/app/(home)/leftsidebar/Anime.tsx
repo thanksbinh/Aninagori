@@ -1,19 +1,20 @@
 "use client"
 
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
-import { getDateNow, adjustAnimeListArray, handleAnimeInformationPosting } from "@/components/utils/postingUtils"
+import { getDateNow, adjustAnimeListArray } from "@/components/utils/postingUtils"
 import { db } from "@/firebase/firebase-app"
 import { doc, setDoc } from "firebase/firestore"
-import { useSession } from "next-auth/react"
 import { useState } from "react"
 import { AiOutlineLoading3Quarters } from "@react-icons/all-files/ai/AiOutlineLoading3Quarters"
 import { RiAddCircleLine } from "@react-icons/all-files/ri/RiAddCircleLine"
 import { RiCheckboxCircleLine } from "@react-icons/all-files/ri/RiCheckboxCircleLine"
+import { useRouter } from "next/navigation"
 
 export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: any }) {
   const [loading, setLoading] = useState(false)
   const [donePlanToWatch, setDonePLanToWatch] = useState(false)
-  const { data: session } = useSession()
+  const [hide, setHide] = useState(false)
+  const router = useRouter()
 
   function formatMediaType(media_type: string) {
     if (media_type === "tv") return "TV"
@@ -42,10 +43,12 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
           auth_code: myUserInfo?.mal_connect?.accessToken,
         } as any,
       }).then((res) => {
-        console.log(res);
         setLoading(false)
         setDonePLanToWatch(true)
-        //TODO: hide plan to watch anime after 3s
+        setTimeout(() => {
+          setHide(true)
+          setDonePLanToWatch(false)
+        }, 3000)
         return
       })
       return
@@ -74,9 +77,13 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
     })
     setLoading(false)
     setDonePLanToWatch(true)
+    setTimeout(() => {
+      setDonePLanToWatch(false)
+      setHide(true)
+    }, 3000)
   }
 
-  return (
+  return !hide ? (
     <div className="flex my-4">
       <div className="flex-none">
         <a href={`https://myanimelist.net/anime/${anime?.id}`} target="_blank">
@@ -126,5 +133,7 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
         )}
       </div>
     </div>
+  ) : (
+    <></>
   )
 }
