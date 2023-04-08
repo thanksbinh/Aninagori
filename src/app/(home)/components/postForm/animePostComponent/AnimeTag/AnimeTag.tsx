@@ -5,8 +5,9 @@ import { forwardRef, useImperativeHandle, useState } from "react"
 import styles from "./AnimeTag.module.scss"
 const cx = classNames.bind(styles)
 
+const tagArr = ["Spoiler", "GoodStory", "BestWaifu", "NSFW"]
+
 function AnimeTag(props: any, ref: any) {
-  const { tagArr } = props
   const [selectedTag, setSelectedTag] = useState(() => {
     return tagArr.map((data: any) => {
       return { selected: false, text: data }

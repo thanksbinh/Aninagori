@@ -5,18 +5,18 @@ import { BsCameraVideoFill } from "@react-icons/all-files/bs/BsCameraVideoFill"
 import { FC, useState, useEffect } from "react"
 import Avatar from "@/components/avatar/Avatar"
 import PostFormPopUp from "./PostFormPopUp"
-import PostFormShortcut from "./postForm/PostFormShortcut"
+import PostFormShortcut from "./PostFormShortcut"
+import { HomeContext } from "../../HomeContext"
+import { useContext } from "react"
 
 type PostFormProps = {
-  username: string
-  avatarUrl: string
-  isBanned: boolean
   myAnimeList?: any
-  malAuthCode?: string
 }
 
-const PostForm: FC<PostFormProps> = ({ username, avatarUrl, isBanned, malAuthCode, myAnimeList }) => {
-  if (isBanned) return <BannedPostForm avatarUrl={avatarUrl} />
+const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
+  const { myUserInfo } = useContext(HomeContext)
+
+  if (!!myUserInfo.is_banned) return <BannedPostForm avatarUrl={myUserInfo.image} />
 
   const [open, setOpen] = useState(false)
   const [recentAnimeList, setRecentAnimeList] = useState<any>([])
@@ -43,16 +43,12 @@ const PostForm: FC<PostFormProps> = ({ username, avatarUrl, isBanned, malAuthCod
 
   return (
     <div className="mt-4">
-      <PostFormPopUp
-        malAuthCode={malAuthCode}
-        username={username}
-        avatarUrl={avatarUrl}
-        setOpen={setOpen}
-        open={open}
-      />
+      <div className={`flex ${open ? "visible" : "invisible"}`}>
+        <PostFormPopUp setOpen={setOpen} recentAnimeList={recentAnimeList} />
+      </div>
       <div className="flex flex-col flex-1 bg-ani-gray rounded-2xl px-4 my-4">
         <div className="flex justify-between items-center mt-4">
-          <Avatar imageUrl={avatarUrl} altText={username} size={8} />
+          <Avatar imageUrl={myUserInfo.image} altText={myUserInfo.username} size={8} />
           <div
             onClick={() => {
               openForm()

@@ -3,7 +3,7 @@
 import { AnimeComponent } from "./Anime"
 import { useState } from "react"
 
-export function AnimeExtend({ animeDetails }: { animeDetails: any }) {
+export function AnimeExtend({ animeDetails, myUserInfo }: { animeDetails: any, myUserInfo: any }) {
   const [extend, setExtend] = useState(false)
 
   return (
@@ -17,7 +17,7 @@ export function AnimeExtend({ animeDetails }: { animeDetails: any }) {
       {extend && animeDetails.map((anime: any) =>
         anime.id && (
           <div key={anime.id}>
-            <AnimeComponent anime={anime} />
+            <AnimeComponent myUserInfo={myUserInfo} anime={anime} />
           </div>
         )
       )}

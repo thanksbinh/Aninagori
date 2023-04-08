@@ -1,6 +1,6 @@
 import PostAction from "../post/[...post_id]/components/post/PostAction";
 import PostContent from "../post/[...post_id]/components/post/PostContent";
-import PostForm from "./components/PostForm";
+import PostForm from "./components/postForm/PostForm";
 import AnimeRecommendList from "./leftsidebar/AnimeRecommendList";
 import FriendList from "./rightsidebar/FriendList";
 

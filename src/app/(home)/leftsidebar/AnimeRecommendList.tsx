@@ -2,6 +2,7 @@ import { db } from '@/firebase/firebase-app';
 import { doc, getDoc } from 'firebase/firestore';
 import { AnimeExtend } from './AnimeExtend';
 import { AnimeComponent } from './Anime';
+import { UserInfo } from '@/global/UserInfo.types';
 
 async function fetchMyAnimeIds(username: string | undefined) {
   if (!username) return [];
@@ -31,8 +32,8 @@ async function getAnimeDetail(animeId: string, potential: number) {
   }
 }
 
-export default async function AnimeRecommendList({ myUsername, potentialAnimes }: { myUsername: string | undefined, potentialAnimes: any }) {
-  const myAnimeIds = await fetchMyAnimeIds(myUsername)
+export default async function AnimeRecommendList({ myUserInfo, potentialAnimes }: { myUserInfo: UserInfo, potentialAnimes: any }) {
+  const myAnimeIds = await fetchMyAnimeIds(myUserInfo?.username)
 
   const recommendAnimes = potentialAnimes
     ?.filter((anime: any) => (!myAnimeIds.includes(anime.id) && anime.potential >= 12))
@@ -49,8 +50,8 @@ export default async function AnimeRecommendList({ myUsername, potentialAnimes }
       <div className="h-full overflow-y-auto flex flex-col flex-wrap">
         {!!recommendAnimeDetails && recommendAnimeDetails.length ? (
           <div>
-            <AnimeComponent anime={recommendAnimeDetails[0]} />
-            <AnimeExtend animeDetails={recommendAnimeDetails.slice(1)} />
+            <AnimeComponent myUserInfo={myUserInfo} anime={recommendAnimeDetails[0]} />
+            <AnimeExtend myUserInfo={myUserInfo} animeDetails={recommendAnimeDetails.slice(1)} />
           </div>
         ) : (
           <div>

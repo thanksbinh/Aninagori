@@ -10,8 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 const cx = classNames.bind(styles)
 
-function AnimeSearch(props: any, ref: any) {
-  const { animeEpsRef } = props
+function AnimeSearch({ animeEpsRef, recentAnimeList }: any, ref: any) {
   const [searchResult, setSearchResult] = useState([])
   const [loading, setLoading] = useState(false)
   const [animePic, setAnimepic] = useState("")
@@ -24,11 +23,21 @@ function AnimeSearch(props: any, ref: any) {
     getAnimeName: () => {
       return { animeName: animeDataSent.animeName, animeID: animeDataSent.animeID }
     },
+    resetAnimeSearch: () => {
+      setAnimeData({ ...animeData, animeName: "" })
+      setAnimeDataSent({ animeName: "", animeID: "" })
+      setAnimepic("")
+      setLoading(false);
+    }
   }))
 
   useEffect(() => {
+    setSearchResult(recentAnimeList)
+  }, [recentAnimeList])
+
+  useEffect(() => {
     if (!debouncedValue.trim()) {
-      setSearchResult([])
+      setSearchResult(recentAnimeList)
       return
     }
     setLoading(true)
@@ -42,10 +51,9 @@ function AnimeSearch(props: any, ref: any) {
           },
         })
         if (!!result.error) {
-          setSearchResult([])
+          setSearchResult(recentAnimeList)
         } else {
           setSearchResult(result.data)
-          setResultBoxOpen(true)
         }
         setLoading(false)
       } catch (err) {
@@ -61,7 +69,7 @@ function AnimeSearch(props: any, ref: any) {
 
   return (
     <HeadlessTippy
-      visible={searchResult.length !== 0 && resultBoxOpen}
+      visible={resultBoxOpen}
       onClickOutside={() => {
         setResultBoxOpen(false)
       }}
@@ -71,7 +79,7 @@ function AnimeSearch(props: any, ref: any) {
       render={() => {
         return (
           <div className={cx("result-wrapper")} ref={ref}>
-            {searchResult.map((ele, index) => {
+            {searchResult.map((ele: any, index: number) => {
               return (
                 <div
                   onClick={async () => {
@@ -114,6 +122,7 @@ function AnimeSearch(props: any, ref: any) {
             onKeyDown={(e) => {
               setAnimeData({ ...animeData, animeID: "" })
             }}
+            onFocus={() => { setResultBoxOpen(true) }}
           ></input>
         </div>
         {!loading ? (
