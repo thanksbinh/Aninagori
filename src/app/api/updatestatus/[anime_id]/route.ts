@@ -42,7 +42,7 @@ export async function GET(request: Request, { params }: { params: any }) {
         Authorization: "Bearer " + auth_code,
       },
       body: urlEncodedParams,
-    })
+    }).then((res) => res.json())
     return NextResponse.json({ status: 200, data: result })
   } catch (err) {
     return NextResponse.json({ status: 400, err: err })

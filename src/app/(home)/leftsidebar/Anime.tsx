@@ -1,9 +1,9 @@
 "use client"
 
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
-import { getDateNow, adjustAnimeListArray } from "@/components/utils/postingUtils"
+import { getDateNow, getOldAnimeData } from "@/components/utils/postingUtils"
 import { db } from "@/firebase/firebase-app"
-import { doc, setDoc } from "firebase/firestore"
+import { arrayRemove, arrayUnion, doc, setDoc, writeBatch } from "firebase/firestore"
 import { useState } from "react"
 import { AiOutlineLoading3Quarters } from "@react-icons/all-files/ai/AiOutlineLoading3Quarters"
 import { RiAddCircleLine } from "@react-icons/all-files/ri/RiAddCircleLine"
@@ -35,27 +35,6 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
   async function handlePlanToWatch() {
     setLoading(true)
     // user have connected to MAL
-    if (!!myUserInfo?.mal_connect?.accessToken) {
-      fetch(getProductionBaseUrl() + "/api/updatestatus/" + anime.id, {
-        headers: {
-          status: "plan_to_watch",
-          episode: "0",
-          score: "0",
-          auth_code: myUserInfo?.mal_connect?.accessToken,
-        } as any,
-      }).then((res) => {
-        console.log(res);
-        setLoading(false)
-        setDonePLanToWatch(true)
-        setTimeout(() => {
-          setHide(true)
-          setDonePLanToWatch(false)
-        }, 3000)
-        return
-      })
-      return
-    }
-    // user not connect to MAL
     const dateNow = getDateNow()
     const myAnimeListRef = doc(db, "myAnimeList", myUserInfo?.username as any)
     const animeData = {
@@ -72,11 +51,44 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
         title: anime.title,
       },
     }
-    const animeDataAfterCheck = await adjustAnimeListArray(myUserInfo?.username, animeData)
-    const myAnimeListPromise = await setDoc(myAnimeListRef, {
+    if (!!myUserInfo?.mal_connect?.accessToken) {
+      fetch(getProductionBaseUrl() + "/api/updatestatus/" + anime.id, {
+        headers: {
+          status: "plan_to_watch",
+          episode: "0",
+          score: "0",
+          auth_code: myUserInfo?.mal_connect?.accessToken,
+        } as any,
+      }).then((res) => res.json()).then(async (data) => {
+        console.log(data);
+        const batch = writeBatch(db);
+        batch.update(myAnimeListRef, {
+          animeList: arrayUnion(animeData),
+        })
+        await batch.commit();
+        setLoading(false)
+        setDonePLanToWatch(true)
+        setTimeout(() => {
+          setHide(true)
+          setDonePLanToWatch(false)
+        }, 3000)
+      })
+      return
+    }
+    // user not connect to MAL
+    const batch = writeBatch(db)
+    const oldAnimeData = await getOldAnimeData(myUserInfo?.username, animeData)
+    if (oldAnimeData !== 'anime not exist') {
+      console.log(oldAnimeData);
+      batch.update(myAnimeListRef, {
+        animeList: arrayRemove(oldAnimeData)
+      })
+    }
+    batch.update(myAnimeListRef, {
+      animeList: arrayUnion(animeData),
       last_updated: dateNow,
-      animeList: animeDataAfterCheck,
     })
+    await batch.commit()
     setLoading(false)
     setDonePLanToWatch(true)
     setTimeout(() => {

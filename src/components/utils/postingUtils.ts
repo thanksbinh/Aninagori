@@ -1,6 +1,16 @@
 import { updateStatusOnFriendLists } from "@/app/(home)/components/functions/syncUpdates"
 import { db, storage } from "@/firebase/firebase-app"
-import { addDoc, collection, doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore"
+import {
+  addDoc,
+  arrayRemove,
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  writeBatch,
+} from "firebase/firestore"
 import getProductionBaseUrl from "./getProductionBaseURL"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { v4 } from "uuid"
@@ -79,28 +89,20 @@ export function convertWatchStatus(watchStatus: string, isEnd: boolean) {
   }
 }
 
-// check if an anime have update before or not
-export async function adjustAnimeListArray(username: any, animeData: any) {
+// get old anime daa
+export async function getOldAnimeData(username: any, animeData: any) {
   const myAnimeListRef = doc(db, "myAnimeList", username)
   const myAnimeList = (await getDoc(myAnimeListRef)).data()
-  var canMerge = true
-  // no anime list data
-  if (!!!myAnimeList?.animeList) return [animeData]
-  const newDataArray = myAnimeList?.animeList.map((anime: any) => {
-    if (anime.node.id === animeData.node.id) {
-      canMerge = false
-      return animeData
-    }
-    return anime
+  if (!!!myAnimeList?.animeList) return "anime not exist"
+  const oldData = myAnimeList?.animeList.find((anime: any) => {
+    return anime.node.id === animeData.node.id
   })
-  // if anime data is not in the list
-  if (canMerge) {
-    console.log("Can merge")
-
-    return [animeData, ...myAnimeList?.animeList]
+  if (oldData) {
+    return oldData
+  } else {
+    // anime not exist
+    return "anime not exist"
   }
-  // if anime data is in the list
-  return newDataArray
 }
 
 export async function handleSubmitForm(
@@ -221,12 +223,19 @@ export async function handleSubmitForm(
         if (animeTagData.length > 0) (animeData as any).list_status.tags = animeTagData
         if (!!rewatchTime && parseInt(rewatchTime) > 0) (animeData as any).list_status.num_times_rewatched = rewatchTime
         // check if anime already in list, if in list, update that anime node
-        const animeDataAfterCheck = await adjustAnimeListArray(username, animeData)
-        const myAnimeListPromise = setDoc(myAnimeListRef, {
+        const batch = writeBatch(db)
+        const oldAnimeData = await getOldAnimeData(username, animeData)
+        if (oldAnimeData !== "anime not exist") {
+          console.log(oldAnimeData)
+          batch.update(myAnimeListRef, {
+            animeList: arrayRemove(oldAnimeData),
+          })
+        }
+        batch.update(myAnimeListRef, {
+          animeList: arrayUnion(animeData),
           last_updated: dateNow,
-          animeList: animeDataAfterCheck,
         })
-        promisePost.push(myAnimeListPromise as any)
+        promisePost.push(batch.commit())
       }
       // Update status on friend list
       promisePost.push(
@@ -237,9 +246,6 @@ export async function handleSubmitForm(
       )
     }
     const result = await Promise.all(promisePost)
-    result.map((res: any) => {
-      console.log(res)
-    })
   } catch (err) {
     console.log(err)
   } finally {
