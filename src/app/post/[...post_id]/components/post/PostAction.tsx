@@ -1,6 +1,6 @@
 "use client"
 
-import { doc, onSnapshot, setDoc } from "firebase/firestore"
+import { doc, onSnapshot } from "firebase/firestore"
 import { FC, useContext, useEffect, useRef, useState } from "react"
 import { AiOutlineLoading3Quarters } from "@react-icons/all-files/ai/AiOutlineLoading3Quarters"
 import { AiOutlineComment } from "@react-icons/all-files/ai/AiOutlineComment"
@@ -15,9 +15,6 @@ import Comments from "../comment/Comments"
 import { PostContext } from "../../PostContext"
 import Reaction from "../reaction/Reaction"
 import PostPopup from "./PostPopup"
-import { adjustAnimeListArray, getDateNow } from "@/components/utils/postingUtils"
-import { useSession } from "next-auth/react"
-import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 interface PostDynamicProps {
   reactions?: Object[]
   commentCountPromise?: Promise<number> | number

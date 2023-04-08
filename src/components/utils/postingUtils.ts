@@ -8,7 +8,6 @@ import {
   doc,
   getDoc,
   serverTimestamp,
-  setDoc,
   writeBatch,
 } from "firebase/firestore"
 import getProductionBaseUrl from "./getProductionBaseURL"
