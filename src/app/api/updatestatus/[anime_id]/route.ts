@@ -13,6 +13,7 @@ export async function GET(request: Request, { params }: { params: any }) {
     const is_rewatching = request.headers.get("is_rewatching")
     const rewatch_time = request.headers.get("rewatch_time")
     const tags = request.headers.get("tags")
+    console.log(tags)
     // console.log(anime_id, status, episode, score)
     // console.log(start_date, end_date, is_rewatching, rewatch_time)
     const urlParamsOauth =
@@ -34,7 +35,7 @@ export async function GET(request: Request, { params }: { params: any }) {
     const urlEncodedParams = qs.stringify(urlParamsOauth)
     console.log(urlEncodedParams)
 
-    fetch("https://api.myanimelist.net/v2/anime/" + anime_id + "/my_list_status", {
+    const result = await fetch("https://api.myanimelist.net/v2/anime/" + anime_id + "/my_list_status", {
       method: "PUT",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -42,12 +43,7 @@ export async function GET(request: Request, { params }: { params: any }) {
       },
       body: urlEncodedParams,
     })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
-        return NextResponse.json({ status: 200, data: data })
-      })
-    return NextResponse.json({ status: 200 })
+    return NextResponse.json({ status: 200, data: result })
   } catch (err) {
     return NextResponse.json({ status: 400, err: err })
   }

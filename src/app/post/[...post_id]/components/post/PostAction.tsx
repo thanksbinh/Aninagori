@@ -100,7 +100,7 @@ const PostAction: FC<PostDynamicProps> = ({
           score: "0",
           auth_code: malAuthCode,
         } as any,
-      }).then((res) => {
+      }).then((res) => res.json()).then((data) => {
         setLoadingPlanTowatch(false)
         setPlanTowatch(true)
       })

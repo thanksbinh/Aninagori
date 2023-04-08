@@ -5,10 +5,17 @@ import styles from "../PostForm.module.scss"
 
 const cx = classNames.bind(styles)
 
-function PostFormMediaDisplay({ mediaUrl, mediaType, handleDeleteMedia }: { mediaUrl: any, mediaType: string, handleDeleteMedia: any }) {
+function PostFormMediaDisplay({ mediaUrl, mediaType, handleDeleteMedia, handleMediaChange }: { mediaUrl: any, mediaType: string, handleDeleteMedia: any, handleMediaChange: any }) {
     if (mediaUrl.length === 0) return (<></>)
     return (
         <div className="mt-2 mb-3 w-full flex items-center justify-center">
+            <input
+                type="file"
+                id="multi-media-input"
+                accept="video/*,image/*"
+                onChange={(e) => handleMediaChange(e, "image")}
+                className="hidden"
+            />
             {mediaUrl.length > 0 ? (
                 mediaType === "video" ? (
                     <div className={cx("media-wrapper") + " w-2/3 h-2/5 flex items-center relative"}>

@@ -5,7 +5,6 @@ import "tippy.js/dist/tippy.css"
 import { forwardRef, useState, useImperativeHandle } from "react"
 import classNames from "classnames/bind"
 import styles from "./PostAdditional.module.scss"
-import PostAdditionalTag from "./postAdditionalTag/PostAdditionalTag"
 
 const cx = classNames.bind(styles)
 const nowYear = new Date().getFullYear()
@@ -30,7 +29,6 @@ function PostAdditional(props: any, ref: any) {
   const [month, setMonth] = useState({ start: 0, end: 0, openStart: false, openEnd: false })
   const [year, setYear] = useState({ start: 0, end: 0, openStart: false, openEnd: false })
   const [rewatchTime, setRewatchTime] = useState("")
-  const [tagArr, setTagArr] = useState<any>([])
   const [nowTag, setNowTag] = useState("")
 
   function setToday(type: string) {
@@ -48,23 +46,6 @@ function PostAdditional(props: any, ref: any) {
 
   function handleInputTag(e: any) {
     setNowTag(e.target.value)
-  }
-
-  function handleKeyDown(e: any) {
-    if (e.key === "Enter") {
-      e.stopPropagation()
-      e.preventDefault()
-      if (nowTag !== "") {
-        const randomColors = colors[Math.floor(Math.random() * colors.length)].color
-        setTagArr([...tagArr, { name: nowTag, color: randomColors }])
-        setNowTag("")
-      }
-    }
-  }
-
-  function deleteTag(index: number) {
-    const newTagArr = tagArr.filter((a: any, i: any) => i !== index)
-    setTagArr(newTagArr)
   }
 
   useImperativeHandle(ref, () => ({
@@ -88,12 +69,15 @@ function PostAdditional(props: any, ref: any) {
       return rewatchTime
     },
     getAnimeTag: () => {
-      return tagArr.map((data: any) => {
-        return data.name
-      })
+      const animeTagArray = nowTag.split(",");
+      const newArray = animeTagArray.map((e: any) => {
+        return e.trim()
+      }).filter((e: any) => e !== "")
+      console.log(newArray);
+
+      return newArray
     },
     resetAdditionalPost: () => {
-      setTagArr([])
       setNowTag("")
       setRewatchTime("");
       setDay({ start: 0, end: 0, openStart: false, openEnd: false })
@@ -124,7 +108,7 @@ function PostAdditional(props: any, ref: any) {
         </div>
       </div>
       <div className="flex items-center justify-between my-4">
-        <div className="flex items-center min-w-[145px]">
+        <div className="flex items-center min-w-[142px]">
           <FontAwesomeIcon icon={faCalendarCheck} className="text-green-500 text-2xl mx-3" />
           <p className="font-semibold text-lg">Finish Date</p>
         </div>
@@ -161,7 +145,6 @@ function PostAdditional(props: any, ref: any) {
           <p className="text-base ml-3">times</p>
         </div>
       </div>
-      {/* TODO: add anime tag */}
       <div className="flex items-center justify-between mt-2 mb-4">
         <div className="flex items-center min-w-[145px]">
           <FontAwesomeIcon icon={faTags} className="text-red-500 text-2xl ml-3 mr-2" />
@@ -170,23 +153,11 @@ function PostAdditional(props: any, ref: any) {
         <div className="flex flex-1 justify-center">
           <div className={cx("container")}>
             <div className={cx("input-tag-wrapper")}>
-              {tagArr?.map((tag: any, index: any) => {
-                return (
-                  <PostAdditionalTag
-                    key={index}
-                    index={index}
-                    tagName={tag.name}
-                    color={tag.color as any}
-                    deleteTag={deleteTag}
-                  />
-                )
-              })}
               <div className={cx("input-text-wrapper")}>
                 <input
-                  placeholder={tagArr.length > 0 ? "" : 'Press "Enter" to add new tag'}
+                  placeholder='Each tag follow by ","'
                   value={nowTag}
                   onChange={handleInputTag}
-                  onKeyDown={handleKeyDown}
                   type="text"
                   className={cx("input-text")}
                 ></input>

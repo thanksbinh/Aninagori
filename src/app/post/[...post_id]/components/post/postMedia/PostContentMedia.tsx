@@ -97,7 +97,7 @@ function PostContentMedia({
               onClick={() => {
                 //TODO: handle view image in full screen
               }}
-              className={`cursor-pointer object-cover object-center rounded-2xl ${cx("post-image", {
+              className={`cursor-pointer object-cover object-center rounded-2xl ${cx({
                 "blur-2xl": spoiler,
               })}`}
             />
