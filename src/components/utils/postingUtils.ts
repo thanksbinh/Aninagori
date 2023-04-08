@@ -119,6 +119,9 @@ export async function handleSubmitForm(
   malAuthCode: any,
   myUserInfo: any,
   postAdditional: any,
+  router: any,
+  setMediaUrl: any,
+  setOpen: any,
 ): Promise<void> {
   e.preventDefault()
   const statusData = (animeStatus?.current as any).getAnimeStatus()
@@ -126,9 +129,11 @@ export async function handleSubmitForm(
   const episodesData = (animeEpisodes?.current as any).getAnimeEpisodes()
   const totalEps = (animeEpisodes?.current as any).getAnimeTotal()
   const tagData = (animeTag?.current as any).getAnimeTag()
+  const resetTag = (animeTag?.current as any).resetAnimeTag
   const scoreData = (animeScore?.current as any).getAnimeScore()
   const startDate = (postAdditional?.current as any).getStartDate()
   const endDate = (postAdditional?.current as any).getEndDate()
+  const resetAdditionalPost = (postAdditional?.current as any).resetAdditionalPost
   const rewatchTime = (postAdditional?.current as any).getRewatchTime()
   const animeTagData = (postAdditional?.current as any).getAnimeTag()
 
@@ -232,11 +237,16 @@ export async function handleSubmitForm(
     result.map((res: any) => {
       console.log(res)
     })
-
-    setLoadPosting(false)
-    location.reload()
   } catch (err) {
     console.log(err)
+  } finally {
+    inputRef.current!.value = ""
+    setLoadPosting(false)
+    setOpen(false)
+    setMediaUrl([])
+    resetTag()
+    resetAdditionalPost()
+    router.refresh()
   }
 }
 

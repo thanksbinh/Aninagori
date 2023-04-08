@@ -15,7 +15,7 @@ import Comments from "../comment/Comments"
 import { PostContext } from "../../PostContext"
 import Reaction from "../reaction/Reaction"
 import PostPopup from "./PostPopup"
-import { adjustAnimeListArray, convertWatchStatus, getDateNow } from "@/components/utils/postingUtils"
+import { adjustAnimeListArray, getDateNow } from "@/components/utils/postingUtils"
 import { useSession } from "next-auth/react"
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 interface PostDynamicProps {
@@ -26,7 +26,6 @@ interface PostDynamicProps {
   animeID?: any
   malAuthCode?: any
   myUserInfo?: any
-  animeName?: any
 }
 
 const PostAction: FC<PostDynamicProps> = ({
@@ -37,14 +36,12 @@ const PostAction: FC<PostDynamicProps> = ({
   animeID,
   malAuthCode,
   myUserInfo,
-  animeName,
 }) => {
   const { postId } = useContext(PostContext)
   const [reactions, setReactions] = useState(reactions0)
   const [commentCount, setCommentCount] = useState(0)
   const [comments, setComments] = useState<CommentProps[]>([])
   const [lastComment, setLastComment] = useState<CommentProps>()
-  const { data: session } = useSession()
   const [postExpand, setPostExpand] = useState(false)
   const [loadingPlanToWatch, setLoadingPlanTowatch] = useState(false)
   const [planTowatch, setPlanTowatch] = useState(false)

@@ -13,15 +13,15 @@ const days = Array.from(Array(31).keys()).map((i) => i + 1)
 const months = Array.from(Array(12).keys()).map((i) => i + 1)
 const years = Array.from(Array(20).keys()).map((i) => nowYear - i)
 const colors = [
-  { color: '#373737' },
-  { color: '#5a5a5a' },
-  { color: '#603b2b' },
-  { color: '#854d1e' },
-  { color: '#8a632a' },
-  { color: '#2b583f' },
-  { color: '#28466c' },
-  { color: '#69314c' },
-  { color: '#6d3631' }
+  { color: "#373737" },
+  { color: "#5a5a5a" },
+  { color: "#603b2b" },
+  { color: "#854d1e" },
+  { color: "#8a632a" },
+  { color: "#2b583f" },
+  { color: "#28466c" },
+  { color: "#69314c" },
+  { color: "#6d3631" },
 ]
 
 function PostAdditional(props: any, ref: any) {
@@ -31,9 +31,7 @@ function PostAdditional(props: any, ref: any) {
   const [year, setYear] = useState({ start: 0, end: 0, openStart: false, openEnd: false })
   const [rewatchTime, setRewatchTime] = useState("")
   const [tagArr, setTagArr] = useState<any>([])
-  const [nowTag, setNowTag] = useState("");
-
-
+  const [nowTag, setNowTag] = useState("")
 
   function setToday(type: string) {
     const today = new Date()
@@ -54,8 +52,8 @@ function PostAdditional(props: any, ref: any) {
 
   function handleKeyDown(e: any) {
     if (e.key === "Enter") {
-      e.stopPropagation();
-      e.preventDefault();
+      e.stopPropagation()
+      e.preventDefault()
       if (nowTag !== "") {
         const randomColors = colors[Math.floor(Math.random() * colors.length)].color
         setTagArr([...tagArr, { name: nowTag, color: randomColors }])
@@ -91,8 +89,16 @@ function PostAdditional(props: any, ref: any) {
     },
     getAnimeTag: () => {
       return tagArr.map((data: any) => {
-        return data.name;
+        return data.name
       })
+    },
+    resetAdditionalPost: () => {
+      setTagArr([])
+      setNowTag("")
+      setRewatchTime("");
+      setDay({ start: 0, end: 0, openStart: false, openEnd: false })
+      setMonth({ start: 0, end: 0, openStart: false, openEnd: false })
+      setYear({ start: 0, end: 0, openStart: false, openEnd: false })
     }
   }))
 
@@ -162,19 +168,31 @@ function PostAdditional(props: any, ref: any) {
           <p className="font-semibold text-lg">Anime Tags</p>
         </div>
         <div className="flex flex-1 justify-center">
-          <div className={cx('container')}>
+          <div className={cx("container")}>
             <div className={cx("input-tag-wrapper")}>
               {tagArr?.map((tag: any, index: any) => {
                 return (
-                  <PostAdditionalTag key={index} index={index} tagName={tag.name} color={tag.color as any} deleteTag={deleteTag} />
+                  <PostAdditionalTag
+                    key={index}
+                    index={index}
+                    tagName={tag.name}
+                    color={tag.color as any}
+                    deleteTag={deleteTag}
+                  />
                 )
               })}
-              <div className={cx('input-text-wrapper')}>
-                <input value={nowTag} onChange={handleInputTag} onKeyDown={handleKeyDown} type="text" className={cx('input-text')}></input>
+              <div className={cx("input-text-wrapper")}>
+                <input
+                  placeholder={tagArr.length > 0 ? "" : 'Press "Enter" to add new tag'}
+                  value={nowTag}
+                  onChange={handleInputTag}
+                  onKeyDown={handleKeyDown}
+                  type="text"
+                  className={cx("input-text")}
+                ></input>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

@@ -11,6 +11,7 @@ import PostAdditional from "./postAdditional/PostAdditional"
 import PostBasic from "./postBasic/PostBasic"
 import { AnimeWatchStatus, AnimeSearch, AnimeScore, AnimeEpisodes } from "./animePostComponent"
 import Avatar from "@/components/avatar/Avatar"
+import { useRouter } from "next/navigation"
 
 const cx = classNames.bind(styles)
 
@@ -36,17 +37,18 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
   const animeScore = useRef()
   const postAdditional = useRef()
   const { myUserInfo } = useContext(HomeContext)
+  const router = useRouter();
 
   return (
     <div
       onClick={
         loadPosting
-          ? () => {}
+          ? () => { }
           : () => {
-              setTimeout(() => {
-                setOpen(false)
-              }, 90)
-            }
+            setTimeout(() => {
+              setOpen(false)
+            }, 90)
+          }
       }
       className={cx("modal")}
       style={open ? { display: "flex" } : { display: "none" }}
@@ -58,35 +60,24 @@ const PostFormPopUp: FC<PostFormProps> = ({ username, avatarUrl, setOpen, open, 
         }}
         onSubmit={
           loadPosting
-            ? () => {}
+            ? () => { }
             : (e) =>
-                handleSubmitForm(
-                  e,
-                  animeStatus,
-                  animeSearch,
-                  animeEpisodes,
-                  animeTag,
-                  animeScore,
-                  inputRef,
-                  mediaUrl,
-                  setLoadPosting,
-                  username,
-                  avatarUrl,
-                  mediaType,
-                  malAuthCode,
-                  myUserInfo,
-                  postAdditional,
-                )
+              handleSubmitForm(
+                e, animeStatus, animeSearch, animeEpisodes, animeTag,
+                animeScore, inputRef, mediaUrl, setLoadPosting, username,
+                avatarUrl, mediaType, malAuthCode, myUserInfo, postAdditional,
+                router, setMediaUrl, setOpen
+              )
         }
         className="relative"
       >
         <FontAwesomeIcon
           onClick={
             loadPosting
-              ? () => {}
+              ? () => { }
               : () => {
-                  setOpen(false)
-                }
+                setOpen(false)
+              }
           }
           icon={faCircleXmark as any}
           className={`${cx("close-post")} z-20`}

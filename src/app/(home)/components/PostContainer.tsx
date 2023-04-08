@@ -86,9 +86,6 @@ export default function Posts({ myUserInfo, myFriendList, myAnimeList, postPrefe
     }
 
     if (fetchedPosts.lastKey) {
-      if (filterPosts(fetchedPosts)) {
-        setPosts([...posts, ...fetchedPosts.posts])
-      }
       filterPosts(fetchedPosts.posts)
       setPosts([...posts, ...fetchedPosts.posts])
       setLastKey(fetchedPosts.lastKey)
@@ -141,7 +138,6 @@ export default function Posts({ myUserInfo, myFriendList, myAnimeList, postPrefe
             <PostAction
               reactions={post.reactions}
               myUserInfo={myUserInfo}
-              animeName={post?.post_anime_data?.anime_name}
               malAuthCode={myUserInfo?.mal_connect?.accessToken}
               animeID={post?.post_anime_data?.anime_id}
               commentCountPromise={fetchCommentCount(post.id)}
