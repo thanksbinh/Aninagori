@@ -7,13 +7,12 @@ import AnimeFavorite from "@/app/user/[user_name]/profileComponent/AnimeFavorite
 import AnimeUpdate from "@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate"
 import { collection, doc, getDoc, query, where, getDocs } from "firebase/firestore"
 import { db } from "@/firebase/firebase-app"
-import { getServerSession } from "next-auth"
 import { authOptions } from "@/pages/api/auth/[...nextauth]"
 import { Suspense } from "react"
 import PostForm from "@/app/(home)/components/PostForm"
-import { getUserInfo } from "@/global/getUserInfo"
 import * as apiServices from "@/app/api/apiServices/apiServicesConfig"
 import ProfilePosts from "./profileComponent/posts/PostContainer"
+import { getServerSession } from "next-auth/next"
 
 const cx = classNames.bind(styles)
 
@@ -77,6 +76,7 @@ async function Profile({ params }: { params: { user_name: string } }) {
                   avatarUrl={adminData.image}
                   username={guessData.name || guessData.username}
                   isBanned={!!adminData.is_banned}
+                  malAuthCode={adminData?.mal_connect?.accessToken}
                 />
               </div>
             )}
@@ -137,4 +137,6 @@ async function getUserAnimeUpdate(access_token: any, mal_username: any) {
   }
 }
 
+export const fetchCache = 'force-no-store'
 export default Profile
+

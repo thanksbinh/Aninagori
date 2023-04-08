@@ -31,7 +31,7 @@ async function getAnimeDetail(animeId: string, potential: number) {
   }
 }
 
-export default async function AnimeRecommendList({ myUsername, potentialAnimes }: { myUsername: string | undefined, potentialAnimes: any }) {
+export default async function AnimeRecommendList({ myUsername, potentialAnimes, myUserInfo }: { myUsername: string | undefined, potentialAnimes: any, myUserInfo: any }) {
   const myAnimeIds = await fetchMyAnimeIds(myUsername)
 
   const recommendAnimes = potentialAnimes
@@ -49,8 +49,8 @@ export default async function AnimeRecommendList({ myUsername, potentialAnimes }
       <div className="h-full overflow-y-auto flex flex-col flex-wrap">
         {!!recommendAnimeDetails && recommendAnimeDetails.length ? (
           <div>
-            <AnimeComponent anime={recommendAnimeDetails[0]} />
-            <AnimeExtend animeDetails={recommendAnimeDetails.slice(1)} />
+            <AnimeComponent myUserInfo={myUserInfo} anime={recommendAnimeDetails[0]} />
+            <AnimeExtend myUserInfo={myUserInfo} animeDetails={recommendAnimeDetails.slice(1)} />
           </div>
         ) : (
           <div>

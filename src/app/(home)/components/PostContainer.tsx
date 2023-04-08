@@ -1,13 +1,13 @@
-'use client'
+"use client"
 
-import PostContent from "@/app/post/[...post_id]/components/post/PostContent";
-import { db } from "@/firebase/firebase-app";
-import { collection, getCountFromServer } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import InfiniteScroll from 'react-infinite-scroll-component';
-import ContextProvider from "../../post/[...post_id]/PostContext";
-import PostAction from "../../post/[...post_id]/components/post/PostAction";
-import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "./functions/recommendPost";
+import PostContent from "@/app/post/[...post_id]/components/post/PostContent"
+import { db } from "@/firebase/firebase-app"
+import { collection, getCountFromServer } from "firebase/firestore"
+import { useEffect, useState } from "react"
+import InfiniteScroll from "react-infinite-scroll-component"
+import ContextProvider from "../../post/[...post_id]/PostContext"
+import PostAction from "../../post/[...post_id]/components/post/PostAction"
+import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "./functions/recommendPost"
 
 async function fetchCommentCount(postId: string) {
   const commentsRef = collection(db, "posts", postId, "comments")
@@ -51,9 +51,12 @@ export default function Posts({ myUserInfo, myFriendList, myAnimeList, postPrefe
 
   function filterPosts(fetchedPosts: any) {
     fetchedPosts = fetchedPosts.filter((post: any) => {
-      return ((post.authorName === myUserInfo.username) || //isFromMe
-        (myFriendUsernameList?.includes(post.authorName)) || //isFromMyFriend
-        (Math.random() * 10 < getAnimePreferenceScore(myAnimeList, postPreference?.animeList, post.post_anime_data?.anime_id))) //gachaTrue
+      return (
+        post.authorName === myUserInfo.username || //isFromMe
+        myFriendUsernameList?.includes(post.authorName) || //isFromMyFriend
+        Math.random() * 10 <
+          getAnimePreferenceScore(myAnimeList, postPreference?.animeList, post.post_anime_data?.anime_id)
+      ) //gachaTrue
     })
   }
 
@@ -84,7 +87,7 @@ export default function Posts({ myUserInfo, myFriendList, myAnimeList, postPrefe
 
     if (fetchedPosts.lastKey) {
       filterPosts(fetchedPosts.posts)
-      setPosts([...posts, ...fetchedPosts.posts]);
+      setPosts([...posts, ...fetchedPosts.posts])
       setLastKey(fetchedPosts.lastKey)
     } else {
       setHasMore(false)
@@ -106,8 +109,8 @@ export default function Posts({ myUserInfo, myFriendList, myAnimeList, postPrefe
       pullDownToRefresh={true}
       className="flex flex-col"
     >
-      {
-        posts.map((post: any) => (
+      {posts.map((post: any) => {
+        return (
           <ContextProvider
             key={post.id}
             myUserInfo={myUserInfo}
@@ -129,18 +132,21 @@ export default function Posts({ myUserInfo, myFriendList, myAnimeList, postPrefe
               episodesSeen={post?.post_anime_data?.episodes_seen}
               episodesTotal={post?.post_anime_data?.total_episodes}
               score={post?.post_anime_data?.score}
-              tag={post?.post_anime_data?.tag}
+              tag={!!post?.post_anime_data?.tag ? post?.post_anime_data?.tag : post?.tag}
               postId={post.id}
             />
             <PostAction
               reactions={post.reactions}
+              myUserInfo={myUserInfo}
+              malAuthCode={myUserInfo?.mal_connect?.accessToken}
+              animeID={post?.post_anime_data?.anime_id}
               commentCountPromise={fetchCommentCount(post.id)}
               comments={post.lastComment ? [post.lastComment] : []}
             />
             <div className="mb-4"></div>
           </ContextProvider>
-        ))
-      }
-    </InfiniteScroll >
+        )
+      })}
+    </InfiniteScroll>
   )
 }

@@ -24,6 +24,12 @@ function AnimeSearch(props: any, ref: any) {
     getAnimeName: () => {
       return { animeName: animeDataSent.animeName, animeID: animeDataSent.animeID }
     },
+    resetAnimeSearch: () => {
+      setAnimeData({ ...animeData, animeName: "" })
+      setAnimeDataSent({ animeName: "", animeID: "" })
+      setAnimepic("")
+      setLoading(false);
+    }
   }))
 
   useEffect(() => {

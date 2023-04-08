@@ -1,5 +1,4 @@
 import { authOptions } from "@/pages/api/auth/[...nextauth]"
-import { getServerSession } from "next-auth"
 import { getUserInfo } from "@/global/getUserInfo"
 import PostForm from "./components/PostForm"
 import Posts from "./components/PostContainer"
@@ -8,6 +7,7 @@ import FriendList from "./rightsidebar/FriendList"
 import ContextProvider from "./HomeContext"
 import { getFriendList, fetchPostPreference, fetchMyAnimeList } from "./components/functions/fetchData"
 import { syncAnimeUpdate, updateLastView } from "./components/functions/syncUpdates"
+import { getServerSession } from "next-auth"
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
@@ -31,7 +31,7 @@ export default async function Home() {
         <div className="xl:block xl:flex-1 flex-shrink max-w-[320px]">
           <div className="hidden xl:block max-w-[360px] py-16 px-2 h-full fixed left-0 z-20 bg-ani-black">
             {/* @ts-expect-error Server Component */}
-            <AnimeRecommendList myUsername={myUserInfo.username} potentialAnimes={postPreference.animeList} />
+            <AnimeRecommendList myUserInfo={myUserInfo} myUsername={myUserInfo.username} potentialAnimes={postPreference.animeList} />
           </div>
         </div>
 
@@ -41,7 +41,7 @@ export default async function Home() {
               avatarUrl={myUserInfo.image}
               username={myUserInfo.username}
               isBanned={!!myUserInfo.is_banned}
-              malAuthCode={myUserInfo?.auth_code}
+              malAuthCode={myUserInfo?.mal_connect?.accessToken}
             />
 
             <Posts
@@ -51,7 +51,7 @@ export default async function Home() {
               postPreference={postPreference}
             />
           </div>
-        </div>
+        </div >
 
         <div className="lg:block lg:flex-1 flex-shrink max-w-[320px]">
           <div className="hidden lg:block w-[320px] pt-16 px-2 h-screen fixed right-0 z-20 bg-ani-black">
@@ -59,7 +59,7 @@ export default async function Home() {
             <FriendList myFriendList={myFriendList} />
           </div>
         </div>
-      </ContextProvider>
-    </div>
+      </ContextProvider >
+    </div >
   )
 }
