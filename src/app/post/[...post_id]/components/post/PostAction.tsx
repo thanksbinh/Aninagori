@@ -85,54 +85,6 @@ const PostAction: FC<PostDynamicProps> = ({
     inputRef.current && inputRef.current.focus()
   }
 
-  const onPlanToWatch = async () => {
-    if (!!!animeID) {
-      alert("You can't plan to watch anime without name 😥")
-      return
-    }
-    // user have connect to MAL
-    setLoadingPlanTowatch(true)
-    if (!!malAuthCode) {
-      fetch(getProductionBaseUrl() + "/api/updatestatus/" + animeID, {
-        headers: {
-          status: "plan_to_watch",
-          episode: "0",
-          score: "0",
-          auth_code: malAuthCode,
-        } as any,
-      }).then((res) => res.json()).then((data) => {
-        setLoadingPlanTowatch(false)
-        setPlanTowatch(true)
-      })
-      return
-    }
-    // user not connect to MAL
-    const dateNow = getDateNow()
-    const myAnimeListRef = doc(db, "myAnimeList", myUserInfo?.username)
-    const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + animeID).then((res) => res.json())
-    const animeData = {
-      list_status: {
-        is_rewatching: false,
-        num_episodes_watched: 0,
-        score: 0,
-        status: "plan_to_watch",
-        updated_at: dateNow,
-      },
-      node: {
-        id: animeID,
-        main_picture: animeInformation.main_picture,
-        title: animeInformation.title,
-      },
-    }
-    const animeDataAfterCheck = await adjustAnimeListArray(myUserInfo?.username, animeData)
-    const myAnimeListPromise = await setDoc(myAnimeListRef, {
-      last_updated: dateNow,
-      animeList: animeDataAfterCheck,
-    })
-    setLoadingPlanTowatch(false)
-    setPlanTowatch(true)
-  }
-
   return (
     <div className="flex flex-col flex-1 bg-ani-gray rounded-2xl p-4 pt-0 rounded-t-none">
       {/* Recent reactions */}
@@ -166,7 +118,7 @@ const PostAction: FC<PostDynamicProps> = ({
         </div>
 
         {planTowatch && (
-          <button title="plan to watch" onClick={onPlanToWatch} className="flex items-center space-x-1 text-[#3BC361]">
+          <button title="plan to watch" className="flex items-center space-x-1 text-[#3BC361]">
             <RiCheckboxCircleLine className="w-5 h-5" />
             <span>Plan to Watch</span>
           </button>
@@ -174,7 +126,7 @@ const PostAction: FC<PostDynamicProps> = ({
         {!planTowatch && !loadingPlanToWatch && (
           <button
             title="plan to watch"
-            onClick={onPlanToWatch}
+
             className="flex items-center space-x-1 text-gray-400 hover:text-[#E5DE3D]"
           >
             <RiAddCircleLine className="w-5 h-5" />
@@ -220,6 +172,54 @@ const PostAction: FC<PostDynamicProps> = ({
       </div>
     </div>
   )
+}
+
+const onPlanToWatch = async () => {
+  // if (!!!animeID) {
+  //   alert("You can't plan to watch anime without name 😥")
+  //   return
+  // }
+  // // user have connect to MAL
+  // setLoadingPlanTowatch(true)
+  // if (!!malAuthCode) {
+  //   fetch(getProductionBaseUrl() + "/api/updatestatus/" + animeID, {
+  //     headers: {
+  //       status: "plan_to_watch",
+  //       episode: "0",
+  //       score: "0",
+  //       auth_code: malAuthCode,
+  //     } as any,
+  //   }).then((res) => res.json()).then((data) => {
+  //     setLoadingPlanTowatch(false)
+  //     setPlanTowatch(true)
+  //   })
+  //   return
+  // }
+  // // user not connect to MAL
+  // const dateNow = getDateNow()
+  // const myAnimeListRef = doc(db, "myAnimeList", myUserInfo?.username)
+  // const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + animeID).then((res) => res.json())
+  // const animeData = {
+  //   list_status: {
+  //     is_rewatching: false,
+  //     num_episodes_watched: 0,
+  //     score: 0,
+  //     status: "plan_to_watch",
+  //     updated_at: dateNow,
+  //   },
+  //   node: {
+  //     id: animeID,
+  //     main_picture: animeInformation.main_picture,
+  //     title: animeInformation.title,
+  //   },
+  // }
+  // const animeDataAfterCheck = await adjustAnimeListArray(myUserInfo?.username, animeData)
+  // const myAnimeListPromise = await setDoc(myAnimeListRef, {
+  //   last_updated: dateNow,
+  //   animeList: animeDataAfterCheck,
+  // })
+  // setLoadingPlanTowatch(false)
+  // setPlanTowatch(true)
 }
 
 export default PostAction
