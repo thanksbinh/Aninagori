@@ -52,7 +52,7 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
     }
     // user not connect to MAL
     const dateNow = getDateNow()
-    const myAnimeListRef = doc(db, "myAnimeList", session?.user?.name as any)
+    const myAnimeListRef = doc(db, "myAnimeList", myUserInfo?.username as any)
     const animeData = {
       list_status: {
         is_rewatching: false,
@@ -67,7 +67,7 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
         title: anime.title,
       },
     }
-    const animeDataAfterCheck = await adjustAnimeListArray(session?.user?.name, animeData)
+    const animeDataAfterCheck = await adjustAnimeListArray(myUserInfo?.username, animeData)
     const myAnimeListPromise = await setDoc(myAnimeListRef, {
       last_updated: dateNow,
       animeList: animeDataAfterCheck,

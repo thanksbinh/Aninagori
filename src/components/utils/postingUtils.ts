@@ -95,6 +95,8 @@ export async function adjustAnimeListArray(username: any, animeData: any) {
   })
   // if anime data is not in the list
   if (canMerge) {
+    console.log("Can merge")
+
     return [animeData, ...myAnimeList?.animeList]
   }
   // if anime data is in the list

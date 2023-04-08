@@ -111,7 +111,7 @@ const PostAction: FC<PostDynamicProps> = ({
     }
     // user not connect to MAL
     const dateNow = getDateNow()
-    const myAnimeListRef = doc(db, "myAnimeList", session?.user?.name as any)
+    const myAnimeListRef = doc(db, "myAnimeList", myUserInfo?.username)
     const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + animeID).then((res) => res.json())
     const animeData = {
       list_status: {
@@ -127,7 +127,7 @@ const PostAction: FC<PostDynamicProps> = ({
         title: animeInformation.title,
       },
     }
-    const animeDataAfterCheck = await adjustAnimeListArray(session?.user?.name, animeData)
+    const animeDataAfterCheck = await adjustAnimeListArray(myUserInfo?.username, animeData)
     const myAnimeListPromise = await setDoc(myAnimeListRef, {
       last_updated: dateNow,
       animeList: animeDataAfterCheck,
