@@ -45,7 +45,7 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
         console.log(res);
         setLoading(false)
         setDonePLanToWatch(true)
-        //TODO: hide plan to watch anime
+        //TODO: hide plan to watch anime after 3s
         return
       })
       return

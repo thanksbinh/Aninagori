@@ -65,7 +65,6 @@ function ProfileHeader({ guess, admin }) {
         alt="wallpaper"
         className={cx("wallpaper")}
         onError={({ currentTarget }) => {
-          //TODO: show pop up notification when error
           currentTarget.onerror = null
           currentTarget.src = "/wallpaper.png"
         }}
@@ -186,7 +185,6 @@ function ProfileHeader({ guess, admin }) {
             <>
               <Button
                 onClick={async () => {
-                  //TODO:  handle not connected to MAL
                   if (!!!guess?.mal_connect?.myAnimeList_username) {
                     try {
                       const codeChallenge = generateCodeChallenge(generateCodeVerifier())

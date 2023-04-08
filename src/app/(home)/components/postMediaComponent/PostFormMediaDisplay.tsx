@@ -6,8 +6,9 @@ import styles from "../PostForm.module.scss"
 const cx = classNames.bind(styles)
 
 function PostFormMediaDisplay({ mediaUrl, mediaType, handleDeleteMedia }: { mediaUrl: any, mediaType: string, handleDeleteMedia: any }) {
+    if (mediaUrl.length === 0) return (<></>)
     return (
-        <div className="mt-4 w-full flex items-center justify-center">
+        <div className="mt-2 mb-3 w-full flex items-center justify-center">
             {mediaUrl.length > 0 ? (
                 mediaType === "video" ? (
                     <div className={cx("media-wrapper") + " w-2/3 h-2/5 flex items-center relative"}>
@@ -54,7 +55,6 @@ function PostFormMediaDisplay({ mediaUrl, mediaType, handleDeleteMedia }: { medi
                 )
             ) : (
                 <>
-
                 </>
             )}
         </div>);

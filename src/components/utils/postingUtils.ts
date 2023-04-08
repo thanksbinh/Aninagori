@@ -40,10 +40,10 @@ export function handleAnimeInformationPosting(
   } else if (status === "Drop") {
     postAnimeData.watching_progress = "have dropped"
   } else if (status === "Re-watching" && episodes === "0") {
-    postAnimeData.watching_progress = "is re-watching"
+    postAnimeData.watching_progress = "re-watching"
     postAnimeData.episodes_seen = "1"
   } else if (status === "Re-watching") {
-    postAnimeData.watching_progress = "is re-wwatching"
+    postAnimeData.watching_progress = "re-watching"
   }
   if (postAnimeData.episodes_seen === postAnimeData.total_episodes) {
     postAnimeData.watching_progress = "have finished"
@@ -53,11 +53,13 @@ export function handleAnimeInformationPosting(
 }
 
 export function convertWatchStatus(watchStatus: string, isEnd: boolean) {
+  console.log(watchStatus, isEnd)
+
   switch (watchStatus) {
     case "is watching":
       return "watching"
       break
-    case "is re-watching":
+    case "re-watching":
       if (isEnd) {
         return "completed"
       }
@@ -140,29 +142,16 @@ export async function handleSubmitForm(
     alert(endDate.error)
     return
   }
-  const postAnimeData = handleAnimeInformationPosting(statusData, searchData, episodesData, totalEps, scoreData)
   setLoadPosting(true)
+  const postAnimeData = handleAnimeInformationPosting(statusData, searchData, episodesData, totalEps, scoreData)
   const statustConverted = convertWatchStatus(
     postAnimeData.watching_progress,
     parseInt(totalEps) === parseInt(episodesData),
   )
-  fetch(getProductionBaseUrl() + "/api/updatestatus/" + postAnimeData.anime_id, {
-    headers: {
-      status: statustConverted,
-      episode: postAnimeData.episodes_seen,
-      score: (postAnimeData as any).score,
-      auth_code: malAuthCode,
-      start_date: startDate,
-      end_date: endDate,
-      rewatch_time: rewatchTime,
-      is_rewatching: statusData === "Re-watching" ? true : false,
-      tags: animeTagData,
-    } as any,
-  })
-    .then((res) => res.json())
-    .then((data) => console.log(data))
-
+  console.log(statustConverted)
+  // // upload media to firebase storage
   const downloadMediaUrl = await uploadMedia(mediaUrl)
+  // post info to firestore
   const promisePost = [
     addDoc(collection(db, "posts"), {
       authorName: username,
@@ -180,7 +169,7 @@ export async function handleSubmitForm(
   try {
     // post have anime data
     if (!!postAnimeData.anime_id) {
-      // user connect with MAL
+      // user connect with MAL: post info to MAL
       if (!!malAuthCode) {
         const promiseUpdateMAL = fetch(getProductionBaseUrl() + "/api/updatestatus/" + postAnimeData.anime_id, {
           headers: {
@@ -188,11 +177,16 @@ export async function handleSubmitForm(
             episode: postAnimeData.episodes_seen,
             score: (postAnimeData as any).score,
             auth_code: malAuthCode,
+            start_date: startDate,
+            end_date: endDate,
+            rewatch_time: rewatchTime,
+            is_rewatching: statusData === "Re-watching" ? true : false,
+            tags: animeTagData,
           } as any,
         }).then((res) => res.json())
         promisePost.push(promiseUpdateMAL)
       } else {
-        // user not connect with MAL
+        // user not connect with MAL: post anime status to firebase
         const myAnimeListRef = doc(db, "myAnimeList", username)
         const dateNow = getDateNow()
         const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + postAnimeData.anime_id).then(
@@ -200,11 +194,11 @@ export async function handleSubmitForm(
         )
         const animeData = {
           list_status: {
-            is_rewatching: false,
             num_episodes_watched: postAnimeData.episodes_seen,
             score: !!(postAnimeData as any).score ? (postAnimeData as any).score : 0,
             status: statustConverted,
             updated_at: dateNow,
+            is_rewatching: statusData === "Re-watching" ? true : false,
           },
           node: {
             id: postAnimeData.anime_id,
@@ -212,6 +206,10 @@ export async function handleSubmitForm(
             title: animeInformation.title,
           },
         }
+        if (!!startDate) (animeData as any).list_status.start_date = startDate
+        if (!!endDate) (animeData as any).list_status.finish_date = endDate
+        if (animeTagData.length > 0) (animeData as any).list_status.tags = animeTagData
+        if (!!rewatchTime && parseInt(rewatchTime) > 0) (animeData as any).list_status.num_times_rewatched = rewatchTime
         // check if anime already in list, if in list, update that anime node
         const animeDataAfterCheck = await adjustAnimeListArray(username, animeData)
         const myAnimeListPromise = setDoc(myAnimeListRef, {
@@ -219,7 +217,6 @@ export async function handleSubmitForm(
           animeList: animeDataAfterCheck,
         })
         promisePost.push(myAnimeListPromise as any)
-        console.log("user not connect with MAL")
       }
       // Update status on friend list
       promisePost.push(
@@ -230,6 +227,10 @@ export async function handleSubmitForm(
       )
     }
     const result = await Promise.all(promisePost)
+    result.map((res: any) => {
+      console.log(res)
+    })
+
     setLoadPosting(false)
     location.reload()
   } catch (err) {

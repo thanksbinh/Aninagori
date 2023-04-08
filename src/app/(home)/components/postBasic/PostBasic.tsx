@@ -11,7 +11,7 @@ function PostBasic(
                 ref={inputRef}
                 onPaste={handlePaste}
                 placeholder="Share your favourite Animemory now!"
-                className="flex rounded-3xl mt-5 mb-4 py-3 px-4 w-full focus:outline-none bg-[#212833] caret-white"
+                className="flex rounded-3xl mt-4 mb-5 py-3 px-4 w-full focus:outline-none bg-[#212833] caret-white"
             />
             <PostFormMediaDisplay mediaUrl={mediaUrl} mediaType={mediaType} handleDeleteMedia={handleDeleteMedia} />
             <AnimeTag tagArr={["Spoiler", "GoodStory", "BestWaifu", "NSFW"]} ref={animeTag} />
