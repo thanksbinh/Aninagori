@@ -2,13 +2,13 @@ import { getUserInfo } from "@/global/getUserInfo";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import '../globals.css';
-import { fetchMyAnimeList, fetchPostPreference, getFriendList } from "./components/functions/fetchData";
-import { syncAnimeUpdate, updateLastView } from "./components/functions/syncUpdates";
+import { fetchMyAnimeList, fetchPostPreference, getFriendList } from "./functions/fetchData";
+import { syncAnimeUpdate, updateLastView } from "./functions/syncUpdates";
 import Posts from "./components/PostContainer";
 import PostForm from './components/postForm/PostForm';
 import ContextProvider from "./HomeContext";
-import AnimeRecommendList from "./leftsidebar/AnimeRecommendList";
-import FriendList from "./rightsidebar/FriendList";
+import AnimeRecommendList from "./components/leftsidebar/AnimeRecommendList";
+import FriendList from "./components/rightsidebar/FriendList";
 
 export default async function Home() {
   const session = await getServerSession(authOptions)

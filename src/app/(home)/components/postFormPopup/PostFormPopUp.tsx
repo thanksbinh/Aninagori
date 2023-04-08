@@ -3,20 +3,20 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import classNames from "classnames/bind"
 import { FC, useContext, useRef, useState } from "react"
-import styles from "./PostForm.module.scss"
+import styles from "../postForm/PostForm.module.scss"
 
 import Avatar from "@/components/avatar/Avatar"
-import { handleDeleteMedia, handleMediaChange, handlePaste, handleSubmitForm } from "@/components/utils/postingUtils"
+import { handleDeleteMedia, handleMediaChange, handlePaste, handleSubmitForm } from "@/app/(home)/functions/postingUtils"
 import { useRouter } from "next/navigation"
 import { HomeContext } from "../../HomeContext"
 import AnimeEpisodes from "./animePostComponent/AnimeEpisodes/AnimeEpisodes"
 import AnimeScore from "./animePostComponent/AnimeScore/AnimeScore"
 import AnimeSearch from "./animePostComponent/AnimeSearch/AnimeSearch"
-import AnimeWatchStatus from "./animePostComponent/AnimeWatchStatus/AnimeWatchStatus"
-import PostFormDetails from "./postFormDetails/PostFormDetails"
-import PostFormActions from "./PostFormActions"
-import PostFormMediaDisplay from "./PostFormMediaDisplay"
 import AnimeTag from "./animePostComponent/AnimeTag/AnimeTag"
+import AnimeWatchStatus from "./animePostComponent/AnimeWatchStatus/AnimeWatchStatus"
+import PostFormActions from "./PostFormActions"
+import PostFormDetails from "./PostFormDetails"
+import PostFormMediaDisplay from "./PostFormMediaDisplay"
 
 const cx = classNames.bind(styles)
 
@@ -119,16 +119,17 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen, recentAnimeList }) => {
               />
               <PostFormMediaDisplay mediaUrl={mediaUrl} mediaType={mediaType} handleDeleteMedia={handleDeleteMedia} handleMediaChange={handleMediaChange} />
               <AnimeTag ref={animeTag} />
-              <p onClick={() => { setBasicPostingInfo(!basicPostingInfo) }} className="whitespace-nowrap ml-2 my-3 text-ani-text-main cursor-pointer font-bold underline text-sm opacity-80 hover:opacity-100">
-                {basicPostingInfo ? "More details..." : "Fewer details..."}
-              </p>
             </div>
 
-            <PostFormDetails
-              ref={postAdditional}
-              basicPostingInfo={basicPostingInfo}
-              className={basicPostingInfo ? "hidden" : "flex"}
-            />
+            <p onClick={() => { setBasicPostingInfo(!basicPostingInfo) }} className="whitespace-nowrap ml-2 my-3 text-ani-text-main cursor-pointer font-bold underline text-sm opacity-80 hover:opacity-100">
+              {basicPostingInfo ? "More details..." : "Fewer details..."}
+            </p>
+            <div className={basicPostingInfo ? "hidden" : "flex"}>
+              <PostFormDetails
+                ref={postAdditional}
+                basicPostingInfo={basicPostingInfo}
+              />
+            </div>
 
             <PostFormActions
               setBasicPostingInfo={setBasicPostingInfo}

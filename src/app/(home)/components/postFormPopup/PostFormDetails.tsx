@@ -23,8 +23,7 @@ const colors = [
   { color: "#6d3631" },
 ]
 
-function PostFormDetails(props: any, ref: any) {
-  const { className } = props
+function PostFormDetails({ className }: any, ref: any) {
   const [day, setDay] = useState({ start: 0, end: 0, openStart: false, openEnd: false })
   const [month, setMonth] = useState({ start: 0, end: 0, openStart: false, openEnd: false })
   const [year, setYear] = useState({ start: 0, end: 0, openStart: false, openEnd: false })

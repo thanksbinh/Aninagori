@@ -5,7 +5,7 @@ import { AiFillCloseCircle } from "@react-icons/all-files/ai/AiFillCloseCircle"
 import { arrayRemove, doc, updateDoc } from "firebase/firestore"
 import { useRouter } from "next/navigation"
 import { useContext, useState } from "react"
-import { HomeContext } from "../HomeContext"
+import { HomeContext } from "../../HomeContext"
 
 export function AnimeOptions({ anime, children }: { anime: any, children: React.ReactNode }) {
   const { myUserInfo } = useContext(HomeContext)

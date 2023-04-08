@@ -7,7 +7,7 @@ import { useContext, useEffect, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import ContextProvider from "../../post/[...post_id]/PostContext"
 import PostAction from "../../post/[...post_id]/components/post/PostAction"
-import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "./functions/recommendPost"
+import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "../functions/recommendPost"
 import { HomeContext } from "../HomeContext"
 
 async function fetchCommentCount(postId: string) {

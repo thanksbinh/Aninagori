@@ -1,7 +1,7 @@
 "use client"
 
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
-import { getDateNow, getOldAnimeData } from "@/components/utils/postingUtils"
+import { getDateNow, getOldAnimeData } from "@/app/(home)/functions/postingUtils"
 import { db } from "@/firebase/firebase-app"
 import { arrayRemove, arrayUnion, doc, setDoc, writeBatch } from "firebase/firestore"
 import { useState } from "react"

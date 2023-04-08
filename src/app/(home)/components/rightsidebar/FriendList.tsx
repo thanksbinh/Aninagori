@@ -1,5 +1,5 @@
-import FriendComponent, { Friend } from '@/app/(home)/rightsidebar/Friend';
 import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
+import FriendComponent, { Friend } from './Friend';
 
 export default async function FriendList({ myFriendList }: { myFriendList: Friend[] | undefined }) {
   return (

@@ -1,4 +1,4 @@
-import { updateStatusOnFriendLists } from "@/app/(home)/components/functions/syncUpdates"
+import { updateStatusOnFriendLists } from "@/app/(home)/functions/syncUpdates"
 import { db, storage } from "@/firebase/firebase-app"
 import {
   addDoc,
@@ -10,7 +10,7 @@ import {
   serverTimestamp,
   writeBatch,
 } from "firebase/firestore"
-import getProductionBaseUrl from "./getProductionBaseURL"
+import getProductionBaseUrl from "../../../components/utils/getProductionBaseURL"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { v4 } from "uuid"
 
