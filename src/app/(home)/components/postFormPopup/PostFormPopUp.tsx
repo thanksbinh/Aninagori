@@ -88,7 +88,8 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
           <div className={cx("status-wrapper")}>
             <AnimeWatchStatus ref={animeStatusRef} setShowScore={setShowScore} />
             <AnimeSearch ref={animeSearchRef} animeEpsRef={animeEpisodesRef} />
-            {showScore ? <AnimeScore ref={animeScoreRef} /> : <AnimeEpisodes ref={animeEpisodesRef} />}
+            <AnimeEpisodes ref={animeEpisodesRef} style={!showScore ? { display: "flex" } : { display: "none" }} />
+            <AnimeScore ref={animeScoreRef} style={showScore ? { display: "flex" } : { display: "none" }} />
           </div>
 
           <input

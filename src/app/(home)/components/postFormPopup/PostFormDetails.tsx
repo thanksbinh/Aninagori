@@ -24,18 +24,6 @@ function PostFormDetails({ animeStatusRef }: { animeStatusRef: any }, ref: any) 
   const [rewatchTime, setRewatchTime] = useState("")
   const [nowTag, setNowTag] = useState("")
 
-  const setStartDate = (thisDay: number, thisMonth: number, thisYear: number) => {
-    setDay({ ...day, start: thisDay })
-    setMonth({ ...month, start: thisMonth })
-    setYear({ ...year, start: thisYear })
-  }
-
-  const setEndDate = (thisDay: number, thisMonth: number, thisYear: number) => {
-    setDay({ ...day, end: thisDay })
-    setMonth({ ...month, end: thisMonth })
-    setYear({ ...year, end: thisYear })
-  }
-
   // Set default values with the most recent anime (selected)
   useEffect(() => {
     const defaultStart = recentAnimeList[0]?.list_status?.start_date?.split('-')?.map((i: string) => parseInt(i))
@@ -51,13 +39,16 @@ function PostFormDetails({ animeStatusRef }: { animeStatusRef: any }, ref: any) 
       // This doesn't work, because useState is async, fix this when you change timeState to normal
       // setStartDate(defaultStart[2], defaultStart[1], defaultStart[0])
       // setToday("end")
+
       const today = new Date()
       setDay({ ...day, start: defaultStart[2], end: today.getDate() })
       setMonth({ ...month, start: defaultStart[1], end: today.getMonth() + 1 })
       setYear({ ...year, start: defaultStart[0], end: today.getFullYear() })
     }
     else if (defaultStart?.length === 3) {
-      setStartDate(defaultStart[2], defaultStart[1], defaultStart[0])
+      setDay({ ...day, start: defaultStart[2], end: 0 })
+      setMonth({ ...month, start: defaultStart[1], end: 0 })
+      setYear({ ...year, start: defaultStart[0], end: 0 })
     }
     else if (thisAnimeStatus === "Watching") {
       setToday("start")
@@ -69,6 +60,18 @@ function PostFormDetails({ animeStatusRef }: { animeStatusRef: any }, ref: any) 
     setRewatchTime(recentAnimeList[0]?.list_status?.num_times_rewatched?.toString())
     setNowTag(recentAnimeList[0]?.list_status?.tags?.join(', ') || "")
   }, [recentAnimeList, animeStatusRef?.current])
+
+  const setStartDate = (thisDay: number, thisMonth: number, thisYear: number) => {
+    setDay({ ...day, start: thisDay })
+    setMonth({ ...month, start: thisMonth })
+    setYear({ ...year, start: thisYear })
+  }
+
+  const setEndDate = (thisDay: number, thisMonth: number, thisYear: number) => {
+    setDay({ ...day, end: thisDay })
+    setMonth({ ...month, end: thisMonth })
+    setYear({ ...year, end: thisYear })
+  }
 
   function setToday(type: string) {
     const today = new Date()
