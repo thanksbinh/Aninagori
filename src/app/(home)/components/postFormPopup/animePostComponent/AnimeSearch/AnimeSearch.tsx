@@ -68,13 +68,13 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
 
   // set recent anime list and select the first anime
   useEffect(() => {
-    if (!recentAnimeList.length || recentAnimeList[0].node.id === animeData.animeID) return;
+    if (!recentAnimeList.length || recentAnimeList[0].node.id == animeData.animeID) return;
 
     setSearchResult(recentAnimeList)
-    onSelectAnime(recentAnimeList[0], 0)
+    onSelectAnime(recentAnimeList[0])
   }, [recentAnimeList])
 
-  const onSelectAnime = async (ele: any, index: number) => {
+  const onSelectAnime = async (ele: any) => {
     const animeInfo = {
       animeName: (ele as any).node.title,
       animeID: (ele as any).node.id
@@ -85,10 +85,11 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
     setAnimeDataSent(animeInfo)
     setResultBoxOpen(false)
 
-    animeEpsRef?.current.setAnimeEpisodes((ele as any)?.list_status?.num_episodes_watched || "0")
-    animeEpsRef?.current.setAnimeTotal((ele as any).node.num_episodes)
+    animeEpsRef?.current?.setAnimeEpisodes((ele as any)?.list_status?.num_episodes_watched || "0")
+    animeEpsRef?.current?.setAnimeTotal((ele as any).node.num_episodes)
 
     if (!!(ele as any)?.list_status) {
+      const index = recentAnimeList.findIndex((item: any) => item.node.id === (ele as any).node.id)
       setRecentAnimeList([recentAnimeList[index], ...recentAnimeList.slice(0, index), ...recentAnimeList.slice(index + 1)])
     } else {
       if (!!recentAnimeList[0]?.list_status)
@@ -118,7 +119,7 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
             {searchResult.map((ele: any, index: number) => {
               return (
                 <div
-                  onClick={() => onSelectAnime(ele, index)}
+                  onClick={() => onSelectAnime(ele)}
                   key={index}
                   className={cx("result-children")}
                 >

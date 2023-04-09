@@ -112,7 +112,6 @@ export async function handleSubmitForm(
   animeScore: any,
   inputRef: any,
   mediaUrl: any,
-  setLoadPosting: any,
   mediaType: any,
   myUserInfo: any,
   postAdditional: any,
@@ -128,10 +127,6 @@ export async function handleSubmitForm(
   const rewatchTime = (postAdditional?.current as any).getRewatchTime()
   const animeTagData = (postAdditional?.current as any).getAnimeTag()
 
-  if (!inputRef.current?.value && mediaUrl.length === 0) {
-    alert("Please write something or upload media 😭")
-    return
-  }
   if (!!startDate.error) {
     alert(startDate.error)
     return
@@ -140,7 +135,6 @@ export async function handleSubmitForm(
     alert(endDate.error)
     return
   }
-  setLoadPosting(true)
   const postAnimeData = handleAnimeInformationPosting(statusData, searchData, episodesData, totalEps, scoreData)
   const statustConverted = convertWatchStatus(
     postAnimeData.watching_progress,

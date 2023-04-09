@@ -2,9 +2,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCalendarCheck, faCalendarDays, faCaretDown, faTags, faTv } from "@fortawesome/free-solid-svg-icons"
 import HeadlessTippy from "@tippyjs/react/headless"
 import "tippy.js/dist/tippy.css"
-import { forwardRef, useState, useImperativeHandle, useEffect } from "react"
+import { forwardRef, useState, useImperativeHandle, useEffect, useContext } from "react"
 import classNames from "classnames/bind"
 import styles from "./PostFormDetails.module.scss"
+import { PostFormContext } from "../postForm/PostFormContext"
 
 const cx = classNames.bind(styles)
 const nowYear = new Date().getFullYear()
@@ -12,30 +13,63 @@ const days = Array.from(Array(31).keys()).map((i) => i + 1)
 const months = Array.from(Array(12).keys()).map((i) => i + 1)
 const years = Array.from(Array(20).keys()).map((i) => nowYear - i)
 
-function PostFormDetails({ defaultStart = "0000-00-00" }: { defaultStart?: string }, ref: any) {
+function PostFormDetails({ animeStatus }: { animeStatus: any }, ref: any) {
+  const { recentAnimeList } = useContext(PostFormContext)
+
+  // Why can't this just be startDate and endDate?
   const [day, setDay] = useState({ start: 0, end: 0, openStart: false, openEnd: false })
   const [month, setMonth] = useState({ start: 0, end: 0, openStart: false, openEnd: false })
   const [year, setYear] = useState({ start: 0, end: 0, openStart: false, openEnd: false })
+
   const [rewatchTime, setRewatchTime] = useState("")
   const [nowTag, setNowTag] = useState("")
 
+  const setStartDate = (thisDay: number, thisMonth: number, thisYear: number) => {
+    setDay({ ...day, start: thisDay })
+    setMonth({ ...month, start: thisMonth })
+    setYear({ ...year, start: thisYear })
+  }
+
+  const setEndDate = (thisDay: number, thisMonth: number, thisYear: number) => {
+    setDay({ ...day, end: thisDay })
+    setMonth({ ...month, end: thisMonth })
+    setYear({ ...year, end: thisYear })
+  }
+
+  // Set default values with the most recent anime (selected)
   useEffect(() => {
-    setDay({ ...day, start: parseInt(defaultStart?.split('-')[2]) })
-    setMonth({ ...month, start: parseInt(defaultStart?.split('-')[1]) })
-    setYear({ ...year, start: parseInt(defaultStart?.split('-')[0]) })
-  }, [defaultStart])
+    const defaultStart = recentAnimeList[0]?.list_status?.start_date?.split('-')?.map((i: string) => parseInt(i))
+
+    if (defaultStart?.length === 3 && (animeStatus?.current as any)?.getAnimeStatus() === "Finished") {
+      // This doesn't work, because useState is async, fix this when you change timeState to normal
+      // setStartDate(defaultStart[2], defaultStart[1], defaultStart[0])
+      // setToday("end")
+      const today = new Date()
+      setDay({ ...day, start: defaultStart[2], end: today.getDate() })
+      setMonth({ ...month, start: defaultStart[1], end: today.getMonth() + 1 })
+      setYear({ ...year, start: defaultStart[0], end: today.getFullYear() })
+    }
+    else if (defaultStart?.length === 3) {
+      setStartDate(defaultStart[2], defaultStart[1], defaultStart[0])
+    }
+    else if ((animeStatus?.current as any)?.getAnimeStatus() === "Watching") {
+      setToday("start")
+    }
+    else {
+      setStartDate(0, 0, 0)
+    }
+
+    setRewatchTime(recentAnimeList[0]?.list_status?.num_times_rewatched?.toString())
+    setNowTag(recentAnimeList[0]?.list_status?.tags?.join(', '))
+  }, [recentAnimeList, animeStatus?.current])
 
   function setToday(type: string) {
     const today = new Date()
     if (type === "start") {
-      setDay({ ...day, start: today.getDate() })
-      setMonth({ ...month, start: today.getMonth() + 1 })
-      setYear({ ...year, start: today.getFullYear() })
-      return
+      setStartDate(today.getDate(), today.getMonth() + 1, today.getFullYear())
+    } else {
+      setEndDate(today.getDate(), today.getMonth() + 1, today.getFullYear())
     }
-    setDay({ ...day, end: today.getDate() })
-    setMonth({ ...month, end: today.getMonth() + 1 })
-    setYear({ ...year, end: today.getFullYear() })
   }
 
   function handleInputTag(e: any) {
@@ -85,7 +119,7 @@ function PostFormDetails({ defaultStart = "0000-00-00" }: { defaultStart?: strin
       <div className="flex items-center justify-between my-4">
         <div className="flex items-center min-w-[142px]">
           <FontAwesomeIcon icon={faCalendarDays} className="text-blue-400 text-2xl mx-3" />
-          <p className="font-semibold text-lg">Start Date</p>
+          <p className="font-semibold text-sm">Start Date</p>
         </div>
         <div className="flex flex-1 items-center justify-end">
           <ChooseDate data={day} setData={setDay} type={"Day"} progress="start" />
@@ -104,7 +138,7 @@ function PostFormDetails({ defaultStart = "0000-00-00" }: { defaultStart?: strin
       <div className="flex items-center justify-between my-4">
         <div className="flex items-center min-w-[142px]">
           <FontAwesomeIcon icon={faCalendarCheck} className="text-green-500 text-2xl mx-3" />
-          <p className="font-semibold text-lg">Finish Date</p>
+          <p className="font-semibold text-sm">Finish Date</p>
         </div>
         <div className="flex flex-1 items-center justify-end">
           <ChooseDate data={day} setData={setDay} type={"Day"} progress="finish" />
@@ -122,9 +156,9 @@ function PostFormDetails({ defaultStart = "0000-00-00" }: { defaultStart?: strin
       </div>
       <div className="flex items-center my-4 min-w-[145px]">
         <FontAwesomeIcon icon={faTv} className="text-yellow-500 text-xl ml-3 mr-2" />
-        <p className="font-semibold text-lg mr-4">Re-watching</p>
+        <p className="font-semibold text-sm mr-4">Re-watching</p>
         <div className="flex-1 flex justify-center items-center mr-8">
-          <p className="text-base mr-3">Total: </p>
+          <p className="text-sm mr-3">Total: </p>
           <input
             type="text"
             className="w-[77px] h-10 rounded-lg bg-[#4e5d78] text-white text-center outline-none"
@@ -136,13 +170,13 @@ function PostFormDetails({ defaultStart = "0000-00-00" }: { defaultStart?: strin
               }
             }}
           />
-          <p className="text-base ml-3">times</p>
+          <p className="text-sm ml-3">times</p>
         </div>
       </div>
       <div className="flex items-center justify-between mt-2 mb-4">
         <div className="flex items-center min-w-[145px]">
           <FontAwesomeIcon icon={faTags} className="text-red-500 text-2xl ml-3 mr-2" />
-          <p className="font-semibold text-lg">Anime Tags</p>
+          <p className="font-semibold text-sm">Anime Tags</p>
         </div>
         <div className="flex flex-1 justify-center">
           <div className={cx("container")}>
@@ -176,7 +210,7 @@ function ChooseDate({ data, setData, type, progress }: { data: any; setData: any
 
   return (
     <>
-      <p className="text-base mx-3">{type}: </p>
+      <p className="text-sm mx-3">{type}: </p>
       <HeadlessTippy
         visible={progress === "start" ? data.openStart : data.openEnd}
         appendTo={() => document.body}

@@ -104,7 +104,7 @@ export async function syncAnimeUpdate(myUserInfo: UserInfo, myAnimeList: any) {
   }
 
   try {
-    const url = "https://api.myanimelist.net/v2/users/@me/animelist?fields={list_status,num_episodes}&limit=1000&sort=list_updated_at"
+    const url = "https://api.myanimelist.net/v2/users/@me/animelist?fields={list_status{tags,num_times_rewatched},num_episodes}&limit=1000&sort=list_updated_at"
     const userUpdate = await fetch(url, {
       cache: 'no-store',
       headers: {

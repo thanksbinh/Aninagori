@@ -4,7 +4,6 @@
   justify-content: center;
   top: 56px;
   right: 0;
-  bottom: 0;
   left: 0;
   animation: fadeIn linear 0.1s;
   z-index: 30;
@@ -21,8 +20,8 @@
 
 .modal_overlay {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.4);
 }
 
@@ -35,8 +34,8 @@
 
 .close-post {
   position: absolute;
-  top: 24px;
-  right: 9px;
+  top: 16px;
+  right: 16px;
   font-size: 30px;
   color: #444;
 

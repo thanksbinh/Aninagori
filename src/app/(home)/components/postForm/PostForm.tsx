@@ -30,7 +30,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
 
     myAnimeList.forEach((anime: any) => {
       if (anime.list_status.status === "watching") watchingList.push(anime)
-      else if (anime.list_status.status === "plan_to_watch") p2wList.push(anime)
+      else if (anime.list_status.status === "plan_to_watch" && anime.node.num_episodes) p2wList.push(anime)
     })
 
     setRecentAnimeList([...watchingList, ...p2wList])
@@ -47,7 +47,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
       <div className={`flex ${open ? "visible" : "invisible"}`}>
         <PostFormPopUp setOpen={setOpen} />
       </div>
-      <div className="flex flex-col flex-1 bg-ani-gray rounded-2xl px-4 my-4">
+      <div className="flex flex-col flex-shrink-0 bg-ani-gray rounded-2xl px-4 my-4">
         <div className="flex justify-between items-center mt-4">
           <Avatar imageUrl={myUserInfo.image} altText={myUserInfo.username} size={8} />
           <div
@@ -85,9 +85,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
       </div>
 
       {!!myAnimeList &&
-        <PostFormShortcut
-          openFormPopup={openForm}
-        />
+        <PostFormShortcut openFormPopup={openForm} />
       }
     </PostFormContext.Provider>
   )
