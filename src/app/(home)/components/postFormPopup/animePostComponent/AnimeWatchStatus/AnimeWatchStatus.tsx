@@ -7,8 +7,7 @@ import { faCaretDown } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 const cx = classNames.bind(styles)
 
-function AnimeWatchStatus(props: any, ref: any) {
-  const { setShowScore } = props
+function AnimeWatchStatus({ setShowScore }: any, ref: any) {
   const [status, setStatus] = useState("Watching")
   const [isInputFocus, setIsInputFocus] = useState(false)
   const [boxOpen, setBoxOpen] = useState(false)

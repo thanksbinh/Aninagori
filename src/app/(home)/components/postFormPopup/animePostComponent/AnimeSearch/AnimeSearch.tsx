@@ -1,20 +1,21 @@
 /* eslint-disable @next/next/no-img-element */
-import classNames from "classnames/bind"
-import { useState, useEffect, forwardRef, useImperativeHandle } from "react"
-import styles from "./AnimeSearch.module.scss"
-import HeadlessTippy from "@tippyjs/react/headless"
-import "tippy.js/dist/tippy.css"
-import { get } from "@/app/api/apiServices/httpRequest"
+import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 import { faCaretDown, faSpinner } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
+import HeadlessTippy from "@tippyjs/react/headless"
+import classNames from "classnames/bind"
+import { FocusEvent, forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react"
+import "tippy.js/dist/tippy.css"
+import { PostFormContext } from "../../../postForm/PostFormContext"
+import styles from "./AnimeSearch.module.scss"
 const cx = classNames.bind(styles)
 
-function AnimeSearch(props: any, ref: any) {
-  const { animeEpsRef } = props
+function AnimeSearch({ animeEpsRef }: any, ref: any) {
+  const { recentAnimeList, setRecentAnimeList } = useContext(PostFormContext)
+
   const [searchResult, setSearchResult] = useState([])
   const [loading, setLoading] = useState(false)
-  const [animePic, setAnimepic] = useState("")
+  const [animePic, setAnimePic] = useState("")
   const [animeData, setAnimeData] = useState({ animeName: "", animeID: "" })
   const [animeDataSent, setAnimeDataSent] = useState({ animeName: "", animeID: "" })
   const [resultBoxOpen, setResultBoxOpen] = useState(false)
@@ -27,47 +28,93 @@ function AnimeSearch(props: any, ref: any) {
     resetAnimeSearch: () => {
       setAnimeData({ ...animeData, animeName: "" })
       setAnimeDataSent({ animeName: "", animeID: "" })
-      setAnimepic("")
+      setAnimePic("")
       setLoading(false);
     }
   }))
 
+  const searchAnimeName = async () => {
+    try {
+      const result = await fetch(getProductionBaseUrl() + "/api/anime/search", {
+        headers: {
+          q: debouncedValue,
+          offset: "0",
+          limit: "10",
+        },
+      }).then((res) => res.json())
+      if (!!result.error) {
+        setSearchResult([])
+      } else {
+        setSearchResult(result.data)
+      }
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     if (!debouncedValue.trim()) {
-      setSearchResult([])
+      setSearchResult(recentAnimeList)
       return
     }
     setLoading(true)
-    const searchAnimeName = async () => {
-      try {
-        const result = await get(getProductionBaseUrl() + "/api/anime/search", {
-          headers: {
-            q: debouncedValue,
-            offset: "0",
-            limit: "10",
-          },
-        })
-        if (!!result.error) {
-          setSearchResult([])
-        } else {
-          setSearchResult(result.data)
-          setResultBoxOpen(true)
-        }
-        setLoading(false)
-      } catch (err) {
-        console.log(err)
-      }
-    }
+
     if (animeData.animeID === "") {
       searchAnimeName()
     } else {
       setLoading(false)
     }
+
   }, [animeData.animeID, debouncedValue])
+
+  // set recent anime list and select the first anime as default
+  useEffect(() => {
+    if (!recentAnimeList.length || recentAnimeList[0].node.id == animeData.animeID) return;
+
+    setSearchResult(recentAnimeList)
+    onSelectAnime(recentAnimeList[0])
+  }, [recentAnimeList])
+
+  // update recent anime list order when select an anime
+  const updateRecentAnimeList = (ele: any) => {
+    if (!!(ele as any)?.list_status) {
+      const index = recentAnimeList.findIndex((item: any) => item.node.id === (ele as any).node.id)
+      setRecentAnimeList([recentAnimeList[index], ...recentAnimeList.slice(0, index), ...recentAnimeList.slice(index + 1)])
+    } else {
+      if (!!recentAnimeList[0]?.list_status && recentAnimeList[0]?.node.id !== (ele as any).node.id)
+        setRecentAnimeList([ele, ...recentAnimeList])
+      else
+        setRecentAnimeList([ele, ...recentAnimeList.slice(1)])
+    }
+  }
+
+  const onSelectAnime = async (ele: any) => {
+    const animeInfo = {
+      animeName: (ele as any).node.title,
+      animeID: (ele as any).node.id
+    }
+
+    setAnimePic((ele as any).node.main_picture.medium)
+    setAnimeData(animeInfo)
+    setAnimeDataSent(animeInfo)
+    setResultBoxOpen(false)
+
+    animeEpsRef?.current?.setAnimeEpisodes((ele as any)?.list_status?.num_episodes_watched || "0")
+    animeEpsRef?.current?.setAnimeTotal((ele as any)?.node?.num_episodes || "26")
+
+    updateRecentAnimeList(ele)
+  }
+
+  const inputFocus = (e: FocusEvent<HTMLInputElement>) => {
+    e.target.select();
+    if (recentAnimeList.length || animeData.animeName) setResultBoxOpen(true)
+  }
 
   return (
     <HeadlessTippy
-      visible={searchResult.length !== 0 && resultBoxOpen}
+      visible={resultBoxOpen}
       onClickOutside={() => {
         setResultBoxOpen(false)
       }}
@@ -77,19 +124,10 @@ function AnimeSearch(props: any, ref: any) {
       render={() => {
         return (
           <div className={cx("result-wrapper")} ref={ref}>
-            {searchResult.map((ele, index) => {
+            {searchResult.map((ele: any, index: number) => {
               return (
                 <div
-                  onClick={async () => {
-                    setAnimepic((ele as any).node.main_picture.medium)
-                    setAnimeData({ animeName: (ele as any).node.title, animeID: (ele as any).node.id })
-                    setAnimeDataSent({ animeName: (ele as any).node.title, animeID: (ele as any).node.id })
-                    setResultBoxOpen(false)
-                    animeEpsRef?.current.setAnimeTotal((ele as any).node.num_episodes)
-                    if (parseInt(animeEpsRef?.current.getAnimeEpisodes()) > (ele as any).node.num_episodes) {
-                      animeEpsRef?.current.setAnimeEpisodes("0")
-                    }
-                  }}
+                  onClick={() => onSelectAnime(ele)}
                   key={index}
                   className={cx("result-children")}
                 >
@@ -120,6 +158,7 @@ function AnimeSearch(props: any, ref: any) {
             onKeyDown={(e) => {
               setAnimeData({ ...animeData, animeID: "" })
             }}
+            onFocus={inputFocus}
           ></input>
         </div>
         {!loading ? (

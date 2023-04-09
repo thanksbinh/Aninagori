@@ -1,9 +1,9 @@
 "use client"
 
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
-import { getDateNow, getOldAnimeData } from "@/components/utils/postingUtils"
+import { getDateNow, getOldAnimeData } from "@/app/(home)/functions/postingUtils"
 import { db } from "@/firebase/firebase-app"
-import { arrayRemove, arrayUnion, doc, setDoc, writeBatch } from "firebase/firestore"
+import { arrayRemove, arrayUnion, doc, writeBatch } from "firebase/firestore"
 import { useState } from "react"
 import { AiOutlineLoading3Quarters } from "@react-icons/all-files/ai/AiOutlineLoading3Quarters"
 import { RiAddCircleLine } from "@react-icons/all-files/ri/RiAddCircleLine"
@@ -11,26 +11,26 @@ import { RiCheckboxCircleLine } from "@react-icons/all-files/ri/RiCheckboxCircle
 import { useRouter } from "next/navigation"
 import { AnimeOptions } from "./AnimeOptions"
 
+function formatMediaType(media_type: string) {
+  if (media_type === "tv") return "TV"
+  if (media_type === "movie") return "Movie"
+  if (media_type === "special") return "Special"
+  if (media_type === "ova") return "OVA"
+  if (media_type === "ona") return "ONA"
+  if (media_type === "music") return "Music"
+  return "unknown"
+}
+
+function formatNumber(num_list_users: number) {
+  if (!num_list_users) return "N/A"
+  return num_list_users.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
 export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: any }) {
   const [loading, setLoading] = useState(false)
   const [donePlanToWatch, setDonePLanToWatch] = useState(false)
   const [hide, setHide] = useState(false)
   const router = useRouter()
-
-  function formatMediaType(media_type: string) {
-    if (media_type === "tv") return "TV"
-    if (media_type === "movie") return "Movie"
-    if (media_type === "special") return "Special"
-    if (media_type === "ova") return "OVA"
-    if (media_type === "ona") return "ONA"
-    if (media_type === "music") return "Music"
-    return "unknown"
-  }
-
-  function formatNumber(num_list_users: number) {
-    if (!num_list_users) return "N/A"
-    return num_list_users.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-  }
 
   async function handlePlanToWatch() {
     setLoading(true)
@@ -49,6 +49,7 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
         id: anime.id,
         main_picture: anime.main_picture,
         title: anime.title,
+        num_episodes: anime.num_episodes,
       },
     }
     if (!!myUserInfo?.mal_connect?.accessToken) {
@@ -114,7 +115,7 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
           </h2>
 
           <p className="text-sm text-gray-400">
-            {formatMediaType(anime?.media_type)} ({anime.num_episodes} eps)
+            {formatMediaType(anime?.media_type)} ({anime?.num_episodes} eps)
           </p>
 
           <p className="text-sm text-gray-400">Members: {formatNumber(anime?.num_list_users)}</p>

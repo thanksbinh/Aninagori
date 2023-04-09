@@ -1,8 +1,8 @@
 import PostAction from "../post/[...post_id]/components/post/PostAction";
 import PostContent from "../post/[...post_id]/components/post/PostContent";
-import PostForm from "./components/PostForm";
-import AnimeRecommendList from "./leftsidebar/AnimeRecommendList";
-import FriendList from "./rightsidebar/FriendList";
+import PostForm from "./components/postForm/PostForm";
+import AnimeRecommendList from "./components/leftsidebar/AnimeRecommendList";
+import FriendList from "./components/rightsidebar/FriendList";
 
 export default function loading() {
   return (
@@ -16,7 +16,7 @@ export default function loading() {
 
       <div className="lg:w-2/5 md:w-3/5 sm:w-4/5 w-full">
         <div className="flex flex-col pt-10">
-          <PostForm avatarUrl={""} username={""} isBanned={false} />
+          <PostForm />
           <div className="animate-pulse mb-4">
             <PostContent />
             <PostAction />

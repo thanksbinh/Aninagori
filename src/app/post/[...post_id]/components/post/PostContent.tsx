@@ -4,10 +4,10 @@ import { FC } from "react"
 import classNames from "classnames/bind"
 import styles from "./PostContent.module.scss"
 import "tippy.js/dist/tippy.css"
-import AnimeName from "../../../../(home)/components/animePostComponent/AnimeName/AnimeName"
 import Avatar from "@/components/avatar/Avatar"
 import PostOptions from "../option/PostOptionsPopup"
 import "react-slideshow-image/dist/styles.css"
+import AnimeName from "../animeName/AnimeName"
 import PostContentMedia from "./postMedia/PostContentMedia"
 const cx = classNames.bind(styles)
 

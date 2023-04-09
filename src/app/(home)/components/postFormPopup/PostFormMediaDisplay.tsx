@@ -1,11 +1,23 @@
 import { faCircleXmark, faFileCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames/bind"
-import styles from "../PostForm.module.scss"
+import styles from "../postForm/PostForm.module.scss"
 
 const cx = classNames.bind(styles)
 
-function PostFormMediaDisplay({ mediaUrl, mediaType, handleDeleteMedia, handleMediaChange }: { mediaUrl: any, mediaType: string, handleDeleteMedia: any, handleMediaChange: any }) {
+interface PostFormMediaDisplayProps {
+    mediaUrl: any;
+    mediaType: string;
+    handleDeleteMedia: any;
+    handleMediaChange: any;
+}
+
+const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
+    mediaUrl,
+    mediaType,
+    handleDeleteMedia,
+    handleMediaChange
+}) => {
     if (mediaUrl.length === 0) return (<></>)
     return (
         <div className="mt-2 mb-3 w-full flex items-center justify-center">

@@ -1,4 +1,4 @@
-import { updateStatusOnFriendLists } from "@/app/(home)/components/functions/syncUpdates"
+import { updateStatusOnFriendLists } from "@/app/(home)/functions/syncUpdates"
 import { db, storage } from "@/firebase/firebase-app"
 import {
   addDoc,
@@ -10,7 +10,7 @@ import {
   serverTimestamp,
   writeBatch,
 } from "firebase/firestore"
-import getProductionBaseUrl from "./getProductionBaseURL"
+import getProductionBaseUrl from "../../../components/utils/getProductionBaseURL"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { v4 } from "uuid"
 
@@ -43,7 +43,7 @@ export function handleAnimeInformationPosting(
     postAnimeData.watching_progress = "plan to watch"
     postAnimeData.episodes_seen = "0"
   } else if (status === "Finished") {
-    ;(postAnimeData as any).score = score
+    ; (postAnimeData as any).score = score
     postAnimeData.watching_progress = "have finished"
     postAnimeData.episodes_seen = postAnimeData.total_episodes
   } else if (status === "Drop") {
@@ -105,7 +105,6 @@ export async function getOldAnimeData(username: any, animeData: any) {
 }
 
 export async function handleSubmitForm(
-  e: React.FormEvent<HTMLFormElement>,
   animeStatus: any,
   animeSearch: any,
   animeEpisodes: any,
@@ -113,38 +112,21 @@ export async function handleSubmitForm(
   animeScore: any,
   inputRef: any,
   mediaUrl: any,
-  setLoadPosting: any,
-  username: any,
-  avatarUrl: any,
   mediaType: any,
-  malAuthCode: any,
   myUserInfo: any,
   postAdditional: any,
-  router: any,
-  setMediaUrl: any,
-  setOpen: any,
-  setBasicPostingInfo: any,
 ): Promise<void> {
-  e.preventDefault()
   const statusData = (animeStatus?.current as any).getAnimeStatus()
   const searchData = (animeSearch?.current as any).getAnimeName()
-  const resetAnimeSearch = (animeSearch?.current as any).resetAnimeSearch
-  const episodesData = (animeEpisodes?.current as any).getAnimeEpisodes()
-  const setAnimeEpisodes = (animeEpisodes?.current as any).setAnimeEpisodes
+  const episodesData = (animeEpisodes?.current as any)?.getAnimeEpisodes()
   const totalEps = (animeEpisodes?.current as any).getAnimeTotal()
   const tagData = (animeTag?.current as any).getAnimeTag()
-  const resetTag = (animeTag?.current as any).resetAnimeTag
-  const scoreData = (animeScore?.current as any).getAnimeScore()
+  const scoreData = (animeScore?.current as any)?.getAnimeScore()
   const startDate = (postAdditional?.current as any).getStartDate()
   const endDate = (postAdditional?.current as any).getEndDate()
-  const resetAdditionalPost = (postAdditional?.current as any).resetAdditionalPost
   const rewatchTime = (postAdditional?.current as any).getRewatchTime()
   const animeTagData = (postAdditional?.current as any).getAnimeTag()
 
-  if (!inputRef.current?.value && mediaUrl.length === 0) {
-    alert("Please write something or upload media 😭")
-    return
-  }
   if (!!startDate.error) {
     alert(startDate.error)
     return
@@ -153,7 +135,6 @@ export async function handleSubmitForm(
     alert(endDate.error)
     return
   }
-  setLoadPosting(true)
   const postAnimeData = handleAnimeInformationPosting(statusData, searchData, episodesData, totalEps, scoreData)
   const statustConverted = convertWatchStatus(
     postAnimeData.watching_progress,
@@ -165,8 +146,8 @@ export async function handleSubmitForm(
   // post info to firestore
   const promisePost = [
     addDoc(collection(db, "posts"), {
-      authorName: username,
-      avatarUrl: avatarUrl,
+      authorName: myUserInfo.username,
+      avatarUrl: myUserInfo.image,
       timestamp: serverTimestamp(),
       content: inputRef.current?.value || "",
       imageUrl: mediaType === "image" ? downloadMediaUrl : "",
@@ -181,13 +162,13 @@ export async function handleSubmitForm(
     // post have anime data
     if (!!postAnimeData.anime_id) {
       // user connect with MAL: post info to MAL
-      if (!!malAuthCode) {
+      if (!!myUserInfo?.mal_connect?.accessToken) {
         const promiseUpdateMAL = fetch(getProductionBaseUrl() + "/api/updatestatus/" + postAnimeData.anime_id, {
           headers: {
             status: statustConverted,
             episode: postAnimeData.episodes_seen,
             score: (postAnimeData as any).score,
-            auth_code: malAuthCode,
+            auth_code: myUserInfo?.mal_connect?.accessToken,
             start_date: startDate,
             end_date: endDate,
             rewatch_time: rewatchTime,
@@ -198,7 +179,7 @@ export async function handleSubmitForm(
         promisePost.push(promiseUpdateMAL)
       } else {
         // user not connect with MAL: post anime status to firebase
-        const myAnimeListRef = doc(db, "myAnimeList", username)
+        const myAnimeListRef = doc(db, "myAnimeList", myUserInfo.username)
         const dateNow = getDateNow()
         const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + postAnimeData.anime_id).then(
           (res) => res.json(),
@@ -215,6 +196,7 @@ export async function handleSubmitForm(
             id: postAnimeData.anime_id,
             main_picture: animeInformation.main_picture,
             title: animeInformation.title,
+            num_episodes: parseInt(totalEps)
           },
         }
         if (!!startDate) (animeData as any).list_status.start_date = startDate
@@ -223,7 +205,7 @@ export async function handleSubmitForm(
         if (!!rewatchTime && parseInt(rewatchTime) > 0) (animeData as any).list_status.num_times_rewatched = rewatchTime
         // check if anime already in list, if in list, update that anime node
         const batch = writeBatch(db)
-        const oldAnimeData = await getOldAnimeData(username, animeData)
+        const oldAnimeData = await getOldAnimeData(myUserInfo.username, animeData)
         if (oldAnimeData !== "anime not exist") {
           console.log(oldAnimeData)
           batch.update(myAnimeListRef, {
@@ -244,20 +226,8 @@ export async function handleSubmitForm(
         }),
       )
     }
-    const result = await Promise.all(promisePost)
   } catch (err) {
     console.log(err)
-  } finally {
-    inputRef.current!.value = ""
-    setLoadPosting(false)
-    setOpen(false)
-    setBasicPostingInfo(true)
-    setMediaUrl([])
-    resetTag()
-    resetAdditionalPost()
-    resetAnimeSearch()
-    setAnimeEpisodes("0")
-    router.refresh()
   }
 }
 
@@ -279,7 +249,7 @@ export const handlePaste = (e: any, setMediaUrl: any, setMediaType: any, mediaUr
 export const uploadMedia = async (mediaUrl: any) => {
   if (mediaUrl.length === 0) return ""
   const promise: any[] = []
-  mediaUrl.map((file: any, index: any) => {
+  mediaUrl.map((file: any) => {
     const fileRef = ref(storage, `posts/${v4()}`)
     const uploadTask = uploadBytes(fileRef, file)
     promise.push(uploadTask)

@@ -1,7 +1,7 @@
 import { BsCameraVideoFill } from "@react-icons/all-files/bs/BsCameraVideoFill"
 import { HiPhotograph } from "@react-icons/all-files/hi/HiPhotograph"
 
-function PostButtonArea({
+function PostFormActions({
     handleMediaChange,
     loadPosting,
     setBasicPostingInfo,
@@ -12,10 +12,7 @@ function PostButtonArea({
 }) {
     return (
         <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-[#212833]">
-            <label
-                htmlFor="image-input"
-                className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer"
-            >
+            <label htmlFor="image-input" className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer">
                 <HiPhotograph className="w-5 h-5 fill-[#3BC361]" />
                 <span>Photo/Gif</span>
             </label>
@@ -30,10 +27,7 @@ function PostButtonArea({
                 className="hidden"
             />
 
-            <label
-                htmlFor="video-input"
-                className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer"
-            >
+            <label htmlFor="video-input" className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer">
                 <BsCameraVideoFill className="w-5 h-5 fill-[#FF1D43]" />
                 <span>Video</span>
             </label>
@@ -48,10 +42,7 @@ function PostButtonArea({
                 className="hidden"
             />
 
-            <button
-                type="submit"
-                className="flex flex-1 items-center justify-center space-x-1 text-[#fff] bg-[#377dff] hover:bg-[#0e5ef1] py-2 px-4 rounded-lg mt-1 mx-1"
-            >
+            <button type="submit" className="flex flex-1 items-center justify-center space-x-1 text-[#fff] bg-[#377dff] hover:bg-[#0e5ef1] py-2 px-4 rounded-lg mt-1 mx-1">
                 {loadPosting && (
                     <svg
                         className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
@@ -73,4 +64,4 @@ function PostButtonArea({
     )
 }
 
-export default PostButtonArea
+export default PostFormActions

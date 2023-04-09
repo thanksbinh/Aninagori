@@ -3,11 +3,12 @@
 import PostContent from "@/app/post/[...post_id]/components/post/PostContent"
 import { db } from "@/firebase/firebase-app"
 import { collection, getCountFromServer } from "firebase/firestore"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import ContextProvider from "../../post/[...post_id]/PostContext"
 import PostAction from "../../post/[...post_id]/components/post/PostAction"
-import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "./functions/recommendPost"
+import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "../functions/recommendPost"
+import { HomeContext } from "../HomeContext"
 
 async function fetchCommentCount(postId: string) {
   const commentsRef = collection(db, "posts", postId, "comments")
@@ -16,13 +17,15 @@ async function fetchCommentCount(postId: string) {
   return commentCount
 }
 
-export default function Posts({ myUserInfo, myFriendList, myAnimeList, postPreference }: any) {
+export default function Posts({ myFriendList, myAnimeList, postPreference }: any) {
   const [posts, setPosts] = useState<any>([])
   const [hasMore, setHasMore] = useState(true)
   const [lastKey, setLastKey] = useState<any>({})
   const [friendPostIds, setFriendPostIds] = useState<string[]>(["0"])
   const [myFriendUsernameList, setMyFriendUsernameList] = useState<string[]>([])
   const [hasMoreFriendPosts, setHasMoreFriendPosts] = useState(myFriendList?.length > 0)
+
+  const { myUserInfo } = useContext(HomeContext)
 
   useEffect(() => {
     const logo = document.getElementById("logo")
@@ -55,7 +58,7 @@ export default function Posts({ myUserInfo, myFriendList, myAnimeList, postPrefe
         post.authorName === myUserInfo.username || //isFromMe
         myFriendUsernameList?.includes(post.authorName) || //isFromMyFriend
         Math.random() * 10 <
-          getAnimePreferenceScore(myAnimeList, postPreference?.animeList, post.post_anime_data?.anime_id)
+        getAnimePreferenceScore(myAnimeList, postPreference?.animeList, post.post_anime_data?.anime_id)
       ) //gachaTrue
     })
   }
