@@ -3,12 +3,21 @@
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
 import { collection, getDocs, onSnapshot, query, where } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Message, { MessageProps } from "./Message";
 
 const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, friend: string, avatarUrl: string }) => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [seenStatus, setSeenStatus] = useState(false);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // scroll to bottom when component mounts
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages])
 
   useEffect(() => {
     async function fetchData() {
@@ -73,6 +82,7 @@ const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, fri
           <p className="flex mr-4">seen ✓</p>
         </div>
       )}
+      <div ref={messagesEndRef}></div>
     </div>
   )
 }
