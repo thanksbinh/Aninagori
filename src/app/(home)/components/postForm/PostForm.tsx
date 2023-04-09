@@ -17,8 +17,6 @@ type PostFormProps = {
 const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
   const { myUserInfo } = useContext(HomeContext)
 
-  if (!!myUserInfo.is_banned) return <BannedPostForm avatarUrl={myUserInfo.image} />
-
   const [open, setOpen] = useState(false)
   const [recentAnimeList, setRecentAnimeList] = useState<any>([])
 
@@ -41,6 +39,8 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
       setOpen(true)
     }, 90)
   }
+
+  if (!!myUserInfo.is_banned) return <BannedPostForm avatarUrl={myUserInfo.image} />
 
   return (
     <PostFormContext.Provider value={{ recentAnimeList, setRecentAnimeList }} >
