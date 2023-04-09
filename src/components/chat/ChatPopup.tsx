@@ -3,8 +3,7 @@
 import Avatar from "../avatar/Avatar";
 import Messages from "./Messages";
 import MessageForm from "./MessageForm";
-import { UserInfo } from "@/global/UserInfo.types";
-import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { MdClose } from "@react-icons/all-files/md/MdClose";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
@@ -20,15 +19,6 @@ interface ChatPopupProps {
 const ChatPopup: React.FC<ChatPopupProps> = ({ showChat, setShowChat, recipient, image }) => {
     const [conversationId, setConversationId] = useState("");
     const { myUserInfo } = useContext(HomeContext)
-
-    const messagesEndRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        // scroll to bottom when component mounts
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-        }
-    }, [])
 
     useEffect(() => {
         async function getConversationId() {
@@ -78,7 +68,6 @@ const ChatPopup: React.FC<ChatPopupProps> = ({ showChat, setShowChat, recipient,
                     </div>
                     <div className="flex flex-1 overflow-y-auto">
                         <Messages myUserInfo={myUserInfo} friend={recipient} avatarUrl={image} />
-                        <div ref={messagesEndRef}></div>
                     </div>
                     <MessageForm conversationId={conversationId} myUserInfo={myUserInfo} friend={recipient} />
                 </div>
