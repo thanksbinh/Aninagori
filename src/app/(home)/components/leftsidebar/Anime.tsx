@@ -3,7 +3,7 @@
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 import { getDateNow, getOldAnimeData } from "@/app/(home)/functions/postingUtils"
 import { db } from "@/firebase/firebase-app"
-import { arrayRemove, arrayUnion, doc, setDoc, writeBatch } from "firebase/firestore"
+import { arrayRemove, arrayUnion, doc, writeBatch } from "firebase/firestore"
 import { useState } from "react"
 import { AiOutlineLoading3Quarters } from "@react-icons/all-files/ai/AiOutlineLoading3Quarters"
 import { RiAddCircleLine } from "@react-icons/all-files/ri/RiAddCircleLine"
@@ -114,7 +114,7 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
           </h2>
 
           <p className="text-sm text-gray-400">
-            {formatMediaType(anime?.media_type)} ({anime.num_episodes} eps)
+            {formatMediaType(anime?.media_type)} ({anime?.num_episodes} eps)
           </p>
 
           <p className="text-sm text-gray-400">Members: {formatNumber(anime?.num_list_users)}</p>

@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import classNames from "classnames/bind"
-import { useState, useEffect, forwardRef, useImperativeHandle } from "react"
+import { useState, useEffect, forwardRef, useImperativeHandle, FocusEvent, useContext } from "react"
 import styles from "./AnimeSearch.module.scss"
 import HeadlessTippy from "@tippyjs/react/headless"
 import "tippy.js/dist/tippy.css"
@@ -8,12 +8,15 @@ import { get } from "@/app/api/apiServices/httpRequest"
 import { faCaretDown, faSpinner } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
+import { PostFormContext } from "../../../postForm/PostFormContext"
 const cx = classNames.bind(styles)
 
-function AnimeSearch({ animeEpsRef, recentAnimeList }: any, ref: any) {
+function AnimeSearch({ animeEpsRef }: any, ref: any) {
+  const { recentAnimeList, setRecentAnimeList } = useContext(PostFormContext)
+
   const [searchResult, setSearchResult] = useState([])
   const [loading, setLoading] = useState(false)
-  const [animePic, setAnimepic] = useState("")
+  const [animePic, setAnimePic] = useState("")
   const [animeData, setAnimeData] = useState({ animeName: "", animeID: "" })
   const [animeDataSent, setAnimeDataSent] = useState({ animeName: "", animeID: "" })
   const [resultBoxOpen, setResultBoxOpen] = useState(false)
@@ -26,14 +29,10 @@ function AnimeSearch({ animeEpsRef, recentAnimeList }: any, ref: any) {
     resetAnimeSearch: () => {
       setAnimeData({ ...animeData, animeName: "" })
       setAnimeDataSent({ animeName: "", animeID: "" })
-      setAnimepic("")
+      setAnimePic("")
       setLoading(false);
     }
   }))
-
-  useEffect(() => {
-    setSearchResult(recentAnimeList)
-  }, [recentAnimeList])
 
   useEffect(() => {
     if (!debouncedValue.trim()) {
@@ -51,7 +50,7 @@ function AnimeSearch({ animeEpsRef, recentAnimeList }: any, ref: any) {
           },
         })
         if (!!result.error) {
-          setSearchResult(recentAnimeList)
+          setSearchResult([])
         } else {
           setSearchResult(result.data)
         }
@@ -66,6 +65,43 @@ function AnimeSearch({ animeEpsRef, recentAnimeList }: any, ref: any) {
       setLoading(false)
     }
   }, [animeData.animeID, debouncedValue])
+
+  // set recent anime list and select the first anime
+  useEffect(() => {
+    if (!recentAnimeList.length || recentAnimeList[0].node.id === animeData.animeID) return;
+
+    setSearchResult(recentAnimeList)
+    onSelectAnime(recentAnimeList[0], 0)
+  }, [recentAnimeList])
+
+  const onSelectAnime = async (ele: any, index: number) => {
+    const animeInfo = {
+      animeName: (ele as any).node.title,
+      animeID: (ele as any).node.id
+    }
+
+    setAnimePic((ele as any).node.main_picture.medium)
+    setAnimeData(animeInfo)
+    setAnimeDataSent(animeInfo)
+    setResultBoxOpen(false)
+
+    animeEpsRef?.current.setAnimeEpisodes((ele as any)?.list_status?.num_episodes_watched || "0")
+    animeEpsRef?.current.setAnimeTotal((ele as any).node.num_episodes)
+
+    if (!!(ele as any)?.list_status) {
+      setRecentAnimeList([recentAnimeList[index], ...recentAnimeList.slice(0, index), ...recentAnimeList.slice(index + 1)])
+    } else {
+      if (!!recentAnimeList[0]?.list_status)
+        setRecentAnimeList([ele, ...recentAnimeList])
+      else
+        setRecentAnimeList([ele, ...recentAnimeList.slice(1)])
+    }
+  }
+
+  const inputFocus = (e: FocusEvent<HTMLInputElement>) => {
+    e.target.select();
+    setResultBoxOpen(true)
+  }
 
   return (
     <HeadlessTippy
@@ -82,16 +118,7 @@ function AnimeSearch({ animeEpsRef, recentAnimeList }: any, ref: any) {
             {searchResult.map((ele: any, index: number) => {
               return (
                 <div
-                  onClick={async () => {
-                    setAnimepic((ele as any).node.main_picture.medium)
-                    setAnimeData({ animeName: (ele as any).node.title, animeID: (ele as any).node.id })
-                    setAnimeDataSent({ animeName: (ele as any).node.title, animeID: (ele as any).node.id })
-                    setResultBoxOpen(false)
-                    animeEpsRef?.current.setAnimeTotal((ele as any).node.num_episodes)
-                    if (parseInt(animeEpsRef?.current.getAnimeEpisodes()) > (ele as any).node.num_episodes) {
-                      animeEpsRef?.current.setAnimeEpisodes("0")
-                    }
-                  }}
+                  onClick={() => onSelectAnime(ele, index)}
                   key={index}
                   className={cx("result-children")}
                 >
@@ -122,7 +149,7 @@ function AnimeSearch({ animeEpsRef, recentAnimeList }: any, ref: any) {
             onKeyDown={(e) => {
               setAnimeData({ ...animeData, animeID: "" })
             }}
-            onFocus={() => { setResultBoxOpen(true) }}
+            onFocus={inputFocus}
           ></input>
         </div>
         {!loading ? (

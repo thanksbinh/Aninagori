@@ -17,15 +17,18 @@ import AnimeWatchStatus from "./animePostComponent/AnimeWatchStatus/AnimeWatchSt
 import PostFormActions from "./PostFormActions"
 import PostFormDetails from "./PostFormDetails"
 import PostFormMediaDisplay from "./PostFormMediaDisplay"
+import { PostFormContext } from "../postForm/PostFormContext"
 
 const cx = classNames.bind(styles)
 
 type PostFormProps = {
   setOpen?: any
-  recentAnimeList: any
 }
 
-const PostFormPopUp: FC<PostFormProps> = ({ setOpen, recentAnimeList }) => {
+const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
+  const { recentAnimeList } = useContext(PostFormContext)
+  const { myUserInfo } = useContext(HomeContext)
+
   const inputRef = useRef<HTMLInputElement>(null)
   const [mediaUrl, setMediaUrl] = useState<any>([])
   const [mediaType, setMediaType] = useState<string>("")
@@ -38,7 +41,6 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen, recentAnimeList }) => {
   const animeTag = useRef()
   const animeScore = useRef()
   const postAdditional = useRef()
-  const { myUserInfo } = useContext(HomeContext)
   const router = useRouter();
 
   function clearForm() {
@@ -101,7 +103,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen, recentAnimeList }) => {
           <div className={`flex flex-col px-4 max-h-[78vh] overflow-y-auto ${cx("scroll-custom")}`}>
             <div className={cx("status-wrapper")}>
               <AnimeWatchStatus ref={animeStatus} setShowScore={setShowScore} />
-              <AnimeSearch ref={animeSearch} animeEpsRef={animeEpisodes} recentAnimeList={recentAnimeList} />
+              <AnimeSearch ref={animeSearch} animeEpsRef={animeEpisodes} />
               {showScore ?
                 <AnimeScore ref={animeScore} /> :
                 <AnimeEpisodes ref={animeEpisodes} />}
@@ -117,7 +119,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen, recentAnimeList }) => {
                 placeholder="Share your favourite Animemory now!"
                 className="flex rounded-3xl mt-4 mb-5 py-3 px-4 w-full focus:outline-none bg-[#212833] caret-white"
               />
-              <PostFormMediaDisplay mediaUrl={mediaUrl} mediaType={mediaType} handleDeleteMedia={handleDeleteMedia} handleMediaChange={handleMediaChange} />
+              <PostFormMediaDisplay mediaUrl={mediaUrl} mediaType={mediaType} handleDeleteMedia={(e: any) => { handleDeleteMedia(e, mediaUrl, setMediaUrl) }} handleMediaChange={(e: any) => { handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl) }} />
               <AnimeTag ref={animeTag} />
             </div>
 
@@ -127,7 +129,8 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen, recentAnimeList }) => {
             <div className={basicPostingInfo ? "hidden" : "flex"}>
               <PostFormDetails
                 ref={postAdditional}
-                basicPostingInfo={basicPostingInfo}
+                // basicPostingInfo={basicPostingInfo}
+                defaultStart={recentAnimeList[0]?.list_status?.start_date}
               />
             </div>
 

@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCalendarCheck, faCalendarDays, faCaretDown, faTags, faTv } from "@fortawesome/free-solid-svg-icons"
 import HeadlessTippy from "@tippyjs/react/headless"
 import "tippy.js/dist/tippy.css"
-import { forwardRef, useState, useImperativeHandle } from "react"
+import { forwardRef, useState, useImperativeHandle, useEffect } from "react"
 import classNames from "classnames/bind"
 import styles from "./PostFormDetails.module.scss"
 
@@ -11,24 +11,19 @@ const nowYear = new Date().getFullYear()
 const days = Array.from(Array(31).keys()).map((i) => i + 1)
 const months = Array.from(Array(12).keys()).map((i) => i + 1)
 const years = Array.from(Array(20).keys()).map((i) => nowYear - i)
-const colors = [
-  { color: "#373737" },
-  { color: "#5a5a5a" },
-  { color: "#603b2b" },
-  { color: "#854d1e" },
-  { color: "#8a632a" },
-  { color: "#2b583f" },
-  { color: "#28466c" },
-  { color: "#69314c" },
-  { color: "#6d3631" },
-]
 
-function PostFormDetails({ className }: any, ref: any) {
+function PostFormDetails({ defaultStart = "0000-00-00" }: { defaultStart?: string }, ref: any) {
   const [day, setDay] = useState({ start: 0, end: 0, openStart: false, openEnd: false })
   const [month, setMonth] = useState({ start: 0, end: 0, openStart: false, openEnd: false })
   const [year, setYear] = useState({ start: 0, end: 0, openStart: false, openEnd: false })
   const [rewatchTime, setRewatchTime] = useState("")
   const [nowTag, setNowTag] = useState("")
+
+  useEffect(() => {
+    setDay({ ...day, start: parseInt(defaultStart?.split('-')[2]) })
+    setMonth({ ...month, start: parseInt(defaultStart?.split('-')[1]) })
+    setYear({ ...year, start: parseInt(defaultStart?.split('-')[0]) })
+  }, [defaultStart])
 
   function setToday(type: string) {
     const today = new Date()
@@ -86,7 +81,7 @@ function PostFormDetails({ className }: any, ref: any) {
   }))
 
   return (
-    <div ref={ref} className={`${className} flex-col`}>
+    <div ref={ref} className={`flex-col`}>
       <div className="flex items-center justify-between my-4">
         <div className="flex items-center min-w-[142px]">
           <FontAwesomeIcon icon={faCalendarDays} className="text-blue-400 text-2xl mx-3" />

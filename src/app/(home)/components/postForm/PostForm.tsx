@@ -8,6 +8,7 @@ import PostFormPopUp from "../postFormPopup/PostFormPopUp"
 import PostFormShortcut from "./PostFormShortcut"
 import { HomeContext } from "../../HomeContext"
 import { useContext } from "react"
+import { PostFormContext } from "./PostFormContext"
 
 type PostFormProps = {
   myAnimeList?: any
@@ -42,17 +43,15 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
   }
 
   return (
-    <div className="mt-4">
+    <PostFormContext.Provider value={{ recentAnimeList, setRecentAnimeList }} >
       <div className={`flex ${open ? "visible" : "invisible"}`}>
-        <PostFormPopUp setOpen={setOpen} recentAnimeList={recentAnimeList} />
+        <PostFormPopUp setOpen={setOpen} />
       </div>
       <div className="flex flex-col flex-1 bg-ani-gray rounded-2xl px-4 my-4">
         <div className="flex justify-between items-center mt-4">
           <Avatar imageUrl={myUserInfo.image} altText={myUserInfo.username} size={8} />
           <div
-            onClick={() => {
-              openForm()
-            }}
+            onClick={openForm}
             className="cursor-default flex rounded-3xl py-3 px-4 mx-2 w-full focus:outline-none bg-ani-light-gray hover:bg-[#4e5d78] hover:cursor-pointer caret-white"
           >
             Share your favourite Animemory now!
@@ -61,9 +60,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
 
         <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-ani-light-gray">
           <label
-            onClick={() => {
-              openForm()
-            }}
+            onClick={openForm}
             className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer"
           >
             <HiPhotograph className="w-5 h-5 fill-[#3BC361]" />
@@ -71,9 +68,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
           </label>
 
           <label
-            onClick={() => {
-              openForm()
-            }}
+            onClick={openForm}
             className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer"
           >
             <BsCameraVideoFill className="w-5 h-5 fill-[#FF1D43]" />
@@ -81,9 +76,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
           </label>
 
           <button
-            onClick={() => {
-              setOpen(true)
-            }}
+            onClick={openForm}
             className="flex flex-1 items-center justify-center space-x-1 text-[#fff] bg-[#377dff] hover:bg-[#0e5ef1] py-2 px-4 rounded-lg mt-1 mx-1"
           >
             <span>Share</span>
@@ -91,9 +84,12 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
         </div>
       </div>
 
-      {!!myAnimeList && <PostFormShortcut recentAnimeList={recentAnimeList.slice(0, 4)} />}
-
-    </div>
+      {!!myAnimeList &&
+        <PostFormShortcut
+          openFormPopup={openForm}
+        />
+      }
+    </PostFormContext.Provider>
   )
 }
 
