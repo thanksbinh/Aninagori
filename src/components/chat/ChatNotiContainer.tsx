@@ -1,16 +1,76 @@
 'use client'
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
 import { UserInfo } from "../../global/UserInfo.types";
 import ChatNoti from "./ChatNoti";
+import { Friend } from "@/app/(home)/rightsidebar/Friend";
+import { db } from "@/firebase/firebase-app";
+import { Timestamp, doc, getDoc, collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
 
 interface Props {
     myUserInfo: UserInfo
     showChatBtn: boolean
 }
 
+interface Conversation {
+    name: string;
+    image: string;
+    lastMessage: string;
+    timestamp: Timestamp;
+}
+
+async function getFriendList(myUserInfo: UserInfo): Promise<Friend[]> {
+    const userDoc = doc(db, "users", myUserInfo.id)
+    const snapshot = await getDoc(userDoc)
+    console.log(snapshot.data()?.friend_list?.reverse());
+    return snapshot.data()?.friend_list?.reverse() || []
+}
+
 const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn }) => {
+    const [conversations, setConversations] = useState<Conversation[]>([])
+
+    // fetch conversations data
+    useEffect(() => {
+        async function getConversations() {
+            const myFriendList: Friend[] = await getFriendList(myUserInfo);
+            const conversationRef = collection(db, "conversation");
+
+            myFriendList.forEach(async (friend: Friend) => {
+                const conversationQuery = query(
+                    conversationRef,
+                    where('username1', 'in', [myUserInfo.username, friend.username]),
+                    where('username2', 'in', [myUserInfo.username, friend.username])
+                )
+                const querySnapshot = await getDocs(conversationQuery);
+                if (querySnapshot.empty) {
+                    return;
+                }
+
+                const messageRef = (querySnapshot).docs[0].ref;
+
+                const unsubscribe = onSnapshot(messageRef, (docSnap) => {
+                    if (docSnap.exists() && docSnap.data()?.hasOwnProperty("messages")) {
+                        const lastMessage = docSnap.data()?.messages.slice(-1)[0];
+                        console.log(lastMessage);
+                        const conversation: Conversation = {
+                            name: lastMessage.senderUsername === myUserInfo?.username ? "You" : lastMessage.senderUsername,
+                            image: friend.image,
+                            lastMessage: lastMessage.content,
+                            timestamp: lastMessage.timestamp,
+                        }
+                        setConversations(prevConversations => [...prevConversations, conversation]);
+                    }
+                })
+
+                return () => {
+                    unsubscribe && unsubscribe()
+                };
+            });
+        }
+        getConversations();
+    }, [])
+
     return (
         <>
             {showChatBtn && (
@@ -21,7 +81,15 @@ const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn }) => {
                     </div>
                     <div className="h-full bg-[#212733] rounded-md pb-2">
                         <div className="h-full overflow-y-auto bg-[#212733] rounded-md">
-                            <ChatNoti myUserInfo={myUserInfo} />
+                            {conversations.map(conversation => (
+                                <ChatNoti
+                                    myUserInfo={myUserInfo}
+                                    name={conversation.name}
+                                    image={conversation.image}
+                                    lastMessage={conversation.lastMessage}
+                                    timestamp={conversation.timestamp}
+                                />
+                            ))}
                         </div>
                     </div>
                 </div>

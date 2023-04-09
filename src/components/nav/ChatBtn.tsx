@@ -2,20 +2,15 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { UserInfo } from "@/global/UserInfo.types";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "@/firebase/firebase-app";
 import { BsChatDotsFill } from "@react-icons/all-files/bs/BsChatDotsFill";
-import { getFriendList } from "@/app/(home)/components/functions/fetchData";
 import ChatNotiContainer from "../chat/ChatNotiContainer";
-
-export const NotiContext = React.createContext<any>({});
 
 const ChatBtn = ({ myUserInfo }: { myUserInfo: UserInfo }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [showChatBtn, setShowChatBtn] = useState(false);
-  const [unreadMessage, setUnreadMessage] = useState(8);
-  // const myFriendList = await getFriendList(myUserInfo);
+  const [unreadMessage, setUnreadMessage] = useState(0);
 
+  // click outside to close popup
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
@@ -32,24 +27,6 @@ const ChatBtn = ({ myUserInfo }: { myUserInfo: UserInfo }) => {
   const toggleChatBtn = () => {
     setShowChatBtn(!showChatBtn);
   };
-
-  //   useEffect(() => {
-  //     async function getConversations() {
-  //         const conversationRef = collection(db, "conversation");
-  //         if (myUserInfo?.username !== undefined) {
-  //             const conversationQuery = query(
-  //                 conversationRef, 
-  //                 where(myUserInfo?.username, "in", ["username1", "username2"])
-  //             )
-  //             const querySnapshot = await getDocs(conversationQuery);
-
-  //             const conversation = [];
-  //             querySnapshot.forEach(doc => {
-  //                 conversation.push(doc.data());
-  //             })
-  //         }
-  //     }
-  //   }, [])
 
   return (
     <div ref={ref} className="relative inline-block h-full">
