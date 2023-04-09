@@ -32,7 +32,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
     })
 
     setRecentAnimeList([...watchingList, ...p2wList])
-  }, [])
+  }, [myAnimeList])
 
   function openForm() {
     setTimeout(() => {

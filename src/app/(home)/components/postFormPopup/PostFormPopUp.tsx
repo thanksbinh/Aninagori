@@ -45,9 +45,6 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
 
   function clearForm() {
     (animeTagRef?.current as any).resetAnimeTag();
-    (postAdditionalRef?.current as any).resetAdditionalPost();
-    (animeSearchRef?.current as any).resetAnimeSearch();
-    (animeEpisodesRef?.current as any).setAnimeEpisodes("0");
     inputRef.current!.value = ""
     setMediaUrl([])
     setOpen(false)
