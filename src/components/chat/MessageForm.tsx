@@ -1,6 +1,6 @@
 'use client'
 
-import { collection, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { collection, doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 import { FC, useState, useRef } from "react";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
@@ -22,6 +22,7 @@ const MessageForm: FC<Props> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [myMessage, setMyMessage] = useState("");
+
 
   // send message to conversation
   const sendMessage = async (message: any) => {
@@ -47,10 +48,16 @@ const MessageForm: FC<Props> = ({
     await sendMessage(content);
 
     setMyMessage("");
+
+    setLastRead(myUserInfo, conversationId);
   }
 
-  const onFormClick = () => {
-    setLastRead(myUserInfo, conversationId)
+  const onFormClick = async () => {
+    const conversationRef = doc(collection(db, 'conversation'), conversationId);
+    const docSnap = await getDoc(conversationRef);
+    if (docSnap.data()?.messages.slice(-1)[0].senderUsername !== myUserInfo.username) {
+      setLastRead(myUserInfo, conversationId)
+    }
   }
 
   return (
