@@ -13,7 +13,7 @@ const days = Array.from(Array(31).keys()).map((i) => i + 1)
 const months = Array.from(Array(12).keys()).map((i) => i + 1)
 const years = Array.from(Array(20).keys()).map((i) => nowYear - i)
 
-function PostFormDetails({ animeStatus }: { animeStatus: any }, ref: any) {
+function PostFormDetails({ animeStatusRef }: { animeStatusRef: any }, ref: any) {
   const { recentAnimeList } = useContext(PostFormContext)
 
   // Why can't this just be startDate and endDate?
@@ -40,7 +40,14 @@ function PostFormDetails({ animeStatus }: { animeStatus: any }, ref: any) {
   useEffect(() => {
     const defaultStart = recentAnimeList[0]?.list_status?.start_date?.split('-')?.map((i: string) => parseInt(i))
 
-    if (defaultStart?.length === 3 && (animeStatus?.current as any)?.getAnimeStatus() === "Finished") {
+    let thisAnimeStatus = "Watching"
+    try {
+      thisAnimeStatus = (animeStatusRef?.current as any)?.getAnimeStatus()
+    } catch (error) {
+      console.log(error)
+    }
+
+    if (defaultStart?.length === 3 && thisAnimeStatus === "Finished") {
       // This doesn't work, because useState is async, fix this when you change timeState to normal
       // setStartDate(defaultStart[2], defaultStart[1], defaultStart[0])
       // setToday("end")
@@ -52,7 +59,7 @@ function PostFormDetails({ animeStatus }: { animeStatus: any }, ref: any) {
     else if (defaultStart?.length === 3) {
       setStartDate(defaultStart[2], defaultStart[1], defaultStart[0])
     }
-    else if ((animeStatus?.current as any)?.getAnimeStatus() === "Watching") {
+    else if (thisAnimeStatus === "Watching") {
       setToday("start")
     }
     else {
@@ -61,7 +68,7 @@ function PostFormDetails({ animeStatus }: { animeStatus: any }, ref: any) {
 
     setRewatchTime(recentAnimeList[0]?.list_status?.num_times_rewatched?.toString())
     setNowTag(recentAnimeList[0]?.list_status?.tags?.join(', ') || "")
-  }, [recentAnimeList, animeStatus?.current])
+  }, [recentAnimeList, animeStatusRef?.current])
 
   function setToday(type: string) {
     const today = new Date()

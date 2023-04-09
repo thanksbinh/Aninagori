@@ -4,11 +4,10 @@ import { useState, useEffect, forwardRef, useImperativeHandle, FocusEvent, useCo
 import styles from "./AnimeSearch.module.scss"
 import HeadlessTippy from "@tippyjs/react/headless"
 import "tippy.js/dist/tippy.css"
-import { get } from "@/app/api/apiServices/httpRequest"
 import { faCaretDown, faSpinner } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 import { PostFormContext } from "../../../postForm/PostFormContext"
+import { getTotalEps, searchAnimeName } from "./search"
 const cx = classNames.bind(styles)
 
 function AnimeSearch({ animeEpsRef }: any, ref: any) {
@@ -40,39 +39,40 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
       return
     }
     setLoading(true)
-    const searchAnimeName = async () => {
-      try {
-        const result = await get(getProductionBaseUrl() + "/api/anime/search", {
-          headers: {
-            q: debouncedValue,
-            offset: "0",
-            limit: "10",
-          },
-        })
-        if (!!result.error) {
-          setSearchResult([])
-        } else {
-          setSearchResult(result.data)
-        }
-        setLoading(false)
-      } catch (err) {
-        console.log(err)
-      }
-    }
+
     if (animeData.animeID === "") {
-      searchAnimeName()
+      const searchAnime = async () => {
+        const result = await searchAnimeName(debouncedValue)
+        setSearchResult(result)
+        setLoading(false)
+      }
+      searchAnime()
     } else {
       setLoading(false)
     }
+
   }, [animeData.animeID, debouncedValue])
 
-  // set recent anime list and select the first anime
+  // set recent anime list and select the first anime as default
   useEffect(() => {
     if (!recentAnimeList.length || recentAnimeList[0].node.id == animeData.animeID) return;
 
     setSearchResult(recentAnimeList)
     onSelectAnime(recentAnimeList[0])
   }, [recentAnimeList])
+
+  // update recent anime list order when select an anime
+  const updateRecentAnimeList = (ele: any) => {
+    if (!!(ele as any)?.list_status) {
+      const index = recentAnimeList.findIndex((item: any) => item.node.id === (ele as any).node.id)
+      setRecentAnimeList([recentAnimeList[index], ...recentAnimeList.slice(0, index), ...recentAnimeList.slice(index + 1)])
+    } else {
+      if (!!recentAnimeList[0]?.list_status && recentAnimeList[0]?.node.id !== (ele as any).node.id)
+        setRecentAnimeList([ele, ...recentAnimeList])
+      else
+        setRecentAnimeList([ele, ...recentAnimeList.slice(1)])
+    }
+  }
 
   const onSelectAnime = async (ele: any) => {
     const animeInfo = {
@@ -86,22 +86,18 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
     setResultBoxOpen(false)
 
     animeEpsRef?.current?.setAnimeEpisodes((ele as any)?.list_status?.num_episodes_watched || "0")
-    animeEpsRef?.current?.setAnimeTotal((ele as any).node.num_episodes)
-
-    if (!!(ele as any)?.list_status) {
-      const index = recentAnimeList.findIndex((item: any) => item.node.id === (ele as any).node.id)
-      setRecentAnimeList([recentAnimeList[index], ...recentAnimeList.slice(0, index), ...recentAnimeList.slice(index + 1)])
-    } else {
-      if (!!recentAnimeList[0]?.list_status)
-        setRecentAnimeList([ele, ...recentAnimeList])
-      else
-        setRecentAnimeList([ele, ...recentAnimeList.slice(1)])
+    if ((ele as any).node.num_episodes)
+      animeEpsRef?.current?.setAnimeTotal((ele as any).node.num_episodes)
+    else {
+      animeEpsRef?.current?.setAnimeTotal(await getTotalEps((ele as any).node.id))
     }
+
+    updateRecentAnimeList(ele)
   }
 
   const inputFocus = (e: FocusEvent<HTMLInputElement>) => {
     e.target.select();
-    setResultBoxOpen(true)
+    if (recentAnimeList.length || animeData.animeName) setResultBoxOpen(true)
   }
 
   return (

@@ -116,7 +116,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
               {basicPostingInfo ? "More details..." : "Fewer details..."}
             </div>
             <div className={basicPostingInfo ? "hidden" : "flex"}>
-              <PostFormDetails ref={postAdditionalRef} animeStatus={animeStatusRef} />
+              <PostFormDetails ref={postAdditionalRef} animeStatusRef={animeStatusRef} />
             </div>
           </div>
 

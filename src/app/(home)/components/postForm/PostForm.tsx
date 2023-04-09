@@ -28,7 +28,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
 
     myAnimeList.forEach((anime: any) => {
       if (anime.list_status.status === "watching") watchingList.push(anime)
-      else if (anime.list_status.status === "plan_to_watch" && anime.node.num_episodes) p2wList.push(anime)
+      else if (anime.list_status.status === "plan_to_watch" && anime.node.num_episodes != 0) p2wList.push(anime)
     })
 
     setRecentAnimeList([...watchingList, ...p2wList])
@@ -84,7 +84,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
         </div>
       </div>
 
-      {!!myAnimeList &&
+      {!!recentAnimeList.length &&
         <PostFormShortcut openFormPopup={openForm} />
       }
     </PostFormContext.Provider>
