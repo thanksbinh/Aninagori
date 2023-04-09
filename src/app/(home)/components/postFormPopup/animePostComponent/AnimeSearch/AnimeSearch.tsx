@@ -1,13 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
-import classNames from "classnames/bind"
-import { useState, useEffect, forwardRef, useImperativeHandle, FocusEvent, useContext } from "react"
-import styles from "./AnimeSearch.module.scss"
-import HeadlessTippy from "@tippyjs/react/headless"
-import "tippy.js/dist/tippy.css"
+import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 import { faCaretDown, faSpinner } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import HeadlessTippy from "@tippyjs/react/headless"
+import classNames from "classnames/bind"
+import { FocusEvent, forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react"
+import "tippy.js/dist/tippy.css"
 import { PostFormContext } from "../../../postForm/PostFormContext"
-import { getTotalEps, searchAnimeName } from "./search"
+import styles from "./AnimeSearch.module.scss"
 const cx = classNames.bind(styles)
 
 function AnimeSearch({ animeEpsRef }: any, ref: any) {
@@ -33,6 +33,27 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
     }
   }))
 
+  const searchAnimeName = async () => {
+    try {
+      const result = await fetch(getProductionBaseUrl() + "/api/anime/search", {
+        headers: {
+          q: debouncedValue,
+          offset: "0",
+          limit: "10",
+        },
+      }).then((res) => res.json())
+      if (!!result.error) {
+        setSearchResult([])
+      } else {
+        setSearchResult(result.data)
+      }
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     if (!debouncedValue.trim()) {
       setSearchResult(recentAnimeList)
@@ -41,12 +62,7 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
     setLoading(true)
 
     if (animeData.animeID === "") {
-      const searchAnime = async () => {
-        const result = await searchAnimeName(debouncedValue)
-        setSearchResult(result)
-        setLoading(false)
-      }
-      searchAnime()
+      searchAnimeName()
     } else {
       setLoading(false)
     }
@@ -86,11 +102,7 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
     setResultBoxOpen(false)
 
     animeEpsRef?.current?.setAnimeEpisodes((ele as any)?.list_status?.num_episodes_watched || "0")
-    if ((ele as any).node.num_episodes)
-      animeEpsRef?.current?.setAnimeTotal((ele as any).node.num_episodes)
-    else {
-      animeEpsRef?.current?.setAnimeTotal(await getTotalEps((ele as any).node.id))
-    }
+    animeEpsRef?.current?.setAnimeTotal((ele as any)?.node?.num_episodes || "26")
 
     updateRecentAnimeList(ele)
   }

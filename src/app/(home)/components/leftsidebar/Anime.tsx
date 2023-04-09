@@ -49,6 +49,7 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
         id: anime.id,
         main_picture: anime.main_picture,
         title: anime.title,
+        num_episodes: anime.num_episodes,
       },
     }
     if (!!myUserInfo?.mal_connect?.accessToken) {
