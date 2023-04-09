@@ -60,7 +60,7 @@ function PostFormDetails({ animeStatus }: { animeStatus: any }, ref: any) {
     }
 
     setRewatchTime(recentAnimeList[0]?.list_status?.num_times_rewatched?.toString())
-    setNowTag(recentAnimeList[0]?.list_status?.tags?.join(', '))
+    setNowTag(recentAnimeList[0]?.list_status?.tags?.join(', ') || "")
   }, [recentAnimeList, animeStatus?.current])
 
   function setToday(type: string) {

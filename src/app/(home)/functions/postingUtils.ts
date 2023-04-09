@@ -196,6 +196,7 @@ export async function handleSubmitForm(
             id: postAnimeData.anime_id,
             main_picture: animeInformation.main_picture,
             title: animeInformation.title,
+            num_episodes: parseInt(totalEps)
           },
         }
         if (!!startDate) (animeData as any).list_status.start_date = startDate
