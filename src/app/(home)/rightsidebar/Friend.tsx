@@ -49,7 +49,6 @@ const FriendComponent = ({ friendInfo }: { friendInfo: Friend }) => {
       </div>
       {showChat && (
         <ChatPopup showChat={showChat} setShowChat={setShowChat} recipient={friendInfo.username} image={friendInfo.image} />
-        //TODO: close chat with X button inside chat popup
       )}
     </div>
   );

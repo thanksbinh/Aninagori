@@ -7,6 +7,7 @@ import ChatNoti from "./ChatNoti";
 import { Friend } from "@/app/(home)/rightsidebar/Friend";
 import { db } from "@/firebase/firebase-app";
 import { Timestamp, doc, getDoc, collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
+import { useRouter } from "next/navigation";
 
 interface Props {
     myUserInfo: UserInfo
@@ -18,6 +19,7 @@ interface Conversation {
     image: string;
     lastMessage: string;
     timestamp: Timestamp;
+    friend: string;
 }
 
 async function getFriendList(myUserInfo: UserInfo): Promise<Friend[]> {
@@ -51,15 +53,26 @@ const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn }) => {
 
                 const unsubscribe = onSnapshot(messageRef, (docSnap) => {
                     if (docSnap.exists() && docSnap.data()?.hasOwnProperty("messages")) {
-                        const lastMessage = docSnap.data()?.messages.slice(-1)[0];
+                        const lastMessage = docSnap.data()?.messages?.slice(-1)[0];
                         console.log(lastMessage);
                         const conversation: Conversation = {
                             name: lastMessage.senderUsername === myUserInfo?.username ? "You" : lastMessage.senderUsername,
                             image: friend.image,
                             lastMessage: lastMessage.content,
                             timestamp: lastMessage.timestamp,
+                            friend: friend.username
                         }
-                        setConversations(prevConversations => [...prevConversations, conversation]);
+                        // Check if the conversation already exists in the array
+                        const conversationIndex = conversations.findIndex(c => c.friend === friend.username);
+                        if (conversationIndex === -1) {
+                            // If the conversation doesn't exist, add it to the array
+                            setConversations(prevConversations => [...prevConversations, conversation]);
+                        } else {
+                            // If the conversation already exists, update it with the new message
+                            const updatedConversations = [...conversations];
+                            updatedConversations[conversationIndex] = conversation;
+                            setConversations(updatedConversations);
+                        }
                     }
                 })
 
@@ -81,13 +94,15 @@ const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn }) => {
                     </div>
                     <div className="h-full bg-[#212733] rounded-md pb-2">
                         <div className="h-full overflow-y-auto bg-[#212733] rounded-md">
-                            {conversations.map(conversation => (
+                            {conversations.map((conversation, index) => (
                                 <ChatNoti
+                                    key={index}
                                     myUserInfo={myUserInfo}
                                     name={conversation.name}
                                     image={conversation.image}
                                     lastMessage={conversation.lastMessage}
                                     timestamp={conversation.timestamp}
+                                    friend={conversation.friend}
                                 />
                             ))}
                         </div>

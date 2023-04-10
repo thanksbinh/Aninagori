@@ -2,8 +2,9 @@
 
 import { formatDuration } from "@/components/utils/format";
 import { Timestamp } from "firebase/firestore";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { UserInfo } from "../../global/UserInfo.types";
+import ChatPopup from "./ChatPopup";
 
 interface Props {
     myUserInfo: UserInfo;
@@ -11,14 +12,19 @@ interface Props {
     image: string;
     lastMessage: string;
     timestamp: Timestamp;
+    friend: string;
 }
 
-const ChatNoti: React.FC<Props> = ({ myUserInfo, name, image, lastMessage, timestamp }) => {
-    const router = useRouter()
+const ChatNoti: React.FC<Props> = ({ myUserInfo, name, image, lastMessage, timestamp, friend }) => {
+    const [showChat, setShowChat] = useState(false)
+
+    const openChat = () => {
+        setShowChat(true);
+    };
 
     return (
         <>
-            <div className="flex items-center bg-ani-gray rounded-lg mx-2 px-3 py-4 hover:cursor-pointer hover:bg-slate-50/25">
+            <div className="flex items-center bg-ani-gray rounded-lg mx-2 px-3 py-4 hover:cursor-pointer hover:bg-slate-50/25" onClick={openChat}>
                 <img
                     src={image || '/bocchi.jpg'}
                     alt={'avatar'}
@@ -29,10 +35,13 @@ const ChatNoti: React.FC<Props> = ({ myUserInfo, name, image, lastMessage, times
                         {name + ": " + lastMessage}
                     </p>
                     <p className={`text-xs ${false ? "text-[#a5a5a5]" : "text-[#377dff]"}`}>
-                        5 min ago
+                        {formatDuration(new Date().getTime() - timestamp.toDate().getTime())}
                     </p>
                 </div>
             </div>
+            {showChat && (
+                <ChatPopup showChat={showChat} setShowChat={setShowChat} recipient={friend} image={image} />
+            )}
         </>
     );
 };
