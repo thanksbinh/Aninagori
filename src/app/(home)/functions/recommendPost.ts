@@ -4,6 +4,8 @@ import { UserInfo } from "@/global/UserInfo.types"
 import { collection, getDocs, limit, orderBy, query, startAfter, Timestamp, where } from "firebase/firestore"
 
 function formatPostData(querySnapshot: any) {
+  if (!querySnapshot) return { posts: [], lastKey: null }
+
   const fetchedPosts = querySnapshot.docs.map((doc: any) => {
     return {
       ...doc.data(),
@@ -55,9 +57,13 @@ async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], last
 
 async function fetchAllPosts(friendPostIds: string[], lastKey: any) {
   let copyLastKey = lastKey
-  do {
+  while (true) {
     const postQuery = query(collection(db, "posts"), orderBy("timestamp", "desc"), startAfter(copyLastKey), limit(2))
     let querySnapshot = (await getDocs(postQuery)) as any
+
+    if (!querySnapshot.docs.length) {
+      return formatPostData(null);
+    }
 
     querySnapshot = {
       ...querySnapshot,
@@ -70,7 +76,7 @@ async function fetchAllPosts(friendPostIds: string[], lastKey: any) {
     if (querySnapshot.docs.length) {
       return formatPostData(querySnapshot)
     }
-  } while (true)
+  }
 }
 
 function getAnimePreferenceScore(myAnimeList: any, animePreference: any, anime_id: string): number {

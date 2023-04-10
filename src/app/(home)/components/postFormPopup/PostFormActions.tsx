@@ -5,10 +5,12 @@ function PostFormActions({
     handleMediaChange,
     loadPosting,
     setBasicPostingInfo,
+    isUpdatePost
 }: {
     handleMediaChange: any
     loadPosting: boolean
     setBasicPostingInfo: any
+    isUpdatePost: boolean
 }) {
     return (
         <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-[#212833]">
@@ -58,7 +60,7 @@ function PostFormActions({
                         ></path>
                     </svg>
                 )}
-                <span>Share</span>
+                <span>{isUpdatePost ? "Update" : "Share"}</span>
             </button>
         </div>
     )

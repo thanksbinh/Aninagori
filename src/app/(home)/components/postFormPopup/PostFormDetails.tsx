@@ -35,12 +35,12 @@ function PostFormDetails({ animeStatusRef }: { animeStatusRef: any }, ref: any) 
       console.log(error)
     }
 
-    if (defaultStart?.length === 3 && thisAnimeStatus === "Finished") {
-      // This doesn't work, because useState is async, fix this when you change timeState to normal
-      // setStartDate(defaultStart[2], defaultStart[1], defaultStart[0])
-      // setToday("end")
+    // This doesn't work, because useState is async, fix this when you change timeState to normal
+    // setToday("start")
+    // setToday("end")
 
-      const today = new Date()
+    const today = new Date()
+    if (defaultStart?.length === 3 && thisAnimeStatus === "Finished") {
       setDay({ ...day, start: defaultStart[2], end: today.getDate() })
       setMonth({ ...month, start: defaultStart[1], end: today.getMonth() + 1 })
       setYear({ ...year, start: defaultStart[0], end: today.getFullYear() })
@@ -50,35 +50,34 @@ function PostFormDetails({ animeStatusRef }: { animeStatusRef: any }, ref: any) 
       setMonth({ ...month, start: defaultStart[1], end: 0 })
       setYear({ ...year, start: defaultStart[0], end: 0 })
     }
+    else if (thisAnimeStatus === "Finished") {
+      setDay({ ...day, start: today.getDate(), end: today.getDate() })
+      setMonth({ ...month, start: today.getMonth() + 1, end: today.getMonth() + 1 })
+      setYear({ ...year, start: today.getFullYear(), end: today.getFullYear() })
+    }
     else if (thisAnimeStatus === "Watching") {
       setToday("start")
     }
     else {
-      setStartDate(0, 0, 0)
+      setDay({ ...day, start: 0, end: 0 })
+      setMonth({ ...month, start: 0, end: 0 })
+      setYear({ ...year, start: 0, end: 0 })
     }
 
     setRewatchTime(recentAnimeList[0]?.list_status?.num_times_rewatched?.toString())
     setNowTag(recentAnimeList[0]?.list_status?.tags?.join(', ') || "")
   }, [recentAnimeList, animeStatusRef?.current])
 
-  const setStartDate = (thisDay: number, thisMonth: number, thisYear: number) => {
-    setDay({ ...day, start: thisDay })
-    setMonth({ ...month, start: thisMonth })
-    setYear({ ...year, start: thisYear })
-  }
-
-  const setEndDate = (thisDay: number, thisMonth: number, thisYear: number) => {
-    setDay({ ...day, end: thisDay })
-    setMonth({ ...month, end: thisMonth })
-    setYear({ ...year, end: thisYear })
-  }
-
   function setToday(type: string) {
     const today = new Date()
     if (type === "start") {
-      setStartDate(today.getDate(), today.getMonth() + 1, today.getFullYear())
+      setDay({ ...day, start: today.getDate() })
+      setMonth({ ...month, start: today.getMonth() + 1 })
+      setYear({ ...year, start: today.getFullYear() })
     } else {
-      setEndDate(today.getDate(), today.getMonth() + 1, today.getFullYear())
+      setDay({ ...day, end: today.getDate() })
+      setMonth({ ...month, end: today.getMonth() + 1 })
+      setYear({ ...year, end: today.getFullYear() })
     }
   }
 

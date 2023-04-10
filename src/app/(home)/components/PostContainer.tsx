@@ -34,16 +34,14 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
     return logo?.removeEventListener("click", () => refreshPosts())
   }, [])
 
+  // Init first posts
   useEffect(() => {
-    async function init() {
-      await fetchPosts()
-    }
-
     if (posts.length < 2) {
-      init()
+      fetchPosts()
     }
   }, [posts])
 
+  // Refresh posts when router.refresh() is called
   useEffect(() => {
     if (myFriendUsernameList.length == myFriendList.length) {
       refreshPosts()
@@ -51,17 +49,6 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
       setMyFriendUsernameList(myFriendList.map((friend: any) => friend.username))
     }
   }, [myFriendList])
-
-  function filterPosts(fetchedPosts: any) {
-    fetchedPosts = fetchedPosts.filter((post: any) => {
-      return (
-        post.authorName === myUserInfo.username || //isFromMe
-        myFriendUsernameList?.includes(post.authorName) || //isFromMyFriend
-        Math.random() * 10 <
-        getAnimePreferenceScore(myAnimeList, postPreference?.animeList, post.post_anime_data?.anime_id)
-      ) //gachaTrue
-    })
-  }
 
   async function refreshPosts() {
     setPosts([])
@@ -71,29 +58,56 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
     setFriendPostIds(["0"])
   }
 
-  async function fetchPosts() {
-    if (!postPreference) return
+  function filterPosts(fetchedPosts: any) {
+    if (!postPreference) return fetchedPosts
 
-    let fetchedPosts
-    if (hasMoreFriendPosts) {
-      fetchedPosts = await fetchFriendPosts(myUserInfo, myFriendUsernameList, postPreference.last_view, lastKey)
-
-      if (fetchedPosts.posts.length) {
-        setFriendPostIds([...friendPostIds, ...fetchedPosts.posts.map((post: any) => post.id)])
-      } else {
-        setHasMoreFriendPosts(false)
-        fetchedPosts = await fetchAllPosts(friendPostIds, {})
+    return fetchedPosts.filter((post: any) => {
+      // isFromMe or isFromMyFriend
+      if (post.authorName === myUserInfo.username || myFriendUsernameList?.includes(post.authorName)) {
+        return true
       }
-    } else {
-      fetchedPosts = await fetchAllPosts(friendPostIds, lastKey)
-    }
 
-    if (fetchedPosts.lastKey) {
-      filterPosts(fetchedPosts.posts)
-      setPosts([...posts, ...fetchedPosts.posts])
+      // isFromOther and isRecommended
+      const preferenceScore = getAnimePreferenceScore(myAnimeList, postPreference.animeList, post.post_anime_data?.anime_id)
+      return (Math.random() * 10 < preferenceScore) && (post.videoUrl !== "" || post.imageUrl !== "")
+    })
+  }
+
+  async function fetchFriendsPosts() {
+    const fetchedPosts = await fetchFriendPosts(myUserInfo, myFriendUsernameList, postPreference.last_view, lastKey)
+
+    if (fetchedPosts.posts.length) {
+      setFriendPostIds([...friendPostIds, ...fetchedPosts.posts.map((post: any) => post.id)])
       setLastKey(fetchedPosts.lastKey)
-    } else {
-      setHasMore(false)
+      setPosts([...posts, ...fetchedPosts.posts])
+      return;
+    }
+    else {
+      setHasMoreFriendPosts(false)
+    }
+  }
+
+  async function fetchPosts() {
+    // fetch posts from friends
+    if (hasMoreFriendPosts) fetchFriendsPosts()
+
+    // fetch posts from other users
+    let copyLastKey = lastKey
+    while (true) {
+      const fetchedPosts = await fetchAllPosts(friendPostIds, copyLastKey)
+
+      if (!fetchedPosts.lastKey || !fetchedPosts.posts.length) {
+        setHasMore(false)
+        break;
+      }
+
+      copyLastKey = fetchedPosts.lastKey
+      setLastKey(fetchedPosts.lastKey)
+
+      fetchedPosts.posts = filterPosts(fetchedPosts.posts)
+      setPosts([...posts, ...fetchedPosts.posts])
+
+      if (fetchedPosts.posts.length) break;
     }
   }
 

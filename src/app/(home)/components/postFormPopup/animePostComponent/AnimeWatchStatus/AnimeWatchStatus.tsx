@@ -16,6 +16,9 @@ function AnimeWatchStatus({ setShowScore }: any, ref: any) {
     getAnimeStatus: () => {
       return status
     },
+    resetAnimeStatus: () => {
+      setStatus("Watching")
+    },
   }))
 
   function setChoice(choice: string) {
