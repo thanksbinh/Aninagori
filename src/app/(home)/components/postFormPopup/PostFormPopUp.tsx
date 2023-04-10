@@ -51,6 +51,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
   function clearForm() {
     (animeTagRef?.current as any).resetAnimeTag();
     (animeStatusRef?.current as any).resetAnimeStatus();
+    setShowScore(false)
     setTextInput("")
     setMediaUrl([])
     setOpen(false)
