@@ -82,8 +82,8 @@ const PostContent: FC<PostStaticProps> = ({
         })}
       </div>
       <div className="relative flex flex-col -mx-4">
-        <p className="text-lg mx-2 mt-3 mb-2 text-[#dddede] px-4">{content}</p>
-        <PostContentMedia postId={postId} tag={tag} imageUrl={imageUrl} videoUrl={videoUrl} />
+        {!!content && <p className="text-lg mx-2 mt-3 mb-2 text-[#dddede] px-4">{content}</p>}
+        {(!!imageUrl || !!videoUrl) && <PostContentMedia postId={postId} tag={tag} imageUrl={imageUrl} videoUrl={videoUrl} />}
       </div>
     </div>
   )

@@ -110,7 +110,7 @@ export async function handleSubmitForm(
   animeEpisodes: any,
   animeTag: any,
   animeScore: any,
-  inputRef: any,
+  textInput: string,
   mediaUrl: any,
   mediaType: any,
   myUserInfo: any,
@@ -136,27 +136,31 @@ export async function handleSubmitForm(
     return
   }
   const postAnimeData = handleAnimeInformationPosting(statusData, searchData, episodesData, totalEps, scoreData)
-  const statustConverted = convertWatchStatus(
+  const statusConverted = convertWatchStatus(
     postAnimeData.watching_progress,
     parseInt(totalEps) === parseInt(episodesData),
   )
-  console.log(statustConverted)
+  console.log(statusConverted)
   // // upload media to firebase storage
   const downloadMediaUrl = await uploadMedia(mediaUrl)
   // post info to firestore
-  const promisePost = [
-    addDoc(collection(db, "posts"), {
-      authorName: myUserInfo.username,
-      avatarUrl: myUserInfo.image,
-      timestamp: serverTimestamp(),
-      content: inputRef.current?.value || "",
-      imageUrl: mediaType === "image" ? downloadMediaUrl : "",
-      videoUrl: mediaType === "video" ? downloadMediaUrl[0] : "",
-      tag: tagData,
-      post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? {} : postAnimeData,
-      comments: 0,
-    }),
-  ] as any
+  const promisePost = [] as any
+
+  if (textInput || mediaUrl.length || statusConverted === "completed") {
+    promisePost.push(
+      addDoc(collection(db, "posts"), {
+        authorName: myUserInfo.username,
+        avatarUrl: myUserInfo.image,
+        timestamp: serverTimestamp(),
+        content: textInput || "",
+        imageUrl: mediaType === "image" ? downloadMediaUrl : "",
+        videoUrl: mediaType === "video" ? downloadMediaUrl[0] : "",
+        tag: tagData,
+        post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? {} : postAnimeData,
+      })
+    )
+  }
+
 
   try {
     // post have anime data
@@ -165,7 +169,7 @@ export async function handleSubmitForm(
       if (!!myUserInfo?.mal_connect?.accessToken) {
         const promiseUpdateMAL = fetch(getProductionBaseUrl() + "/api/updatestatus/" + postAnimeData.anime_id, {
           headers: {
-            status: statustConverted,
+            status: statusConverted,
             episode: postAnimeData.episodes_seen,
             score: (postAnimeData as any).score,
             auth_code: myUserInfo?.mal_connect?.accessToken,
@@ -188,7 +192,7 @@ export async function handleSubmitForm(
           list_status: {
             num_episodes_watched: postAnimeData.episodes_seen,
             score: !!(postAnimeData as any).score ? (postAnimeData as any).score : 0,
-            status: statustConverted,
+            status: statusConverted,
             updated_at: dateNow,
             is_rewatching: statusData === "Re-watching" ? true : false,
           },
@@ -222,7 +226,7 @@ export async function handleSubmitForm(
       promisePost.push(
         updateStatusOnFriendLists(myUserInfo, {
           ...postAnimeData,
-          status: statustConverted,
+          status: statusConverted,
         }),
       )
     }

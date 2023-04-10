@@ -79,7 +79,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
             onClick={openForm}
             className="flex flex-1 items-center justify-center space-x-1 text-[#fff] bg-[#377dff] hover:bg-[#0e5ef1] py-2 px-4 rounded-lg mt-1 mx-1"
           >
-            <span>Share</span>
+            <span>Update</span>
           </button>
         </div>
       </div>

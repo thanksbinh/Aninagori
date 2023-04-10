@@ -53,13 +53,15 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
   }, [myFriendList])
 
   function filterPosts(fetchedPosts: any) {
-    fetchedPosts = fetchedPosts.filter((post: any) => {
-      return (
-        post.authorName === myUserInfo.username || //isFromMe
-        myFriendUsernameList?.includes(post.authorName) || //isFromMyFriend
-        Math.random() * 10 <
-        getAnimePreferenceScore(myAnimeList, postPreference?.animeList, post.post_anime_data?.anime_id)
-      ) //gachaTrue
+    return fetchedPosts.filter((post: any) => {
+      // isFromMe or isFromMyFriend
+      if (post.authorName === myUserInfo.username || myFriendUsernameList?.includes(post.authorName)) {
+        return true
+      }
+
+      // isFromOther and isRecommended
+      const preferenceScore = getAnimePreferenceScore(myAnimeList, postPreference?.animeList, post.post_anime_data?.anime_id)
+      return (Math.random() * 10 < preferenceScore) && (post.videoUrl !== "" || post.imageUrl !== "")
     })
   }
 
@@ -89,12 +91,14 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
     }
 
     if (fetchedPosts.lastKey) {
-      filterPosts(fetchedPosts.posts)
+      fetchedPosts.posts = filterPosts(fetchedPosts.posts)
       setPosts([...posts, ...fetchedPosts.posts])
       setLastKey(fetchedPosts.lastKey)
     } else {
       setHasMore(false)
     }
+
+    if (!fetchedPosts.posts.length) fetchPosts()
   }
 
   return (

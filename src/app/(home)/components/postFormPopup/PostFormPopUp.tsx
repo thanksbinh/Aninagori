@@ -2,11 +2,11 @@
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import classNames from "classnames/bind"
-import { FC, useContext, useRef, useState } from "react"
+import { FC, useContext, useEffect, useRef, useState } from "react"
 import styles from "../postForm/PostForm.module.scss"
 
-import Avatar from "@/components/avatar/Avatar"
 import { handleDeleteMedia, handleMediaChange, handlePaste, handleSubmitForm } from "@/app/(home)/functions/postingUtils"
+import Avatar from "@/components/avatar/Avatar"
 import { useRouter } from "next/navigation"
 import { HomeContext } from "../../HomeContext"
 import AnimeEpisodes from "./animePostComponent/AnimeEpisodes/AnimeEpisodes"
@@ -32,8 +32,9 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
   const [showScore, setShowScore] = useState<boolean>(false)
   const [loadPosting, setLoadPosting] = useState<boolean>(false)
   const [basicPostingInfo, setBasicPostingInfo] = useState<boolean>(true)
+  const [isUpdatePost, setIsUpdatePost] = useState<boolean>(true)
+  const [textInput, setTextInput] = useState<string>("")
 
-  const inputRef = useRef<HTMLInputElement>(null)
   const animeStatusRef = useRef()
   const animeSearchRef = useRef()
   const animeEpisodesRef = useRef()
@@ -43,9 +44,14 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
 
   const router = useRouter();
 
+  useEffect(() => {
+    setIsUpdatePost(!(mediaUrl.length || textInput || showScore))
+  }, [mediaUrl, textInput, showScore])
+
   function clearForm() {
     (animeTagRef?.current as any).resetAnimeTag();
-    inputRef.current!.value = ""
+    (animeStatusRef?.current as any).resetAnimeStatus();
+    setTextInput("")
     setMediaUrl([])
     setOpen(false)
   }
@@ -56,7 +62,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
 
     await handleSubmitForm(
       animeStatusRef, animeSearchRef, animeEpisodesRef, animeTagRef,
-      animeScoreRef, inputRef, mediaUrl,
+      animeScoreRef, textInput, mediaUrl,
       mediaType, myUserInfo, postAdditionalRef
     )
 
@@ -93,8 +99,8 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
           </div>
 
           <input
-            type="text"
-            ref={inputRef}
+            onChange={(e) => setTextInput(e.target.value)}
+            value={textInput}
             onPaste={(e: any) => {
               handlePaste(e, setMediaUrl, setMediaType, mediaUrl)
             }}
@@ -124,6 +130,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
             handleMediaChange={(e: any) => {
               handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl)
             }}
+            isUpdatePost={isUpdatePost}
           />
         </div>
       </form>
