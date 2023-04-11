@@ -1,6 +1,6 @@
 'use client'
 
-import { collection, doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
+import { collection, doc, updateDoc, arrayUnion, getDoc, arrayRemove } from "firebase/firestore";
 import { FC, useState, useRef } from "react";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
@@ -11,13 +11,15 @@ interface Props {
   conversationId: string;
   myUserInfo: UserInfo;
   friend: string;
+  image: string;
 };
 
 const MessageForm: FC<Props> = ({
   messageId,
   conversationId,
   myUserInfo,
-  friend
+  friend,
+  image
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -46,12 +48,54 @@ const MessageForm: FC<Props> = ({
     }
 
     await sendMessage(content);
+    await setLastMessage(
+      {
+        id: conversationId,
+        lastMessage: {
+          content: myMessage,
+          read: false,
+          senderUsername: myUserInfo.username,
+          timestamp: new Date()
+        },
+        sender: {
+          username: friend,
+          image: image
+        }
+      }
+    );
 
     setMyMessage("");
 
     setLastRead(myUserInfo, conversationId);
   }
 
+  // set last message of conversation
+  const findOldLastMessage = async () => {
+    const inboxRef = doc(collection(db, 'inbox'), myUserInfo.username);
+    const inboxDoc = await getDoc(inboxRef);
+
+    if (inboxDoc.exists() && inboxDoc.data()?.hasOwnProperty("recentChats")) {
+      const message = inboxDoc.data()?.recentChats.find((e: any) => e.id === conversationId);
+      if (message) { return message }
+    }
+    else return null;
+  }
+
+  const setLastMessage = async (lastMessage: any) => {
+    const inboxRef = doc(collection(db, 'inbox'), myUserInfo.username);
+    const oldLastMessage = await findOldLastMessage();
+    if (oldLastMessage) {
+      await updateDoc(inboxRef, {
+        recentChats: arrayRemove(oldLastMessage)
+      });
+    }
+
+    await updateDoc(inboxRef, {
+      recentChats: arrayUnion(lastMessage)
+    });
+  }
+
+  // set seen status
   const onFormClick = async () => {
     const conversationRef = doc(collection(db, 'conversation'), conversationId);
     const docSnap = await getDoc(conversationRef);

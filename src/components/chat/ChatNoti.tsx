@@ -13,9 +13,10 @@ interface Props {
     lastMessage: string;
     timestamp: Timestamp;
     friend: string;
+    read: boolean;
 }
 
-const ChatNoti: React.FC<Props> = ({ myUserInfo, name, image, lastMessage, timestamp, friend }) => {
+const ChatNoti: React.FC<Props> = ({ myUserInfo, name, image, lastMessage, timestamp, friend, read }) => {
     const [showChat, setShowChat] = useState(false)
 
     const openChat = () => {
@@ -31,17 +32,17 @@ const ChatNoti: React.FC<Props> = ({ myUserInfo, name, image, lastMessage, times
                     className="h-10 w-10 rounded-full mr-4"
                 />
                 <div>
-                    <p className={`text-sm font-medium ${false ? "text-[#a5a5a5]" : "text-white"}`}>
+                    <p className={`text-sm font-medium ${read ? "text-[#a5a5a5]" : "text-white"}`}>
                         {name + ": " + lastMessage}
                     </p>
-                    <p className={`text-xs ${false ? "text-[#a5a5a5]" : "text-[#377dff]"}`}>
+                    <p className={`text-xs ${read ? "text-[#a5a5a5]" : "text-[#377dff]"}`}>
                         {formatDuration(new Date().getTime() - timestamp.toDate().getTime())}
                     </p>
                 </div>
             </div>
-            {showChat && (
+            {/* {showChat && (
                 <ChatPopup showChat={showChat} setShowChat={setShowChat} recipient={friend} image={image} />
-            )}
+            )} */}
         </>
     );
 };

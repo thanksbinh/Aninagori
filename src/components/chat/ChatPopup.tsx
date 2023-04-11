@@ -69,7 +69,7 @@ const ChatPopup: React.FC<ChatPopupProps> = ({ showChat, setShowChat, recipient,
                     <div className="flex flex-1 overflow-y-auto">
                         <Messages myUserInfo={myUserInfo} friend={recipient} avatarUrl={image} />
                     </div>
-                    <MessageForm conversationId={conversationId} myUserInfo={myUserInfo} friend={recipient} />
+                    <MessageForm conversationId={conversationId} myUserInfo={myUserInfo} friend={recipient} image={image} />
                 </div>
             )}
         </>

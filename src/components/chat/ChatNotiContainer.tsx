@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
 import { UserInfo } from "../../global/UserInfo.types";
 import ChatNoti from "./ChatNoti";
-import { Friend } from "@/app/(home)/rightsidebar/Friend";
 import { db } from "@/firebase/firebase-app";
-import { Timestamp, doc, getDoc, onSnapshot } from "firebase/firestore";
+import { Timestamp, doc, collection, onSnapshot } from "firebase/firestore";
 
 interface Props {
     myUserInfo: UserInfo
@@ -33,7 +32,7 @@ const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn }) => {
     // fetch conversations data
     useEffect(() => {
         async function getInbox() {
-            const inboxRef = doc(db, "inbox", "binh");
+            const inboxRef = doc(collection(db, "inbox"), myUserInfo.username);
 
             const unsubscribe = onSnapshot(inboxRef, (docSnap) => {
                 if (docSnap.exists() && docSnap.data()?.hasOwnProperty("recentChats")) {
@@ -64,7 +63,7 @@ const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn }) => {
                     </div>
                     <div className="h-full bg-[#212733] rounded-md pb-2">
                         <div className="h-full overflow-y-auto bg-[#212733] rounded-md">
-                            {recentChats.map((recentChat, index) => (
+                            {recentChats.map((recentChat) => (
                                 <ChatNoti
                                     key={recentChat.id}
                                     myUserInfo={myUserInfo}
@@ -73,6 +72,7 @@ const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn }) => {
                                     lastMessage={recentChat.lastMessage.content}
                                     timestamp={recentChat.lastMessage.timestamp}
                                     friend={recentChat.sender.username}
+                                    read={recentChat.lastMessage.read}
                                 />
                             ))}
                         </div>
