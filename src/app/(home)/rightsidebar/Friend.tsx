@@ -47,9 +47,9 @@ const FriendComponent = ({ friendInfo }: { friendInfo: Friend }) => {
           }
         </div>
       </div>
-      {showChat && (
+      {/* {showChat && (
         <ChatPopup showChat={showChat} setShowChat={setShowChat} recipient={friendInfo.username} image={friendInfo.image} />
-      )}
+      )} */}
     </div>
   );
 };

@@ -6,82 +6,52 @@ import { UserInfo } from "../../global/UserInfo.types";
 import ChatNoti from "./ChatNoti";
 import { Friend } from "@/app/(home)/rightsidebar/Friend";
 import { db } from "@/firebase/firebase-app";
-import { Timestamp, doc, getDoc, collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
-import { useRouter } from "next/navigation";
+import { Timestamp, doc, getDoc, onSnapshot } from "firebase/firestore";
 
 interface Props {
     myUserInfo: UserInfo
     showChatBtn: boolean
 }
 
-interface Conversation {
-    name: string;
-    image: string;
-    lastMessage: string;
-    timestamp: Timestamp;
-    friend: string;
-}
-
-async function getFriendList(myUserInfo: UserInfo): Promise<Friend[]> {
-    const userDoc = doc(db, "users", myUserInfo.id)
-    const snapshot = await getDoc(userDoc)
-    console.log(snapshot.data()?.friend_list?.reverse());
-    return snapshot.data()?.friend_list?.reverse() || []
+interface recentChat {
+    id: string;
+    lastMessage: {
+        content: string;
+        read: boolean;
+        senderUsername: string;
+        timestamp: Timestamp;
+    }
+    sender: {
+        username: string;
+        image: string;
+    }
 }
 
 const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn }) => {
-    const [conversations, setConversations] = useState<Conversation[]>([])
+    const [recentChats, setRecentChats] = useState<recentChat[]>([])
 
     // fetch conversations data
     useEffect(() => {
-        async function getConversations() {
-            const myFriendList: Friend[] = await getFriendList(myUserInfo);
-            const conversationRef = collection(db, "conversation");
+        async function getInbox() {
+            const inboxRef = doc(db, "inbox", "binh");
 
-            myFriendList.forEach(async (friend: Friend) => {
-                const conversationQuery = query(
-                    conversationRef,
-                    where('username1', 'in', [myUserInfo.username, friend.username]),
-                    where('username2', 'in', [myUserInfo.username, friend.username])
-                )
-                const querySnapshot = await getDocs(conversationQuery);
-                if (querySnapshot.empty) {
-                    return;
+            const unsubscribe = onSnapshot(inboxRef, (docSnap) => {
+                if (docSnap.exists() && docSnap.data()?.hasOwnProperty("recentChats")) {
+                    const fetchedChat: recentChat[] = docSnap?.data()?.recentChats.map((obj: recentChat) => ({
+                        id: obj.id,
+                        lastMessage: obj.lastMessage,
+                        sender: obj.sender
+                    }));
+
+                    setRecentChats(fetchedChat);
                 }
+            })
 
-                const messageRef = (querySnapshot).docs[0].ref;
-
-                const unsubscribe = onSnapshot(messageRef, (docSnap) => {
-                    if (docSnap.exists() && docSnap.data()?.hasOwnProperty("messages")) {
-                        const lastMessage = docSnap.data()?.messages?.slice(-1)[0];
-                        console.log(lastMessage);
-                        const conversation: Conversation = {
-                            name: lastMessage.senderUsername === myUserInfo?.username ? "You" : lastMessage.senderUsername,
-                            image: friend.image,
-                            lastMessage: lastMessage.content,
-                            timestamp: lastMessage.timestamp,
-                            friend: friend.username
-                        }
-                        // Check if the conversation already exists in the array
-                        const conversationIndex = conversations.findIndex(c => c.friend === friend.username);
-                        if (conversationIndex === -1) {
-                            // If the conversation doesn't exist, add it to the array
-                            setConversations(prevConversations => [...prevConversations, conversation]);
-                        } else {
-                            // If the conversation already exists, update it with the new message
-                            const updatedConversations = [...conversations];
-                            updatedConversations[conversationIndex] = conversation;
-                            setConversations(updatedConversations);
-                        }
-                    }
-                })
-
-                return () => {
-                    unsubscribe && unsubscribe()
-                };
-            });
+            return () => {
+                unsubscribe && unsubscribe()
+            };
         }
-        getConversations();
+        getInbox();
     }, [])
 
     return (
@@ -94,15 +64,15 @@ const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn }) => {
                     </div>
                     <div className="h-full bg-[#212733] rounded-md pb-2">
                         <div className="h-full overflow-y-auto bg-[#212733] rounded-md">
-                            {conversations.map((conversation, index) => (
+                            {recentChats.map((recentChat, index) => (
                                 <ChatNoti
-                                    key={index}
+                                    key={recentChat.id}
                                     myUserInfo={myUserInfo}
-                                    name={conversation.name}
-                                    image={conversation.image}
-                                    lastMessage={conversation.lastMessage}
-                                    timestamp={conversation.timestamp}
-                                    friend={conversation.friend}
+                                    name={recentChat.lastMessage.senderUsername}
+                                    image={recentChat.sender.image}
+                                    lastMessage={recentChat.lastMessage.content}
+                                    timestamp={recentChat.lastMessage.timestamp}
+                                    friend={recentChat.sender.username}
                                 />
                             ))}
                         </div>
