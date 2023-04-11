@@ -67,6 +67,7 @@ const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn }) => {
                                 <ChatNoti
                                     key={recentChat.id}
                                     myUserInfo={myUserInfo}
+                                    conversationId={recentChat.id}
                                     name={recentChat.lastMessage.senderUsername}
                                     image={recentChat.sender.image}
                                     lastMessage={recentChat.lastMessage.content}
