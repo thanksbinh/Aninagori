@@ -41,7 +41,6 @@ export default async function Home() {
             <PostForm
               myAnimeList={myAnimeList?.animeList}
             />
-
             <Posts
               myFriendList={myFriendList}
               myAnimeList={myAnimeList?.animeList}

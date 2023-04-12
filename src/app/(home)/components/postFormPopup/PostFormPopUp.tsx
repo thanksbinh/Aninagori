@@ -2,7 +2,7 @@
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import classNames from "classnames/bind"
-import { FC, useContext, useEffect, useRef, useState } from "react"
+import { useCallback, forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from "react"
 import styles from "../postForm/PostForm.module.scss"
 
 import { handleDeleteMedia, handleMediaChange, handlePaste, handleSubmitForm } from "@/app/(home)/functions/postingUtils"
@@ -20,13 +20,9 @@ import PostFormMediaDisplay from "./PostFormMediaDisplay"
 
 const cx = classNames.bind(styles)
 
-type PostFormProps = {
-  setOpen?: any
-}
-
-const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
+const PostFormPopUp = (props: any, ref: any) => {
   const { myUserInfo } = useContext(HomeContext)
-
+  const { setOpen, title } = props
   const [mediaUrl, setMediaUrl] = useState<any>([])
   const [mediaType, setMediaType] = useState<string>("")
   const [showScore, setShowScore] = useState<boolean>(false)
@@ -41,12 +37,33 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
   const animeTagRef = useRef()
   const animeScoreRef = useRef()
   const postAdditionalRef = useRef()
+  const inputRef = useRef()
 
   const router = useRouter();
+
+  const handleDeleteMediaOnce = useCallback((e: any) => { handleDeleteMedia(e, mediaUrl, setMediaUrl) }, [])
+  const handleMediaChangeOnce = useCallback((e: any) => { handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl) }, [])
 
   useEffect(() => {
     setIsUpdatePost(!(mediaUrl.length || textInput || showScore))
   }, [mediaUrl, textInput, showScore])
+
+  useImperativeHandle(ref, () => ({
+    setOpen: (open: boolean) => {
+      setOpen(open);
+    },
+    setPostFormData: (postData: any) => {
+      setTextInput(postData.content)
+      if (!!postData?.post_anime_data?.tag) {
+        (animeTagRef?.current as any).setAnimeTag(postData?.post_anime_data?.tag)
+      }
+      if (!!postData?.tag) {
+        (animeTagRef?.current as any).setAnimeTag(postData?.tag)
+      }
+      setBasicPostingInfo(false)
+      return
+    }
+  }))
 
   function clearForm() {
     (animeTagRef?.current as any).resetAnimeTag();
@@ -73,7 +90,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
   }
 
   return (
-    <div onClick={() => { !loadPosting && setOpen(false) }} className={cx("modal")}>
+    <div ref={ref} onClick={() => { !loadPosting && setOpen(false) }} className={cx("modal")}>
       <div className={cx("modal_overlay")}></div>
       <form
         onClick={(e) => e.stopPropagation()}
@@ -101,7 +118,8 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
 
           <input
             onChange={(e) => setTextInput(e.target.value)}
-            value={textInput}
+            ref={inputRef as any}
+            type="text"
             onPaste={(e: any) => {
               handlePaste(e, setMediaUrl, setMediaType, mediaUrl)
             }}
@@ -111,8 +129,8 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
           <PostFormMediaDisplay
             mediaUrl={mediaUrl}
             mediaType={mediaType}
-            handleDeleteMedia={(e: any) => { handleDeleteMedia(e, mediaUrl, setMediaUrl) }}
-            handleMediaChange={(e: any) => { handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl) }}
+            handleDeleteMedia={handleDeleteMediaOnce}
+            handleMediaChange={handleMediaChange}
           />
           <AnimeTag ref={animeTagRef} />
 
@@ -126,6 +144,7 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
           </div>
 
           <PostFormActions
+            title={title}
             setBasicPostingInfo={setBasicPostingInfo}
             loadPosting={loadPosting}
             handleMediaChange={(e: any) => {
@@ -139,4 +158,4 @@ const PostFormPopUp: FC<PostFormProps> = ({ setOpen }) => {
   )
 }
 
-export default PostFormPopUp
+export default forwardRef(PostFormPopUp)

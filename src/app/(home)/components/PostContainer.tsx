@@ -3,12 +3,13 @@
 import PostContent from "@/app/post/[...post_id]/components/post/PostContent"
 import { db } from "@/firebase/firebase-app"
 import { collection, getCountFromServer } from "firebase/firestore"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import ContextProvider from "../../post/[...post_id]/PostContext"
 import PostAction from "../../post/[...post_id]/components/post/PostAction"
 import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "../functions/recommendPost"
 import { HomeContext } from "../HomeContext"
+import PostFormPopUp from "./postFormPopup/PostFormPopUp"
 
 async function fetchCommentCount(postId: string) {
   const commentsRef = collection(db, "posts", postId, "comments")
@@ -24,8 +25,9 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
   const [friendPostIds, setFriendPostIds] = useState<string[]>(["0"])
   const [myFriendUsernameList, setMyFriendUsernameList] = useState<string[]>([])
   const [hasMoreFriendPosts, setHasMoreFriendPosts] = useState(myFriendList?.length > 0)
-
   const { myUserInfo } = useContext(HomeContext)
+  const [openEditForm, setOpenEditForm] = useState(false);
+  const editPostRef = useRef();
 
   useEffect(() => {
     const logo = document.getElementById("logo")
@@ -112,58 +114,65 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
   }
 
   return (
-    <InfiniteScroll
-      dataLength={posts.length}
-      next={fetchPosts}
-      hasMore={hasMore}
-      loader={
-        <div key={0} className="animate-pulse mb-4">
-          <PostContent />
-          <PostAction />
-        </div>
-      }
-      refreshFunction={() => console.log("refresh")}
-      pullDownToRefresh={true}
-      className="flex flex-col"
-    >
-      {posts.map((post: any) => {
-        return (
-          <ContextProvider
-            key={post.id}
-            myUserInfo={myUserInfo}
-            content={post.content}
-            authorName={post.authorName}
-            animeID={post.post_anime_data?.anime_id}
-            postId={post.id}
-          >
-            <PostContent
-              authorName={post.authorName}
-              avatarUrl={post.avatarUrl}
-              timestamp={post.timestamp}
-              content={post.content}
-              imageUrl={post.imageUrl}
-              videoUrl={post.videoUrl}
-              animeID={post?.post_anime_data?.anime_id}
-              animeName={post?.post_anime_data?.anime_name}
-              watchingProgress={post?.post_anime_data?.watching_progress}
-              episodesSeen={post?.post_anime_data?.episodes_seen}
-              episodesTotal={post?.post_anime_data?.total_episodes}
-              score={post?.post_anime_data?.score}
-              tag={!!post?.post_anime_data?.tag ? post?.post_anime_data?.tag : post?.tag}
-              postId={post.id}
-            />
-            <PostAction
-              reactions={post.reactions}
+    <>
+      <div className={`flex ${openEditForm ? "visible" : "invisible"}`}>
+        <PostFormPopUp title='Save' setOpen={setOpenEditForm} ref={editPostRef} />
+      </div>
+      <InfiniteScroll
+        dataLength={posts.length}
+        next={fetchPosts}
+        hasMore={hasMore}
+        loader={
+          <div key={0} className="animate-pulse mb-4">
+            <PostContent />
+            <PostAction />
+          </div>
+        }
+        refreshFunction={() => console.log("refresh")}
+        pullDownToRefresh={true}
+        className="flex flex-col"
+      >
+        {posts.map((post: any) => {
+          return (
+            <ContextProvider
+              key={post.id}
               myUserInfo={myUserInfo}
-              malAuthCode={myUserInfo?.mal_connect?.accessToken}
-              animeID={post?.post_anime_data?.anime_id}
-              commentCountPromise={fetchCommentCount(post.id)}
-              comments={post.lastComment ? [post.lastComment] : []}
-            />
-            <div className="mb-4"></div>
-          </ContextProvider>
-        )
-      })}
-    </InfiniteScroll>
+              content={post.content}
+              authorName={post.authorName}
+              animeID={post.post_anime_data?.anime_id}
+              postId={post.id}
+              postData={post}
+              editFormRef={editPostRef}
+            >
+              <PostContent
+                authorName={post.authorName}
+                avatarUrl={post.avatarUrl}
+                timestamp={post.timestamp}
+                content={post.content}
+                imageUrl={post.imageUrl}
+                videoUrl={post.videoUrl}
+                animeID={post?.post_anime_data?.anime_id}
+                animeName={post?.post_anime_data?.anime_name}
+                watchingProgress={post?.post_anime_data?.watching_progress}
+                episodesSeen={post?.post_anime_data?.episodes_seen}
+                episodesTotal={post?.post_anime_data?.total_episodes}
+                score={post?.post_anime_data?.score}
+                tag={!!post?.post_anime_data?.tag ? post?.post_anime_data?.tag : post?.tag}
+                postId={post.id}
+              />
+              <PostAction
+                reactions={post.reactions}
+                myUserInfo={myUserInfo}
+                malAuthCode={myUserInfo?.mal_connect?.accessToken}
+                animeID={post?.post_anime_data?.anime_id}
+                commentCountPromise={fetchCommentCount(post.id)}
+                comments={post.lastComment ? [post.lastComment] : []}
+              />
+              <div className="mb-4"></div>
+            </ContextProvider>
+          )
+        })}
+      </InfiniteScroll>
+    </>
   )
 }

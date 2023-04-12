@@ -2,6 +2,7 @@ import { faCircleXmark, faFileCirclePlus } from "@fortawesome/free-solid-svg-ico
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames/bind"
 import styles from "../postForm/PostForm.module.scss"
+import { memo } from "react";
 
 const cx = classNames.bind(styles)
 
@@ -79,4 +80,4 @@ const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
         </div>);
 }
 
-export default PostFormMediaDisplay;
+export default memo(PostFormMediaDisplay);

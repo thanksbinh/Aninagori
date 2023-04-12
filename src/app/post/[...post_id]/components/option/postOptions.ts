@@ -31,6 +31,11 @@ export async function banUser(authorName?: string) {
   updateDoc(userRef, { is_banned: true })
 }
 
+export function openEditPopUp(postId: string, authorName: string, postData: any, editFormRef: any) {
+  editFormRef.current.setOpen(true)
+  editFormRef.current.setPostFormData(postData)
+}
+
 async function deleteMediaFiles(imageUrl?: string, videoUrl?: string) {
   try {
     if (imageUrl) {
