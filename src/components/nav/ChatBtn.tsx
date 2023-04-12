@@ -8,7 +8,7 @@ import ChatNotiContainer from "../chat/ChatNotiContainer";
 const ChatBtn = ({ myUserInfo }: { myUserInfo: UserInfo }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [showChatBtn, setShowChatBtn] = useState(false);
-  const [unreadMessage, setUnreadMessage] = useState(0);
+  const [unreadChats, setUnreadChats] = useState(0);
 
   // click outside to close popup
   useEffect(() => {
@@ -32,14 +32,14 @@ const ChatBtn = ({ myUserInfo }: { myUserInfo: UserInfo }) => {
     <div ref={ref} className="relative inline-block h-full">
       <button title="notification" onClick={toggleChatBtn} className="p-3 text-[#fff] bg-[#798597] hover:bg-[#94B0DD] rounded-full font-medium focus:outline-none">
         <BsChatDotsFill className="w-4 h-4" />
-        {unreadMessage > 0 && (
+        {unreadChats > 0 && (
           <span className="absolute -top-1 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
-            {unreadMessage}
+            {unreadChats}
           </span>
         )}
       </button>
       <div className={showChatBtn ? "" : "hidden"}>
-        <ChatNotiContainer myUserInfo={myUserInfo} showChatBtn={showChatBtn} />
+        <ChatNotiContainer myUserInfo={myUserInfo} showChatBtn={showChatBtn} setUnreadChats={setUnreadChats} />
       </div>
     </div>
   );

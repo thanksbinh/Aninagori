@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
 import { UserInfo } from "../../global/UserInfo.types";
 import ChatNoti from "./ChatNoti";
@@ -10,6 +10,7 @@ import { Timestamp, doc, collection, onSnapshot } from "firebase/firestore";
 interface Props {
     myUserInfo: UserInfo
     showChatBtn: boolean
+    setUnreadChats: Dispatch<SetStateAction<number>>
 }
 
 interface recentChat {
@@ -26,8 +27,8 @@ interface recentChat {
     }
 }
 
-const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn }) => {
-    const [recentChats, setRecentChats] = useState<recentChat[]>([])
+const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn, setUnreadChats }) => {
+    const [recentChats, setRecentChats] = useState<recentChat[]>([]);
 
     // fetch conversations data
     useEffect(() => {
@@ -42,7 +43,11 @@ const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn }) => {
                         sender: obj.sender
                     }));
 
+                    const unreadChats = docSnap?.data()?.recentChats.filter((obj: any) => obj.lastMessage.read === false);
+                    console.log(unreadChats.length);
+
                     setRecentChats(fetchedChat);
+                    setUnreadChats(unreadChats.length);
                 }
             })
 
