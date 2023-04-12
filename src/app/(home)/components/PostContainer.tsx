@@ -116,7 +116,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
   return (
     <>
       <div className={`flex ${openEditForm ? "visible" : "invisible"}`}>
-        <PostFormPopUp title='Save' setOpen={setOpenEditForm} ref={editPostRef} />
+        <PostFormPopUp isEditPost={true} title='Save' setOpen={setOpenEditForm} ref={editPostRef} />
       </div>
       <InfiniteScroll
         dataLength={posts.length}

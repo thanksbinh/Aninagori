@@ -11,13 +11,15 @@ interface PostFormMediaDisplayProps {
     mediaType: string;
     handleDeleteMedia: any;
     handleMediaChange: any;
+    isEditPost?: any
 }
 
 const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
     mediaUrl,
     mediaType,
     handleDeleteMedia,
-    handleMediaChange
+    handleMediaChange,
+    isEditPost
 }) => {
     if (mediaUrl.length === 0) return (<></>)
     return (
@@ -32,9 +34,10 @@ const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
             {mediaUrl.length > 0 ? (
                 mediaType === "video" ? (
                     <div className={cx("media-wrapper") + " w-2/3 h-2/5 flex items-center relative"}>
-                        <video src={URL.createObjectURL(mediaUrl[0])} className="w-full object-contain rounded-xl" controls />
+                        <video src={isEditPost ? mediaUrl[0] : URL.createObjectURL(mediaUrl[0])} className="w-full object-contain rounded-xl" controls />
                         <FontAwesomeIcon
                             onClick={() => {
+                                //TODO: handle delete media in firebase if post is edit
                                 handleDeleteMedia(0)
                             }}
                             icon={faCircleXmark as any}
@@ -53,10 +56,11 @@ const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
                                 <div
                                     key={index}
                                     className={cx("image-wrapper")}
-                                    style={{ backgroundImage: `url(${URL.createObjectURL(media)})` }}
+                                    style={{ backgroundImage: `url(${isEditPost ? media : URL.createObjectURL(media)})` }}
                                 >
                                     <FontAwesomeIcon
                                         onClick={() => {
+                                            //TODO: handle delete media in firebase if post is edit
                                             handleDeleteMedia(index)
                                         }}
                                         icon={faCircleXmark as any}

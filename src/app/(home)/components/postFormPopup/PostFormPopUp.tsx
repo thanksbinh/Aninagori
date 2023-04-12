@@ -22,7 +22,7 @@ const cx = classNames.bind(styles)
 
 const PostFormPopUp = (props: any, ref: any) => {
   const { myUserInfo } = useContext(HomeContext)
-  const { setOpen, title } = props
+  const { setOpen, title, isEditPost } = props
   const [mediaUrl, setMediaUrl] = useState<any>([])
   const [mediaType, setMediaType] = useState<string>("")
   const [showScore, setShowScore] = useState<boolean>(false)
@@ -41,8 +41,8 @@ const PostFormPopUp = (props: any, ref: any) => {
 
   const router = useRouter();
 
-  const handleDeleteMediaOnce = useCallback((e: any) => { handleDeleteMedia(e, mediaUrl, setMediaUrl) }, [])
-  const handleMediaChangeOnce = useCallback((e: any) => { handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl) }, [])
+  const handleDeleteMediaOnce = useCallback((e: any) => { handleDeleteMedia(e, mediaUrl, setMediaUrl) }, [mediaUrl])
+  const handleMediaChangeOnce = useCallback((e: any) => { handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl) }, [mediaUrl])
 
   useEffect(() => {
     setIsUpdatePost(!(mediaUrl.length || textInput || showScore))
@@ -54,13 +54,24 @@ const PostFormPopUp = (props: any, ref: any) => {
     },
     setPostFormData: (postData: any) => {
       setTextInput(postData.content)
+      setBasicPostingInfo(true)
       if (!!postData?.post_anime_data?.tag) {
         (animeTagRef?.current as any).setAnimeTag(postData?.post_anime_data?.tag)
       }
       if (!!postData?.tag) {
         (animeTagRef?.current as any).setAnimeTag(postData?.tag)
       }
-      setBasicPostingInfo(false)
+      if (!!postData?.imageUrl && typeof postData.imageUrl === "object") {
+        setMediaUrl(postData.imageUrl)
+        setMediaType("image")
+      } else {
+        setMediaUrl([postData.imageUrl])
+        setMediaType("image")
+      }
+      if (!!postData?.videUrl) {
+        setMediaUrl([postData.videUrl])
+        setMediaType("video")
+      }
       return
     }
   }))
@@ -130,7 +141,8 @@ const PostFormPopUp = (props: any, ref: any) => {
             mediaUrl={mediaUrl}
             mediaType={mediaType}
             handleDeleteMedia={handleDeleteMediaOnce}
-            handleMediaChange={handleMediaChange}
+            handleMediaChange={handleMediaChangeOnce}
+            isEditPost={true}
           />
           <AnimeTag ref={animeTagRef} />
 

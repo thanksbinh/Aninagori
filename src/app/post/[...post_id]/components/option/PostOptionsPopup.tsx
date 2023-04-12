@@ -45,7 +45,7 @@ const PostOptions = () => {
     await option.action(postId, authorName, postData, editFormRef)
     setIsOpen(false)
     // TODO: if option is edit => not refresh
-    // router.refresh()
+    router.refresh()
   }
 
   return (
