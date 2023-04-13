@@ -25,10 +25,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
   const [friendPostIds, setFriendPostIds] = useState<string[]>(["0"])
   const [myFriendUsernameList, setMyFriendUsernameList] = useState<string[]>([])
   const [hasMoreFriendPosts, setHasMoreFriendPosts] = useState(myFriendList?.length > 0)
-  const [editPostID, setEditPostID] = useState("")
   const { myUserInfo } = useContext(HomeContext)
-  const [openEditForm, setOpenEditForm] = useState(false);
-  const editPostRef = useRef();
 
   useEffect(() => {
     const logo = document.getElementById("logo")
@@ -130,9 +127,6 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
         pullDownToRefresh={true}
         className="flex flex-col"
       >
-        <div className={`flex ${openEditForm ? "visible" : "invisible"}`}>
-          <PostFormPopUp editPostID={editPostID} isEditPost={true} title='Save' setOpen={setOpenEditForm} ref={editPostRef} />
-        </div>
         {posts.map((post: any) => {
           return (
             <ContextProvider
@@ -143,8 +137,6 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
               animeID={post.post_anime_data?.anime_id}
               postId={post.id}
               postData={post}
-              editFormRef={editPostRef}
-              setEditPostID={setEditPostID}
             >
               <PostContent
                 authorName={post.authorName}

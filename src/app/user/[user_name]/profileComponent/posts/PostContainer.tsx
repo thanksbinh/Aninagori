@@ -44,8 +44,6 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
   const [posts, setPosts] = useState<any>([])
   const [hasMore, setHasMore] = useState(true)
   const [lastKey, setLastKey] = useState<any>({})
-  const [editPostID, setEditPostID] = useState("")
-  const [openEditForm, setOpenEditForm] = useState(false)
 
   const inputRef = useRef()
 
@@ -90,12 +88,7 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
           animeID={post.post_anime_data?.anime_id}
           postId={post.id}
           postData={post}
-          setEditPostID={setEditPostID}
-          editFormRef={inputRef}
         >
-          <div className={`flex ${openEditForm ? "visible" : "invisible"}`}>
-            <PostFormPopUp editPostID={editPostID} isEditPost={true} title='Save' setOpen={setOpenEditForm} ref={inputRef} />
-          </div>
           <div className="mb-4">
             <PostContent
               authorName={post.authorName}

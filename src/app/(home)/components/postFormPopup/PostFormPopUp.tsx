@@ -22,7 +22,8 @@ const cx = classNames.bind(styles)
 
 const PostFormPopUp = (props: any, ref: any) => {
   const { myUserInfo } = useContext(HomeContext)
-  const { setOpen, title, isEditPost, editPostID } = props
+  const { setOpen, title, isEditPost, editPostID, postData } = props
+
   const [mediaUrl, setMediaUrl] = useState<any>([])
   const [mediaType, setMediaType] = useState<string>("")
   const [showScore, setShowScore] = useState<boolean>(false)
@@ -45,14 +46,7 @@ const PostFormPopUp = (props: any, ref: any) => {
   const handleMediaChangeOnce = useCallback((e: any) => { handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl, mediaType) }, [mediaUrl])
 
   useEffect(() => {
-    setIsUpdatePost(!(mediaUrl.length || textInput || showScore))
-  }, [mediaUrl, textInput, showScore])
-
-  useImperativeHandle(ref, () => ({
-    setOpen: (open: boolean) => {
-      setOpen(open);
-    },
-    setPostEditFormData: async (postData: any) => {
+    const getInfo = async () => {
       await showEditInformation(
         postData,
         setTextInput,
@@ -67,6 +61,25 @@ const PostFormPopUp = (props: any, ref: any) => {
         postAdditionalRef,
         setHaveUploadedImage
       )
+    }
+    if (isEditPost) {
+      console.log('hereee');
+      getInfo()
+    }
+  }, [])
+
+  useEffect(() => {
+    setIsUpdatePost(!(mediaUrl.length || textInput || showScore))
+  }, [mediaUrl, textInput, showScore])
+
+
+
+  useImperativeHandle(ref, () => ({
+    setOpen: (open: boolean) => {
+      setOpen(open);
+    },
+    setPostEditFormData: async (postData: any) => {
+
     }
   }))
 
@@ -169,4 +182,4 @@ const PostFormPopUp = (props: any, ref: any) => {
   )
 }
 
-export default memo(forwardRef(PostFormPopUp))
+export default forwardRef(PostFormPopUp)

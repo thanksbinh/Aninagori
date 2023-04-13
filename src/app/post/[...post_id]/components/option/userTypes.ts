@@ -1,4 +1,4 @@
-import { banUser, moveToTrash, openEditPopUp } from "./postOptions"
+import { banUser, moveToTrash } from "./postOptions"
 
 const guestOptions = [
   {
@@ -22,9 +22,8 @@ const authorOptions = [
   },
   {
     name: "Edit post",
-    action: (postId: string, authorName: any, postData: any, editFormRef: any, setEditPostID: any) => {
-      setEditPostID(postId)
-      openEditPopUp(postId, authorName, postData, editFormRef)
+    action: (postId: string, authorName: any, setOpenEditForm: any) => {
+      setOpenEditForm(true)
     },
   },
   {

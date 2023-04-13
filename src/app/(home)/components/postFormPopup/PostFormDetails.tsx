@@ -32,7 +32,7 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
     try {
       thisAnimeStatus = (animeStatusRef?.current as any)?.getAnimeStatus()
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
 
     // This doesn't work, because useState is async, fix this when you change timeState to normal
