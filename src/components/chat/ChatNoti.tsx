@@ -1,9 +1,8 @@
-'use client'
 
 import { formatDuration } from "@/components/utils/format";
 import { db } from "@/firebase/firebase-app";
 import { arrayRemove, arrayUnion, collection, doc, getDoc, Timestamp, updateDoc } from "firebase/firestore";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { UserInfo } from "../../global/UserInfo.types";
 
 interface Props {
@@ -27,8 +26,8 @@ const ChatNoti: React.FC<Props> = (
     { myUserInfo, conversationId, name, image, lastMessage,
         timestamp, friend, read, openChat, setCurrentChat, toggleChatBtn }
 ) => {
-    const findOldLastMessage = async () => {
-        const inboxRef = doc(collection(db, 'inbox'), myUserInfo.username);
+    const findOldLastMessage = async (username: string) => {
+        const inboxRef = doc(collection(db, 'inbox'), username);
         const inboxDoc = await getDoc(inboxRef);
 
         if (inboxDoc.exists() && inboxDoc.data()?.hasOwnProperty("recentChats")) {
@@ -38,9 +37,9 @@ const ChatNoti: React.FC<Props> = (
         else return null;
     }
 
-    const setLastMessage = async (lastMessage: any) => {
-        const inboxRef = doc(collection(db, 'inbox'), myUserInfo.username);
-        const oldLastMessage = await findOldLastMessage();
+    const setLastMessage = async (lastMessage: any, username: string) => {
+        const inboxRef = doc(collection(db, 'inbox'), username);
+        const oldLastMessage = await findOldLastMessage(username);
         if (oldLastMessage) {
             await updateDoc(inboxRef, {
                 recentChats: arrayRemove(oldLastMessage)
@@ -66,7 +65,25 @@ const ChatNoti: React.FC<Props> = (
                     username: friend,
                     image: image
                 }
-            }
+            },
+            myUserInfo.username
+        );
+
+        await setLastMessage(
+            {
+                id: conversationId,
+                lastMessage: {
+                    content: lastMessage,
+                    read: true,
+                    senderUsername: myUserInfo.username,
+                    timestamp: timestamp
+                },
+                sender: {
+                    username: myUserInfo.username,
+                    image: image
+                }
+            },
+            friend
         );
     }
 

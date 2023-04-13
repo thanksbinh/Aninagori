@@ -53,7 +53,7 @@ const MessageForm: FC<Props> = ({
         id: conversationId,
         lastMessage: {
           content: myMessage,
-          read: false,
+          read: true,
           senderUsername: myUserInfo.username,
           timestamp: new Date()
         },
@@ -61,7 +61,25 @@ const MessageForm: FC<Props> = ({
           username: friend,
           image: image
         }
-      }
+      },
+      myUserInfo.username
+    );
+
+    await setLastMessage(
+      {
+        id: conversationId,
+        lastMessage: {
+          content: myMessage,
+          read: false,
+          senderUsername: myUserInfo.username,
+          timestamp: new Date()
+        },
+        sender: {
+          username: myUserInfo.username,
+          image: image
+        }
+      },
+      friend
     );
 
     setMyMessage("");
@@ -70,8 +88,8 @@ const MessageForm: FC<Props> = ({
   }
 
   // set last message of conversation
-  const findOldLastMessage = async () => {
-    const inboxRef = doc(collection(db, 'inbox'), myUserInfo.username);
+  const findOldLastMessage = async (username: string) => {
+    const inboxRef = doc(collection(db, 'inbox'), username);
     const inboxDoc = await getDoc(inboxRef);
 
     if (inboxDoc.exists() && inboxDoc.data()?.hasOwnProperty("recentChats")) {
@@ -81,9 +99,9 @@ const MessageForm: FC<Props> = ({
     else return null;
   }
 
-  const setLastMessage = async (lastMessage: any) => {
-    const inboxRef = doc(collection(db, 'inbox'), myUserInfo.username);
-    const oldLastMessage = await findOldLastMessage();
+  const setLastMessage = async (lastMessage: any, username: string) => {
+    const inboxRef = doc(collection(db, 'inbox'), username);
+    const oldLastMessage = await findOldLastMessage(username);
     if (oldLastMessage) {
       await updateDoc(inboxRef, {
         recentChats: arrayRemove(oldLastMessage)

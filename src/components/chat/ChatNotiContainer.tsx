@@ -52,7 +52,7 @@ const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn, toggleCha
                     const unreadChats = docSnap?.data()?.recentChats.filter((obj: any) => obj.lastMessage.read === false);
                     console.log(unreadChats.length);
 
-                    setRecentChats(fetchedChat);
+                    setRecentChats(fetchedChat.reverse());
                     setUnreadChats(unreadChats.length);
                 }
             })
@@ -79,7 +79,7 @@ const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn, toggleCha
                                     key={recentChat.id}
                                     myUserInfo={myUserInfo}
                                     conversationId={recentChat.id}
-                                    name={recentChat.lastMessage.senderUsername}
+                                    name={recentChat.lastMessage.senderUsername === myUserInfo.username ? "You" : recentChat.lastMessage.senderUsername}
                                     image={recentChat.sender.image}
                                     lastMessage={recentChat.lastMessage.content}
                                     timestamp={recentChat.lastMessage.timestamp}
