@@ -392,10 +392,10 @@ export const showEditInformation = async (
     })
     ;(postAdditionalRef?.current as any).setData(animeData)
   }
-  ;(animeStatusRef?.current as any).setAnimeStatus(
-    convertPostFormWatchStatus(postData?.post_anime_data?.watching_progress),
-  )
   ;(animeEpisodesRef?.current as any).setAnimeEpisodes(postData?.post_anime_data?.episodes_seen)
+  const status = convertPostFormWatchStatus(postData?.post_anime_data?.watching_progress)
+  console.log(animeStatusRef?.current)
+  ;(animeStatusRef?.current as any).querySelector("p").innerHTML = status
   ;(animeEpisodesRef?.current as any).setAnimeTotal(postData?.post_anime_data?.total_episodes)
   ;(animeScoreRef?.current as any).setAnimeScore(postData?.post_anime_data?.score)
   // set PostTag data

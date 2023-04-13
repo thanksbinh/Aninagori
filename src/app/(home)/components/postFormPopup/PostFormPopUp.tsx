@@ -45,26 +45,26 @@ const PostFormPopUp = (props: any, ref: any) => {
   const handleDeleteMediaOnce = useCallback((e: any) => { handleDeleteMedia(e, mediaUrl, setMediaUrl) }, [mediaUrl])
   const handleMediaChangeOnce = useCallback((e: any) => { handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl, mediaType) }, [mediaUrl])
 
+  const getInfo = async () => {
+    await showEditInformation(
+      postData,
+      setTextInput,
+      setBasicPostingInfo,
+      animeTagRef,
+      setMediaUrl,
+      setMediaType,
+      animeStatusRef,
+      animeEpisodesRef,
+      animeScoreRef,
+      animeSearchRef,
+      postAdditionalRef,
+      setHaveUploadedImage,
+    )
+  }
+
   useEffect(() => {
-    const getInfo = async () => {
-      await showEditInformation(
-        postData,
-        setTextInput,
-        setBasicPostingInfo,
-        animeTagRef,
-        setMediaUrl,
-        setMediaType,
-        animeStatusRef,
-        animeEpisodesRef,
-        animeScoreRef,
-        animeSearchRef,
-        postAdditionalRef,
-        setHaveUploadedImage
-      )
-    }
     if (isEditPost) {
-      console.log('hereee');
-      getInfo()
+      getInfo().catch((err) => console.log(err));
     }
   }, [])
 
@@ -78,9 +78,6 @@ const PostFormPopUp = (props: any, ref: any) => {
     setOpen: (open: boolean) => {
       setOpen(open);
     },
-    setPostEditFormData: async (postData: any) => {
-
-    }
   }))
 
   function clearForm() {
@@ -102,9 +99,12 @@ const PostFormPopUp = (props: any, ref: any) => {
       mediaType, myUserInfo, postAdditionalRef, isEditPost,
       editPostID, haveUploadedImage
     )
-    router.refresh()
     setLoadPosting(false)
     clearForm()
+    router.refresh()
+    if (isEditPost) {
+      router.push('/')
+    }
   }
 
   return (

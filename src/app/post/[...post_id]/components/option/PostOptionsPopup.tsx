@@ -50,16 +50,15 @@ const PostOptions = ({ editPostID }: { editPostID: any, }) => {
     await option.action(postId, authorName, setOpenEditForm)
 
     // TODO: if option is edit => not refresh
-    if (option.name === "Edit post") {
-      return
+    if (option.name !== "Edit post") {
+      router.refresh()
     }
-    router.refresh()
 
   }
 
   return (
     <>
-      {openEditForm && <PostFormPopUp isEditPost={true} postData={postData} ref={editPostRef} setOpen={setOpenEditForm} editPostID={editPostID} />}
+      {openEditForm && <PostFormPopUp title='Save' isEditPost={true} postData={postData} ref={editPostRef} setOpen={setOpenEditForm} editPostID={editPostID} />}
       <Menu as="div" ref={ref} className="relative inline-block text-left z-30">
         <Menu.Button onClick={() => setIsOpen(!isOpen)}>
           <BsThreeDots className="h-5 w-5" aria-hidden="true" />
