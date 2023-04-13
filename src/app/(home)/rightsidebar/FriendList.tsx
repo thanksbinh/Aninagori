@@ -1,7 +1,22 @@
-import FriendComponent, { Friend } from '@/app/(home)/rightsidebar/Friend';
-import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
+'use client'
 
-export default async function FriendList({ myFriendList }: { myFriendList: Friend[] | undefined }) {
+import FriendComponent, { Friend } from '@/app/(home)/rightsidebar/Friend';
+import ChatPopup from '@/components/chat/ChatPopup';
+import { UserInfo } from '@/global/UserInfo.types';
+import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
+import { useState } from 'react';
+
+const FriendList = ({ myFriendList, myUserInfo }: { myFriendList: Friend[] | undefined, myUserInfo: UserInfo }) => {
+  const [showChat, setShowChat] = useState(false)
+  const [currentChat, setCurrentChat] = useState({
+    username: "",
+    image: ""
+  })
+
+  const openChat = () => {
+    setShowChat(true);
+  };
+
   return (
     <div className="h-full relative">
       <div className="flex justify-between items-center pr-2 mb-4">
@@ -13,10 +28,15 @@ export default async function FriendList({ myFriendList }: { myFriendList: Frien
       <div className="h-full overflow-y-auto flex flex-col flex-wrap -mx-2">
         {myFriendList?.map((friend) => (
           <div key={friend.username}>
-            <FriendComponent friendInfo={friend} />
+            <FriendComponent friendInfo={friend} openChat={openChat} setCurrentChat={setCurrentChat} />
           </div>
         ))}
       </div>
+      {showChat && (
+        <ChatPopup myUserInfo={myUserInfo} showChat={showChat} setShowChat={setShowChat} recipient={currentChat.username} image={currentChat.image} />
+      )}
     </div>
   )
 }
+
+export default FriendList;

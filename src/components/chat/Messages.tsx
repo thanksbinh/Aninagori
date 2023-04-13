@@ -52,6 +52,8 @@ const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, fri
           }
 
           setMessages(fetchedMessages);
+        } else {
+          setMessages([]);
         }
       })
 
@@ -60,7 +62,7 @@ const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, fri
       };
     }
     fetchData();
-  }, []);
+  }, [friend]);
 
   return (
     <div className="flex flex-1 flex-col">

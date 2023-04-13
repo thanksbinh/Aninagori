@@ -56,7 +56,7 @@ export default async function Home() {
         <div className="lg:block lg:flex-1 flex-shrink max-w-[320px]">
           <div className="hidden lg:block w-[320px] pt-16 px-2 h-screen fixed right-0 z-20 bg-ani-black">
             {/* @ts-expect-error Server Component */}
-            <FriendList myFriendList={myFriendList} />
+            <FriendList myFriendList={myFriendList} myUserInfo={myUserInfo} />
           </div>
         </div>
       </ContextProvider>

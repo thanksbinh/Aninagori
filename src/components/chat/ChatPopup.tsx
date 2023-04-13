@@ -7,18 +7,18 @@ import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react
 import { MdClose } from "@react-icons/all-files/md/MdClose";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
-import { HomeContext } from "@/app/(home)/HomeContext";
+import { UserInfo } from "@/global/UserInfo.types";
 
 interface ChatPopupProps {
+    myUserInfo: UserInfo;
     showChat: boolean,
     setShowChat: Dispatch<SetStateAction<boolean>>,
     recipient: string,
     image: string
 }
 
-const ChatPopup: React.FC<ChatPopupProps> = ({ showChat, setShowChat, recipient, image }) => {
+const ChatPopup: React.FC<ChatPopupProps> = ({ myUserInfo, showChat, setShowChat, recipient, image }) => {
     const [conversationId, setConversationId] = useState("");
-    const { myUserInfo } = useContext(HomeContext)
 
     useEffect(() => {
         async function getConversationId() {

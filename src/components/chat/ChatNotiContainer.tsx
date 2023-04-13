@@ -10,7 +10,13 @@ import { Timestamp, doc, collection, onSnapshot } from "firebase/firestore";
 interface Props {
     myUserInfo: UserInfo
     showChatBtn: boolean
+    toggleChatBtn: () => void
     setUnreadChats: Dispatch<SetStateAction<number>>
+    setCurrentChat: Dispatch<React.SetStateAction<{
+        username: string;
+        image: string;
+    }>>
+    openChat: () => void
 }
 
 interface recentChat {
@@ -27,7 +33,7 @@ interface recentChat {
     }
 }
 
-const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn, setUnreadChats }) => {
+const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn, toggleChatBtn, setUnreadChats, setCurrentChat, openChat }) => {
     const [recentChats, setRecentChats] = useState<recentChat[]>([]);
 
     // fetch conversations data
@@ -79,6 +85,9 @@ const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn, setUnread
                                     timestamp={recentChat.lastMessage.timestamp}
                                     friend={recentChat.sender.username}
                                     read={recentChat.lastMessage.read}
+                                    openChat={openChat}
+                                    setCurrentChat={setCurrentChat}
+                                    toggleChatBtn={toggleChatBtn}
                                 />
                             ))}
                         </div>

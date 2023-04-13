@@ -1,7 +1,6 @@
 'use client'
 
-import { useState } from "react";
-import ChatPopup from "@/components/chat/ChatPopup";
+import { Dispatch, SetStateAction } from "react";
 import { formatDuration } from "@/components/utils/format";
 import { Timestamp } from "firebase/firestore";
 
@@ -22,16 +21,27 @@ const statusTextColor = new Map([
   ['dropped', 'text-red-400']
 ]);
 
-const FriendComponent = ({ friendInfo }: { friendInfo: Friend }) => {
-  const [showChat, setShowChat] = useState(false)
+const FriendComponent = ({ friendInfo, openChat, setCurrentChat }:
+  {
+    friendInfo: Friend,
+    openChat: () => void,
+    setCurrentChat: Dispatch<SetStateAction<{
+      username: string;
+      image: string;
+    }>>
+  }) => {
 
-  const openChat = () => {
-    setShowChat(true);
-  };
+  const onClick = () => {
+    openChat();
+    setCurrentChat({
+      username: friendInfo.username,
+      image: friendInfo.image
+    });
+  }
 
   return (
     <div className="relative w-full hover:cursor-pointer">
-      <div className="flex items-center w-full px-4 py-3 hover:bg-[#4e5d78]" onClick={openChat}>
+      <div className="flex items-center w-full px-4 py-3 hover:bg-[#4e5d78]" onClick={onClick}>
         <img
           className="rounded-full w-8 h-8 object-cover"
           src={friendInfo.image || '/bocchi.jpg'}
@@ -47,9 +57,6 @@ const FriendComponent = ({ friendInfo }: { friendInfo: Friend }) => {
           }
         </div>
       </div>
-      {showChat && (
-        <ChatPopup showChat={showChat} setShowChat={setShowChat} recipient={friendInfo.username} image={friendInfo.image} />
-      )}
     </div>
   );
 };

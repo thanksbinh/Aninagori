@@ -4,11 +4,21 @@ import React, { useEffect, useRef, useState } from "react";
 import { UserInfo } from "@/global/UserInfo.types";
 import { BsChatDotsFill } from "@react-icons/all-files/bs/BsChatDotsFill";
 import ChatNotiContainer from "../chat/ChatNotiContainer";
+import ChatPopup from "../chat/ChatPopup";
 
 const ChatBtn = ({ myUserInfo }: { myUserInfo: UserInfo }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [showChatBtn, setShowChatBtn] = useState(false);
   const [unreadChats, setUnreadChats] = useState(0);
+  const [currentChat, setCurrentChat] = useState({
+    username: "",
+    image: ""
+  });
+  const [showChat, setShowChat] = useState(false)
+
+  const openChat = () => {
+    setShowChat(true);
+  };
 
   // click outside to close popup
   useEffect(() => {
@@ -39,8 +49,18 @@ const ChatBtn = ({ myUserInfo }: { myUserInfo: UserInfo }) => {
         )}
       </button>
       <div className={showChatBtn ? "" : "hidden"}>
-        <ChatNotiContainer myUserInfo={myUserInfo} showChatBtn={showChatBtn} setUnreadChats={setUnreadChats} />
+        <ChatNotiContainer
+          myUserInfo={myUserInfo}
+          showChatBtn={showChatBtn}
+          toggleChatBtn={toggleChatBtn}
+          setUnreadChats={setUnreadChats}
+          setCurrentChat={setCurrentChat}
+          openChat={openChat}
+        />
       </div>
+      {showChat && (
+        <ChatPopup myUserInfo={myUserInfo} showChat={showChat} setShowChat={setShowChat} recipient={currentChat.username} image={currentChat.image} />
+      )}
     </div>
   );
 };

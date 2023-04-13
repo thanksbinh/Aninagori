@@ -3,9 +3,8 @@
 import { formatDuration } from "@/components/utils/format";
 import { db } from "@/firebase/firebase-app";
 import { arrayRemove, arrayUnion, collection, doc, getDoc, Timestamp, updateDoc } from "firebase/firestore";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { UserInfo } from "../../global/UserInfo.types";
-import ChatPopup from "./ChatPopup";
 
 interface Props {
     myUserInfo: UserInfo;
@@ -16,11 +15,18 @@ interface Props {
     timestamp: Timestamp;
     friend: string;
     read: boolean;
+    openChat: () => void;
+    setCurrentChat: Dispatch<SetStateAction<{
+        username: string;
+        image: string;
+    }>>
+    toggleChatBtn: () => void;
 }
 
-const ChatNoti: React.FC<Props> = ({ myUserInfo, conversationId, name, image, lastMessage, timestamp, friend, read }) => {
-    const [showChat, setShowChat] = useState(false)
-
+const ChatNoti: React.FC<Props> = (
+    { myUserInfo, conversationId, name, image, lastMessage,
+        timestamp, friend, read, openChat, setCurrentChat, toggleChatBtn }
+) => {
     const findOldLastMessage = async () => {
         const inboxRef = doc(collection(db, 'inbox'), myUserInfo.username);
         const inboxDoc = await getDoc(inboxRef);
@@ -66,11 +72,13 @@ const ChatNoti: React.FC<Props> = ({ myUserInfo, conversationId, name, image, la
 
     const onClick = () => {
         updateStatus();
+        openChat();
+        setCurrentChat({
+            username: friend,
+            image: image
+        });
+        toggleChatBtn();
     }
-
-    const openChat = () => {
-        setShowChat(true);
-    };
 
     return (
         <>
@@ -89,9 +97,6 @@ const ChatNoti: React.FC<Props> = ({ myUserInfo, conversationId, name, image, la
                     </p>
                 </div>
             </div>
-            {/* {showChat && (
-                <ChatPopup showChat={showChat} setShowChat={setShowChat} recipient={friend} image={image} />
-            )} */}
         </>
     );
 };
