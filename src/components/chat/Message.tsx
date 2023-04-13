@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, useState } from "react";
+import { FC } from "react";
 import Avatar from "../avatar/Avatar";
 import { UserInfo } from "@/global/UserInfo.types";
 
@@ -27,7 +27,6 @@ const Message: FC<MessageProps> = ({
   isFirstMessage,
   isLastMessage,
 }) => {
-  const [likeToggle, setLikeToggle] = useState(false);
 
   return (
     <div className={`flex items-start mt-1 px-4 ${senderUsername === myUserInfo.username ? "flex-row-reverse" : "flex-row"}`}>

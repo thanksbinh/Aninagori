@@ -14,14 +14,3 @@ export async function setLastRead(myUserInfo: UserInfo, conversationId: string) 
     [fieldName]: serverTimestamp()
   })
 }
-
-// export async function setInboxLastRead(myUserInfo: UserInfo) {
-//   const inboxRef = doc(collection(db, "inbox"), myUserInfo.username);
-  
-//   const inboxDoc = await getDoc(inboxRef);
-//   if (!inboxDoc.exists()) return;
-
-//   updateDoc(inboxRef, {
-//     lastRead: serverTimestamp()
-//   });
-// }

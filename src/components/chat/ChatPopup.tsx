@@ -42,7 +42,7 @@ const ChatPopup: React.FC<ChatPopupProps> = ({ myUserInfo, showChat, setShowChat
         }
 
         getConversationId();
-    }, []);
+    }, [recipient]);
 
     const closeChat = () => {
         setShowChat(false);
