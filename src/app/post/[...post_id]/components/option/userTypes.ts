@@ -22,8 +22,10 @@ const authorOptions = [
   },
   {
     name: "Edit post",
-    action: (postId: string, authorName: any, postData: any, editFormRef: any) =>
-      openEditPopUp(postId, authorName, postData, editFormRef),
+    action: (postId: string, authorName: any, postData: any, editFormRef: any, setEditPostID: any) => {
+      setEditPostID(postId)
+      openEditPopUp(postId, authorName, postData, editFormRef)
+    },
   },
   {
     name: "Move to trash",

@@ -19,6 +19,12 @@ function AnimeWatchStatus({ setShowScore }: any, ref: any) {
     resetAnimeStatus: () => {
       setStatus("Watching")
     },
+    setAnimeStatus: (data: any) => {
+      setStatus(data)
+      if (data === "Finished") {
+        setShowScore(true)
+      }
+    }
   }))
 
   function setChoice(choice: string) {

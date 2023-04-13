@@ -25,6 +25,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
   const [friendPostIds, setFriendPostIds] = useState<string[]>(["0"])
   const [myFriendUsernameList, setMyFriendUsernameList] = useState<string[]>([])
   const [hasMoreFriendPosts, setHasMoreFriendPosts] = useState(myFriendList?.length > 0)
+  const [editPostID, setEditPostID] = useState("")
   const { myUserInfo } = useContext(HomeContext)
   const [openEditForm, setOpenEditForm] = useState(false);
   const editPostRef = useRef();
@@ -115,9 +116,6 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
 
   return (
     <>
-      <div className={`flex ${openEditForm ? "visible" : "invisible"}`}>
-        <PostFormPopUp isEditPost={true} title='Save' setOpen={setOpenEditForm} ref={editPostRef} />
-      </div>
       <InfiniteScroll
         dataLength={posts.length}
         next={fetchPosts}
@@ -132,6 +130,9 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
         pullDownToRefresh={true}
         className="flex flex-col"
       >
+        <div className={`flex ${openEditForm ? "visible" : "invisible"}`}>
+          <PostFormPopUp editPostID={editPostID} isEditPost={true} title='Save' setOpen={setOpenEditForm} ref={editPostRef} />
+        </div>
         {posts.map((post: any) => {
           return (
             <ContextProvider
@@ -143,6 +144,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
               postId={post.id}
               postData={post}
               editFormRef={editPostRef}
+              setEditPostID={setEditPostID}
             >
               <PostContent
                 authorName={post.authorName}

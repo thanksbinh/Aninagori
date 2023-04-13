@@ -10,7 +10,8 @@ interface PostContextType {
   animeID?: string
   postId: string,
   postData: any,
-  editFormRef: any
+  editFormRef: any,
+  setEditPostID?: any
 }
 
 export const PostContext = React.createContext<PostContextType>({
@@ -25,6 +26,7 @@ export const PostContext = React.createContext<PostContextType>({
   postId: "",
   postData: {},
   editFormRef: {},
+  setEditPostID: () => { },
 })
 
 export default function ContextProvider({
@@ -36,6 +38,7 @@ export default function ContextProvider({
   children,
   postData,
   editFormRef,
+  setEditPostID,
 }: {
   myUserInfo: UserInfo
   content: string
@@ -45,8 +48,9 @@ export default function ContextProvider({
   children: React.ReactNode,
   postData: any,
   editFormRef?: any
+  setEditPostID?: any
 }) {
   return (
-    <PostContext.Provider value={{ myUserInfo, content, authorName, animeID, postId, postData, editFormRef }}>{children}</PostContext.Provider>
+    <PostContext.Provider value={{ myUserInfo, content, authorName, animeID, postId, postData, editFormRef, setEditPostID }}>{children}</PostContext.Provider>
   )
 }

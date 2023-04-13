@@ -6,13 +6,17 @@ function PostFormActions({
     loadPosting,
     setBasicPostingInfo,
     isUpdatePost,
-    title
+    title,
+    haveUploadedImage,
+    setHaveUploadedImage,
 }: {
     handleMediaChange: any
     loadPosting: boolean
     setBasicPostingInfo: any
     isUpdatePost: boolean,
-    title: any
+    title: any,
+    haveUploadedImage: any,
+    setHaveUploadedImage: any,
 }) {
     return (
         <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-[#212833]">
@@ -26,6 +30,7 @@ function PostFormActions({
                 accept="image/*"
                 onChange={(e) => {
                     handleMediaChange(e)
+                    setHaveUploadedImage([...haveUploadedImage, false])
                     setBasicPostingInfo(true)
                 }}
                 className="hidden"
@@ -41,6 +46,7 @@ function PostFormActions({
                 accept="video/*"
                 onChange={(e) => {
                     handleMediaChange(e)
+                    setHaveUploadedImage([false])
                     setBasicPostingInfo(true)
                 }}
                 className="hidden"

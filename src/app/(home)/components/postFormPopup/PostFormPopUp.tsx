@@ -2,10 +2,10 @@
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import classNames from "classnames/bind"
-import { useCallback, forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from "react"
+import { useCallback, forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState, memo } from "react"
 import styles from "../postForm/PostForm.module.scss"
 
-import { handleDeleteMedia, handleMediaChange, handlePaste, handleSubmitForm } from "@/app/(home)/functions/postingUtils"
+import { handleDeleteMedia, handleMediaChange, handlePaste, handleSubmitForm, showEditInformation } from "@/app/(home)/functions/postingUtils"
 import Avatar from "@/components/avatar/Avatar"
 import { useRouter } from "next/navigation"
 import { HomeContext } from "../../HomeContext"
@@ -22,13 +22,14 @@ const cx = classNames.bind(styles)
 
 const PostFormPopUp = (props: any, ref: any) => {
   const { myUserInfo } = useContext(HomeContext)
-  const { setOpen, title, isEditPost } = props
+  const { setOpen, title, isEditPost, editPostID } = props
   const [mediaUrl, setMediaUrl] = useState<any>([])
   const [mediaType, setMediaType] = useState<string>("")
   const [showScore, setShowScore] = useState<boolean>(false)
   const [loadPosting, setLoadPosting] = useState<boolean>(false)
   const [basicPostingInfo, setBasicPostingInfo] = useState<boolean>(true)
   const [isUpdatePost, setIsUpdatePost] = useState<boolean>(true)
+  const [haveUploadedImage, setHaveUploadedImage] = useState<any>([])
   const [textInput, setTextInput] = useState<string>("")
 
   const animeStatusRef = useRef()
@@ -37,12 +38,11 @@ const PostFormPopUp = (props: any, ref: any) => {
   const animeTagRef = useRef()
   const animeScoreRef = useRef()
   const postAdditionalRef = useRef()
-  const inputRef = useRef()
 
   const router = useRouter();
 
   const handleDeleteMediaOnce = useCallback((e: any) => { handleDeleteMedia(e, mediaUrl, setMediaUrl) }, [mediaUrl])
-  const handleMediaChangeOnce = useCallback((e: any) => { handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl) }, [mediaUrl])
+  const handleMediaChangeOnce = useCallback((e: any) => { handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl, mediaType) }, [mediaUrl])
 
   useEffect(() => {
     setIsUpdatePost(!(mediaUrl.length || textInput || showScore))
@@ -52,27 +52,21 @@ const PostFormPopUp = (props: any, ref: any) => {
     setOpen: (open: boolean) => {
       setOpen(open);
     },
-    setPostFormData: (postData: any) => {
-      setTextInput(postData.content)
-      setBasicPostingInfo(true)
-      if (!!postData?.post_anime_data?.tag) {
-        (animeTagRef?.current as any).setAnimeTag(postData?.post_anime_data?.tag)
-      }
-      if (!!postData?.tag) {
-        (animeTagRef?.current as any).setAnimeTag(postData?.tag)
-      }
-      if (!!postData?.imageUrl && typeof postData.imageUrl === "object") {
-        setMediaUrl(postData.imageUrl)
-        setMediaType("image")
-      } else {
-        setMediaUrl([postData.imageUrl])
-        setMediaType("image")
-      }
-      if (!!postData?.videUrl) {
-        setMediaUrl([postData.videUrl])
-        setMediaType("video")
-      }
-      return
+    setPostEditFormData: async (postData: any) => {
+      await showEditInformation(
+        postData,
+        setTextInput,
+        setBasicPostingInfo,
+        animeTagRef,
+        setMediaUrl,
+        setMediaType,
+        animeStatusRef,
+        animeEpisodesRef,
+        animeScoreRef,
+        animeSearchRef,
+        postAdditionalRef,
+        setHaveUploadedImage
+      )
     }
   }))
 
@@ -92,12 +86,12 @@ const PostFormPopUp = (props: any, ref: any) => {
     await handleSubmitForm(
       animeStatusRef, animeSearchRef, animeEpisodesRef, animeTagRef,
       animeScoreRef, textInput, mediaUrl,
-      mediaType, myUserInfo, postAdditionalRef
+      mediaType, myUserInfo, postAdditionalRef, isEditPost,
+      editPostID, haveUploadedImage
     )
-
+    router.refresh()
     setLoadPosting(false)
     clearForm()
-    router.refresh()
   }
 
   return (
@@ -129,10 +123,10 @@ const PostFormPopUp = (props: any, ref: any) => {
 
           <input
             onChange={(e) => setTextInput(e.target.value)}
-            ref={inputRef as any}
+            value={textInput}
             type="text"
             onPaste={(e: any) => {
-              handlePaste(e, setMediaUrl, setMediaType, mediaUrl)
+              handlePaste(e, setMediaUrl, setMediaType, mediaUrl, setHaveUploadedImage)
             }}
             placeholder="Share your favourite Animemory now!"
             className="flex rounded-3xl mt-4 mb-5 py-3 px-4 w-full focus:outline-none bg-[#212833] caret-white"
@@ -142,7 +136,10 @@ const PostFormPopUp = (props: any, ref: any) => {
             mediaType={mediaType}
             handleDeleteMedia={handleDeleteMediaOnce}
             handleMediaChange={handleMediaChangeOnce}
-            isEditPost={true}
+            setMediaUrl={setMediaUrl}
+            isEditPost={isEditPost}
+            haveUploadedImage={haveUploadedImage}
+            setHaveUploadedImage={setHaveUploadedImage}
           />
           <AnimeTag ref={animeTagRef} />
 
@@ -151,7 +148,7 @@ const PostFormPopUp = (props: any, ref: any) => {
               {basicPostingInfo ? "More details..." : "Fewer details..."}
             </div>
             <div className={basicPostingInfo ? "hidden" : "flex"}>
-              <PostFormDetails ref={postAdditionalRef} animeStatusRef={animeStatusRef} />
+              <PostFormDetails isEditPost={isEditPost} ref={postAdditionalRef} animeStatusRef={animeStatusRef} />
             </div>
           </div>
 
@@ -160,8 +157,10 @@ const PostFormPopUp = (props: any, ref: any) => {
             setBasicPostingInfo={setBasicPostingInfo}
             loadPosting={loadPosting}
             handleMediaChange={(e: any) => {
-              handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl)
+              handleMediaChange(e, mediaUrl, setMediaType, setMediaUrl, mediaType)
             }}
+            haveUploadedImage={haveUploadedImage}
+            setHaveUploadedImage={setHaveUploadedImage}
             isUpdatePost={isUpdatePost}
           />
         </div>
@@ -170,4 +169,4 @@ const PostFormPopUp = (props: any, ref: any) => {
   )
 }
 
-export default forwardRef(PostFormPopUp)
+export default memo(forwardRef(PostFormPopUp))

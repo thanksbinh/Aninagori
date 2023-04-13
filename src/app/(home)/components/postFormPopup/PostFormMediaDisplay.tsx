@@ -3,15 +3,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames/bind"
 import styles from "../postForm/PostForm.module.scss"
 import { memo } from "react";
+import { deleteMediaFiles } from "@/app/post/[...post_id]/components/option/postOptions";
 
 const cx = classNames.bind(styles)
 
 interface PostFormMediaDisplayProps {
-    mediaUrl: any;
-    mediaType: string;
-    handleDeleteMedia: any;
-    handleMediaChange: any;
-    isEditPost?: any
+    mediaUrl: any,
+    mediaType: any,
+    handleDeleteMedia: any,
+    handleMediaChange: any,
+    setMediaUrl: any,
+    isEditPost: any,
+    haveUploadedImage: any,
+    setHaveUploadedImage: any,
 }
 
 const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
@@ -19,8 +23,16 @@ const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
     mediaType,
     handleDeleteMedia,
     handleMediaChange,
-    isEditPost
+    setMediaUrl,
+    isEditPost,
+    haveUploadedImage,
+    setHaveUploadedImage,
 }) => {
+    if (isEditPost) {
+        console.log('have upload', haveUploadedImage);
+        console.log(mediaUrl);
+    }
+
     if (mediaUrl.length === 0) return (<></>)
     return (
         <div className="mt-2 mb-3 w-full flex items-center justify-center">
@@ -28,17 +40,28 @@ const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
                 type="file"
                 id="multi-media-input"
                 accept="video/*,image/*"
-                onChange={(e) => handleMediaChange(e, "image")}
+                onChange={(e) => {
+                    handleMediaChange(e, "image")
+                    setHaveUploadedImage((prev: any) => [...prev, false])
+                }}
                 className="hidden"
             />
             {mediaUrl.length > 0 ? (
                 mediaType === "video" ? (
-                    <div className={cx("media-wrapper") + " w-2/3 h-2/5 flex items-center relative"}>
-                        <video src={isEditPost ? mediaUrl[0] : URL.createObjectURL(mediaUrl[0])} className="w-full object-contain rounded-xl" controls />
+                    <div className={cx("media-wrapper") + " w-2/3 h-full flex items-center relative"}>
+                        <video src={haveUploadedImage[0] ? mediaUrl[0] : URL.createObjectURL(mediaUrl[0])} className="w-full object-contain rounded-xl" controls />
                         <FontAwesomeIcon
-                            onClick={() => {
+                            onClick={async () => {
                                 //TODO: handle delete media in firebase if post is edit
-                                handleDeleteMedia(0)
+                                if (isEditPost && haveUploadedImage[0]) {
+                                    if (confirm('Are you sure you want to delete this video?')) {
+                                        setMediaUrl([])
+                                        await deleteMediaFiles(undefined, mediaUrl[0])
+                                    }
+                                } else {
+                                    handleDeleteMedia(0)
+                                }
+                                setHaveUploadedImage([])
                             }}
                             icon={faCircleXmark as any}
                             className={cx("delete-icon")}
@@ -56,12 +79,19 @@ const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
                                 <div
                                     key={index}
                                     className={cx("image-wrapper")}
-                                    style={{ backgroundImage: `url(${isEditPost ? media : URL.createObjectURL(media)})` }}
+                                    style={{ backgroundImage: `url(${haveUploadedImage[index] ? media : URL.createObjectURL(media)})` }}
                                 >
                                     <FontAwesomeIcon
-                                        onClick={() => {
-                                            //TODO: handle delete media in firebase if post is edit
-                                            handleDeleteMedia(index)
+                                        onClick={async () => {
+                                            if (isEditPost && haveUploadedImage[index]) {
+                                                if (confirm('Are you sure you want to delete this image?')) {
+                                                    setMediaUrl((prev: any) => prev.filter((item: any, i: number) => i !== index))
+                                                    await deleteMediaFiles(media)
+                                                }
+                                            } else {
+                                                handleDeleteMedia(index)
+                                            }
+                                            setHaveUploadedImage((prev: any) => prev.filter((item: any, i: number) => i !== index))
                                         }}
                                         icon={faCircleXmark as any}
                                         className={cx("delete-icon")}

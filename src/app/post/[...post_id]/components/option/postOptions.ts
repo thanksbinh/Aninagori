@@ -33,10 +33,10 @@ export async function banUser(authorName?: string) {
 
 export function openEditPopUp(postId: string, authorName: string, postData: any, editFormRef: any) {
   editFormRef.current.setOpen(true)
-  editFormRef.current.setPostFormData(postData)
+  editFormRef.current.setPostEditFormData(postData)
 }
 
-async function deleteMediaFiles(imageUrl?: string, videoUrl?: string) {
+export async function deleteMediaFiles(imageUrl?: string, videoUrl?: string) {
   try {
     if (imageUrl) {
       await deleteObject(ref(storage, imageUrl))

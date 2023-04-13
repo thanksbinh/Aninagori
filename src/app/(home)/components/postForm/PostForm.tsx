@@ -45,7 +45,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
   return (
     <PostFormContext.Provider value={{ recentAnimeList, setRecentAnimeList }} >
       <div className={`flex ${open ? "visible" : "invisible"}`}>
-        <PostFormPopUp title='Share' setOpen={setOpen} />
+        <PostFormPopUp isEditPost={false} title='Share' setOpen={setOpen} />
       </div>
       <div className="flex flex-col flex-shrink-0 bg-ani-gray rounded-2xl px-4 my-4">
         <div className="flex justify-between items-center mt-4">

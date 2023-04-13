@@ -30,6 +30,15 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
       setAnimeDataSent({ animeName: "", animeID: "" })
       setAnimePic("")
       setLoading(false);
+    },
+    setAnimeSearch: (data: any, picture: any) => {
+      setAnimeData({ animeName: data.anime_name, animeID: data.anime_id })
+      setAnimeDataSent({ animeName: data.anime_name, animeID: data.anime_id })
+      setAnimePic(picture)
+      setLoading(false);
+    },
+    setLoading: (loading: boolean) => {
+      setLoading(loading)
     }
   }))
 
@@ -46,6 +55,7 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
         setSearchResult([])
       } else {
         setSearchResult(result.data)
+        setResultBoxOpen(true)
       }
     } catch (err) {
       console.log(err)

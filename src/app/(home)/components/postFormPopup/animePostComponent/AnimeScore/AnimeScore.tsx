@@ -12,6 +12,9 @@ function AnimeScore(props: any, ref: any) {
     getAnimeScore: () => {
       return score
     },
+    setAnimeScore: (score: any) => {
+      setScore(score)
+    }
   }))
 
   return (

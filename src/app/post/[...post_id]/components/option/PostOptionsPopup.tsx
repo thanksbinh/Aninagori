@@ -13,7 +13,7 @@ interface option {
 }
 
 const PostOptions = () => {
-  const { myUserInfo, authorName, postId, postData, editFormRef } = useContext(PostContext)
+  const { myUserInfo, authorName, postId, postData, editFormRef, setEditPostID } = useContext(PostContext)
 
   const ref = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +42,7 @@ const PostOptions = () => {
   }, []);
 
   const handleOption = async (option: option) => {
-    await option.action(postId, authorName, postData, editFormRef)
+    await option.action(postId, authorName, postData, editFormRef, setEditPostID)
     setIsOpen(false)
     // TODO: if option is edit => not refresh
     router.refresh()
