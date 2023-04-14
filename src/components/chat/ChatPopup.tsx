@@ -3,9 +3,9 @@
 import Avatar from "../avatar/Avatar";
 import Messages from "./Messages";
 import MessageForm from "./MessageForm";
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { MdClose } from "@react-icons/all-files/md/MdClose";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
 
@@ -21,6 +21,16 @@ const ChatPopup: React.FC<ChatPopupProps> = ({ myUserInfo, showChat, setShowChat
     const [conversationId, setConversationId] = useState("");
 
     useEffect(() => {
+        async function checkInbox(username: string) {
+            const inboxRef = doc(collection(db, "inbox"), username);
+            const inboxDoc = await getDoc(inboxRef);
+            if (!inboxDoc.exists()) {
+                await setDoc(inboxRef, {
+                    lastRead: new Date()
+                }, { merge: true });
+            }
+        }
+
         async function getConversationId() {
             const conversationRef = collection(db, 'conversation');
             const messagesQuery = query(
@@ -39,6 +49,8 @@ const ChatPopup: React.FC<ChatPopupProps> = ({ myUserInfo, showChat, setShowChat
 
             const messageId = (await getDocs(messagesQuery)).docs[0].id;
             setConversationId(messageId);
+            checkInbox(myUserInfo.username);
+            checkInbox(recipient);
         }
 
         getConversationId();

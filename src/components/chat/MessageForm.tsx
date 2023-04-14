@@ -76,7 +76,7 @@ const MessageForm: FC<Props> = ({
         },
         sender: {
           username: myUserInfo.username,
-          image: image
+          image: myUserInfo.image
         }
       },
       friend
@@ -117,7 +117,7 @@ const MessageForm: FC<Props> = ({
   const onFormClick = async () => {
     const conversationRef = doc(collection(db, 'conversation'), conversationId);
     const docSnap = await getDoc(conversationRef);
-    if (docSnap.data()?.messages?.slice(-1)[0].senderUsername !== myUserInfo.username) {
+    if (docSnap.data()?.messages?.slice(-1)[0]?.senderUsername !== myUserInfo.username) {
       setLastRead(myUserInfo, conversationId)
     }
   }

@@ -56,14 +56,12 @@ const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, fri
 
   useEffect(() => {
     // scroll to bottom when component mounts
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages])
 
   useEffect(() => {
     fetchData();
-  }, [friend, []]);
+  }, [friend]);
 
   return (
     <div className="flex flex-1 flex-col">
