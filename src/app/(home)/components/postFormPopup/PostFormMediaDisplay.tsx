@@ -28,6 +28,7 @@ const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
     haveUploadedImage,
     setHaveUploadedImage,
 }) => {
+    console.log(mediaUrl);
 
     if (mediaUrl.length === 0) return (<></>)
     return (

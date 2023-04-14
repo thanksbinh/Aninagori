@@ -45,17 +45,25 @@ export function setPostTag(postData: any, animeTagRef: any) {
 
 export function setMediaData(postData: any, setMediaUrl: any, setHaveUploadedImage: any, setMediaType: any) {
   // set Media data
-  if (!!postData?.imageUrl && typeof postData.imageUrl === "object") {
+  if (!!postData?.imageUrl && typeof postData.imageUrl === "object" && postData.imageUrl.length > 0) {
     setMediaUrl(postData.imageUrl)
     setHaveUploadedImage(postData.imageUrl.map((_: any) => true))
     setMediaType("image")
-  } else {
-    console.log("No image")
-
+    return
+  }
+  if (!!postData?.imageUrl && typeof postData.imageUrl === "string") {
+    if (postData.imageUrl === "") {
+      setMediaUrl([])
+      setHaveUploadedImage([])
+      setMediaType("image")
+      return
+    }
     setMediaUrl([postData.imageUrl])
     setHaveUploadedImage([true])
     setMediaType("image")
+    return
   }
+
   if (!!postData?.videoUrl) {
     setMediaUrl([postData.videoUrl])
     setHaveUploadedImage([true])
