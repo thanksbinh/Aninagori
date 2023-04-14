@@ -14,6 +14,7 @@ import {
 import getProductionBaseUrl from "../../../components/utils/getProductionBaseURL"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { v4 } from "uuid"
+import { setAnimeData, setMediaData, setPostTag } from "./showEditPostInfomation"
 
 export function getDateNow() {
   const now = new Date().toISOString().slice(0, -5) + "+00:00"
@@ -377,50 +378,8 @@ export const showEditInformation = async (
 ) => {
   setTextInput(postData.content)
   setBasicPostingInfo(true)
-  // set Anime data
-  if (!!postData?.post_anime_data?.anime_id) {
-    ;(animeSearchRef?.current as any).setLoading(true)
-    const promiseArray = [
-      fetch(getProductionBaseUrl() + "/api/anime/" + postData?.post_anime_data?.anime_id).then((res) => res.json()),
-    ]
-    const animeRef = doc(db, "myAnimeList", postData?.authorName)
-    promiseArray.push(getDoc(animeRef))
-    const [data, animeDoc] = await Promise.all(promiseArray)
-    ;(animeSearchRef?.current as any).setAnimeSearch(postData?.post_anime_data, data?.main_picture?.medium)
-    ;(animeSearchRef?.current as any).setLoading(false)
-    const animeData = animeDoc.data()?.animeList.find((anime: any) => {
-      return anime.node.id === postData?.post_anime_data?.anime_id
-    })
-    ;(postAdditionalRef?.current as any).setData(animeData)
-  }
-  ;(animeEpisodesRef?.current as any).setAnimeEpisodes(postData?.post_anime_data?.episodes_seen)
-  const status = convertPostFormWatchStatus(postData?.post_anime_data?.watching_progress)
-  ;(animeStatusRef?.current).setAnimeStatus(status)
-  ;(animeEpisodesRef?.current as any).setAnimeTotal(postData?.post_anime_data?.total_episodes)
-  ;(animeScoreRef?.current as any).setAnimeScore(postData?.post_anime_data?.score)
-  // set PostTag data
-  if (!!postData?.post_anime_data?.tag) {
-    ;(animeTagRef?.current as any).setAnimeTag(postData?.post_anime_data?.tag)
-  }
-  if (!!postData?.tag) {
-    ;(animeTagRef?.current as any).setAnimeTag(postData?.tag)
-  }
-  // set Media data
-  if (!!postData?.imageUrl && typeof postData.imageUrl === "object") {
-    setMediaUrl(postData.imageUrl)
-    setHaveUploadedImage(postData.imageUrl.map((_: any) => true))
-    setMediaType("image")
-  } else {
-    console.log("No image")
-
-    setMediaUrl([postData.imageUrl])
-    setHaveUploadedImage([true])
-    setMediaType("image")
-  }
-  if (!!postData?.videoUrl) {
-    setMediaUrl([postData.videoUrl])
-    setHaveUploadedImage([true])
-    setMediaType("video")
-  }
+  setAnimeData(postData, animeSearchRef, animeEpisodesRef, animeStatusRef, animeScoreRef, postAdditionalRef)
+  setPostTag(postData, animeTagRef)
+  setMediaData(postData, setMediaUrl, setHaveUploadedImage, setMediaType)
   return
 }
