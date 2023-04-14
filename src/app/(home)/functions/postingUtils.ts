@@ -394,8 +394,7 @@ export const showEditInformation = async (
   }
   ;(animeEpisodesRef?.current as any).setAnimeEpisodes(postData?.post_anime_data?.episodes_seen)
   const status = convertPostFormWatchStatus(postData?.post_anime_data?.watching_progress)
-  console.log(animeStatusRef?.current)
-  ;(animeStatusRef?.current as any).querySelector("p").innerHTML = status
+  ;(animeStatusRef?.current).setAnimeStatus(status)
   ;(animeEpisodesRef?.current as any).setAnimeTotal(postData?.post_anime_data?.total_episodes)
   ;(animeScoreRef?.current as any).setAnimeScore(postData?.post_anime_data?.score)
   // set PostTag data
@@ -411,8 +410,10 @@ export const showEditInformation = async (
     setHaveUploadedImage(postData.imageUrl.map((_: any) => true))
     setMediaType("image")
   } else {
-    setMediaUrl([])
-    setHaveUploadedImage([])
+    console.log("No image")
+
+    setMediaUrl([postData.imageUrl])
+    setHaveUploadedImage([true])
     setMediaType("image")
   }
   if (!!postData?.videoUrl) {
