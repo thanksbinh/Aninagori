@@ -102,9 +102,6 @@ const PostFormPopUp = (props: any, ref: any) => {
     setLoadPosting(false)
     clearForm()
     router.refresh()
-    if (isEditPost) {
-      router.push('/')
-    }
   }
 
   return (

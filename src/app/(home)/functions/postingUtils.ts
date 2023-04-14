@@ -287,6 +287,7 @@ export async function handleSubmitForm(
           status: statusConverted,
         }),
       )
+      await Promise.all(promisePost)
     }
   } catch (err) {
     console.log(err)

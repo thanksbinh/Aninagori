@@ -58,7 +58,9 @@ const PostOptions = ({ editPostID }: { editPostID: any, }) => {
 
   return (
     <>
-      {openEditForm && <PostFormPopUp title='Save' isEditPost={true} postData={postData} ref={editPostRef} setOpen={setOpenEditForm} editPostID={editPostID} />}
+      {openEditForm &&
+        <PostFormPopUp title='Save' isEditPost={true} postData={postData} ref={editPostRef} setOpen={setOpenEditForm} editPostID={editPostID} />}
+
       <Menu as="div" ref={ref} className="relative inline-block text-left z-30">
         <Menu.Button onClick={() => setIsOpen(!isOpen)}>
           <BsThreeDots className="h-5 w-5" aria-hidden="true" />
