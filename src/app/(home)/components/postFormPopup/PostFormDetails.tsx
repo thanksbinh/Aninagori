@@ -13,7 +13,7 @@ const days = Array.from(Array(31).keys()).map((i) => i + 1)
 const months = Array.from(Array(12).keys()).map((i) => i + 1)
 const years = Array.from(Array(20).keys()).map((i) => nowYear - i)
 
-function PostFormDetails({ animeStatusRef }: { animeStatusRef: any }, ref: any) {
+function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, isEditPost: any }, ref: any) {
   const { recentAnimeList } = useContext(PostFormContext)
 
   // Why can't this just be startDate and endDate?
@@ -32,7 +32,7 @@ function PostFormDetails({ animeStatusRef }: { animeStatusRef: any }, ref: any) 
     try {
       thisAnimeStatus = (animeStatusRef?.current as any)?.getAnimeStatus()
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
 
     // This doesn't work, because useState is async, fix this when you change timeState to normal
@@ -40,32 +40,34 @@ function PostFormDetails({ animeStatusRef }: { animeStatusRef: any }, ref: any) 
     // setToday("end")
 
     const today = new Date()
-    if (defaultStart?.length === 3 && thisAnimeStatus === "Finished") {
-      setDay({ ...day, start: defaultStart[2], end: today.getDate() })
-      setMonth({ ...month, start: defaultStart[1], end: today.getMonth() + 1 })
-      setYear({ ...year, start: defaultStart[0], end: today.getFullYear() })
-    }
-    else if (defaultStart?.length === 3) {
-      setDay({ ...day, start: defaultStart[2], end: 0 })
-      setMonth({ ...month, start: defaultStart[1], end: 0 })
-      setYear({ ...year, start: defaultStart[0], end: 0 })
-    }
-    else if (thisAnimeStatus === "Finished") {
-      setDay({ ...day, start: today.getDate(), end: today.getDate() })
-      setMonth({ ...month, start: today.getMonth() + 1, end: today.getMonth() + 1 })
-      setYear({ ...year, start: today.getFullYear(), end: today.getFullYear() })
-    }
-    else if (thisAnimeStatus === "Watching") {
-      setToday("start")
-    }
-    else {
-      setDay({ ...day, start: 0, end: 0 })
-      setMonth({ ...month, start: 0, end: 0 })
-      setYear({ ...year, start: 0, end: 0 })
-    }
+    if (!isEditPost) {
+      if (defaultStart?.length === 3 && thisAnimeStatus === "Finished") {
+        setDay({ ...day, start: defaultStart[2], end: today.getDate() })
+        setMonth({ ...month, start: defaultStart[1], end: today.getMonth() + 1 })
+        setYear({ ...year, start: defaultStart[0], end: today.getFullYear() })
+      }
+      else if (defaultStart?.length === 3) {
+        setDay({ ...day, start: defaultStart[2], end: 0 })
+        setMonth({ ...month, start: defaultStart[1], end: 0 })
+        setYear({ ...year, start: defaultStart[0], end: 0 })
+      }
+      else if (thisAnimeStatus === "Finished") {
+        setDay({ ...day, start: today.getDate(), end: today.getDate() })
+        setMonth({ ...month, start: today.getMonth() + 1, end: today.getMonth() + 1 })
+        setYear({ ...year, start: today.getFullYear(), end: today.getFullYear() })
+      }
+      else if (thisAnimeStatus === "Watching") {
+        setToday("start")
+      }
+      else {
+        setDay({ ...day, start: 0, end: 0 })
+        setMonth({ ...month, start: 0, end: 0 })
+        setYear({ ...year, start: 0, end: 0 })
+      }
 
-    setRewatchTime(recentAnimeList[0]?.list_status?.num_times_rewatched?.toString())
-    setNowTag(recentAnimeList[0]?.list_status?.tags?.join(', ') || "")
+      setRewatchTime(recentAnimeList[0]?.list_status?.num_times_rewatched?.toString())
+      setNowTag(recentAnimeList[0]?.list_status?.tags?.join(', ') || "")
+    }
   }, [recentAnimeList, animeStatusRef?.current])
 
   function setToday(type: string) {
@@ -110,8 +112,6 @@ function PostFormDetails({ animeStatusRef }: { animeStatusRef: any }, ref: any) 
       const newArray = animeTagArray.map((e: any) => {
         return e.trim()
       }).filter((e: any) => e !== "")
-      console.log(newArray);
-
       return newArray
     },
     resetAdditionalPost: () => {
@@ -120,7 +120,36 @@ function PostFormDetails({ animeStatusRef }: { animeStatusRef: any }, ref: any) 
       setDay({ start: 0, end: 0, openStart: false, openEnd: false })
       setMonth({ start: 0, end: 0, openStart: false, openEnd: false })
       setYear({ start: 0, end: 0, openStart: false, openEnd: false })
-    }
+    },
+    setData: (animeData: any) => {
+
+      if (!!animeData?.list_status?.start_date) {
+        const dateStartArray = animeData?.list_status?.start_date.split("-").map((i: string) => parseInt(i))
+        setDay({ ...day, start: dateStartArray[2] })
+        setMonth({ ...month, start: dateStartArray[1] })
+        setYear({ ...year, start: dateStartArray[0] })
+      } else {
+        setDay({ ...day, start: 0 })
+        setMonth({ ...month, start: 0 })
+        setYear({ ...year, start: 0 })
+      }
+      if (!!animeData?.list_status?.finish_date) {
+        const dateEndArray = animeData?.list_status?.finish_date.split("-").map((i: string) => parseInt(i))
+        setDay((prev) => ({ ...prev, end: dateEndArray[2] }))
+        setMonth((prev) => ({ ...prev, end: dateEndArray[1] }))
+        setYear((prev) => ({ ...prev, end: dateEndArray[0] }))
+      } else {
+        setDay((prev) => ({ ...prev, end: 0 }))
+        setMonth((prev) => ({ ...prev, end: 0 }))
+        setYear((prev) => ({ ...prev, end: 0 }))
+      }
+      if (!!animeData?.list_status?.tags) {
+        setNowTag(animeData?.list_status?.tags.join(", "))
+      }
+      if (!!animeData?.list_status?.num_times_rewatched) {
+        setRewatchTime(animeData?.list_status?.num_times_rewatched.toString())
+      }
+    },
   }))
 
   return (

@@ -19,7 +19,13 @@ function AnimeWatchStatus({ setShowScore }: any, ref: any) {
     resetAnimeStatus: () => {
       setStatus("Watching")
     },
-  }))
+    setAnimeStatus: (data: any) => {
+      setStatus(data)
+      if (data === "Finished") {
+        setShowScore(true)
+      }
+    }
+  }), [{}])
 
   function setChoice(choice: string) {
     setStatus(choice)
@@ -32,90 +38,91 @@ function AnimeWatchStatus({ setShowScore }: any, ref: any) {
   }
 
   return (
-    <HeadlessTippy
-      visible={boxOpen && isInputFocus}
-      appendTo={() => document.body}
-      onClickOutside={() => {
-        setIsInputFocus(false)
-      }}
-      interactive={true}
-      placement="bottom-start"
-      render={() => {
-        return (
-          <div className={cx("option-wrapper")}>
-            <div
-              onClick={() => {
-                setChoice("Watching")
-                setShowScore(false)
-              }}
-              className={cx("option")}
-            >
-              Watching
-            </div>
-            <div
-              onClick={() => {
-                setChoice("Re-watching")
-                setShowScore(false)
-              }}
-              className={cx("option")}
-            >
-              Re-watching
-            </div>
-            <div
-              onClick={() => {
-                setChoice("Finished")
-                setShowScore(true)
-              }}
-              className={cx("option")}
-            >
-              Finished
-            </div>
-            <div
-              onClick={() => {
-                setChoice("Plan to watch")
-                setShowScore(false)
-              }}
-              className={cx("option")}
-            >
-              Plan to watch
-            </div>
-            <div
-              onClick={() => {
-                setChoice("Drop")
-                setShowScore(false)
-              }}
-              className={cx("option")}
-            >
-              Drop
-            </div>
-          </div>
-        )
-      }}
-    >
-      <div
-        className={cx("status-component")}
-        onClick={() => {
-          openInputBox()
+    <div ref={ref} style={{ width: '24%' }}>
+      <HeadlessTippy
+        visible={boxOpen && isInputFocus}
+        appendTo={() => document.body}
+        onClickOutside={() => {
+          setIsInputFocus(false)
         }}
-        ref={ref}
+        interactive={true}
+        placement="bottom-start"
+        render={() => {
+          return (
+            <div className={cx("option-wrapper")}>
+              <div
+                onClick={() => {
+                  setChoice("Watching")
+                  setShowScore(false)
+                }}
+                className={cx("option")}
+              >
+                Watching
+              </div>
+              <div
+                onClick={() => {
+                  setChoice("Re-watching")
+                  setShowScore(false)
+                }}
+                className={cx("option")}
+              >
+                Re-watching
+              </div>
+              <div
+                onClick={() => {
+                  setChoice("Finished")
+                  setShowScore(true)
+                }}
+                className={cx("option")}
+              >
+                Finished
+              </div>
+              <div
+                onClick={() => {
+                  setChoice("Plan to watch")
+                  setShowScore(false)
+                }}
+                className={cx("option")}
+              >
+                Plan to watch
+              </div>
+              <div
+                onClick={() => {
+                  setChoice("Drop")
+                  setShowScore(false)
+                }}
+                className={cx("option")}
+              >
+                Drop
+              </div>
+            </div>
+          )
+        }}
       >
-        <p
+        <div
+          className={cx("status-component")}
           onClick={() => {
             openInputBox()
           }}
-          className={cx("anime-watch-status")}
         >
-          {status}
-        </p>
-        <FontAwesomeIcon
-          onClick={() => {
-            openInputBox()
-          }}
-          className={cx("down-icon")}
-          icon={faCaretDown as any}
-        ></FontAwesomeIcon>
-      </div>
-    </HeadlessTippy>
+          <p
+            onClick={() => {
+              openInputBox()
+            }}
+            className={cx("anime-watch-status")}
+          >
+            {status}
+          </p>
+          <FontAwesomeIcon
+            onClick={() => {
+              openInputBox()
+            }}
+            className={cx("down-icon")}
+            icon={faCaretDown as any}
+          ></FontAwesomeIcon>
+        </div>
+      </HeadlessTippy>
+    </div>
   )
 }
 

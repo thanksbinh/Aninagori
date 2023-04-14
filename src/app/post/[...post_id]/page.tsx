@@ -68,6 +68,7 @@ async function Post({ params }: { params: { post_id: string[] } }) {
     <div className='flex justify-center pt-10'>
       <div className="flex flex-col lg:w-2/5 w-3/5 mt-8 mb-2">
         <ContextProvider
+          postData={fetchedPost}
           myUserInfo={myUserInfo}
           content={fetchedPost?.content || ""}
           authorName={fetchedPost.authorName}
@@ -86,13 +87,17 @@ async function Post({ params }: { params: { post_id: string[] } }) {
             watchingProgress={fetchedPost?.post_anime_data?.watching_progress}
             episodesSeen={fetchedPost?.post_anime_data?.episodes_seen}
             episodesTotal={fetchedPost?.post_anime_data?.total_episodes}
-            tag={fetchedPost?.post_anime_data?.tag}
+            score={fetchedPost?.post_anime_data?.score}
+            tag={!!fetchedPost?.post_anime_data?.tag ? fetchedPost?.post_anime_data?.tag : fetchedPost?.tag}
             postId={fetchedPost.id}
           />
           <PostAction
             reactions={fetchedPost.reactions}
             commentCountPromise={fetchedComments.length}
             comments={fetchedComments}
+            myUserInfo={myUserInfo}
+            malAuthCode={myUserInfo?.mal_connect?.accessToken}
+            animeID={fetchedPost?.post_anime_data?.anime_id}
             focusedComment={(params.post_id.length > 1) ? params.post_id[2] : undefined}
           />
         </ContextProvider>

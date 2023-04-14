@@ -31,6 +31,16 @@ function AnimeTag(props: any, ref: any) {
         }),
       )
     },
+    setAnimeTag: (dataTag: any) => {
+      setSelectedTag((prev) => {
+        return prev.map((data: any) => {
+          if (dataTag.includes(data.text)) {
+            return { selected: true, text: data.text }
+          }
+          return data
+        })
+      })
+    }
   }))
   return (
     <div className={cx("tag-wrapper")} ref={ref}>

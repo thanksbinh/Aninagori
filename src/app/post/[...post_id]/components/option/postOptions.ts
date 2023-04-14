@@ -31,7 +31,7 @@ export async function banUser(authorName?: string) {
   updateDoc(userRef, { is_banned: true })
 }
 
-async function deleteMediaFiles(imageUrl?: string, videoUrl?: string) {
+export async function deleteMediaFiles(imageUrl?: string, videoUrl?: string) {
   try {
     if (imageUrl) {
       await deleteObject(ref(storage, imageUrl))

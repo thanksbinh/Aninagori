@@ -8,11 +8,13 @@ import {
   doc,
   getDoc,
   serverTimestamp,
+  updateDoc,
   writeBatch,
 } from "firebase/firestore"
 import getProductionBaseUrl from "../../../components/utils/getProductionBaseURL"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { v4 } from "uuid"
+import { setAnimeData, setMediaData, setPostTag } from "./showEditPostInfomation"
 
 export function getDateNow() {
   const now = new Date().toISOString().slice(0, -5) + "+00:00"
@@ -43,7 +45,7 @@ export function handleAnimeInformationPosting(
     postAnimeData.watching_progress = "plan to watch"
     postAnimeData.episodes_seen = "0"
   } else if (status === "Finished") {
-    ; (postAnimeData as any).score = score
+    ;(postAnimeData as any).score = score
     postAnimeData.watching_progress = "have finished"
     postAnimeData.episodes_seen = postAnimeData.total_episodes
   } else if (status === "Drop") {
@@ -88,6 +90,28 @@ export function convertWatchStatus(watchStatus: string, isEnd: boolean) {
   }
 }
 
+export function convertPostFormWatchStatus(watchStatus: string) {
+  switch (watchStatus) {
+    case "is watching":
+      return "Watching"
+      break
+    case "re-watching":
+      return "Re-watching"
+      break
+    case "have dropped":
+      return "Dropped"
+      break
+    case "plan to watch":
+      return "Plan to watch"
+      break
+    case "have finished":
+      return "Finished"
+      break
+    default:
+      break
+  }
+}
+
 // get old anime daa
 export async function getOldAnimeData(username: any, animeData: any) {
   const myAnimeListRef = doc(db, "myAnimeList", username)
@@ -115,6 +139,9 @@ export async function handleSubmitForm(
   mediaType: any,
   myUserInfo: any,
   postAdditional: any,
+  isEditForm?: any,
+  postID?: any,
+  haveUploadedImage?: any,
 ): Promise<void> {
   const statusData = (animeStatus?.current as any).getAnimeStatus()
   const searchData = (animeSearch?.current as any).getAnimeName()
@@ -140,27 +167,59 @@ export async function handleSubmitForm(
     postAnimeData.watching_progress,
     parseInt(totalEps) === parseInt(episodesData),
   )
-  console.log(statusConverted)
   // // upload media to firebase storage
-  const downloadMediaUrl = await uploadMedia(mediaUrl)
+  const uploadArray = <any>[]
+  let uploadImageUrl = <any>[]
+  let downloadMediaUrl = <any>[]
+  mediaUrl.forEach((data: any, index: any) => {
+    if (!haveUploadedImage[index]) {
+      uploadArray.push(mediaUrl[index])
+    }
+  })
+  if (uploadArray.length !== 0) {
+    uploadImageUrl = await uploadMedia(uploadArray)
+    var uploadIndex = 0
+    downloadMediaUrl = mediaUrl.map((data: any, index: any) => {
+      if (haveUploadedImage[index]) {
+        return data
+      }
+      return uploadImageUrl[uploadIndex++]
+    })
+  } else {
+    downloadMediaUrl = mediaUrl
+  }
+  console.log(downloadMediaUrl)
+
   // post info to firestore
   const promisePost = [] as any
 
   if (textInput || mediaUrl.length || statusConverted === "completed") {
-    promisePost.push(
-      addDoc(collection(db, "posts"), {
-        authorName: myUserInfo.username,
-        avatarUrl: myUserInfo.image,
-        timestamp: serverTimestamp(),
-        content: textInput || "",
-        imageUrl: mediaType === "image" ? downloadMediaUrl : "",
-        videoUrl: mediaType === "video" ? downloadMediaUrl[0] : "",
-        tag: tagData,
-        post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? {} : postAnimeData,
-      })
-    )
+    if (!isEditForm) {
+      promisePost.push(
+        addDoc(collection(db, "posts"), {
+          authorName: myUserInfo.username,
+          avatarUrl: myUserInfo.image,
+          timestamp: serverTimestamp(),
+          content: textInput || "",
+          imageUrl: mediaType === "image" ? downloadMediaUrl : "",
+          videoUrl: mediaType === "video" ? downloadMediaUrl[0] : "",
+          tag: tagData,
+          post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? {} : postAnimeData,
+        }),
+      )
+    } else {
+      promisePost.push(
+        updateDoc(doc(db, "posts", postID), {
+          content: textInput || "",
+          serverTimestamp: serverTimestamp(),
+          imageUrl: mediaType === "image" ? downloadMediaUrl : "",
+          videoUrl: mediaType === "video" ? downloadMediaUrl[0] : "",
+          tag: tagData,
+          post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? {} : postAnimeData,
+        }),
+      )
+    }
   }
-
 
   try {
     // post have anime data
@@ -186,8 +245,9 @@ export async function handleSubmitForm(
       // every users: post anime status to firebase
       const myAnimeListRef = doc(db, "myAnimeList", myUserInfo.username)
       const dateNow = getDateNow()
-      const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + postAnimeData.anime_id)
-        .then((res) => res.json())
+      const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + postAnimeData.anime_id).then(
+        (res) => res.json(),
+      )
       const animeData = {
         list_status: {
           num_episodes_watched: postAnimeData.episodes_seen,
@@ -200,7 +260,7 @@ export async function handleSubmitForm(
           id: postAnimeData.anime_id,
           main_picture: animeInformation.main_picture,
           title: animeInformation.title,
-          num_episodes: parseInt(totalEps)
+          num_episodes: parseInt(totalEps),
         },
       }
       if (!!startDate) (animeData as any).list_status.start_date = startDate
@@ -228,13 +288,14 @@ export async function handleSubmitForm(
           status: statusConverted,
         }),
       )
+      await Promise.all(promisePost)
     }
   } catch (err) {
     console.log(err)
   }
 }
 
-export const handlePaste = (e: any, setMediaUrl: any, setMediaType: any, mediaUrl: any) => {
+export const handlePaste = (e: any, setMediaUrl: any, setMediaType: any, mediaUrl: any, setHaveUploadedImage: any) => {
   const file = e.clipboardData.files[0]
   var clipboardData = e.clipboardData
   var types = clipboardData.types
@@ -245,6 +306,7 @@ export const handlePaste = (e: any, setMediaUrl: any, setMediaType: any, mediaUr
     const blob = file.slice(0, file.size, "image/png")
     const fileUrl = new File([blob], "image.png", { type: "image/png" })
     setMediaUrl([...mediaUrl, fileUrl])
+    setHaveUploadedImage((haveUploadedImage: any) => [...haveUploadedImage, false])
     setMediaType("image")
   }
 }
@@ -254,7 +316,9 @@ export const uploadMedia = async (mediaUrl: any) => {
   const promise: any[] = []
   mediaUrl.map((file: any) => {
     const fileRef = ref(storage, `posts/${v4()}`)
+    // file is blob url
     const uploadTask = uploadBytes(fileRef, file)
+    // const uploadTask = uploadBytes(fileRef, file)
     promise.push(uploadTask)
   })
 
@@ -275,14 +339,16 @@ export const handleDeleteMedia = (index: any, mediaUrl: any, setMediaUrl: any) =
   setMediaUrl(mediaUrl.filter((_: any, i: any) => i !== index))
 }
 
-export const handleMediaChange = (e: any, mediaUrl: any, setMediaType: any, setMediaUrl: any) => {
+export const handleMediaChange = (e: any, mediaUrl: any, setMediaType: any, setMediaUrl: any, mediaType: any) => {
   const file = e.target.files[0]
   if (!file) return
   const fileType = file.type.split("/")[0]
-  if (mediaUrl.length !== 0 && mediaUrl[0].type.split("/")[0] !== fileType) {
+
+  if (mediaUrl.length !== 0 && mediaType !== fileType) {
     setMediaType(fileType)
     setMediaUrl([file])
     alert("You can only upload image or video")
+    e.target.value = null
     return
   }
   if (mediaUrl.length >= 10) {
@@ -292,4 +358,30 @@ export const handleMediaChange = (e: any, mediaUrl: any, setMediaType: any, setM
   //TODO: -handle post a video after a video
   setMediaType(fileType)
   setMediaUrl([...mediaUrl, file])
+  e.target.value = null
+}
+
+// putting post information to postForm to edit
+export const showEditInformation = async (
+  postData: any,
+  setTextInput: any,
+  setBasicPostingInfo: any,
+  animeTagRef: any,
+  setMediaUrl: any,
+  setMediaType: any,
+  animeStatusRef: any,
+  animeEpisodesRef: any,
+  animeScoreRef: any,
+  animeSearchRef: any,
+  postAdditionalRef: any,
+  setHaveUploadedImage: any,
+  inputRef: any,
+) => {
+  setTextInput(postData.content)
+  setBasicPostingInfo(true)
+  setAnimeData(postData, animeSearchRef, animeEpisodesRef, animeStatusRef, animeScoreRef, postAdditionalRef)
+  inputRef.current.focus()
+  setPostTag(postData, animeTagRef)
+  setMediaData(postData, setMediaUrl, setHaveUploadedImage, setMediaType)
+  return
 }
