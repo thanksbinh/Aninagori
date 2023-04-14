@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { faCircleXmark, faFileCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames/bind"
@@ -28,7 +29,6 @@ const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
     haveUploadedImage,
     setHaveUploadedImage,
 }) => {
-    console.log(mediaUrl);
 
     if (mediaUrl.length === 0) return (<></>)
     return (
@@ -54,10 +54,12 @@ const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
                                     if (confirm('Are you sure you want to delete this video?')) {
                                         setMediaUrl([])
                                         await deleteMediaFiles(undefined, mediaUrl[0])
+                                        setHaveUploadedImage([])
+                                        return
                                     }
-                                } else {
-                                    handleDeleteMedia(0)
+                                    return;
                                 }
+                                handleDeleteMedia(0)
                                 setHaveUploadedImage([])
                             }}
                             icon={faCircleXmark as any}
@@ -72,22 +74,27 @@ const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
                         }
                     >
                         {mediaUrl.map((media: any, index: number) => {
+                            const bgImage = haveUploadedImage[index] ? media : URL.createObjectURL(media);
                             return (
                                 <div
                                     key={index}
                                     className={cx("image-wrapper")}
-                                    style={{ backgroundImage: `url(${haveUploadedImage[index] ? media : URL.createObjectURL(media)})` }}
                                 >
+                                    <img src={bgImage} alt={'image'} className={cx('image-bg')} ></img>
                                     <FontAwesomeIcon
                                         onClick={async () => {
+
+
                                             if (isEditPost && haveUploadedImage[index]) {
                                                 if (confirm('Are you sure you want to delete this image?')) {
                                                     setMediaUrl((prev: any) => prev.filter((item: any, i: number) => i !== index))
                                                     await deleteMediaFiles(media)
+                                                    setHaveUploadedImage((prev: any) => prev.filter((item: any, i: number) => i !== index))
+                                                    return
                                                 }
-                                            } else {
-                                                handleDeleteMedia(index)
+                                                return;
                                             }
+                                            handleDeleteMedia(index)
                                             setHaveUploadedImage((prev: any) => prev.filter((item: any, i: number) => i !== index))
                                         }}
                                         icon={faCircleXmark as any}
@@ -108,7 +115,7 @@ const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
                 <>
                 </>
             )}
-        </div>);
+        </div >);
 }
 
 export default memo(PostFormMediaDisplay);

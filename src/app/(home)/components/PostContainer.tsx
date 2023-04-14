@@ -3,13 +3,12 @@
 import PostContent from "@/app/post/[...post_id]/components/post/PostContent"
 import { db } from "@/firebase/firebase-app"
 import { collection, getCountFromServer } from "firebase/firestore"
-import { useContext, useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import ContextProvider from "../../post/[...post_id]/PostContext"
 import PostAction from "../../post/[...post_id]/components/post/PostAction"
 import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "../functions/recommendPost"
 import { HomeContext } from "../HomeContext"
-import PostFormPopUp from "./postFormPopup/PostFormPopUp"
 
 async function fetchCommentCount(postId: string) {
   const commentsRef = collection(db, "posts", postId, "comments")

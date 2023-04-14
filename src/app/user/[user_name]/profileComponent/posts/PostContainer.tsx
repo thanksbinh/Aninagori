@@ -102,10 +102,14 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
               watchingProgress={post?.post_anime_data?.watching_progress}
               episodesSeen={post?.post_anime_data?.episodes_seen}
               episodesTotal={post?.post_anime_data?.total_episodes}
-              tag={post?.post_anime_data?.tag}
+              tag={!!post?.post_anime_data?.tag ? post?.post_anime_data?.tag : post?.tag}
+              score={post?.post_anime_data?.score}
               postId={post.id}
             />
             <PostAction
+              myUserInfo={myUserInfo}
+              malAuthCode={myUserInfo?.mal_connect?.accessToken}
+              animeID={post?.post_anime_data?.anime_id}
               reactions={post.reactions}
               commentCountPromise={fetchCommentCount(post.id)}
               comments={post.lastComment ? [post.lastComment] : []}

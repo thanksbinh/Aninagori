@@ -39,6 +39,7 @@ const PostFormPopUp = (props: any, ref: any) => {
   const animeTagRef = useRef()
   const animeScoreRef = useRef()
   const postAdditionalRef = useRef()
+  const inputRef = useRef(null);
 
   const router = useRouter();
 
@@ -59,20 +60,21 @@ const PostFormPopUp = (props: any, ref: any) => {
       animeSearchRef,
       postAdditionalRef,
       setHaveUploadedImage,
+      inputRef
     )
   }
 
   useEffect(() => {
     if (isEditPost) {
       getInfo().catch((err) => console.log(err));
+    } else {
+      (inputRef.current as any).focus()
     }
   }, [])
 
   useEffect(() => {
     setIsUpdatePost(!(mediaUrl.length || textInput || showScore))
   }, [mediaUrl, textInput, showScore])
-
-
 
   useImperativeHandle(ref, () => ({
     setOpen: (open: boolean) => {
@@ -135,6 +137,7 @@ const PostFormPopUp = (props: any, ref: any) => {
             onChange={(e) => setTextInput(e.target.value)}
             value={textInput}
             type="text"
+            ref={inputRef}
             onPaste={(e: any) => {
               handlePaste(e, setMediaUrl, setMediaType, mediaUrl, setHaveUploadedImage)
             }}

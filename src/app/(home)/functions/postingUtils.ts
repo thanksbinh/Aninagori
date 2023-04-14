@@ -375,10 +375,12 @@ export const showEditInformation = async (
   animeSearchRef: any,
   postAdditionalRef: any,
   setHaveUploadedImage: any,
+  inputRef: any,
 ) => {
   setTextInput(postData.content)
   setBasicPostingInfo(true)
   setAnimeData(postData, animeSearchRef, animeEpisodesRef, animeStatusRef, animeScoreRef, postAdditionalRef)
+  inputRef.current.focus()
   setPostTag(postData, animeTagRef)
   setMediaData(postData, setMediaUrl, setHaveUploadedImage, setMediaType)
   return

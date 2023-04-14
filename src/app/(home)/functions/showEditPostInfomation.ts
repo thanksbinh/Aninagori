@@ -26,11 +26,15 @@ export async function setAnimeData(
     })
     ;(postAdditionalRef?.current as any).setData(animeData)
   }
-  ;(animeEpisodesRef?.current as any).setAnimeEpisodes(postData?.post_anime_data?.episodes_seen)
-  const status = convertPostFormWatchStatus(postData?.post_anime_data?.watching_progress)
-  ;(animeStatusRef?.current).setAnimeStatus(status)
-  ;(animeEpisodesRef?.current as any).setAnimeTotal(postData?.post_anime_data?.total_episodes)
-  ;(animeScoreRef?.current as any).setAnimeScore(postData?.post_anime_data?.score)
+  if (!!postData?.post_anime_data) {
+    ;(animeEpisodesRef?.current as any).setAnimeEpisodes(postData?.post_anime_data?.episodes_seen)
+    const status = convertPostFormWatchStatus(postData?.post_anime_data?.watching_progress)
+    ;(animeStatusRef?.current).setAnimeStatus(status)
+    ;(animeEpisodesRef?.current as any).setAnimeTotal(postData?.post_anime_data?.total_episodes)
+    if (!!postData?.post_anime_data?.score) {
+      ;(animeScoreRef?.current as any).setAnimeScore(postData?.post_anime_data?.score)
+    }
+  }
 }
 
 export function setPostTag(postData: any, animeTagRef: any) {
