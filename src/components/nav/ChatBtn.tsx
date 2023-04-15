@@ -6,7 +6,7 @@ import { BsChatDotsFill } from "@react-icons/all-files/bs/BsChatDotsFill";
 import ChatNotiContainer from "../chat/ChatNotiContainer";
 import ChatPopup from "../chat/ChatPopup";
 
-const ChatBtn = ({ myUserInfo }: { myUserInfo: UserInfo }) => {
+const ChatBtn = ({ myUserInfo }: { myUserInfo: UserInfo | undefined }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [showChatBtn, setShowChatBtn] = useState(false);
   const [unreadChats, setUnreadChats] = useState(0);
@@ -48,19 +48,23 @@ const ChatBtn = ({ myUserInfo }: { myUserInfo: UserInfo }) => {
           </span>
         )}
       </button>
-      <div className={showChatBtn ? "" : "hidden"}>
-        <ChatNotiContainer
-          myUserInfo={myUserInfo}
-          showChatBtn={showChatBtn}
-          toggleChatBtn={toggleChatBtn}
-          setUnreadChats={setUnreadChats}
-          setCurrentChat={setCurrentChat}
-          openChat={openChat}
-        />
-      </div>
-      <div className={`${showChat ? "" : "hidden"}`}>
-        <ChatPopup myUserInfo={myUserInfo} setShowChat={setShowChat} recipient={currentChat.username} image={currentChat.image} />
-      </div>
+      {myUserInfo?.username &&
+        <>
+          <div className={showChatBtn ? "" : "hidden"}>
+            <ChatNotiContainer
+              myUserInfo={myUserInfo}
+              showChatBtn={showChatBtn}
+              toggleChatBtn={toggleChatBtn}
+              setUnreadChats={setUnreadChats}
+              setCurrentChat={setCurrentChat}
+              openChat={openChat}
+            />
+          </div>
+          <div className={`${showChat ? "" : "hidden"}`}>
+            <ChatPopup myUserInfo={myUserInfo} setShowChat={setShowChat} recipient={currentChat.username} image={currentChat.image} />
+          </div>
+        </>
+      }
     </div>
   );
 };
