@@ -62,30 +62,26 @@ const ChatPopup: React.FC<ChatPopupProps> = ({ myUserInfo, setShowChat, recipien
     }
 
     return (
-        <>
-            {(
-                <div className="fixed right-80 bottom-0 w-96 h-2/3 flex flex-col bg-[#191c21] mt-8 rounded-t-2xl cursor-default">
-                    <div className="flex p-2 bg-[#4e5d78] rounded-t-2xl">
-                        <div className="flex justify-center items-center">
-                            <Avatar imageUrl={image} altText={myUserInfo.username} size={10} />
-                        </div>
-                        <div className="flex flex-1 flex-col pl-3">
-                            <p>{recipient}</p>
-                            <p>Active now</p>
-                        </div>
-                        <div className="flex justify-center items-start">
-                            <div className="p-2 rounded-full hover:bg-[#212833]">
-                                <MdClose onClick={closeChat} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-1 overflow-y-auto">
-                        <Messages myUserInfo={myUserInfo} friend={recipient} avatarUrl={image} />
-                    </div>
-                    <MessageForm conversationId={conversationId} myUserInfo={myUserInfo} friend={recipient} image={image} />
+        <div className="fixed right-80 bottom-0 w-96 h-2/3 flex flex-col bg-[#191c21] mt-8 rounded-t-2xl cursor-default">
+            <div className="flex p-2 bg-[#4e5d78] rounded-t-2xl">
+                <div className="flex justify-center items-center">
+                    <Avatar imageUrl={image} altText={myUserInfo.username} size={10} />
                 </div>
-            )}
-        </>
+                <div className="flex flex-1 flex-col pl-3">
+                    <p>{recipient}</p>
+                    <p>Active now</p>
+                </div>
+                <div className="flex justify-center items-start">
+                    <div className="p-2 rounded-full hover:bg-[#212833]">
+                        <MdClose onClick={closeChat} />
+                    </div>
+                </div>
+            </div>
+            <div className="flex flex-1 overflow-y-auto">
+                <Messages myUserInfo={myUserInfo} friend={recipient} avatarUrl={image} />
+            </div>
+            <MessageForm conversationId={conversationId} myUserInfo={myUserInfo} friend={recipient} image={image} />
+        </div>
     );
 };
 

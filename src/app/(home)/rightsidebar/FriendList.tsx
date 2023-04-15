@@ -6,7 +6,7 @@ import { UserInfo } from '@/global/UserInfo.types';
 import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
 import { useState } from 'react';
 
-const FriendList = ({ myFriendList, myUserInfo }: { myFriendList: Friend[] | undefined, myUserInfo: UserInfo }) => {
+const FriendList = ({ myFriendList, myUserInfo }: { myFriendList: Friend[] | undefined, myUserInfo: UserInfo | undefined }) => {
   const [showChat, setShowChat] = useState(false)
   const [currentChat, setCurrentChat] = useState({
     username: "",
@@ -32,9 +32,11 @@ const FriendList = ({ myFriendList, myUserInfo }: { myFriendList: Friend[] | und
           </div>
         ))}
       </div>
-      <div className={`${showChat ? "" : "hidden"}`}>
-        <ChatPopup myUserInfo={myUserInfo} setShowChat={setShowChat} recipient={currentChat.username} image={currentChat.image} />
-      </div>
+      {myUserInfo?.username &&
+        <div className={`${showChat ? "" : "hidden"}`}>
+          <ChatPopup myUserInfo={myUserInfo} setShowChat={setShowChat} recipient={currentChat.username} image={currentChat.image} />
+        </div>
+      }
     </div>
   )
 }
