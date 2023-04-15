@@ -11,13 +11,12 @@ import { UserInfo } from "@/global/UserInfo.types";
 
 interface ChatPopupProps {
     myUserInfo: UserInfo;
-    showChat: boolean,
     setShowChat: Dispatch<SetStateAction<boolean>>,
     recipient: string,
     image: string
 }
 
-const ChatPopup: React.FC<ChatPopupProps> = ({ myUserInfo, showChat, setShowChat, recipient, image }) => {
+const ChatPopup: React.FC<ChatPopupProps> = ({ myUserInfo, setShowChat, recipient, image }) => {
     const [conversationId, setConversationId] = useState("");
 
     useEffect(() => {
@@ -51,6 +50,8 @@ const ChatPopup: React.FC<ChatPopupProps> = ({ myUserInfo, showChat, setShowChat
             setConversationId(messageId);
             checkInbox(myUserInfo.username);
             checkInbox(recipient);
+            console.log("Chat Popup");
+            console.log(myUserInfo.image + " " + myUserInfo.username);
         }
 
         getConversationId();
@@ -62,7 +63,7 @@ const ChatPopup: React.FC<ChatPopupProps> = ({ myUserInfo, showChat, setShowChat
 
     return (
         <>
-            {showChat && (
+            {(
                 <div className="fixed right-80 bottom-0 w-96 h-2/3 flex flex-col bg-[#191c21] mt-8 rounded-t-2xl cursor-default">
                     <div className="flex p-2 bg-[#4e5d78] rounded-t-2xl">
                         <div className="flex justify-center items-center">

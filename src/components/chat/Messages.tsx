@@ -47,6 +47,7 @@ const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, fri
       } else {
         setMessages([]);
       }
+      console.log("Messages fetched");
     })
 
     return () => {
@@ -78,11 +79,9 @@ const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, fri
           isLastMessage={index === messages.length - 1 || message.senderUsername !== messages[index + 1].senderUsername}
         />
       ))}
-      {seenStatus && (
-        <div className={`flex flex-row-reverse text-white text-xs ${(messages[messages.length - 1].senderUsername === myUserInfo.username) ? "" : "hidden"}`}>
-          <p className="flex mr-4">seen ✓</p>
-        </div>
-      )}
+      <div className={`flex flex-row-reverse text-white text-xs ${seenStatus ? "" : "hidden"} ${(messages[messages.length - 1]?.senderUsername === myUserInfo?.username) ? "" : "hidden"}`}>
+        <p className="flex mr-4">seen ✓</p>
+      </div>
       <div ref={messagesEndRef}></div>
     </div>
   )

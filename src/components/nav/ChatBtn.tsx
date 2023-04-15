@@ -58,9 +58,9 @@ const ChatBtn = ({ myUserInfo }: { myUserInfo: UserInfo }) => {
           openChat={openChat}
         />
       </div>
-      {showChat && (
-        <ChatPopup myUserInfo={myUserInfo} showChat={showChat} setShowChat={setShowChat} recipient={currentChat.username} image={currentChat.image} />
-      )}
+      <div className={`${showChat ? "" : "hidden"}`}>
+        <ChatPopup myUserInfo={myUserInfo} setShowChat={setShowChat} recipient={currentChat.username} image={currentChat.image} />
+      </div>
     </div>
   );
 };
