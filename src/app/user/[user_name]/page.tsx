@@ -1,18 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
-import classNames from "classnames/bind"
-import styles from "./Profile.module.scss"
-import ProfileHeader from "@/app/user/[user_name]/profileComponent/ProfileHeader/ProfileHeader"
-import AnimeStatus from "@/app/user/[user_name]/profileComponent/AnimeStatus/AnimeStatus"
-import AnimeFavorite from "@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite"
-import AnimeUpdate from "@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate"
-import { collection, doc, getDoc, query, where, getDocs } from "firebase/firestore"
-import { db } from "@/firebase/firebase-app"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/pages/api/auth/[...nextauth]"
-import { Suspense } from "react"
-import PostForm from "@/app/(home)/components/PostForm"
-import { getUserInfo } from "@/global/getUserInfo"
+import PostForm from "@/app/(home)/components/postForm/PostForm"
 import * as apiServices from "@/app/api/apiServices/apiServicesConfig"
+import AnimeFavorite from "@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite"
+import AnimeStatus from "@/app/user/[user_name]/profileComponent/AnimeStatus/AnimeStatus"
+import AnimeUpdate from "@/app/user/[user_name]/profileComponent/AnimeUpdate/AnimeUpdate"
+import ProfileHeader from "@/app/user/[user_name]/profileComponent/ProfileHeader/ProfileHeader"
+import { db } from "@/firebase/firebase-app"
+import { authOptions } from "@/pages/api/auth/[...nextauth]"
+import classNames from "classnames/bind"
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore"
+import { getServerSession } from "next-auth/next"
+import { Suspense } from "react"
+import styles from "./Profile.module.scss"
 import ProfilePosts from "./profileComponent/posts/PostContainer"
 
 const cx = classNames.bind(styles)
@@ -71,15 +70,16 @@ async function Profile({ params }: { params: { user_name: string } }) {
             )}
           </div>
           <div className={cx("post-section")}>
-            {isAdmin && (
+            {/* {isAdmin && (
               <div className="-mt-4">
                 <PostForm
                   avatarUrl={adminData.image}
                   username={guessData.name || guessData.username}
                   isBanned={!!adminData.is_banned}
+                  malAuthCode={adminData?.mal_connect?.accessToken}
                 />
               </div>
-            )}
+            )} */}
             <ProfilePosts myUserInfo={adminData} profileUsername={guessData.username} />
           </div>
         </div>
@@ -137,4 +137,6 @@ async function getUserAnimeUpdate(access_token: any, mal_username: any) {
   }
 }
 
+export const fetchCache = 'force-no-store'
 export default Profile
+

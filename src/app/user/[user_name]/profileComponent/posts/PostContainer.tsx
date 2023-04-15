@@ -1,5 +1,6 @@
 'use client'
 
+import PostFormPopUp from "@/app/(home)/components/postFormPopup/PostFormPopUp";
 import ContextProvider from "@/app/post/[...post_id]/PostContext";
 import PostAction from "@/app/post/[...post_id]/components/post/PostAction";
 import PostContent from "@/app/post/[...post_id]/components/post/PostContent";
@@ -7,7 +8,7 @@ import { formatDuration } from "@/components/utils/format";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
 import { collection, getCountFromServer, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 async function fetchProfilePosts(profileUsername: string, lastKey: any) {
@@ -43,6 +44,8 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
   const [posts, setPosts] = useState<any>([])
   const [hasMore, setHasMore] = useState(true)
   const [lastKey, setLastKey] = useState<any>({})
+
+  const inputRef = useRef()
 
   useEffect(() => {
     fetchPosts()
@@ -84,28 +87,34 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
           authorName={post.authorName}
           animeID={post.post_anime_data?.anime_id}
           postId={post.id}
+          postData={post}
         >
-          <PostContent
-            authorName={post.authorName}
-            avatarUrl={post.avatarUrl}
-            timestamp={post.timestamp}
-            content={post.content}
-            imageUrl={post.imageUrl}
-            videoUrl={post.videoUrl}
-            animeID={post?.post_anime_data?.anime_id}
-            animeName={post?.post_anime_data?.anime_name}
-            watchingProgress={post?.post_anime_data?.watching_progress}
-            episodesSeen={post?.post_anime_data?.episodes_seen}
-            episodesTotal={post?.post_anime_data?.total_episodes}
-            tag={post?.post_anime_data?.tag}
-            postId={post.id}
-          />
-          <PostAction
-            reactions={post.reactions}
-            commentCountPromise={fetchCommentCount(post.id)}
-            comments={post.lastComment ? [post.lastComment] : []}
-          />
-          <div className="mb-4"></div>
+          <div className="mb-4">
+            <PostContent
+              authorName={post.authorName}
+              avatarUrl={post.avatarUrl}
+              timestamp={post.timestamp}
+              content={post.content}
+              imageUrl={post.imageUrl}
+              videoUrl={post.videoUrl}
+              animeID={post?.post_anime_data?.anime_id}
+              animeName={post?.post_anime_data?.anime_name}
+              watchingProgress={post?.post_anime_data?.watching_progress}
+              episodesSeen={post?.post_anime_data?.episodes_seen}
+              episodesTotal={post?.post_anime_data?.total_episodes}
+              tag={!!post?.post_anime_data?.tag ? post?.post_anime_data?.tag : post?.tag}
+              score={post?.post_anime_data?.score}
+              postId={post.id}
+            />
+            <PostAction
+              myUserInfo={myUserInfo}
+              malAuthCode={myUserInfo?.mal_connect?.accessToken}
+              animeID={post?.post_anime_data?.anime_id}
+              reactions={post.reactions}
+              commentCountPromise={fetchCommentCount(post.id)}
+              comments={post.lastComment ? [post.lastComment] : []}
+            />
+          </div>
         </ContextProvider>
       ))}
 

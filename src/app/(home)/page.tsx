@@ -1,13 +1,14 @@
-import { authOptions } from "@/pages/api/auth/[...nextauth]"
-import { getServerSession } from "next-auth"
-import { getUserInfo } from "@/global/getUserInfo"
-import PostForm from "./components/PostForm"
-import Posts from "./components/PostContainer"
-import AnimeRecommendList from "./leftsidebar/AnimeRecommendList"
-import FriendList from "./rightsidebar/FriendList"
-import ContextProvider from "./HomeContext"
-import { getFriendList, fetchPostPreference, fetchMyAnimeList } from "./components/functions/fetchData"
-import { syncAnimeUpdate, updateLastView } from "./components/functions/syncUpdates"
+import { getUserInfo } from "@/global/getUserInfo";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { getServerSession } from "next-auth";
+import '../globals.css';
+import { fetchMyAnimeList, fetchPostPreference, getFriendList } from "./functions/fetchData";
+import { syncAnimeUpdate, updateLastView } from "./functions/syncUpdates";
+import Posts from "./components/PostContainer";
+import PostForm from './components/postForm/PostForm';
+import ContextProvider from "./HomeContext";
+import AnimeRecommendList from "./components/leftsidebar/AnimeRecommendList";
+import FriendList from "./components/rightsidebar/FriendList";
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
@@ -29,29 +30,24 @@ export default async function Home() {
     <div className="flex justify-between pt-4">
       <ContextProvider myUserInfo={myUserInfo}>
         <div className="xl:block xl:flex-1 flex-shrink max-w-[320px]">
-          <div className="hidden xl:block max-w-[360px] py-16 px-2 h-full fixed left-0 z-20 bg-ani-black">
+          <div className="hidden xl:block w-[360px] py-16 px-2 h-full fixed left-0 z-20 bg-ani-black">
             {/* @ts-expect-error Server Component */}
-            <AnimeRecommendList myUsername={myUserInfo.username} potentialAnimes={postPreference.animeList} />
+            <AnimeRecommendList myUserInfo={myUserInfo} potentialAnimes={postPreference.animeList} />
           </div>
         </div>
 
         <div className="lg:w-2/5 md:w-3/5 sm:w-4/5 w-full">
           <div className="h-screen flex flex-col pt-10">
             <PostForm
-              avatarUrl={myUserInfo.image}
-              username={myUserInfo.username}
-              isBanned={!!myUserInfo.is_banned}
-              malAuthCode={myUserInfo?.auth_code}
+              myAnimeList={myAnimeList?.animeList}
             />
-
             <Posts
-              myUserInfo={myUserInfo}
               myFriendList={myFriendList}
               myAnimeList={myAnimeList?.animeList}
               postPreference={postPreference}
             />
           </div>
-        </div>
+        </div >
 
         <div className="lg:block lg:flex-1 flex-shrink max-w-[320px]">
           <div className="hidden lg:block w-[320px] pt-16 px-2 h-screen fixed right-0 z-20 bg-ani-black">
@@ -59,7 +55,7 @@ export default async function Home() {
             <FriendList myFriendList={myFriendList} myUserInfo={myUserInfo} />
           </div>
         </div>
-      </ContextProvider>
-    </div>
+      </ContextProvider >
+    </div >
   )
 }

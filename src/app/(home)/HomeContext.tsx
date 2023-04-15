@@ -12,6 +12,9 @@ export const HomeContext = React.createContext<HomeContextType>({
     username: "",
     image: "",
     id: "",
+    is_admin: false,
+    is_banned: false,
+    mal_connect: {}
   },
 });
 

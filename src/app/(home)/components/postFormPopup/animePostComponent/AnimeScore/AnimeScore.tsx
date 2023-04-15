@@ -6,12 +6,15 @@ import styles from "./AnimeScore.module.scss"
 const cx = classNames.bind(styles)
 
 function AnimeScore(props: any, ref: any) {
-  const [score, setScore] = useState("0")
+  const [score, setScore] = useState("1")
 
   useImperativeHandle(ref, () => ({
     getAnimeScore: () => {
       return score
     },
+    setAnimeScore: (score: any) => {
+      setScore(score)
+    }
   }))
 
   return (
@@ -32,6 +35,11 @@ function AnimeScore(props: any, ref: any) {
       <div className={cx("icon-wrapper")}>
         <FontAwesomeIcon
           onClick={() => {
+            if (score === undefined) {
+              setScore("2")
+              return
+            }
+
             if (parseInt(score) >= 10) {
               setScore("10")
             } else if (score === "") {
@@ -45,6 +53,10 @@ function AnimeScore(props: any, ref: any) {
         />
         <FontAwesomeIcon
           onClick={() => {
+            if (score === undefined) {
+              setScore("1")
+              return
+            }
             if (parseInt(score) <= 1) {
               setScore("1")
             } else if (score === "") {
