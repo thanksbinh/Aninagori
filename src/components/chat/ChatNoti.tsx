@@ -107,7 +107,7 @@ const ChatNoti: React.FC<Props> = (
                 />
                 <div>
                     <p className={`text-sm font-medium ${read ? "text-[#a5a5a5]" : "text-white"}`}>
-                        {name + ": " + lastMessage}
+                        {name + ": " + (lastMessage.length > 20 ? lastMessage.substring(0, 25) + "..." : lastMessage)}
                     </p>
                     <p className={`text-xs ${read ? "text-[#a5a5a5]" : "text-[#377dff]"}`}>
                         {formatDuration(new Date().getTime() - timestamp.toDate().getTime())}
