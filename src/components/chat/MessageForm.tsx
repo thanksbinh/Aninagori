@@ -47,6 +47,8 @@ const MessageForm: FC<Props> = ({
       likes: 0
     }
 
+    setMyMessage("");
+
     await sendMessage(content);
     await setLastMessage(
       {
@@ -81,8 +83,6 @@ const MessageForm: FC<Props> = ({
       },
       friend
     );
-
-    setMyMessage("");
 
     setLastRead(myUserInfo, conversationId);
   }
