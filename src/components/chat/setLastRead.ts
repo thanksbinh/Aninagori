@@ -1,6 +1,6 @@
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
-import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 
 export async function setLastRead(myUserInfo: UserInfo, conversationId: string) {
   const conversationRef = doc(db, "conversation", conversationId);
