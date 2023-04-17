@@ -59,9 +59,7 @@ const PostContent: FC<PostStaticProps> = ({
               </Link>
               <p className={cx("watch-status")}>{watchingProgress}</p>
               <AnimeName animeName={animeName} animeID={animeID as any} seen={episodesSeen} total={episodesTotal} />
-              <div className={cx("post-option")}>
-                <PostOptions editPostID={postId} />
-              </div>
+              <PostOptions editPostID={postId} />
             </div>
           </div>
           <div className="flex">
