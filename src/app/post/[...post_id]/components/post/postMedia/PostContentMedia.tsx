@@ -112,7 +112,9 @@ function PostContentMedia({
             />
           </>
         )}
-        {videoUrl && <VideoComponent videoUrl={videoUrl} className={cx({ "blur-2xl": spoiler })} />}
+        {!!videoUrl.slug ?
+          <iframe className={cx('rounded-2xl w-full h-[280px]', { "blur-2xl": spoiler })} src={"https://short.ink/" + videoUrl.slug} allowFullScreen ></iframe>
+          : (videoUrl && <VideoComponent videoUrl={videoUrl} className={cx({ "blur-2xl": spoiler })} />)}
       </div>
     </>
   )

@@ -46,7 +46,15 @@ const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
             {mediaUrl.length > 0 ? (
                 mediaType === "video" ? (
                     <div className={cx("media-wrapper") + " w-2/3 h-full flex items-center relative"}>
-                        <video src={haveUploadedImage[0] ? mediaUrl[0] : URL.createObjectURL(mediaUrl[0])} className="w-full object-contain rounded-xl" controls />
+                        {!!mediaUrl[0].slug ?
+                            (<iframe
+                                className="w-full h-[220px] flex items-center relative"
+                                src={"https://short.ink/" + mediaUrl[0].slug}
+                                allowFullScreen>
+                            </iframe>) :
+                            (
+                                <video src={haveUploadedImage[0] ? mediaUrl[0] : URL.createObjectURL(mediaUrl[0])} className="w-full object-contain rounded-xl" controls />
+                            )}
                         <FontAwesomeIcon
                             onClick={async () => {
                                 //TODO: handle delete media in firebase if post is edit
@@ -63,6 +71,7 @@ const PostFormMediaDisplay: React.FC<PostFormMediaDisplayProps> = ({
                                 setHaveUploadedImage([])
                             }}
                             icon={faCircleXmark as any}
+                            style={{ color: 'white' }}
                             className={cx("delete-icon")}
                         />
                     </div>

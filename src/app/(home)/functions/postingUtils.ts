@@ -167,32 +167,42 @@ export async function handleSubmitForm(
     postAnimeData.watching_progress,
     parseInt(totalEps) === parseInt(episodesData),
   )
-  // // upload media to firebase storage
+  // upload video to Abyss.to and image to firebase
   const uploadArray = <any>[]
   let uploadImageUrl = <any>[]
   let downloadMediaUrl = <any>[]
-  mediaUrl.forEach((data: any, index: any) => {
-    if (!haveUploadedImage[index]) {
-      uploadArray.push(mediaUrl[index])
-    }
-  })
-  if (uploadArray.length !== 0) {
-    uploadImageUrl = await uploadMedia(uploadArray)
-    var uploadIndex = 0
-    downloadMediaUrl = mediaUrl.map((data: any, index: any) => {
-      if (haveUploadedImage[index]) {
-        return data
+  if (mediaType === "video" && mediaUrl.length > 0) {
+    var file_name = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + ".mp4"
+    var formData = new FormData()
+    formData.append("file", mediaUrl[0], file_name)
+
+    const body = await fetch("http://up.hydrax.net/" + process.env.NEXT_PUBLIC_ABYSS_API_KEY, {
+      method: "POST",
+      body: formData,
+    }).then((res) => res.json())
+    downloadMediaUrl = [{ slug: body.slug }]
+  } else if (mediaType === "image") {
+    mediaUrl.forEach((data: any, index: any) => {
+      if (!haveUploadedImage[index]) {
+        uploadArray.push(mediaUrl[index])
       }
-      return uploadImageUrl[uploadIndex++]
     })
-  } else {
-    downloadMediaUrl = mediaUrl
+    if (uploadArray.length !== 0) {
+      uploadImageUrl = await uploadMedia(uploadArray)
+      var uploadIndex = 0
+      downloadMediaUrl = mediaUrl.map((data: any, index: any) => {
+        if (haveUploadedImage[index]) {
+          return data
+        }
+        return uploadImageUrl[uploadIndex++]
+      })
+    } else {
+      downloadMediaUrl = mediaUrl
+    }
   }
-  console.log(downloadMediaUrl)
 
-  // post info to firestore
+  // // post info to firestore
   const promisePost = [] as any
-
   if (textInput || mediaUrl.length || statusConverted === "completed") {
     if (!isEditForm) {
       promisePost.push(
