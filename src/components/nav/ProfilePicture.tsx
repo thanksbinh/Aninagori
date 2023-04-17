@@ -1,16 +1,18 @@
 'use client'
 
+import { useFirebaseSession } from '@/app/SessionProvider';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import UsernamePopup from '../utils/UsernamePopup';
 import { UserInfo } from "../../global/UserInfo.types";
+import UsernamePopup from '../utils/UsernamePopup';
 
 interface Props {
     myUserInfo: UserInfo | undefined
 }
 
 const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
+    const session = useFirebaseSession();
     const ref = useRef<HTMLDivElement>(null);
     const [isOpen, setIsOpen] = useState(false);
     const [openUsernamePopup, setOpenUsernamePopup] = useState(false)
@@ -76,7 +78,13 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
                     </button>
                 </div>
             }
-            <UsernamePopup isOpen={openUsernamePopup} onClose={() => setOpenUsernamePopup(false)} />
+            {openUsernamePopup &&
+                <UsernamePopup
+                    isOpen={openUsernamePopup}
+                    onClose={() => setOpenUsernamePopup(false)}
+                    session={session}
+                />
+            }
         </div>
     );
 };
