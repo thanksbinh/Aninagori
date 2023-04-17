@@ -1,6 +1,5 @@
 'use client'
 
-import PostFormPopUp from "@/app/(home)/components/postFormPopup/PostFormPopUp";
 import ContextProvider from "@/app/post/[...post_id]/PostContext";
 import PostAction from "@/app/post/[...post_id]/components/post/PostAction";
 import PostContent from "@/app/post/[...post_id]/components/post/PostContent";
@@ -40,7 +39,7 @@ async function fetchCommentCount(postId: string) {
   return commentCount;
 }
 
-export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserInfo: UserInfo, profileUsername?: string }) {
+export default function ProfilePosts({ myUserInfo, profileUsername, className }: { myUserInfo: UserInfo, profileUsername?: string, className?: string }) {
   const [posts, setPosts] = useState<any>([])
   const [hasMore, setHasMore] = useState(true)
   const [lastKey, setLastKey] = useState<any>({})
@@ -77,7 +76,7 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
       }
       refreshFunction={() => console.log("refresh")}
       pullDownToRefresh={true}
-      className="flex flex-col"
+      className={className + " flex flex-col"}
     >
       {posts.map((post: any) => (
         <ContextProvider

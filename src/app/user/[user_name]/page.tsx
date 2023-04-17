@@ -70,17 +70,14 @@ async function Profile({ params }: { params: { user_name: string } }) {
             )}
           </div>
           <div className={cx("post-section")}>
-            {/* {isAdmin && (
-              <div className="-mt-4">
+            {isAdmin && (
+              <div className={cx('form-profile') + " -mt-4"}>
                 <PostForm
-                  avatarUrl={adminData.image}
-                  username={guessData.name || guessData.username}
-                  isBanned={!!adminData.is_banned}
-                  malAuthCode={adminData?.mal_connect?.accessToken}
+                  myAnimeList={null}
                 />
               </div>
-            )} */}
-            <ProfilePosts myUserInfo={adminData} profileUsername={guessData.username} />
+            )}
+            <ProfilePosts className={cx('post-profile-container')} myUserInfo={adminData} profileUsername={guessData.username} />
           </div>
         </div>
       </div>

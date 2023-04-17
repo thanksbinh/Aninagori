@@ -7,6 +7,7 @@
   left: 0;
   animation: fadeIn linear 0.1s;
   z-index: 36;
+  background-color: unset !important;
 
   & > form {
     z-index: 3;

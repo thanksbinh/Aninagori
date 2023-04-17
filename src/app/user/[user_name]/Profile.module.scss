@@ -58,7 +58,14 @@
   width: 53.5%;
 }
 
-.post-section > * > * > * > * {
+.form-profile > div {
+  background-color: var(--primary-color);
+}
+
+// .form-profile > * {
+// }
+
+.post-profile-container > * > * {
   background-color: var(--primary-color) !important;
 }
 
