@@ -32,10 +32,8 @@ const FriendList = ({ myFriendList, myUserInfo }: { myFriendList: Friend[] | und
           </div>
         ))}
       </div>
-      {myUserInfo?.username &&
-        <div className={`${showChat ? "" : "hidden"}`}>
-          <ChatPopup myUserInfo={myUserInfo} setShowChat={setShowChat} recipient={currentChat.username} image={currentChat.image} />
-        </div>
+      {myUserInfo?.username && showChat &&
+        <ChatPopup myUserInfo={myUserInfo} setShowChat={setShowChat} recipient={currentChat.username} image={currentChat.image} />
       }
     </div>
   )

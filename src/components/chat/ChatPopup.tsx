@@ -50,8 +50,6 @@ const ChatPopup: React.FC<ChatPopupProps> = ({ myUserInfo, setShowChat, recipien
             setConversationId(messageId);
             checkInbox(myUserInfo.username);
             checkInbox(recipient);
-            console.log("Chat Popup");
-            console.log(myUserInfo.image + " " + myUserInfo.username);
         }
 
         getConversationId();

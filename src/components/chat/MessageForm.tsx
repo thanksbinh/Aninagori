@@ -1,9 +1,9 @@
 'use client'
 
-import { collection, doc, updateDoc, arrayUnion, getDoc, arrayRemove } from "firebase/firestore";
-import { FC, useState, useRef } from "react";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
+import { arrayRemove, arrayUnion, collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import { FC, useRef, useState } from "react";
 import { setLastRead } from "./setLastRead";
 
 interface Props {
@@ -37,7 +37,6 @@ const MessageForm: FC<Props> = ({
 
   const onMessage = async (e: any) => {
     e.preventDefault();
-
     if (!myMessage.trim()) return;
 
     const content = {
@@ -49,42 +48,43 @@ const MessageForm: FC<Props> = ({
 
     setMyMessage("");
 
-    await sendMessage(content);
-    await setLastMessage(
-      {
-        id: conversationId,
-        lastMessage: {
-          content: myMessage,
-          read: true,
-          senderUsername: myUserInfo.username,
-          timestamp: new Date()
-        },
-        sender: {
-          username: friend,
-          image: image
-        }
-      },
-      myUserInfo.username
-    );
+    await Promise.all([
+      setLastRead(myUserInfo, conversationId),
+      sendMessage(content),
 
-    await setLastMessage(
-      {
-        id: conversationId,
-        lastMessage: {
-          content: myMessage,
-          read: false,
-          senderUsername: myUserInfo.username,
-          timestamp: new Date()
+      setLastMessage(
+        {
+          id: conversationId,
+          lastMessage: {
+            content: myMessage,
+            read: true,
+            senderUsername: myUserInfo.username,
+            timestamp: new Date()
+          },
+          sender: {
+            username: friend,
+            image: image
+          }
         },
-        sender: {
-          username: myUserInfo.username,
-          image: myUserInfo.image
-        }
-      },
-      friend
-    );
-
-    setLastRead(myUserInfo, conversationId);
+        myUserInfo.username
+      ),
+      setLastMessage(
+        {
+          id: conversationId,
+          lastMessage: {
+            content: myMessage,
+            read: false,
+            senderUsername: myUserInfo.username,
+            timestamp: new Date()
+          },
+          sender: {
+            username: myUserInfo.username,
+            image: myUserInfo.image
+          }
+        },
+        friend
+      )
+    ])
   }
 
   // set last message of conversation
@@ -114,17 +114,18 @@ const MessageForm: FC<Props> = ({
   }
 
   // set seen status
-  const onFormClick = async () => {
+  const onFormFocus = async () => {
     const conversationRef = doc(collection(db, 'conversation'), conversationId);
     const docSnap = await getDoc(conversationRef);
     if (docSnap.data()?.messages?.slice(-1)[0]?.senderUsername !== myUserInfo.username) {
       setLastRead(myUserInfo, conversationId)
     }
+    console.log(docSnap.data()?.user1LastRead, docSnap.data()?.user2LastRead);
   }
 
   return (
     <div className="flex items-center my-4 pr-4 pl-2">
-      <form onClick={onFormClick} onSubmit={onMessage} className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] caret-white" >
+      <form onFocus={onFormFocus} onSubmit={onMessage} className="rounded-2xl py-2 px-4 ml-2 w-full bg-[#212833] caret-white" >
         <input
           type="text"
           placeholder="Say something..."
