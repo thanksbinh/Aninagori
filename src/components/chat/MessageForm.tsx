@@ -3,7 +3,7 @@
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
 import { arrayUnion, collection, doc, getDoc, updateDoc } from "firebase/firestore";
-import { FC, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { setLastRead } from "./setLastRead";
 import { findOldLastMessage, setLastMessage, updateStatus } from "./ChatNoti";
 
@@ -26,6 +26,9 @@ const MessageForm: FC<Props> = ({
 
   const [myMessage, setMyMessage] = useState("");
 
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [conversationId]);
 
   // send message to conversation
   const sendMessage = async (message: any) => {
