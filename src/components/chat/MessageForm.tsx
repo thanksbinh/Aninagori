@@ -5,6 +5,7 @@ import { UserInfo } from "@/global/UserInfo.types";
 import { arrayRemove, arrayUnion, collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { FC, useRef, useState } from "react";
 import { setLastRead } from "./setLastRead";
+import { findOldLastMessage, setLastMessage, updateStatus } from "./ChatNoti";
 
 interface Props {
   messageId?: string;
@@ -66,7 +67,7 @@ const MessageForm: FC<Props> = ({
             image: image
           }
         },
-        myUserInfo.username
+        myUserInfo.username, conversationId
       ),
       setLastMessage(
         {
@@ -82,45 +83,36 @@ const MessageForm: FC<Props> = ({
             image: myUserInfo.image
           }
         },
-        friend
+        friend, conversationId
       )
     ])
   }
 
-  // set last message of conversation
-  const findOldLastMessage = async (username: string) => {
-    const inboxRef = doc(collection(db, 'inbox'), username);
-    const inboxDoc = await getDoc(inboxRef);
-
-    if (inboxDoc.exists() && inboxDoc.data()?.hasOwnProperty("recentChats")) {
-      const message = inboxDoc.data()?.recentChats.find((e: any) => e.id === conversationId);
-      if (message) { return message }
-    }
-    else return null;
-  }
-
-  const setLastMessage = async (lastMessage: any, username: string) => {
-    const inboxRef = doc(collection(db, 'inbox'), username);
-    const oldLastMessage = await findOldLastMessage(username);
-    if (oldLastMessage) {
-      await updateDoc(inboxRef, {
-        recentChats: arrayRemove(oldLastMessage)
-      });
-    }
-
-    await updateDoc(inboxRef, {
-      recentChats: arrayUnion(lastMessage)
-    });
-  }
-
-  // set seen status
+  // set seen status and set last message read status on focus
   const onFormFocus = async () => {
     const conversationRef = doc(collection(db, 'conversation'), conversationId);
     const docSnap = await getDoc(conversationRef);
     if (docSnap.data()?.messages?.slice(-1)[0]?.senderUsername !== myUserInfo.username) {
       setLastRead(myUserInfo, conversationId)
     }
-    console.log(docSnap.data()?.user1LastRead, docSnap.data()?.user2LastRead);
+
+    const oldLastMessage = await findOldLastMessage(myUserInfo.username, conversationId);
+    updateStatus(
+      {
+        id: conversationId,
+        lastMessage: {
+          content: oldLastMessage.lastMessage.content,
+          read: true,
+          senderUsername: oldLastMessage.lastMessage.senderUsername,
+          timestamp: oldLastMessage.lastMessage.timestamp
+        },
+        sender: {
+          username: oldLastMessage.sender.username,
+          image: oldLastMessage.sender.image
+        }
+      },
+      myUserInfo.username, conversationId
+    );
   }
 
   return (
