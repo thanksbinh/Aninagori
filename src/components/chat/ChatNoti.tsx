@@ -1,7 +1,7 @@
 
 import { formatDuration } from "@/components/utils/format";
 import { db } from "@/firebase/firebase-app";
-import { arrayRemove, arrayUnion, collection, doc, getDoc, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, doc, getDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { Dispatch, SetStateAction } from "react";
 import { UserInfo } from "../../global/UserInfo.types";
 

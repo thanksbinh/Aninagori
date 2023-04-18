@@ -2,7 +2,10 @@
 
 import { Dispatch, SetStateAction } from "react";
 import { formatDuration } from "@/components/utils/format";
-import { Timestamp } from "firebase/firestore";
+import { collection, doc, getDoc, Timestamp } from "firebase/firestore";
+import { db } from "@/firebase/firebase-app";
+import { findOldLastMessage, updateStatus } from "@/components/chat/ChatNoti";
+import { UserInfo } from "@/global/UserInfo.types";
 
 export interface Friend {
   username: string
@@ -21,7 +24,7 @@ const statusTextColor = new Map([
   ['dropped', 'text-red-400']
 ]);
 
-const FriendComponent = ({ friendInfo, openChat, setCurrentChat }:
+const FriendComponent = ({ friendInfo, openChat, setCurrentChat, myUserInfo }:
   {
     friendInfo: Friend,
     openChat: () => void,
@@ -29,9 +32,42 @@ const FriendComponent = ({ friendInfo, openChat, setCurrentChat }:
       username: string;
       image: string;
     }>>
+    myUserInfo: UserInfo | undefined
   }) => {
 
-  const onClick = () => {
+  async function getInbox() {
+    if (myUserInfo?.username) {
+      const inboxRef = doc(collection(db, "inbox"), myUserInfo.username);
+      const inboxDoc = await getDoc(inboxRef);
+      if (!inboxDoc.exists()) return;
+
+      const inbox = inboxDoc?.data()?.recentChats.find((obj: any) => (obj.sender.username === friendInfo.username));
+      return inbox.id;
+    }
+  }
+
+  const onClick = async () => {
+    if (myUserInfo?.username) {
+      const conversationId = await getInbox();
+      const oldLastMessage = await findOldLastMessage(myUserInfo.username, conversationId);
+      updateStatus(
+        {
+          id: conversationId,
+          lastMessage: {
+            content: oldLastMessage.lastMessage.content,
+            read: true,
+            senderUsername: oldLastMessage.lastMessage.senderUsername,
+            timestamp: oldLastMessage.lastMessage.timestamp
+          },
+          sender: {
+            username: oldLastMessage.sender.username,
+            image: oldLastMessage.sender.image
+          }
+        },
+        myUserInfo.username, conversationId
+      );
+    }
+
     openChat();
     setCurrentChat({
       username: friendInfo.username,
