@@ -69,9 +69,9 @@ const ChatPopup: React.FC<ChatPopupProps> = ({ myUserInfo, setShowChat, recipien
                     <p>{recipient}</p>
                     <p>Active now</p>
                 </div>
-                <div className="flex justify-center items-start">
+                <div className="flex justify-center items-start" onClick={closeChat}>
                     <div className="p-2 rounded-full hover:bg-[#212833]">
-                        <MdClose onClick={closeChat} />
+                        <MdClose />
                     </div>
                 </div>
             </div>

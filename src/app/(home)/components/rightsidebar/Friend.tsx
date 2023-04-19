@@ -42,7 +42,7 @@ const FriendComponent = ({ friendInfo, openChat, setCurrentChat, myUserInfo }:
       if (!inboxDoc.exists()) return;
 
       const inbox = inboxDoc?.data()?.recentChats.find((obj: any) => (obj.sender.username === friendInfo.username));
-      return inbox.id;
+      if (inbox) return inbox.id;
     }
   }
 
@@ -50,22 +50,24 @@ const FriendComponent = ({ friendInfo, openChat, setCurrentChat, myUserInfo }:
     if (myUserInfo?.username) {
       const conversationId = await getInbox();
       const oldLastMessage = await findOldLastMessage(myUserInfo.username, conversationId);
-      updateStatus(
-        {
-          id: conversationId,
-          lastMessage: {
-            content: oldLastMessage.lastMessage.content,
-            read: true,
-            senderUsername: oldLastMessage.lastMessage.senderUsername,
-            timestamp: oldLastMessage.lastMessage.timestamp
+      if (oldLastMessage) {
+        updateStatus(
+          {
+            id: conversationId,
+            lastMessage: {
+              content: oldLastMessage.lastMessage.content,
+              read: true,
+              senderUsername: oldLastMessage.lastMessage.senderUsername,
+              timestamp: oldLastMessage.lastMessage.timestamp
+            },
+            sender: {
+              username: oldLastMessage.sender.username,
+              image: oldLastMessage.sender.image
+            }
           },
-          sender: {
-            username: oldLastMessage.sender.username,
-            image: oldLastMessage.sender.image
-          }
-        },
-        myUserInfo.username, conversationId
-      );
+          myUserInfo.username, conversationId
+        );
+      }
     }
 
     openChat();
