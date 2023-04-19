@@ -116,7 +116,7 @@ const PostFormPopUp = (props: any, ref: any) => {
       <form
         onClick={(e) => e.stopPropagation()}
         onSubmit={(e) => !loadPosting && handleSubmit(e)}
-        className="relative flex flex-col bg-[#191c21] rounded-2xl my-4 transition ease-in-out duration-200"
+        className="relative flex flex-col bg-[#191c21] rounded-2xl my-4"
       >
         <FontAwesomeIcon
           onClick={() => !loadPosting && setOpen(false)}

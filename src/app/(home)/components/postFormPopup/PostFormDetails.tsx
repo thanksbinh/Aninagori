@@ -196,10 +196,10 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
         <FontAwesomeIcon icon={faTv} className="text-yellow-500 text-xl ml-3 mr-2" />
         <p className="font-semibold text-sm mr-4">Re-watching</p>
         <div className="flex-1 flex justify-center items-center mr-8">
-          <p className="text-sm mr-3">Total: </p>
+          <p className="text-sm mr-6 ml-2">Total: </p>
           <input
             type="text"
-            className="w-[77px] h-10 rounded-lg bg-[#4e5d78] text-white text-center outline-none"
+            className="w-[83px] h-10 rounded-lg bg-[#4e5d78] text-white text-center outline-none"
             value={rewatchTime}
             onChange={(e) => {
               const regex = /^\d+$/
@@ -280,7 +280,7 @@ function ChooseDate({ data, setData, type, progress }: { data: any; setData: any
         }}
       >
         <div
-          className={`${type === "Year" ? "w-[100px]" : "w-[83px]"
+          className={`${type === "Year" ? "min-w-[100px]" : "min-w-[83px]"
             } relative cursor-pointer px-8 py-2 rounded-lg bg-[#4e5d78] text-center`}
           onClick={() => {
             setData(

@@ -13,13 +13,17 @@ import { getServerSession } from "next-auth/next"
 import { Suspense } from "react"
 import styles from "./Profile.module.scss"
 import ProfilePosts from "./profileComponent/posts/PostContainer"
+import { getUserInfo } from "@/global/getUserInfo"
+import ContextProvider from "@/app/(home)/HomeContext"
 
 const cx = classNames.bind(styles)
 
 async function Profile({ params }: { params: { user_name: string } }) {
   const session = await getServerSession(authOptions)
-  // const myUserId = (session as any)?.user?.id
-  // const myUserInfo = await getUserInfo(myUserId)
+  const myUserId = (session as any)?.user?.id
+  const myUserInfo = await getUserInfo(myUserId)
+
+  if (!myUserInfo) return null
 
   // get admin information
   let adminData = {} as any
@@ -44,43 +48,45 @@ async function Profile({ params }: { params: { user_name: string } }) {
   const isAdmin = !querySnapshot.empty && !!session?.user && params.user_name === adminData.username
   return (
     <div className={cx("profile-wrapper")}>
-      <div className={cx("profile-content")}>
-        <ProfileHeader guess={guessData} admin={adminData} />
-        <div className={cx("profile-body-wrapper")}>
-          <div className={cx("status-section")}>
-            {guessData?.mal_connect ? (
-              <Suspense
-                fallback={
-                  <>
-                    {/* @ts-expect-error Server Component */}
-                    <AnimeUpdate data={[]} />
-                    <AnimeStatus statusData={{}} />
-                    <AnimeFavorite favorite_data={{}} />
-                  </>
-                }
-              >
-                {/* @ts-expect-error Server Component */}
-                <AnimeComponent
-                  access_token={guessData.mal_connect.accessToken}
-                  mal_username={guessData.mal_connect.myAnimeList_username}
-                />
-              </Suspense>
-            ) : (
-              <div className={cx("mal-notfound")}>Not connected to MAL yet</div>
-            )}
-          </div>
-          <div className={cx("post-section")}>
-            {isAdmin && (
-              <div className={cx('form-profile') + " -mt-4"}>
-                <PostForm
-                  myAnimeList={null}
-                />
-              </div>
-            )}
-            <ProfilePosts className={cx('post-profile-container')} myUserInfo={adminData} profileUsername={guessData.username} />
+      <ContextProvider myUserInfo={myUserInfo}>
+        <div className={cx("profile-content")}>
+          <ProfileHeader guess={guessData} admin={adminData} />
+          <div className={cx("profile-body-wrapper")}>
+            <div className={cx("status-section")}>
+              {guessData?.mal_connect ? (
+                <Suspense
+                  fallback={
+                    <>
+                      {/* @ts-expect-error Server Component */}
+                      <AnimeUpdate data={[]} />
+                      <AnimeStatus statusData={{}} />
+                      <AnimeFavorite favorite_data={{}} />
+                    </>
+                  }
+                >
+                  {/* @ts-expect-error Server Component */}
+                  <AnimeComponent
+                    access_token={guessData.mal_connect.accessToken}
+                    mal_username={guessData.mal_connect.myAnimeList_username}
+                  />
+                </Suspense>
+              ) : (
+                <div className={cx("mal-notfound")}>Not connected to MAL yet</div>
+              )}
+            </div>
+            <div className={cx("post-section")}>
+              {isAdmin && (
+                <div className={cx('form-profile') + " -mt-4"}>
+                  <PostForm
+                    myAnimeList={null}
+                  />
+                </div>
+              )}
+              <ProfilePosts className={cx('post-profile-container')} myUserInfo={adminData} profileUsername={guessData.username} />
+            </div>
           </div>
         </div>
-      </div>
+      </ContextProvider>
     </div>
   )
 }
