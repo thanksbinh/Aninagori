@@ -64,8 +64,6 @@ export function handleAnimeInformationPosting(
 }
 
 export function convertWatchStatus(watchStatus: string, isEnd: boolean) {
-  console.log(watchStatus, isEnd)
-
   switch (watchStatus) {
     case "is watching":
       return "watching"
@@ -143,16 +141,16 @@ export async function handleSubmitForm(
   postID?: any,
   haveUploadedImage?: any,
 ): Promise<void> {
-  const statusData = (animeStatus?.current as any).getAnimeStatus()
-  const searchData = (animeSearch?.current as any).getAnimeName()
-  const episodesData = (animeEpisodes?.current as any)?.getAnimeEpisodes()
-  const totalEps = (animeEpisodes?.current as any).getAnimeTotal()
-  const tagData = (animeTag?.current as any).getAnimeTag()
-  const scoreData = (animeScore?.current as any)?.getAnimeScore()
-  const startDate = (postAdditional?.current as any).getStartDate()
-  const endDate = (postAdditional?.current as any).getEndDate()
-  const rewatchTime = (postAdditional?.current as any).getRewatchTime()
-  const animeTagData = (postAdditional?.current as any).getAnimeTag()
+  const statusData = animeStatus.getAnimeStatus()
+  const searchData = animeSearch.getAnimeName()
+  const episodesData = animeEpisodes?.getAnimeEpisodes()
+  const totalEps = animeEpisodes.getAnimeTotal()
+  const tagData = animeTag.getAnimeTag()
+  const scoreData = animeScore?.getAnimeScore()
+  const startDate = postAdditional.getStartDate()
+  const endDate = postAdditional.getEndDate()
+  const rewatchTime = postAdditional.getRewatchTime()
+  const animeTagData = postAdditional.getAnimeTag()
 
   if (!!startDate.error) {
     alert(startDate.error)
@@ -172,11 +170,10 @@ export async function handleSubmitForm(
   let uploadImageUrl = <any>[]
   let downloadMediaUrl = <any>[]
   if (mediaType === "video" && mediaUrl.length > 0) {
-    var file_name = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + ".mp4"
     var formData = new FormData()
-    formData.append("file", mediaUrl[0], file_name)
+    formData.append("file", mediaUrl[0])
 
-    const body = await fetch("http://up.hydrax.net/" + process.env.NEXT_PUBLIC_ABYSS_API_KEY, {
+    const body = await fetch(getProductionBaseUrl() + "/api/uploadvideo", {
       method: "POST",
       body: formData,
     }).then((res) => res.json())
@@ -214,7 +211,7 @@ export async function handleSubmitForm(
           imageUrl: mediaType === "image" ? downloadMediaUrl : "",
           videoUrl: mediaType === "video" ? downloadMediaUrl[0] : "",
           tag: tagData,
-          post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? {} : postAnimeData,
+          post_anime_data: animeSearch.getAnimeName().animeID === "" ? {} : postAnimeData,
         }),
       )
     } else {
@@ -225,7 +222,7 @@ export async function handleSubmitForm(
           imageUrl: mediaType === "image" ? downloadMediaUrl : "",
           videoUrl: mediaType === "video" ? downloadMediaUrl[0] : "",
           tag: tagData,
-          post_anime_data: (animeSearch?.current as any).getAnimeName().animeID === "" ? {} : postAnimeData,
+          post_anime_data: animeSearch.getAnimeName().animeID === "" ? {} : postAnimeData,
         }),
       )
     }
@@ -281,7 +278,6 @@ export async function handleSubmitForm(
       const batch = writeBatch(db)
       const oldAnimeData = await getOldAnimeData(myUserInfo.username, animeData)
       if (oldAnimeData !== "anime not exist") {
-        console.log(oldAnimeData)
         batch.update(myAnimeListRef, {
           animeList: arrayRemove(oldAnimeData),
         })
@@ -390,7 +386,10 @@ export const showEditInformation = async (
   setTextInput(postData.content)
   setBasicPostingInfo(true)
   setAnimeData(postData, animeSearchRef, animeEpisodesRef, animeStatusRef, animeScoreRef, postAdditionalRef)
-  inputRef.current.focus()
+  const inputLength = inputRef.value.length
+  inputRef.focus()
+  inputRef.scrollLeft = inputRef.scrollWidth
+  inputRef.setSelectionRange(inputLength, inputLength)
   setPostTag(postData, animeTagRef)
   setMediaData(postData, setMediaUrl, setHaveUploadedImage, setMediaType)
   return

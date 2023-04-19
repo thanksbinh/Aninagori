@@ -20,6 +20,10 @@ import PostFormMediaDisplay from "./PostFormMediaDisplay"
 
 const cx = classNames.bind(styles)
 
+type InputFormRef = {
+  current: HTMLInputElement | null
+}
+
 const PostFormPopUp = (props: any, ref: any) => {
   const { myUserInfo } = useContext(HomeContext)
   const { setOpen, title, isEditPost, editPostID, postData } = props
@@ -39,7 +43,7 @@ const PostFormPopUp = (props: any, ref: any) => {
   const animeTagRef = useRef()
   const animeScoreRef = useRef()
   const postAdditionalRef = useRef()
-  const inputRef = useRef(null);
+  const inputRef = useRef() as InputFormRef
 
   const router = useRouter();
 
@@ -51,16 +55,16 @@ const PostFormPopUp = (props: any, ref: any) => {
       postData,
       setTextInput,
       setBasicPostingInfo,
-      animeTagRef,
+      animeTagRef.current,
       setMediaUrl,
       setMediaType,
-      animeStatusRef,
-      animeEpisodesRef,
-      animeScoreRef,
-      animeSearchRef,
-      postAdditionalRef,
+      animeStatusRef.current,
+      animeEpisodesRef.current,
+      animeScoreRef.current,
+      animeSearchRef.current,
+      postAdditionalRef.current,
       setHaveUploadedImage,
-      inputRef
+      inputRef.current
     )
   }
 
@@ -68,7 +72,7 @@ const PostFormPopUp = (props: any, ref: any) => {
     if (isEditPost) {
       getInfo().catch((err) => console.log(err));
     } else {
-      (inputRef.current as any).focus()
+      (inputRef.current as any)?.focus()
     }
   }, [])
 
@@ -96,9 +100,9 @@ const PostFormPopUp = (props: any, ref: any) => {
     setLoadPosting(true)
 
     await handleSubmitForm(
-      animeStatusRef, animeSearchRef, animeEpisodesRef, animeTagRef,
-      animeScoreRef, textInput, mediaUrl,
-      mediaType, myUserInfo, postAdditionalRef, isEditPost,
+      animeStatusRef.current, animeSearchRef.current, animeEpisodesRef.current, animeTagRef.current,
+      animeScoreRef.current, textInput, mediaUrl,
+      mediaType, myUserInfo, postAdditionalRef.current, isEditPost,
       editPostID, haveUploadedImage
     )
     setLoadPosting(false)
@@ -161,7 +165,7 @@ const PostFormPopUp = (props: any, ref: any) => {
               {basicPostingInfo ? "More details..." : "Fewer details..."}
             </div>
             <div className={basicPostingInfo ? "hidden" : "flex"}>
-              <PostFormDetails isEditPost={isEditPost} ref={postAdditionalRef} animeStatusRef={animeStatusRef} />
+              <PostFormDetails isEditPost={isEditPost} ref={postAdditionalRef} animeStatusRef={animeStatusRef.current} />
             </div>
           </div>
 

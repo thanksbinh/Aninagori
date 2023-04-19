@@ -13,7 +13,6 @@
     width: 80%;
     position: relative;
   }
-
   & input {
     width: 100%;
     height: 100%;
@@ -27,7 +26,7 @@
 .result-wrapper {
   width: 322px;
   height: 225px;
-  overflow-y: scroll;
+  overflow-y: auto;
   border-radius: 10px;
 }
 

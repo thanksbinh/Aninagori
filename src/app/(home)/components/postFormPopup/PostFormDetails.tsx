@@ -30,7 +30,7 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
 
     let thisAnimeStatus = "Watching"
     try {
-      thisAnimeStatus = (animeStatusRef?.current as any)?.getAnimeStatus()
+      thisAnimeStatus = animeStatusRef?.getAnimeStatus()
     } catch (error) {
       // console.log(error)
     }
@@ -68,7 +68,7 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
       setRewatchTime(recentAnimeList[0]?.list_status?.num_times_rewatched?.toString())
       setNowTag(recentAnimeList[0]?.list_status?.tags?.join(', ') || "")
     }
-  }, [recentAnimeList, animeStatusRef?.current])
+  }, [recentAnimeList, animeStatusRef])
 
   function setToday(type: string) {
     const today = new Date()
