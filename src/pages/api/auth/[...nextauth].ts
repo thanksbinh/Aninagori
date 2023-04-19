@@ -2,7 +2,7 @@ import NextAuth, { NextAuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { FirestoreAdapter } from "@next-auth/firebase-adapter"
-import { signInWithCustomToken, signInWithEmailAndPassword } from "firebase/auth"
+import { signInWithEmailAndPassword } from "firebase/auth"
 import { auth, db } from "@/firebase/firebase-app"
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore"
 import { cert } from "firebase-admin/app"
@@ -76,7 +76,6 @@ export const authOptions: NextAuthOptions = {
       if (session?.user) {
         (session as any).user.id = token.sub;
         (session as any).customToken = token.customToken;
-        await signInWithCustomToken(auth, token.customToken as string)
       }
       return session
     },

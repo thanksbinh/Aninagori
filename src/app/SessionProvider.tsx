@@ -23,13 +23,27 @@ export const useFirebaseSession = () => {
   const session = useSession();
   const [status, setStatus] = useState(session.status);
 
-  useEffect(() => {
-    console.log(session)
-    if (session && session.status === 'authenticated') {
-      signInWithCustomToken(auth, (session as any)?.data?.customToken).then(() => {
-        setStatus('authenticated');
-      });
+  const signIn = async () => {
+    try {
+      await signInWithCustomToken(auth, (session as any)?.data?.customToken);
+      setStatus('authenticated');
+    } catch (error) {
+      console.log(error)
     }
+  }
+
+  useEffect(() => {
+    // Test
+    console.log("session", session)
+
+    if (session && session.status === 'authenticated') {
+      signIn();
+    }
+
+    // Test
+    auth.onAuthStateChanged((user) => {
+      console.log("onAuthStateChanged", user)
+    });
   }, [session]);
 
   useEffect(() => {

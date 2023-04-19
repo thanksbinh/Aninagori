@@ -8,9 +8,9 @@ async function getUserInfo(userId: string | undefined): Promise<UserInfo | undef
   const docRef = doc(db, "users", userId)
   const docSnap = await getDoc(docRef)
 
-  const malConnect = docSnap.data()?.mal_connect
-
   if (docSnap.exists()) {
+    const malConnect = docSnap.data()?.mal_connect
+
     return {
       id: docSnap.id,
       username: docSnap.data().username,
