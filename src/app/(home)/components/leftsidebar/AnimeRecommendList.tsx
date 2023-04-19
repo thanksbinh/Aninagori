@@ -1,21 +1,6 @@
-import { db } from '@/firebase/firebase-app';
-import { doc, getDoc } from 'firebase/firestore';
-import { AnimeExtend } from './AnimeExtend';
-import { AnimeComponent } from './Anime';
 import { UserInfo } from '@/global/UserInfo.types';
-
-async function fetchMyAnimeIds(username: string | undefined) {
-  if (!username) return [];
-
-  const malRef = doc(db, "myAnimeList", username)
-  const myAnimeList = (await getDoc(malRef))
-
-  // Dropped or on-hold anime are still potential 
-  const myAnimeIds = myAnimeList.data()?.animeList?.map((anime: any) => {
-    if (["completed", "watching", "plan_to_watch"].includes(anime.list_status.status)) return anime.node.id
-  })
-  return myAnimeIds || [];
-}
+import { AnimeComponent } from './Anime';
+import { AnimeExtend } from './AnimeExtend';
 
 async function getAnimeDetail(animeId: string, potential: number) {
   try {
@@ -32,8 +17,10 @@ async function getAnimeDetail(animeId: string, potential: number) {
   }
 }
 
-export default async function AnimeRecommendList({ myUserInfo, potentialAnimes }: { myUserInfo: UserInfo, potentialAnimes: any }) {
-  const myAnimeIds = await fetchMyAnimeIds(myUserInfo?.username)
+export default async function AnimeRecommendList({ myUserInfo, potentialAnimes, myAnimeList }: { myUserInfo: UserInfo, potentialAnimes: any, myAnimeList: any }) {
+  const myAnimeIds = myAnimeList?.animeList?.map((anime: any) => {
+    if (["completed", "watching", "plan_to_watch"].includes(anime.list_status.status)) return anime.node.id
+  }) || []
 
   const recommendAnimes = potentialAnimes
     ?.filter((anime: any) => (!myAnimeIds.includes(anime.id) && anime.potential >= 12))
