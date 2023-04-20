@@ -1,5 +1,4 @@
 .anime-search-wrapper {
-  width: 24%;
   padding: 4px 8px;
   height: 40px;
   background-color: #4e5d78;
@@ -14,6 +13,7 @@
     position: relative;
   }
   & input {
+    margin-left: 10px;
     width: 100%;
     height: 100%;
     background-color: #4e5d78;
@@ -24,7 +24,7 @@
 }
 
 .result-wrapper {
-  width: 322px;
+  width: 338px;
   height: 225px;
   overflow-y: auto;
   border-radius: 10px;
@@ -43,13 +43,13 @@
     border-radius: 50%;
     object-fit: cover;
     object-position: center;
-    margin-right: 10px;
+    margin-right: 12px;
   }
 
   & > div {
     font-weight: 600;
     height: 48px;
-    width: 235px;
+    width: 83%;
     align-items: center;
     display: flex;
   }

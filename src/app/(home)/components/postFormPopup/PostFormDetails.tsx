@@ -163,14 +163,26 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
           <ChooseDate data={day} setData={setDay} type={"Day"} progress="start" />
           <ChooseDate data={month} setData={setMonth} type={"Month"} progress="start" />
           <ChooseDate data={year} setData={setYear} type={"Year"} progress="start" />
-          <p
-            onClick={() => {
-              setToday("start")
-            }}
-            className="ml-4 underline text-green-400 text-xs cursor-pointer"
-          >
-            Insert Today
-          </p>
+          <div className="flex flex-col justify-between h-10">
+            <p
+              onClick={() => {
+                setToday("start")
+              }}
+              className="ml-4 underline text-green-400 text-xs cursor-pointer"
+            >
+              Insert today
+            </p>
+            <p
+              onClick={() => {
+                setDay({ ...day, start: 0 })
+                setMonth({ ...month, start: 0 })
+                setYear({ ...year, start: 0 })
+              }}
+              className="ml-4 underline text-gray-400 text-xs cursor-pointer"
+            >
+              Remove date
+            </p>
+          </div>
         </div>
       </div>
       <div className="flex items-center justify-between my-4">
@@ -182,21 +194,33 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
           <ChooseDate data={day} setData={setDay} type={"Day"} progress="finish" />
           <ChooseDate data={month} setData={setMonth} type={"Month"} progress="finish" />
           <ChooseDate data={year} setData={setYear} type={"Year"} progress="finish" />
-          <p
-            onClick={() => {
-              setToday("finish")
-            }}
-            className="ml-4 underline text-green-400 text-xs cursor-pointer"
-          >
-            Insert Today
-          </p>
+          <div className="flex flex-col justify-between h-10">
+            <p
+              onClick={() => {
+                setToday("start")
+              }}
+              className="ml-4 underline text-green-400 text-xs cursor-pointer"
+            >
+              Insert today
+            </p>
+            <p
+              onClick={() => {
+                setDay({ ...day, end: 0 })
+                setMonth({ ...month, end: 0 })
+                setYear({ ...year, end: 0 })
+              }}
+              className="ml-4 underline text-gray-400 text-xs cursor-pointer"
+            >
+              Remove tate
+            </p>
+          </div>
         </div>
       </div>
       <div className="flex items-center my-4 min-w-[145px]">
         <FontAwesomeIcon icon={faTv} className="text-yellow-500 text-xl ml-3 mr-2" />
         <p className="font-semibold text-sm mr-4">Re-watching</p>
         <div className="flex-1 flex justify-center items-center mr-8">
-          <p className="text-sm mr-6 ml-2">Total: </p>
+          <p className="text-sm mr-3">Total: </p>
           <input
             type="text"
             className="w-[83px] h-10 rounded-lg bg-[#4e5d78] text-white text-center outline-none"
