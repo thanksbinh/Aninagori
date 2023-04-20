@@ -6,6 +6,7 @@ import { Slide } from "react-slideshow-image"
 import { VideoComponent } from "../Video"
 import classNames from "classnames/bind"
 import styles from "../PostContent.module.scss"
+import MediaSlider from "./MediaSlider"
 const cx = classNames.bind(styles)
 
 function PostContentMedia({
@@ -30,6 +31,7 @@ function PostContentMedia({
       }
     }
   }, [])
+
   return (
     <>
       {spoiler && (
@@ -57,7 +59,7 @@ function PostContentMedia({
         {typeof imageUrl === "object" ? (
           (imageUrl as any).length > 1 ? (
             <>
-              <Slide
+              {/* <Slide
                 onStartChange={(from: number, to: number) => {
                   setIndex(to + 1)
                 }}
@@ -81,7 +83,8 @@ function PostContentMedia({
                     />
                   )
                 })}
-              </Slide>
+              </Slide> */}
+              <MediaSlider images={(imageUrl as any).map((data: string) => data)} />
               <div
                 style={spoiler ? { zIndex: "-1" } : {}}
                 className="absolute m-auto leading-6 text-center opacity-40 rounded-tr-2xl top-0 right-4 w-12 h-6 bg-slate-700 text-white"
