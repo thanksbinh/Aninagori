@@ -5,6 +5,7 @@ import { UserInfo } from "@/global/UserInfo.types";
 import { BsChatDotsFill } from "@react-icons/all-files/bs/BsChatDotsFill";
 import ChatNotiContainer from "../chat/ChatNotiContainer";
 import ChatPopup from "../chat/ChatPopup";
+import { setLastReadInbox } from "../chat/setLastRead";
 
 const ChatBtn = ({ myUserInfo }: { myUserInfo: UserInfo | undefined }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -36,6 +37,9 @@ const ChatBtn = ({ myUserInfo }: { myUserInfo: UserInfo | undefined }) => {
 
   const toggleChatBtn = () => {
     setShowChatBtn(!showChatBtn);
+    if (myUserInfo !== undefined) {
+      setLastReadInbox(myUserInfo);
+    }
   };
 
   return (

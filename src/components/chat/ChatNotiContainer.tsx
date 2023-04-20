@@ -49,8 +49,9 @@ const ChatNotiContainer: React.FC<Props> = ({ myUserInfo, showChatBtn, toggleCha
                         sender: obj.sender
                     }));
 
-                    const unreadChats = docSnap?.data()?.recentChats.filter((obj: any) => obj.lastMessage.read === false);
-                    console.log(unreadChats.length);
+                    const unreadChats = docSnap?.data()?.recentChats.filter((obj: any) => {
+                        return obj?.lastMessage?.timestamp?.seconds > docSnap?.data()?.lastRead?.seconds && !obj?.lastMessage?.read
+                    });
 
                     setRecentChats(fetchedChat.reverse());
                     setUnreadChats(unreadChats.length);
