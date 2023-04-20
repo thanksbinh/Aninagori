@@ -1,6 +1,6 @@
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
-import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 
 export async function setLastRead(myUserInfo: UserInfo, conversationId: string) {
   const conversationRef = doc(db, "conversation", conversationId);
@@ -12,5 +12,16 @@ export async function setLastRead(myUserInfo: UserInfo, conversationId: string) 
 
   updateDoc(conversationRef, {
     [fieldName]: serverTimestamp()
+  })
+}
+
+export async function setLastReadInbox(myUserInfo: UserInfo) {
+  const inboxRef = doc(collection(db, "inbox"), myUserInfo.username);
+
+  const inbox = await getDoc(inboxRef)
+  if (!inbox.exists()) return;
+
+  updateDoc(inboxRef, {
+    lastRead: serverTimestamp()
   })
 }

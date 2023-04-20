@@ -3,45 +3,65 @@
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
 import { collection, getDocs, onSnapshot, query, where } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Message, { MessageProps } from "./Message";
 
 const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, friend: string, avatarUrl: string }) => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
+  const [seenStatus, setSeenStatus] = useState(false);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  async function fetchData() {
+    const conversationRef = collection(db, 'conversation');
+    const messagesQuery = query(
+      conversationRef,
+      where('username1', 'in', [myUserInfo.username, friend]),
+      where('username2', 'in', [myUserInfo.username, friend])
+    );
+    const querySnapshot = await getDocs(messagesQuery);
+    if (querySnapshot.empty) {
+      return;
+    }
+
+    const messageRef = (querySnapshot).docs[0].ref;
+
+    const unsubscribe = onSnapshot(messageRef, (docSnap) => {
+      if (docSnap.exists() && docSnap.data()?.hasOwnProperty("messages")) {
+        const fetchedMessages: MessageProps[] = docSnap?.data()?.messages.map((obj: MessageProps) => ({
+          senderUsername: obj.senderUsername,
+          timestamp: obj.timestamp,
+          content: obj.content,
+          likes: obj.likes,
+        }));
+
+        const fieldName = docSnap.data()?.username1 === myUserInfo.username ? "user1LastRead" : "user2LastRead";
+        if ((fieldName === "user1LastRead" && docSnap.data()?.user2LastRead?.seconds > docSnap.data()?.user1LastRead?.seconds) ||
+          (fieldName === "user2LastRead" && docSnap.data()?.user1LastRead?.seconds > docSnap.data()?.user2LastRead?.seconds)) {
+          setSeenStatus(true);
+        } else {
+          setSeenStatus(false);
+        }
+
+        setMessages(fetchedMessages);
+      } else {
+        setMessages([]);
+      }
+    })
+
+    return () => {
+      unsubscribe && unsubscribe()
+    };
+  }
 
   useEffect(() => {
-    async function fetchData() {
-      const conversationRef = collection(db, 'conversation');
-      const messagesQuery = query(
-        conversationRef,
-        where('username1', 'in', [myUserInfo.username, friend]),
-        where('username2', 'in', [myUserInfo.username, friend])
-      );
-      const querySnapshot = await getDocs(messagesQuery);
-      if (querySnapshot.empty) {
-        return;
-      }
+    // scroll to bottom when component mounts
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages])
 
-      const messageRef = (querySnapshot).docs[0].ref;
-
-      const unsubscribe = onSnapshot(messageRef, (docSnap) => {
-        if (docSnap.exists() && docSnap.data()?.hasOwnProperty("messages")) {
-          const fetchedMessages: MessageProps[] = docSnap?.data()?.messages.map((obj: MessageProps) => ({
-            senderUsername: obj.senderUsername,
-            timestamp: obj.timestamp,
-            content: obj.content,
-            likes: obj.likes,
-          }));
-          setMessages(fetchedMessages);
-        }
-      })
-
-      return () => {
-        unsubscribe && unsubscribe()
-      };
-    }
+  useEffect(() => {
     fetchData();
-  }, []);
+  }, [friend]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -58,6 +78,10 @@ const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, fri
           isLastMessage={index === messages.length - 1 || message.senderUsername !== messages[index + 1].senderUsername}
         />
       ))}
+      <div className={`flex flex-row-reverse text-white text-xs ${seenStatus ? "" : "hidden"} ${(messages[messages.length - 1]?.senderUsername === myUserInfo?.username) ? "" : "hidden"}`}>
+        <p className="flex mr-4">seen ✓</p>
+      </div>
+      <div ref={messagesEndRef}></div>
     </div>
   )
 }
