@@ -13,9 +13,6 @@ export async function GET(request: Request, { params }: { params: any }) {
     const is_rewatching = request.headers.get("is_rewatching")
     const rewatch_time = request.headers.get("rewatch_time")
     const tags = request.headers.get("tags")
-    console.log(tags)
-    // console.log(anime_id, status, episode, score)
-    // console.log(start_date, end_date, is_rewatching, rewatch_time)
     const urlParamsOauth =
       parseInt(score as any) > 0
         ? {
@@ -27,8 +24,16 @@ export async function GET(request: Request, { params }: { params: any }) {
             status: status,
             num_watched_episodes: parseInt(episode as any),
           }
-    if (!!start_date) (urlParamsOauth as any).start_date = start_date
-    if (!!end_date) (urlParamsOauth as any).finish_date = end_date
+    if (!!start_date) {
+      ;(urlParamsOauth as any).start_date = start_date
+    } else {
+      ;(urlParamsOauth as any).start_date = null
+    }
+    if (!!end_date) {
+      ;(urlParamsOauth as any).finish_date = end_date
+    } else {
+      ;(urlParamsOauth as any).finish_date = null
+    }
     if (!!is_rewatching) (urlParamsOauth as any).is_rewatching = is_rewatching
     if (!!rewatch_time) (urlParamsOauth as any).num_times_rewatched = parseInt(rewatch_time)
     if (tags !== "") (urlParamsOauth as any).tags = tags
