@@ -13,7 +13,7 @@ export async function GET(request: Request, { params }: { params: any }) {
     const is_rewatching = request.headers.get("is_rewatching")
     const rewatch_time = request.headers.get("rewatch_time")
     const tags = request.headers.get("tags")
-    console.log(tags)
+    console.log(tags, rewatch_time)
     const urlParamsOauth =
       parseInt(score as any) > 0
         ? {
