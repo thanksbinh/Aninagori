@@ -32,9 +32,9 @@ const FriendList = ({ myFriendList, myUserInfo }: { myFriendList: Friend[] | und
           </div>
         ))}
       </div>
-      {myUserInfo?.username && showChat &&
+      {myUserInfo?.username && showChat && (
         <ChatPopup myUserInfo={myUserInfo} setShowChat={setShowChat} recipient={currentChat.username} image={currentChat.image} />
-      }
+      )}
     </div>
   )
 }

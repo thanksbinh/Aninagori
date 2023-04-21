@@ -44,6 +44,18 @@ export const getUserAnimeList = async (username: string) => {
   }
 }
 
+// Todo: if anime list lenght > 1000
+export const getUserAnimeListFull = async (username: string) => {
+  try {
+    const userAnimeUpdate = await apiServices.MALRequest.get(
+      `/users/${username}/animelist?fields={list_status{tags,num_times_rewatched},num_episodes}&limit=1000&sort=list_updated_at`,
+    )
+    return userAnimeUpdate
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const getAnimeInformation = async (id: string) => {
   try {
     const animeInformation = await apiServices.MALRequest.get(

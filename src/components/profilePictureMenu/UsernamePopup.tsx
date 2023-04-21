@@ -1,14 +1,12 @@
-import { db } from "@/firebase/firebase-app"
-import * as Yup from 'yup';
-import { useFormik, FormikConfig, FormikValues } from "formik";
+import Modal from "@/components/utils/Modal";
+import { db } from "@/firebase/firebase-app";
 import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
-import { useSession } from "next-auth/react";
+import { FormikConfig, FormikValues, useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Modal from "@/components/utils/Modal";
+import * as Yup from 'yup';
 
-const UsernamePopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-	const session = useSession();
+const UsernamePopup = ({ isOpen, onClose, session }: { isOpen: boolean; onClose: () => void, session: any }) => {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false)
 
