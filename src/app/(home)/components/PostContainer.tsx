@@ -9,6 +9,7 @@ import ContextProvider from "../../post/[...post_id]/PostContext"
 import PostAction from "../../post/[...post_id]/components/post/PostAction"
 import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "../functions/recommendPost"
 import { HomeContext } from "../HomeContext"
+import PostTopReaction from "@/app/post/[...post_id]/components/post/PostTopReaction"
 
 async function fetchCommentCount(postId: string) {
   const commentsRef = collection(db, "posts", postId, "comments")
@@ -161,6 +162,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
                 commentCountPromise={fetchCommentCount(post.id)}
                 comments={post.lastComment ? [post.lastComment] : []}
               />
+              <PostTopReaction reactions={post.reactions} />
               <div className="mb-4"></div>
             </ContextProvider>
           )
