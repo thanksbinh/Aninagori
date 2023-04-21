@@ -32,11 +32,11 @@ function AnimeName({
         style={
           seen !== 0
             ? {
-                backgroundImage: `linear-gradient(to right, #c574cc ${convertToPercent(
-                  seen,
-                  total,
-                )}%, #444444 ${convertToPercent(seen, total)}%)`,
-              }
+              backgroundImage: `linear-gradient(to right, #c574cc ${convertToPercent(
+                seen,
+                total,
+              )}%, #444444 ${convertToPercent(seen, total)}%)`,
+            }
             : { backgroundColor: "#444444" }
         }
       >
