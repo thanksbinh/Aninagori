@@ -8,7 +8,7 @@ import { UserInfo } from "../../global/UserInfo.types";
 import UsernamePopup from '../profilePictureMenu/UsernamePopup';
 import getProductionBaseUrl from '../utils/getProductionBaseURL';
 import { doc, setDoc } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-app';
+import { auth, db } from '@/firebase/firebase-app';
 import { useRouter } from 'next/navigation';
 import SyncFromMALBtn from '../profilePictureMenu/SyncFromMALBtn';
 
@@ -59,7 +59,10 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
     const handleLogout = async () => {
         try {
             setIsOpen(false);
-            await signOut();
+            await Promise.all([
+                auth.signOut(),
+                signOut()
+            ]);
         } catch (error) {
             console.error(error);
         }
