@@ -162,7 +162,6 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
                 commentCountPromise={fetchCommentCount(post.id)}
                 comments={post.lastComment ? [post.lastComment] : []}
               />
-              <PostTopReaction reactions={post.reactions} />
               <div className="mb-4"></div>
             </ContextProvider>
           )
