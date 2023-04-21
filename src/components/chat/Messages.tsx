@@ -36,18 +36,17 @@ const Messages = ({ myUserInfo, friend, avatarUrl }: { myUserInfo: UserInfo, fri
         }));
 
         const fieldName = docSnap.data()?.username1 === myUserInfo.username ? "user1LastRead" : "user2LastRead";
-        if ((fieldName === "user1LastRead" && docSnap.data()?.user2LastRead > docSnap.data()?.user1LastRead) ||
-          (fieldName === "user2LastRead" && docSnap.data()?.user1LastRead > docSnap.data()?.user2LastRead)) {
+        if ((fieldName === "user1LastRead" && docSnap.data()?.user2LastRead?.seconds > docSnap.data()?.user1LastRead?.seconds) ||
+          (fieldName === "user2LastRead" && docSnap.data()?.user1LastRead?.seconds > docSnap.data()?.user2LastRead?.seconds)) {
           setSeenStatus(true);
         } else {
-          setSeenStatus(false)
+          setSeenStatus(false);
         }
 
         setMessages(fetchedMessages);
       } else {
         setMessages([]);
       }
-      console.log("Messages fetched");
     })
 
     return () => {

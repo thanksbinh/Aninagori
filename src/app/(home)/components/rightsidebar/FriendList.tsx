@@ -28,7 +28,7 @@ const FriendList = ({ myFriendList, myUserInfo }: { myFriendList: Friend[] | und
       <div className="h-full overflow-y-auto flex flex-col flex-wrap -mx-2">
         {myFriendList?.map((friend) => (
           <div key={friend.username}>
-            <FriendComponent friendInfo={friend} openChat={openChat} setCurrentChat={setCurrentChat} />
+            <FriendComponent myUserInfo={myUserInfo} friendInfo={friend} openChat={openChat} setCurrentChat={setCurrentChat} />
           </div>
         ))}
       </div>
