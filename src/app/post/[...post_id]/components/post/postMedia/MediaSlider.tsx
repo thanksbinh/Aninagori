@@ -9,9 +9,11 @@ interface ImageSliderProps {
     images: string[];
     setIndex: Dispatch<SetStateAction<number>>
     index: number
+    fullView: boolean
+    slideRef: any
 }
 
-const MediaSlider = ({ images, setIndex, index }: ImageSliderProps) => {
+const MediaSlider = ({ images, setIndex, index, fullView, slideRef }: ImageSliderProps) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(index);
 
     useEffect(() => {
@@ -21,33 +23,35 @@ const MediaSlider = ({ images, setIndex, index }: ImageSliderProps) => {
     const handlePrevious = (e: any) => {
         e.stopPropagation();
         if (currentImageIndex === 0) {
-            setCurrentImageIndex(images.length - 1);
             setIndex(images.length);
+            slideRef.current.goBack();
         } else {
-            setCurrentImageIndex(currentImageIndex - 1);
             setIndex(currentImageIndex);
+            slideRef.current.goBack();
         }
     };
 
     const handleNext = (e: any) => {
         e.stopPropagation();
         if (currentImageIndex === images.length - 1) {
-            setCurrentImageIndex(0);
             setIndex(1);
+            slideRef.current.goNext();
         } else {
-            setCurrentImageIndex(currentImageIndex + 1);
             setIndex(currentImageIndex + 2);
+            slideRef.current.goNext();
         }
     };
 
     return (
-        <div className="relative w-full h-full">
-            <img
-                draggable="false"
-                src={images[currentImageIndex]}
-                alt={""}
-                className={`cursor-pointer object-cover object-center rounded-2xl`}
-            />
+        <div className="relative w-full h-full flex justify-center items-center bg-black rounded-2xl">
+            <div className="flex">
+                <img
+                    draggable="false"
+                    src={images[currentImageIndex]}
+                    alt={""}
+                    className={`max-w-full object-contain object-center rounded-2xl ${fullView ? "min-h-[615px]" : "h-[275px] cursor-pointer"}`}
+                />
+            </div>
 
             <div className="absolute inset-0 flex items-center justify-between px-4">
                 <button
