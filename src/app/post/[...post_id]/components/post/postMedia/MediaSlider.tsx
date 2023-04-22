@@ -14,7 +14,7 @@ interface ImageSliderProps {
 }
 
 const MediaSlider = ({ images, setIndex, index, fullView, slideRef }: ImageSliderProps) => {
-    const [currentImageIndex, setCurrentImageIndex] = useState(index);
+    const [currentImageIndex, setCurrentImageIndex] = useState(index - 1);
 
     useEffect(() => {
         setCurrentImageIndex(index - 1);

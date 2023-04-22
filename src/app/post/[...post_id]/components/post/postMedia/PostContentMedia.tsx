@@ -77,7 +77,6 @@ function PostContentMedia({
                 onStartChange={(from: number, to: number) => {
                   setIndex(to + 1)
                 }}
-                defaultIndex={index}
                 canSwipe={true}
                 autoplay={false}
                 transitionDuration={0}
@@ -116,15 +115,13 @@ function PostContentMedia({
             />
           )
         ) : (
-          <>
-            <img
-              draggable="false"
-              src={imageUrl}
-              alt={""}
-              onClick={onFullView}
-              className={`cursor-pointe rounded-2xl ${cx({ "blur-2xl": spoiler })}`}
-            />
-          </>
+          <img
+            draggable="false"
+            src={imageUrl}
+            alt={""}
+            onClick={onFullView}
+            className={`cursor-pointer rounded-2xl ${cx({ "blur-2xl": spoiler })}`}
+          />
         )}
         {videoUrl && <VideoComponent videoUrl={videoUrl} className={cx({ "blur-2xl": spoiler })} />}
         {isFullView &&
