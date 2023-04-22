@@ -2,11 +2,11 @@
 
 /* eslint-disable @next/next/no-img-element */
 import { useState, useEffect } from "react"
-import { Slide } from "react-slideshow-image"
 import { VideoComponent } from "../Video"
 import classNames from "classnames/bind"
 import styles from "../PostContent.module.scss"
 import MediaSlider from "./MediaSlider"
+import MediaFullView from "./MediaFullView"
 const cx = classNames.bind(styles)
 
 function PostContentMedia({
@@ -22,6 +22,11 @@ function PostContentMedia({
 }) {
   const [spoiler, setSpoiler] = useState(tag.some((a: string) => a === "Spoiler" || a === "NSFW"))
   const [index, setIndex] = useState(1)
+  const [isFullView, setFullView] = useState(false);
+
+  const onFullView = () => {
+    !spoiler && setFullView(true);
+  }
 
   useEffect(() => {
     if (spoiler) {
@@ -59,32 +64,9 @@ function PostContentMedia({
         {typeof imageUrl === "object" ? (
           (imageUrl as any).length > 1 ? (
             <>
-              {/* <Slide
-                onStartChange={(from: number, to: number) => {
-                  setIndex(to + 1)
-                }}
-                canSwipe={true}
-                autoplay={false}
-                transitionDuration={400}
-              >
-                {(imageUrl as any).map((data: string, index: number) => {
-                  return (
-                    <img
-                      key={index}
-                      draggable="false"
-                      src={data}
-                      alt={""}
-                      onClick={() => {
-                        //TODO: handle view image in full screen
-                      }}
-                      className={`cursor-pointer object-cover object-center rounded-2xl ${cx("post-image", {
-                        "blur-2xl": spoiler,
-                      })}`}
-                    />
-                  )
-                })}
-              </Slide> */}
-              <MediaSlider images={(imageUrl as any).map((data: string) => data)} />
+              <div onClick={onFullView}>
+                <MediaSlider images={(imageUrl as any).map((data: string) => data)} setIndex={setIndex} index={index} />
+              </div>
               <div
                 style={spoiler ? { zIndex: "-1" } : {}}
                 className="absolute m-auto leading-6 text-center opacity-40 rounded-tr-2xl top-0 right-4 w-12 h-6 bg-slate-700 text-white"
@@ -97,9 +79,7 @@ function PostContentMedia({
               draggable="false"
               src={imageUrl[0]}
               alt={""}
-              onClick={() => {
-                //TODO: handle view image in full screen
-              }}
+              onClick={onFullView}
               className={`cursor-pointer object-cover object-center rounded-2xl ${cx({
                 "blur-2xl": spoiler,
               })}`}
@@ -111,11 +91,23 @@ function PostContentMedia({
               draggable="false"
               src={imageUrl}
               alt={""}
+              onClick={onFullView}
               className={`cursor-pointe rounded-2xl ${cx({ "blur-2xl": spoiler })}`}
             />
           </>
         )}
         {videoUrl && <VideoComponent videoUrl={videoUrl} className={cx({ "blur-2xl": spoiler })} />}
+        {isFullView &&
+          <MediaFullView
+            isOpen={isFullView}
+            onClose={() => {
+              setFullView(false)
+            }}
+            index={index}
+            setIndex={setIndex}
+            imageUrl={imageUrl}
+          />
+        }
       </div>
     </>
   )

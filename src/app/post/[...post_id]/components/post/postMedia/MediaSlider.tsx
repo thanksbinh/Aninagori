@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TiArrowLeft } from "@react-icons/all-files/ti/TiArrowLeft";
 import { TiArrowRight } from "@react-icons/all-files/ti/TiArrowRight";
 import classNames from "classnames/bind"
@@ -7,24 +7,36 @@ const cx = classNames.bind(styles)
 
 interface ImageSliderProps {
     images: string[];
+    setIndex: Dispatch<SetStateAction<number>>
+    index: number
 }
 
-const MediaSlider = ({ images }: ImageSliderProps) => {
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+const MediaSlider = ({ images, setIndex, index }: ImageSliderProps) => {
+    const [currentImageIndex, setCurrentImageIndex] = useState(index);
 
-    const handlePrevious = () => {
+    useEffect(() => {
+        setCurrentImageIndex(index - 1);
+    }, [index]);
+
+    const handlePrevious = (e: any) => {
+        e.stopPropagation();
         if (currentImageIndex === 0) {
             setCurrentImageIndex(images.length - 1);
+            setIndex(images.length);
         } else {
             setCurrentImageIndex(currentImageIndex - 1);
+            setIndex(currentImageIndex);
         }
     };
 
-    const handleNext = () => {
+    const handleNext = (e: any) => {
+        e.stopPropagation();
         if (currentImageIndex === images.length - 1) {
             setCurrentImageIndex(0);
+            setIndex(1);
         } else {
             setCurrentImageIndex(currentImageIndex + 1);
+            setIndex(currentImageIndex + 2);
         }
     };
 
@@ -34,9 +46,6 @@ const MediaSlider = ({ images }: ImageSliderProps) => {
                 draggable="false"
                 src={images[currentImageIndex]}
                 alt={""}
-                onClick={() => {
-                    //TODO: handle view image in full screen
-                }}
                 className={`cursor-pointer object-cover object-center rounded-2xl`}
             />
 

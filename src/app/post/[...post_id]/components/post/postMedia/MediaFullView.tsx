@@ -1,44 +1,39 @@
 "use client"
 
-import { getDoc, doc } from "firebase/firestore"
-import { useContext, useEffect, useState } from "react"
+import { Dispatch, SetStateAction } from "react";
 
-import { db } from "@/firebase/firebase-app"
-import { PostContext } from "../../../PostContext";
-import { formatDuration } from "@/components/utils/format";
 import Modal from "@/components/utils/Modal";
-import MediaContent from "./MediaContent"
+import MediaSlider from "./MediaSlider";
 
 // Todo: Optimization
-export default function MediaFullView({ isOpen, onClose }: { isOpen: boolean; onClose: any }) {
-    const [post, setPost] = useState<any>({})
-    const { postId } = useContext(PostContext)
-
-    useEffect(() => {
-        if (!postId) return;
-
-        async function fetchData() {
-            const postDoc = await getDoc(doc(db, "posts", postId))
-            if (!postDoc.exists()) return
-
-            setPost({
-                ...postDoc.data(),
-                timestamp: formatDuration(new Date().getTime() - postDoc.data().timestamp.toDate().getTime()),
-            } as any)
-        }
-
-        fetchData()
-    }, [])
-
+export default function MediaFullView({ isOpen, onClose, index, setIndex, imageUrl }: { isOpen: boolean; onClose: any; index: number; setIndex: Dispatch<SetStateAction<number>>; imageUrl: any; }) {
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={""}>
             <div className="w-[1100px]">
-                <MediaContent
-                    imageUrl={post.imageUrl}
-                    videoUrl={post.videoUrl}
-                    tag={post?.post_anime_data?.tag}
-                    postId={post.id}
-                />
+                <div className="flex flex-col flex-1 rounded-md relative">
+                    <div className="relative flex flex-col -mx-4">
+                        <div className="relative px-4">
+                            {(imageUrl as any).length > 1 ? (
+                                <>
+                                    <MediaSlider images={(imageUrl as any).map((data: string) => data)} setIndex={setIndex} index={index} />
+                                    <div
+                                        className="absolute m-auto leading-6 text-center opacity-40 rounded-tr-2xl top-0 right-4 w-12 h-6 bg-slate-700 text-white"
+                                    >
+                                        {index}/{(imageUrl as any).length}
+                                    </div>
+                                </>
+                            ) : (
+                                <img
+                                    draggable="false"
+                                    src={imageUrl[0]}
+                                    alt={""}
+                                    className={`cursor-pointer object-cover object-center rounded-2xl`}
+                                />
+                            )
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
         </Modal>
     )

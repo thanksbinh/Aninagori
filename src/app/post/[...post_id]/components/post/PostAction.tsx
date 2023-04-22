@@ -45,7 +45,6 @@ const PostAction: FC<PostDynamicProps> = ({
   const [planTowatch, setPlanTowatch] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
-  const [isFullView, setFullView] = useState(false);
 
   // Update post's reaction realtime
   useEffect(() => {
@@ -154,22 +153,6 @@ const PostAction: FC<PostDynamicProps> = ({
           </div>
         </div>
       )}
-      <div>
-        <div
-          onClick={() => setFullView(true)}
-          className="mt-4 ml-2 text-sm font-bold text-gray-400 hover:cursor-pointer hover:underline"
-        >
-          Full view
-        </div>
-      </div>
-      {isFullView &&
-        <MediaFullView
-          isOpen={isFullView}
-          onClose={() => {
-            setFullView(false)
-          }}
-        />
-      }
       {postExpand && (
         <PostPopup
           isOpen={postExpand}
