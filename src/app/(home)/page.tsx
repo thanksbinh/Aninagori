@@ -72,7 +72,7 @@ export default async function Home() {
                 myAnimeList={myAnimeList?.animeList}
               />
             </div>
-            <div className="mb-4 w-full pl-2">
+            <div className="mb-4 w-full">
               <Posts
                 myFriendList={myFriendList}
                 myAnimeList={myAnimeList?.animeList}

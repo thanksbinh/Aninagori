@@ -137,7 +137,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
                 postId={post.id}
                 postData={post}
               >
-                <div className="w-[72%]">
+                <div className="w-[72%] relative">
                   <PostContent
                     authorName={post.authorName}
                     avatarUrl={post.avatarUrl}
@@ -153,7 +153,6 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
                     score={post?.post_anime_data?.score}
                     tag={!!post?.post_anime_data?.tag ? post?.post_anime_data?.tag : post?.tag}
                     postId={post.id}
-                    reactions={post.reactions}
                   />
                   <PostAction
                     reactions={post.reactions}
