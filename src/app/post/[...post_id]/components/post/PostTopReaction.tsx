@@ -60,7 +60,7 @@ const PostTopReaction: FC<PostTopReactionProps> = ({
     }, [reactions0]);
 
     return (
-        <div className={`${reactionList[0].count > 0 ? "w-20 h-auto max-h-[15.5rem] flex flex-col rounded-2xl p-2 bg-[#212733] mr-1" : "hidden"}`}>
+        <div className={`${reactionList[0].count > 0 ? "w-[4.5rem] h-auto max-h-[15.5rem] flex flex-col rounded-2xl p-2 bg-[#212733] mr-1" : "hidden"}`}>
             <div className={`${reactionList[0].count > 0 ? "" : "hidden"} flex flex-col items-center px-2 py-1 bg-[#191c21] rounded-2xl`}>
                 <div className="w-10 h-10 rounded-full flex justify center item center">
                     <img className="w-full h-auto" src={reactionList[0].image} alt={"type"} />

@@ -9,6 +9,7 @@ import PostOptions from "../option/PostOptionsPopup"
 import "react-slideshow-image/dist/styles.css"
 import AnimeName from "../animeName/AnimeName"
 import PostContentMedia from "./postMedia/PostContentMedia"
+import PostTopReaction from "./PostTopReaction"
 const cx = classNames.bind(styles)
 
 type PostStaticProps = {
@@ -27,6 +28,7 @@ type PostStaticProps = {
   score?: string
   postId?: string
   editPostRef?: any
+  reactions?: Object[]
 }
 
 const PostContent: FC<PostStaticProps> = ({
@@ -44,6 +46,7 @@ const PostContent: FC<PostStaticProps> = ({
   tag = [],
   postId,
   score,
+  reactions
 }) => {
   return (
     <div className="flex flex-col flex-1 bg-ani-gray relative rounded-2xl p-4 pb-0 rounded-b-none" id={postId}>
@@ -85,6 +88,9 @@ const PostContent: FC<PostStaticProps> = ({
       <div className="relative flex flex-col -mx-4">
         {!!content && <p className="text-lg mx-2 mt-3 mb-2 text-[#dddede] px-4">{content}</p>}
         {(!!imageUrl || !!videoUrl) && <PostContentMedia postId={postId} tag={tag} imageUrl={imageUrl} videoUrl={videoUrl} />}
+      </div>
+      <div className="absolute top-0 -left-[5rem]">
+        <PostTopReaction reactions={reactions} />
       </div>
     </div>
   )
