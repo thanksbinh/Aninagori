@@ -128,9 +128,8 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
       >
         {posts.map((post: any) => {
           return (
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-center mb-4" key={post.id}>
               <ContextProvider
-                key={post.id}
                 myUserInfo={myUserInfo}
                 content={post.content}
                 authorName={post.authorName}
