@@ -16,6 +16,7 @@ import { PostContext } from "../../PostContext"
 import Reaction from "../reaction/Reaction"
 import PostPopup from "./PostPopup"
 import PostTopReaction from "./PostTopReaction"
+
 interface PostDynamicProps {
   reactions?: Object[]
   commentCountPromise?: Promise<number> | number
@@ -24,6 +25,7 @@ interface PostDynamicProps {
   animeID?: any
   malAuthCode?: any
   myUserInfo?: any
+  showTopReaction?: boolean
 }
 
 const PostAction: FC<PostDynamicProps> = ({
@@ -34,6 +36,7 @@ const PostAction: FC<PostDynamicProps> = ({
   animeID,
   malAuthCode,
   myUserInfo,
+  showTopReaction
 }) => {
   const { postId } = useContext(PostContext)
   const [reactions, setReactions] = useState(reactions0)
@@ -102,9 +105,11 @@ const PostAction: FC<PostDynamicProps> = ({
 
       {/* 3 post actions */}
       <div className="flex items-center justify-between border-t border-b border-ani-light-gray mx-2">
-        <div className="absolute top-0 -left-[5rem]">
-          <PostTopReaction reactions={reactions} />
-        </div>
+        {showTopReaction &&
+          <div className={`absolute top-0 -left-[5rem]`}>
+            <PostTopReaction reactions={reactions} />
+          </div>
+        }
         <Reaction reactions={reactions} setReactions={setReactions} />
 
         <div className="flex">
