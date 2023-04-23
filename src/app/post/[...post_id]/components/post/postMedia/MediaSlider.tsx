@@ -15,6 +15,7 @@ interface ImageSliderProps {
 
 const MediaSlider = ({ images, setIndex, index, fullView, slideRef }: ImageSliderProps) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(index - 1);
+    const [showButton, setShowButton] = useState(false);
 
     useEffect(() => {
         setCurrentImageIndex(index - 1);
@@ -43,7 +44,7 @@ const MediaSlider = ({ images, setIndex, index, fullView, slideRef }: ImageSlide
     };
 
     return (
-        <div className="relative w-full h-full flex justify-center items-center bg-black rounded-2xl">
+        <div className="relative w-full h-full flex justify-center items-center bg-black rounded-2xl" onMouseEnter={() => setShowButton(true)} onMouseLeave={() => setShowButton(false)}>
             <div className="flex">
                 <img
                     draggable="false"
@@ -56,14 +57,14 @@ const MediaSlider = ({ images, setIndex, index, fullView, slideRef }: ImageSlide
             <div className="absolute inset-0 flex items-center justify-between px-4">
                 <button
                     onClick={handlePrevious}
-                    className="bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center"
+                    className={`${showButton ? "" : "hidden"} bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center`}
                 >
                     <TiArrowLeft className="h-5 w-5" />
                 </button>
 
                 <button
                     onClick={handleNext}
-                    className="bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center"
+                    className={`${showButton ? "" : "hidden"} bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center`}
                 >
                     <TiArrowRight className="h-5 w-5" />
                 </button>

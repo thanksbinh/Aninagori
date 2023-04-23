@@ -25,6 +25,7 @@ function PostContentMedia({
   const [spoiler, setSpoiler] = useState(tag.some((a: string) => a === "Spoiler" || a === "NSFW"))
   const [index, setIndex] = useState(1)
   const [isFullView, setFullView] = useState(false);
+  const [showButton, setShowButton] = useState(false);
   const slideRef = useRef<SlideshowRef>(null)
 
   const onFullView = () => {
@@ -32,8 +33,8 @@ function PostContentMedia({
   }
 
   const properties = {
-    prevArrow: <button className="bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center ml-2"><TiArrowLeft className="h-5 w-5" /></button>,
-    nextArrow: <button className="bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2"><TiArrowRight className="h-5 w-5" /></button>
+    prevArrow: <button className={`${showButton ? "" : "hidden"} bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center ml-2`}><TiArrowLeft className="h-5 w-5" /></button>,
+    nextArrow: <button className={`${showButton ? "" : "hidden"} bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2`}><TiArrowRight className="h-5 w-5" /></button>
   }
 
   useEffect(() => {
@@ -72,30 +73,32 @@ function PostContentMedia({
         {typeof imageUrl === "object" ? (
           (imageUrl as any).length > 1 ? (
             <>
-              <Slide {...properties}
-                ref={slideRef}
-                onStartChange={(from: number, to: number) => {
-                  setIndex(to + 1)
-                }}
-                canSwipe={true}
-                autoplay={false}
-                transitionDuration={0}
-              >
-                {(imageUrl as any).map((data: string, index: number) => {
-                  return (
-                    <img
-                      key={index}
-                      draggable="false"
-                      src={data}
-                      alt={""}
-                      onClick={onFullView}
-                      className={`cursor-pointer object-cover object-center rounded-2xl ${cx("post-image", {
-                        "blur-2xl": spoiler,
-                      })}`}
-                    />
-                  )
-                })}
-              </Slide>
+              <div onMouseEnter={() => setShowButton(true)} onMouseLeave={() => setShowButton(false)}>
+                <Slide {...properties}
+                  ref={slideRef}
+                  onStartChange={(from: number, to: number) => {
+                    setIndex(to + 1)
+                  }}
+                  canSwipe={true}
+                  autoplay={false}
+                  transitionDuration={0}
+                >
+                  {(imageUrl as any).map((data: string, index: number) => {
+                    return (
+                      <img
+                        key={index}
+                        draggable="false"
+                        src={data}
+                        alt={""}
+                        onClick={onFullView}
+                        className={`cursor-pointer object-cover object-center rounded-2xl ${cx("post-image", {
+                          "blur-2xl": spoiler,
+                        })}`}
+                      />
+                    )
+                  })}
+                </Slide>
+              </div>
               <div
                 style={spoiler ? { zIndex: "-1" } : {}}
                 className="absolute m-auto leading-6 text-center opacity-40 rounded-tr-2xl top-0 right-4 w-12 h-6 bg-slate-700 text-white"
