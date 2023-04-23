@@ -6,16 +6,7 @@ import { signInWithEmailAndPassword } from "firebase/auth"
 import { auth, db } from "@/firebase/firebase-app"
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore"
 import { cert } from "firebase-admin/app"
-
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.FIREBASE_DATABASE_URL,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-}
+import { getAuth } from "firebase-admin/auth"
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -60,12 +51,18 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, account, profile, isNewUser }) {
-      // const adminAuth = getAuth()
+      const adminAuth = getAuth()
       if (isNewUser || user) {
-        // const customToken = await adminAuth.createCustomToken(token.sub!)
-        // token.customToken = customToken
+        // add custom token to session
+        const additionalClaims = {
+          username: (user as any)?.username || "guess",
+          id_admin: !!(user as any)?.id_admin,
+          is_banned: !!(user as any)?.is_banned,
+        }
+        const customToken = await adminAuth.createCustomToken(token.sub!, additionalClaims)
+        token.customToken = customToken
       }
-      if (isNewUser == true) {
+      if (isNewUser) {
         try {
           const userRef = doc(db, "users", token.sub!)
           await updateDoc(userRef, { joined_date: serverTimestamp(), username: "guess" })
@@ -77,9 +74,8 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token, user }) {
       if (session?.user) {
-        ;(session as any).user.id = token.sub
-        // (session as any).customToken = token.customToken;
-        // await signInWithCustomToken(auth, token.customToken as string)
+        (session as any).user.id = token.sub;
+        (session as any).customToken = token.customToken;
       }
       return session
     },

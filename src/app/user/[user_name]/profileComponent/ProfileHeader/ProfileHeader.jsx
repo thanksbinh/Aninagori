@@ -1,22 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
-import classNames from "classnames/bind"
-import styles from "./ProfileHeader.module.scss"
-import Button from "@/components/button/Button"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCheck, faImage, faPenToSquare, faPlug } from "@fortawesome/free-solid-svg-icons"
-import { useState, useRef, useEffect } from "react"
-import { useSession } from "next-auth/react"
-import { doc, updateDoc } from "firebase/firestore"
-import { db } from "@/firebase/firebase-app"
-import AddFriendBtn from "./AddFriendBtn"
-import Tippy from "@tippyjs/react"
-import "tippy.js/dist/tippy.css"
+import { useFirebaseSession } from "@/app/SessionProvider"
 import { get } from "@/app/api/apiServices/httpRequest"
 import { generateCodeChallenge, generateCodeVerifier } from "@/app/api/auth/route"
-import { setCookie } from "cookies-next"
-import ProfilEditPopUp from "../ProfileEditPopUp/ProfileEditPopUp"
+import Button from "@/components/button/Button"
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
+import { db } from "@/firebase/firebase-app"
+import { faCheck, faImage, faPenToSquare, faPlug } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import Tippy from "@tippyjs/react"
+import classNames from "classnames/bind"
+import { setCookie } from "cookies-next"
+import { doc, updateDoc } from "firebase/firestore"
+import { useEffect, useRef, useState } from "react"
+import "tippy.js/dist/tippy.css"
+import ProfilEditPopUp from "../ProfileEditPopUp/ProfileEditPopUp"
+import AddFriendBtn from "./AddFriendBtn"
+import styles from "./ProfileHeader.module.scss"
 
 const cx = classNames.bind(styles)
 
@@ -30,7 +30,7 @@ function ProfileHeader({ guess, admin }) {
   const [currentImage, setCurrentImage] = useState("/wallpaper.png")
   const editBox = useRef()
   const editBoxWrapper = useRef()
-  const { data: session } = useSession()
+  const { data: session } = useFirebaseSession()
   const [closeBox, setCloseBox] = useState(true)
 
   useEffect(() => {
@@ -228,7 +228,7 @@ function ProfileHeader({ guess, admin }) {
           ) : (
             <>
               <Button
-                onClick={() => {}}
+                onClick={() => { }}
                 small
                 gradient
                 href={

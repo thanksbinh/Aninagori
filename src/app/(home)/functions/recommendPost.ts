@@ -28,7 +28,7 @@ async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], last
   const usernameList1 = [myUserInfo.username, ...friendList.slice(0, 9)]
   const usernameList2 = friendList.slice(9)
 
-  const lastViewTimestamp = lastView ? new Timestamp(lastView.seconds, lastView.nanoseconds) : Timestamp.now()
+  const lastViewTimestamp = lastView ? new Timestamp(lastView._seconds, lastView._nanoseconds) : Timestamp.now()
 
   let postQuery = query(
     collection(db, "posts"),

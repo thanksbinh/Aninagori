@@ -1,6 +1,15 @@
-// import { getApps, getApp, initializeApp } from "firebase-admin/app";
-// import firebaseConfig from "./firebase-config";
+import * as firebaseAdmin from "firebase-admin";
 
-// const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+if (!firebaseAdmin.apps.length)
+  firebaseAdmin.initializeApp({
+    credential: firebaseAdmin.credential.cert({
+      "projectId": process.env.FIREBASE_PROJECT_ID,
+      "private_key": process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+      "client_email": process.env.FIREBASE_CLIENT_EMAIL,
+    }),
+    databaseURL: "https://aninagori-0.firebaseio.com"
+  });
 
-// export { app }
+const db = firebaseAdmin.firestore();
+
+export { db };
