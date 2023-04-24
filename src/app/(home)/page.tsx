@@ -1,14 +1,46 @@
+import { db } from "@/firebase/firebase-admin-app";
+import { UserInfo } from "@/global/UserInfo.types";
 import { getUserInfo } from "@/global/getUserInfo";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { FieldValue } from "firebase-admin/firestore";
 import { getServerSession } from "next-auth";
 import '../globals.css';
-import { fetchMyAnimeList, fetchPostPreference, getFriendList } from "./functions/fetchData";
-import { syncAnimeUpdate, updateLastView } from "./functions/syncUpdates";
-import Posts from "./components/PostContainer";
-import PostForm from './components/postForm/PostForm';
 import ContextProvider from "./HomeContext";
+import Posts from "./components/PostContainer";
 import AnimeRecommendList from "./components/leftsidebar/AnimeRecommendList";
+import PostForm from './components/postForm/PostForm';
 import FriendList from "./components/rightsidebar/FriendList";
+
+async function getFriendList(myUserInfo: UserInfo): Promise<string[]> {
+  const userRef = db.doc(`users/${myUserInfo.id}`)
+  const user = await userRef.get()
+  const friendList = user.data()?.friend_list?.reverse()
+  return friendList ? JSON.parse(JSON.stringify(friendList)) : []
+}
+
+async function fetchMyAnimeList(myUserInfo: UserInfo) {
+  const malRef = db.doc(`myAnimeList/${myUserInfo.username}`)
+  const mal = await malRef.get()
+
+  if (!mal.exists) initMyAnimeList(malRef)
+  return mal.data();
+}
+
+async function initMyAnimeList(malRef: any) {
+  malRef.set({ last_updated: null }, { merge: true })
+}
+
+async function fetchPostPreference(myUserInfo: UserInfo) {
+  const postPrefRef = db.doc(`postPreferences/${myUserInfo.username}`)
+  const postPref = await postPrefRef.get()
+
+  updateLastView(postPrefRef)
+  return postPref ? JSON.parse(JSON.stringify(postPref.data())) : { last_view: 1 };
+}
+
+async function updateLastView(postPrefRef: any) {
+  postPrefRef.set({ last_view: FieldValue.serverTimestamp() }, { merge: true })
+}
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
@@ -21,10 +53,7 @@ export default async function Home() {
     getFriendList(myUserInfo),
     fetchPostPreference(myUserInfo),
     fetchMyAnimeList(myUserInfo)
-  ])
-
-  syncAnimeUpdate(myUserInfo, myAnimeList)
-  updateLastView(myUserInfo)
+  ]) as any
 
   return (
     <div className="flex justify-between pt-4">
@@ -32,7 +61,7 @@ export default async function Home() {
         <div className="xl:block xl:flex-1 flex-shrink max-w-[320px]">
           <div className="hidden xl:block w-[360px] py-16 px-2 h-full fixed left-0 z-20 bg-ani-black">
             {/* @ts-expect-error Server Component */}
-            <AnimeRecommendList myUserInfo={myUserInfo} potentialAnimes={postPreference.animeList} />
+            <AnimeRecommendList myUserInfo={myUserInfo} potentialAnimes={postPreference.animeList} myAnimeList={myAnimeList} />
           </div>
         </div>
 
@@ -51,7 +80,6 @@ export default async function Home() {
 
         <div className="lg:block lg:flex-1 flex-shrink max-w-[320px]">
           <div className="hidden lg:block w-[320px] pt-16 px-2 h-screen fixed right-0 z-20 bg-ani-black">
-            {/* @ts-expect-error Server Component */}
             <FriendList myFriendList={myFriendList} myUserInfo={myUserInfo} />
           </div>
         </div>
