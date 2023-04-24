@@ -59,22 +59,26 @@ export default async function Home() {
     <div className="flex justify-between pt-4">
       <ContextProvider myUserInfo={myUserInfo}>
         <div className="xl:block xl:flex-1 flex-shrink max-w-[320px]">
-          <div className="hidden xl:block w-[360px] py-16 px-2 h-full fixed left-0 z-20 bg-ani-black">
+          <div className="hidden xl:block w-[320px] py-16 px-2 h-full fixed left-0 z-20 bg-ani-black">
             {/* @ts-expect-error Server Component */}
             <AnimeRecommendList myUserInfo={myUserInfo} potentialAnimes={postPreference.animeList} myAnimeList={myAnimeList} />
           </div>
         </div>
 
-        <div className="lg:w-2/5 md:w-3/5 sm:w-4/5 w-full">
-          <div className="h-screen flex flex-col pt-10">
-            <PostForm
-              myAnimeList={myAnimeList?.animeList}
-            />
-            <Posts
-              myFriendList={myFriendList}
-              myAnimeList={myAnimeList?.animeList}
-              postPreference={postPreference}
-            />
+        <div className="lg:w-[55%] md:w-3/5 sm:w-4/5 w-full">
+          <div className="h-screen flex flex-col items-center pt-10">
+            <div className="w-[72%]">
+              <PostForm
+                myAnimeList={myAnimeList?.animeList}
+              />
+            </div>
+            <div className="mb-4 w-full">
+              <Posts
+                myFriendList={myFriendList}
+                myAnimeList={myAnimeList?.animeList}
+                postPreference={postPreference}
+              />
+            </div>
           </div>
         </div >
 
