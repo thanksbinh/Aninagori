@@ -45,7 +45,7 @@ export function handleAnimeInformationPosting(
     postAnimeData.watching_progress = "plan to watch"
     postAnimeData.episodes_seen = "0"
   } else if (status === "Finished") {
-    ;(postAnimeData as any).score = score
+    ; (postAnimeData as any).score = score
     postAnimeData.watching_progress = "have finished"
     postAnimeData.episodes_seen = postAnimeData.total_episodes
   } else if (status === "Drop") {
@@ -222,74 +222,54 @@ export async function handleSubmitForm(
   }
 
   try {
-    // post have anime data
-    if (!!postAnimeData.anime_id) {
-      // user connect with MAL: post info to MAL
-      if (!!myUserInfo?.mal_connect?.accessToken) {
-        const promiseUpdateMAL = fetch(getProductionBaseUrl() + "/api/updatestatus/" + postAnimeData.anime_id, {
-          headers: {
-            status: statusConverted,
-            episode: postAnimeData.episodes_seen,
-            score: (postAnimeData as any).score,
-            auth_code: myUserInfo?.mal_connect?.accessToken,
-            start_date: startDate,
-            end_date: endDate,
-            rewatch_time: rewatchTime,
-            is_rewatching: statusData === "Re-watching" ? true : false,
-            tags: animeTagData,
-          } as any,
-        }).then((res) => res.json())
-        promisePost.push(promiseUpdateMAL)
-      }
+    if (!postAnimeData.anime_id) return;
 
-      // every users: post anime status to firebase
-      const myAnimeListRef = doc(db, "myAnimeList", myUserInfo.username)
-      const dateNow = getDateNow()
-      const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + postAnimeData.anime_id).then(
-        (res) => res.json(),
-      )
-      const animeData = {
-        list_status: {
-          num_episodes_watched: postAnimeData.episodes_seen,
-          score: !!(postAnimeData as any).score ? (postAnimeData as any).score : 0,
-          status: statusConverted,
-          updated_at: dateNow,
-          is_rewatching: statusData === "Re-watching" ? true : false,
-        },
-        node: {
-          id: postAnimeData.anime_id,
-          main_picture: animeInformation.main_picture,
-          title: animeInformation.title,
-          num_episodes: parseInt(totalEps),
-        },
-      }
-      if (!!startDate) (animeData as any).list_status.start_date = startDate
-      if (!!endDate) (animeData as any).list_status.finish_date = endDate
-      if (animeTagData.length > 0) (animeData as any).list_status.tags = animeTagData
-      if (!!rewatchTime && parseInt(rewatchTime) > 0) (animeData as any).list_status.num_times_rewatched = rewatchTime
-      // check if anime already in list, if in list, update that anime node
-      const batch = writeBatch(db)
-      const oldAnimeData = await getOldAnimeData(myUserInfo.username, animeData)
-      if (oldAnimeData !== "anime not exist") {
-        console.log(oldAnimeData)
-        batch.update(myAnimeListRef, {
-          animeList: arrayRemove(oldAnimeData),
-        })
-      }
-      batch.update(myAnimeListRef, {
-        animeList: arrayUnion(animeData),
-        last_updated: dateNow,
-      })
-      promisePost.push(batch.commit())
-      // Update status on friend list
-      promisePost.push(
-        updateStatusOnFriendLists(myUserInfo, {
-          ...postAnimeData,
-          status: statusConverted,
-        }),
-      )
-      await Promise.all(promisePost)
+    // post anime status to firebase
+    const myAnimeListRef = doc(db, "myAnimeList", myUserInfo.username)
+    const dateNow = getDateNow()
+    const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + postAnimeData.anime_id).then(
+      (res) => res.json(),
+    )
+    const animeData = {
+      list_status: {
+        num_episodes_watched: parseInt(postAnimeData?.episodes_seen || 0),
+        score: !!(postAnimeData as any).score ? (postAnimeData as any).score : 0,
+        status: statusConverted,
+        updated_at: dateNow,
+        is_rewatching: statusData === "Re-watching" ? true : false,
+      },
+      node: {
+        id: postAnimeData.anime_id,
+        main_picture: animeInformation.main_picture,
+        title: animeInformation.title,
+        num_episodes: parseInt(totalEps),
+      },
     }
+    if (!!startDate) (animeData as any).list_status.start_date = startDate
+    if (!!endDate) (animeData as any).list_status.finish_date = endDate
+    if (animeTagData.length > 0) (animeData as any).list_status.tags = animeTagData
+    if (!!rewatchTime && parseInt(rewatchTime) > 0) (animeData as any).list_status.num_times_rewatched = rewatchTime
+    // check if anime already in list, if in list, update that anime node
+    const batch = writeBatch(db)
+    const oldAnimeData = await getOldAnimeData(myUserInfo.username, animeData)
+    if (oldAnimeData !== "anime not exist") {
+      batch.update(myAnimeListRef, {
+        animeList: arrayRemove(oldAnimeData),
+      })
+    }
+    batch.update(myAnimeListRef, {
+      animeList: arrayUnion(animeData),
+      last_updated: dateNow,
+    })
+    promisePost.push(batch.commit())
+
+    promisePost.push(
+      updateStatusOnFriendLists(myUserInfo, {
+        ...postAnimeData,
+        status: statusConverted,
+      }),
+    )
+    await Promise.all(promisePost)
   } catch (err) {
     console.log(err)
   }

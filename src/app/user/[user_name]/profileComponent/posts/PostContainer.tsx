@@ -4,7 +4,7 @@ import PostFormPopUp from "@/app/(home)/components/postFormPopup/PostFormPopUp";
 import ContextProvider from "@/app/post/[...post_id]/PostContext";
 import PostAction from "@/app/post/[...post_id]/components/post/PostAction";
 import PostContent from "@/app/post/[...post_id]/components/post/PostContent";
-import { formatDuration } from "@/components/utils/format";
+import { formatDuration } from "@/components/utils/formatData";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
 import { collection, getCountFromServer, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";

@@ -10,7 +10,7 @@ import getProductionBaseUrl from '../utils/getProductionBaseURL';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/firebase/firebase-app';
 import { useRouter } from 'next/navigation';
-import SyncFromMALBtn from '../profilePictureMenu/SyncFromMALBtn';
+import SyncWithMALBtn from '../profilePictureMenu/SyncWithMALBtn';
 
 interface Props {
     myUserInfo: UserInfo | undefined
@@ -97,7 +97,9 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
                     </Link>
 
                     {/* Todo: add loading effect */}
-                    <SyncFromMALBtn myUserInfo={myUserInfo} onClose={() => setIsOpen(false)} />
+                    {myUserInfo?.mal_connect && (
+                        <SyncWithMALBtn myUserInfo={myUserInfo} onClose={() => setIsOpen(false)} />
+                    )}
 
                     <button
                         className="block px-4 py-2 text-ani-text-main hover:bg-slate-50/25 w-full text-left rounded-md"

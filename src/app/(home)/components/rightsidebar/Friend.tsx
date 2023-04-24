@@ -1,7 +1,7 @@
 'use client'
 
 import { Dispatch, SetStateAction } from "react";
-import { formatDuration } from "@/components/utils/format";
+import { formatDuration } from "@/components/utils/formatData";
 import { collection, doc, getDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase/firebase-app";
 import { findOldLastMessage, updateStatus } from "@/components/chat/ChatNoti";

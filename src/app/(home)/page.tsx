@@ -65,7 +65,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="lg:w-[55%] md:w-3/5 sm:w-4/5 w-full">
+        <div className="xl:w-[55%] lg:w-3/5 md:w-4/5 w-full">
           <div className="h-screen flex flex-col items-center pt-10">
             <div className="w-[72%]">
               <PostForm

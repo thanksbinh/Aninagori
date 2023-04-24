@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from "react"
 import { db } from "@/firebase/firebase-app"
 import PostAction from "./PostAction"
 import { PostContext } from "../../PostContext";
-import { formatDuration } from "@/components/utils/format";
+import { formatDuration } from "@/components/utils/formatData";
 import Modal from "@/components/utils/Modal";
 import PostContent from "./PostContent"
 

@@ -1,4 +1,4 @@
-import { formatDuration } from "@/components/utils/format"
+import { formatDuration } from "@/components/utils/formatData"
 import { db } from "@/firebase/firebase-app"
 import { UserInfo } from "@/global/UserInfo.types"
 import { collection, getDocs, limit, orderBy, query, startAfter, Timestamp, where } from "firebase/firestore"

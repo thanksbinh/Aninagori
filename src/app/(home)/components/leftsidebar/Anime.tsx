@@ -1,14 +1,13 @@
 "use client"
 
-import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 import { getDateNow, getOldAnimeData } from "@/app/(home)/functions/postingUtils"
 import { db } from "@/firebase/firebase-app"
-import { arrayRemove, arrayUnion, doc, writeBatch } from "firebase/firestore"
-import { useState } from "react"
 import { AiOutlineLoading3Quarters } from "@react-icons/all-files/ai/AiOutlineLoading3Quarters"
 import { RiAddCircleLine } from "@react-icons/all-files/ri/RiAddCircleLine"
 import { RiCheckboxCircleLine } from "@react-icons/all-files/ri/RiCheckboxCircleLine"
+import { arrayRemove, arrayUnion, doc, writeBatch } from "firebase/firestore"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { AnimeOptions } from "./AnimeOptions"
 
 function formatMediaType(media_type: string) {
@@ -52,35 +51,10 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
         num_episodes: anime.num_episodes,
       },
     }
-    if (!!myUserInfo?.mal_connect?.accessToken) {
-      fetch(getProductionBaseUrl() + "/api/updatestatus/" + anime.id, {
-        headers: {
-          status: "plan_to_watch",
-          episode: "0",
-          score: "0",
-          auth_code: myUserInfo?.mal_connect?.accessToken,
-        } as any,
-      }).then((res) => res.json()).then(async (data) => {
-        console.log(data);
-        const batch = writeBatch(db);
-        batch.update(myAnimeListRef, {
-          animeList: arrayUnion(animeData),
-        })
-        await batch.commit();
-        setLoading(false)
-        setDonePLanToWatch(true)
-        setTimeout(() => {
-          setHide(true)
-          setDonePLanToWatch(false)
-        }, 3000)
-      })
-      return
-    }
-    // user not connect to MAL
+
     const batch = writeBatch(db)
     const oldAnimeData = await getOldAnimeData(myUserInfo?.username, animeData)
     if (oldAnimeData !== 'anime not exist') {
-      console.log(oldAnimeData);
       batch.update(myAnimeListRef, {
         animeList: arrayRemove(oldAnimeData)
       })
@@ -95,7 +69,7 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
     setTimeout(() => {
       setDonePLanToWatch(false)
       setHide(true)
-    }, 3000)
+    }, 2000)
   }
 
   return !hide ? (

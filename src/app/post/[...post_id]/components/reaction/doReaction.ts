@@ -1,4 +1,4 @@
-import { shortenString } from '@/components/utils/format';
+import { shortenString } from '@/components/utils/formatData';
 import { db } from '@/firebase/firebase-app';
 import { UserInfo } from '@/global/UserInfo.types';
 import { doc, updateDoc, arrayUnion, arrayRemove, Timestamp, getDoc } from 'firebase/firestore';
