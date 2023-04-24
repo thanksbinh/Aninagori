@@ -15,6 +15,7 @@ import Comments from "../comment/Comments"
 import { PostContext } from "../../PostContext"
 import Reaction from "../reaction/Reaction"
 import PostPopup from "./PostPopup"
+import MediaFullView from "./postMedia/MediaFullView"
 interface PostDynamicProps {
   reactions?: Object[]
   commentCountPromise?: Promise<number> | number
