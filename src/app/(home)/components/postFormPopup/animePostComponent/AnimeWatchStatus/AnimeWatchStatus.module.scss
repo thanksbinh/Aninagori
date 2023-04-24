@@ -1,0 +1,44 @@
+.down-icon {
+  margin-bottom: 4px;
+  margin-right: 4px;
+  font-size: 22px;
+  color: #d9d9d9;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.status-component {
+  width: 100%;
+  padding: 4px 8px;
+  height: 40px;
+  background-color: #4e5d78;
+  border-radius: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & > .anime-watch-status {
+    margin-left: 10px;
+    font-weight: 600;
+    user-select: none;
+  }
+}
+
+.option-wrapper {
+  overflow: hidden;
+  border-radius: 16px;
+  width: 100%;
+  background-color: #4e5d78;
+}
+
+.option {
+  cursor: pointer;
+  user-select: none;
+  width: 155px;
+  padding: 8px 10px 8px 16px;
+  &:hover {
+    background-color: #22427e;
+  }
+}

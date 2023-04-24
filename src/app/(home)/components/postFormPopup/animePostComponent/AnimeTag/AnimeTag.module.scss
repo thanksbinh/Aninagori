@@ -1,0 +1,44 @@
+.tag-wrapper {
+  display: flex;
+  margin: 6px 0px 10px 8px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  background-color: #4e5d78;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 5px;
+  margin-right: 16px;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.tag-icon {
+  font-size: 18px;
+  margin-right: 5px;
+}
+
+.tag-name {
+  line-height: 30px;
+  font-weight: 600;
+  user-select: none;
+}
+
+.tag.select {
+  background-color: white;
+  & .tag-icon {
+    color: black;
+  }
+
+  & .tag-name {
+    color: black;
+  }
+}

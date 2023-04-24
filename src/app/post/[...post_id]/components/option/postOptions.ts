@@ -1,17 +1,6 @@
 import { db } from "@/firebase/firebase-app"
-import {
-  deleteDoc,
-  doc,
-  getDoc,
-  writeBatch,
-  collection,
-  getDocs,
-  limit,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore"
-
+import { deleteDoc, doc, getDoc, writeBatch, collection } from "firebase/firestore"
+import { getDocs, limit, query, updateDoc, where } from "firebase/firestore"
 import { storage } from "@/firebase/firebase-app"
 import { deleteObject, ref } from "firebase/storage"
 
@@ -42,7 +31,7 @@ export async function banUser(authorName?: string) {
   updateDoc(userRef, { is_banned: true })
 }
 
-async function deleteMediaFiles(imageUrl?: string, videoUrl?: string) {
+export async function deleteMediaFiles(imageUrl?: string, videoUrl?: string) {
   try {
     if (imageUrl) {
       await deleteObject(ref(storage, imageUrl))

@@ -1,5 +1,6 @@
 'use client'
 
+import PostFormPopUp from "@/app/(home)/components/postFormPopup/PostFormPopUp";
 import ContextProvider from "@/app/post/[...post_id]/PostContext";
 import PostAction from "@/app/post/[...post_id]/components/post/PostAction";
 import PostContent from "@/app/post/[...post_id]/components/post/PostContent";
@@ -7,8 +8,8 @@ import { formatDuration } from "@/components/utils/format";
 import { db } from "@/firebase/firebase-app";
 import { UserInfo } from "@/global/UserInfo.types";
 import { collection, getCountFromServer, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
-import { useState } from "react";
-import InfiniteScroll from 'react-infinite-scroller';
+import { useEffect, useRef, useState } from "react";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 async function fetchProfilePosts(profileUsername: string, lastKey: any) {
   const postQuery = query(collection(db, "posts"), where("authorName", "==", profileUsername), orderBy("timestamp", "desc"), startAfter(lastKey), limit(5))
@@ -44,6 +45,12 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
   const [hasMore, setHasMore] = useState(true)
   const [lastKey, setLastKey] = useState<any>({})
 
+  const inputRef = useRef()
+
+  useEffect(() => {
+    fetchPosts()
+  }, [])
+
   async function fetchPosts() {
     if (!profileUsername) return;
 
@@ -59,10 +66,17 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
 
   return (
     <InfiniteScroll
-      loadMore={fetchPosts}
+      dataLength={posts.length}
+      next={fetchPosts}
       hasMore={hasMore}
-      loader={<div className="animate-pulse mb-4"><PostContent /><PostAction /></div>}
-      initialLoad={true}
+      loader={
+        <div key={0} className="animate-pulse mb-4">
+          <PostContent />
+          <PostAction />
+        </div>
+      }
+      refreshFunction={() => console.log("refresh")}
+      pullDownToRefresh={true}
       className="flex flex-col"
     >
       {posts.map((post: any) => (
@@ -73,6 +87,7 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
           authorName={post.authorName}
           animeID={post.post_anime_data?.anime_id}
           postId={post.id}
+          postData={post}
         >
           <div className="mb-4">
             <PostContent
@@ -87,13 +102,18 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
               watchingProgress={post?.post_anime_data?.watching_progress}
               episodesSeen={post?.post_anime_data?.episodes_seen}
               episodesTotal={post?.post_anime_data?.total_episodes}
-              tag={post?.post_anime_data?.tag}
+              tag={!!post?.post_anime_data?.tag ? post?.post_anime_data?.tag : post?.tag}
+              score={post?.post_anime_data?.score}
               postId={post.id}
             />
             <PostAction
+              myUserInfo={myUserInfo}
+              malAuthCode={myUserInfo?.mal_connect?.accessToken}
+              animeID={post?.post_anime_data?.anime_id}
               reactions={post.reactions}
               commentCountPromise={fetchCommentCount(post.id)}
               comments={post.lastComment ? [post.lastComment] : []}
+              showTopReaction={false}
             />
           </div>
         </ContextProvider>

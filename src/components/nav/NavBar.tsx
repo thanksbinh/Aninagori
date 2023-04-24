@@ -1,9 +1,9 @@
 import { getUserInfo } from "@/global/getUserInfo";
-import { BsChatDotsFill } from '@react-icons/all-files/bs/BsChatDotsFill';
 import Button from "../button/Button";
+import ChatBtn from "./ChatBtn";
 import Logo from "./Logo";
-import NotificationBtn from "./notification/NotificationBtn";
-import ProfilePicture from "./profilePicture/ProfilePicture";
+import NotificationBtn from "./NotificationBtn";
+import ProfilePicture from "./ProfilePicture";
 import SearchBar from "./SearchBar";
 
 export default async function NavBar({ myUserId }: { myUserId: string | undefined }) {
@@ -23,7 +23,7 @@ export default async function NavBar({ myUserId }: { myUserId: string | undefine
         </div>
         :
         <div className="flex items-center gap-3">
-          <button title="message" className="flex item-center justify-center space-x-1 text-[#fff] bg-[#798597] hover:bg-[#94B0DD] p-3 rounded-full"><BsChatDotsFill className="w-4 h-4" /></button>
+          <ChatBtn myUserInfo={myUserInfo} />
           <NotificationBtn myUserInfo={myUserInfo} />
           <ProfilePicture myUserInfo={myUserInfo} />
         </div>

@@ -8,7 +8,14 @@ export async function GET(request: Request, { params }: { params: any }) {
     const episode = request.headers.get("episode")
     const score = request.headers.get("score")
     const auth_code = request.headers.get("auth_code")
-    console.log(anime_id, status, episode, score)
+    const start_date = request.headers.get("start_date")
+    const end_date = request.headers.get("end_date")
+    const is_rewatching = request.headers.get("is_rewatching")
+    const rewatch_time = request.headers.get("rewatch_time")
+    const tags = request.headers.get("tags")
+    console.log(tags)
+    // console.log(anime_id, status, episode, score)
+    // console.log(start_date, end_date, is_rewatching, rewatch_time)
     const urlParamsOauth =
       parseInt(score as any) > 0
         ? {
@@ -20,22 +27,23 @@ export async function GET(request: Request, { params }: { params: any }) {
             status: status,
             num_watched_episodes: parseInt(episode as any),
           }
+    if (!!start_date) (urlParamsOauth as any).start_date = start_date
+    if (!!end_date) (urlParamsOauth as any).finish_date = end_date
+    if (!!is_rewatching) (urlParamsOauth as any).is_rewatching = is_rewatching
+    if (!!rewatch_time) (urlParamsOauth as any).num_times_rewatched = parseInt(rewatch_time)
+    if (tags !== "") (urlParamsOauth as any).tags = tags
     const urlEncodedParams = qs.stringify(urlParamsOauth)
     console.log(urlEncodedParams)
 
-    fetch("https://api.myanimelist.net/v2/anime/" + anime_id + "/my_list_status", {
+    const result = await fetch("https://api.myanimelist.net/v2/anime/" + anime_id + "/my_list_status", {
       method: "PUT",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization: "Bearer " + auth_code,
       },
       body: urlEncodedParams,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        return NextResponse.json({ status: 200, data: data })
-      })
-    return NextResponse.json({ status: 200 })
+    }).then((res) => res.json())
+    return NextResponse.json({ status: 200, data: result })
   } catch (err) {
     return NextResponse.json({ status: 400, err: err })
   }
