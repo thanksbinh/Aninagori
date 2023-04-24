@@ -117,9 +117,11 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
         next={fetchPosts}
         hasMore={hasMore}
         loader={
-          <div key={0} className="animate-pulse mb-4">
-            <PostContent />
-            <PostAction />
+          <div key={0} className="flex justify-center animate-pulse mb-4">
+            <div className="w-[72%] relative">
+              <PostContent />
+              <PostAction />
+            </div>
           </div>
         }
         refreshFunction={() => console.log("refresh")}
