@@ -101,6 +101,14 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
                         <SyncWithMALBtn myUserInfo={myUserInfo} onClose={() => setIsOpen(false)} />
                     )}
 
+                    <Link
+                        className="block px-4 py-2 text-ani-text-white hover:bg-slate-50/25 w-full text-left rounded-md"
+                        href={`/settings?tab=account`}
+                        onClick={() => setIsOpen(false)}
+                    >
+                        Settings
+                    </Link>
+
                     <button
                         className="block px-4 py-2 text-ani-text-white hover:bg-slate-50/25 w-full text-left rounded-md"
                         onClick={handleLogout}
