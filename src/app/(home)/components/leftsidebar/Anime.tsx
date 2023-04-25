@@ -82,7 +82,7 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
         </div>
 
         <div>
-          <h2 className="flex-auto text-ani-text-main hover:underline text-sm font-bold">
+          <h2 className="flex-auto text-ani-text-white hover:underline text-sm font-bold">
             <a href={`https://myanimelist.net/anime/${anime?.id}`} target="_blank">
               {anime?.title}
             </a>

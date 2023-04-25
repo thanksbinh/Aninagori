@@ -83,13 +83,13 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
             {isOpen &&
                 <div className="absolute top-14 right-8 z-40 w-56 py-2 bg-ani-gray rounded-md shadow-lg">
                     {myUserInfo?.username === "guess" ?
-                        <button onClick={() => setOpenUsernamePopup(true)} className="px-4 py-2 text-ani-text-main hover:bg-slate-50/25 w-full text-left">Set username</button> :
-                        <div className="px-4 py-2 text-ani-text-main">{myUserInfo?.username}</div>
+                        <button onClick={() => setOpenUsernamePopup(true)} className="px-4 py-2 text-ani-text-white hover:bg-slate-50/25 w-full text-left">Set username</button> :
+                        <div className="px-4 py-2 text-ani-text-white">{myUserInfo?.username}</div>
                     }
                     <div className="border-t border-gray-700"></div>
 
                     <Link
-                        className="block px-4 py-2 text-ani-text-main hover:bg-slate-50/25 w-full text-left rounded-md"
+                        className="block px-4 py-2 text-ani-text-white hover:bg-slate-50/25 w-full text-left rounded-md"
                         href={`/user/${myUserInfo?.username}`}
                         onClick={() => setIsOpen(false)}
                     >
@@ -102,7 +102,7 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
                     )}
 
                     <button
-                        className="block px-4 py-2 text-ani-text-main hover:bg-slate-50/25 w-full text-left rounded-md"
+                        className="block px-4 py-2 text-ani-text-white hover:bg-slate-50/25 w-full text-left rounded-md"
                         onClick={handleLogout}
                     >
                         Logout

@@ -71,7 +71,7 @@ export default function SyncWithMALBtn({ myUserInfo, onClose }: { myUserInfo: Us
 
   return (
     <button
-      className="block px-4 py-2 text-ani-text-main hover:bg-slate-50/25 w-full text-left rounded-md"
+      className="block px-4 py-2 text-ani-text-white hover:bg-slate-50/25 w-full text-left rounded-md"
       onClick={onSyncWithMAL}
     >
       Sync With MAL

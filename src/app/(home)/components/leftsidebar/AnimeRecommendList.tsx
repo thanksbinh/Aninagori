@@ -32,7 +32,7 @@ export default async function AnimeRecommendList({ myUserInfo, potentialAnimes, 
   return (
     <div className="h-full anime-recommend-list relative">
       <div className="flex justify-between items-center pl-2 mb-4">
-        <h2 className="text-ani-text-main font-semibold text-xl">Anime you may like</h2>
+        <h2 className="text-ani-text-white font-semibold text-xl">Anime you may like</h2>
       </div>
       <div className="h-full overflow-y-auto flex flex-col flex-wrap">
         {!!recommendAnimeDetails && recommendAnimeDetails.length ? (

@@ -17,7 +17,8 @@ module.exports = {
         'ani-black': '#191c21',
         'ani-light-gray': '#373c47',
         'ani-gray': '#212733',
-        'ani-text-main': '#ffffff'
+        'ani-text-white': '#ffffff',
+        'ani-text-gray': '#9ca3af',
       },
     },
   },

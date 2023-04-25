@@ -157,7 +157,7 @@ const PostFormPopUp = (props: any, ref: any) => {
           <AnimeTag ref={animeTagRef} />
 
           <div>
-            <div onClick={() => { setBasicPostingInfo(!basicPostingInfo) }} className="whitespace-nowrap ml-2 my-3 text-ani-text-main cursor-pointer font-bold underline text-sm opacity-80 hover:opacity-100">
+            <div onClick={() => { setBasicPostingInfo(!basicPostingInfo) }} className="whitespace-nowrap ml-2 my-3 text-ani-text-white cursor-pointer font-bold underline text-sm opacity-80 hover:opacity-100">
               {basicPostingInfo ? "More details..." : "Fewer details..."}
             </div>
             <div className={basicPostingInfo ? "hidden" : "flex"}>
