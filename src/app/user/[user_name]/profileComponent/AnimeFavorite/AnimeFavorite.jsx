@@ -6,14 +6,15 @@ const cx = classNames.bind(styles)
 
 function AnimeFavorite({ favorite_data }) {
   return (
-    <StatusWrapper title="Favourite">
+    <div className="px-5 pb-1 pt-5 mb-5 rounded-xl bg-ani-black lg-between:flex-1 lg-between:max-w-full">
+      <h4 className="inline-block w-full font-bold pb-2 mb-3 border-b-2 border-b-[rgb(197,198,199)]">Favorite</h4>
       {!!favorite_data.anime && (
         <>
           <FavoriteChild title="Anime" count={favorite_data.anime.length} data={favorite_data.anime} />
           <FavoriteChild title="Character" count={favorite_data.characters.length} data={favorite_data.characters} />
         </>
       )}
-    </StatusWrapper>
+    </div>
   )
 }
 

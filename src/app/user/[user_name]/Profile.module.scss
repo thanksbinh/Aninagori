@@ -16,22 +16,9 @@
   }
 }
 
-.profile-wrapper {
+.profile-body-wrapper {
   width: 100%;
   display: flex;
-  background-color: var(--primary-color);
-  justify-content: center;
-  margin-top: 56px;
-}
-
-.profile-content {
-  width: 77%;
-}
-
-.profile-body-wrapper {
-  width: calc(100% - 4px);
-  display: flex;
-  // min-height: 2000px; // for developer state
   margin-top: 24px;
   box-sizing: border-box;
   justify-content: space-between;
@@ -39,15 +26,6 @@
   background-color: #212833;
   border-radius: 12px;
   position: relative;
-}
-
-.status-section {
-  width: 44.5%;
-  border-radius: 12px;
-  position: -webkit-sticky;
-  position: sticky;
-  // top: 0;
-  // z-index: 1;
 }
 
 .post-section {

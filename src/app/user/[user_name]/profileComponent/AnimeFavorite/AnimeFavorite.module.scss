@@ -5,7 +5,7 @@
 
 .wrapper {
   display: flex;
-  overflow-x: scroll;
+  overflow-x: auto;
   padding-bottom: 10px;
   scrollbar-width: thin;
 
@@ -20,7 +20,7 @@
   }
 
   & > a {
-    display: inline-block;  
+    display: inline-block;
     margin-right: 12px;
     min-width: 85px;
     height: 125px;

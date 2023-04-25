@@ -47,12 +47,12 @@ async function Profile({ params }: { params: { user_name: string } }) {
   // compare between admin and guess
   const isAdmin = !querySnapshot.empty && !!session?.user && params.user_name === adminData.username
   return (
-    <div className={cx("profile-wrapper")}>
+    <div className='bg-ani-black w-full flex justify-center mt-14'>
       <ContextProvider myUserInfo={myUserInfo}>
         <div className='w-[81%] xl-max:w-full'>
           <ProfileHeader guess={guessData} admin={adminData} />
-          <div className={cx("profile-body-wrapper")}>
-            <div className={cx("status-section")}>
+          <div className='w-full flex mt-6 box-border justify-between p-5 bg-profile-post-bg rounded-xl relative lgx-max:w-[90%] lgx-max:mx-[5%] lgx-max:flex-col lgx-max:mt-8'>
+            <div className='w-[44.5%] rounded-xl sticky lgx-max:w-[94%] lgx-max:mx-[3%] sm-max:!w-full sm-max:!mx-0'>
               {guessData?.mal_connect ? (
                 <Suspense
                   fallback={
@@ -74,15 +74,15 @@ async function Profile({ params }: { params: { user_name: string } }) {
                 <div className={cx("mal-notfound")}>Not connected to MAL yet</div>
               )}
             </div>
-            <div className={cx("post-section")}>
-              {isAdmin && (
+            <div className='relative rounded-xl w-[53.5%] lgx-max:w-[94%] lgx-max:mx-[3%] sm-max:!w-full sm-max:!mx-0'>
+              {/* {isAdmin && (
                 <div className={cx('form-profile') + " -mt-4"}>
                   <PostForm
                     myAnimeList={null}
                   />
                 </div>
-              )}
-              {/* <ProfilePosts className={cx('post-profile-container')} myUserInfo={adminData} profileUsername={guessData.username} /> */}
+              )} */}
+              <ProfilePosts className={cx('post-profile-container')} myUserInfo={adminData} profileUsername={guessData.username} />
             </div>
           </div>
         </div>
@@ -98,12 +98,14 @@ async function AnimeComponent({ mal_username, access_token }: { mal_username: st
   const [data, anime_status, user_favorite] = await Promise.all([animeData, animeStatus, userFavorite])
 
   return (
-    <>
-      {/* @ts-expect-error Server Component */}
-      <AnimeUpdate data={data.data} />
-      <AnimeStatus statusData={anime_status.anime_statistics} />
+    <div className="flex flex-col">
+      <div className="lg-between:flex lg-between:w-full lg-between:justify-between">
+        {/* @ts-expect-error Server Component */}
+        <AnimeUpdate data={data.data} />
+        <AnimeStatus statusData={anime_status.anime_statistics} />
+      </div>
       <AnimeFavorite favorite_data={user_favorite.data.data.favorites} />
-    </>
+    </div>
   )
 }
 

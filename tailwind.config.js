@@ -17,13 +17,16 @@ module.exports = {
         'ani-black': '#191c21',
         'ani-light-gray': '#373c47',
         'ani-gray': '#212733',
-        'ani-text-main': '#ffffff'
+        'ani-text-main': '#ffffff',
+        'profile-post-bg': '#212833'
       },
       screens: {
         'sm-max': { max: '639px' },
         'md-max': { max: '767px' },
         'lg-max': { max: '1023px' },
-        'xl-max': { max: '1279px' }
+        'lgx-max': { max: '1050px' },
+        'xl-max': { max: '1279px' },
+        'lg-between': { max: '1050px', 'min': '940px' }
       }
     },
   },

@@ -90,7 +90,7 @@ function ProfileHeader({ guess, admin }) {
         )}
       </div>
       {open && (
-        <div className="px-2 absolute bottom-14 right-3 z-10 rounded-2xl overflow-hidden">
+        <div className="px-2 absolute bottom-24 right-3 z-10 rounded-2xl overflow-hidden">
           <input
             type="text"
             className="border border-gray-300 py-2 px-4 w-64 text-black outline-none"

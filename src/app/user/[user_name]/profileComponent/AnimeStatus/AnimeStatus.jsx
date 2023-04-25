@@ -28,7 +28,7 @@ function AnimeStatus({ statusData }) {
         <ProgressChild percent={convertToPercent(statusData.num_items_dropped, statusData.num_items)} color="#E93030" />
       </div>
       <div className={cx("status-note")}>
-        <div className={cx("progress-note")}>
+        <div className="w-[43%] lg-between:w-[47%]">
           <StatusNoteChild
             color="#1CE318"
             title="Watching"
@@ -60,16 +60,16 @@ function AnimeStatus({ statusData }) {
             className={cx("note-child")}
           />
         </div>
-        <div className={cx("watch-note")}>
-          <div className={cx("watch-wrapper")}>
+        <div className="w-43%] lg-between:w-[47%]">
+          <div className={cx("watch-wrapper") + " lg-between:my-5"}>
             <span className={cx("watch-title")}>Total Entries</span>
             <span className={cx("watch-number")}>{statusData.num_items}</span>
           </div>
-          <div className={cx("watch-wrapper")}>
+          <div className={cx("watch-wrapper") + " lg-between:my-5"}>
             <span className={cx("watch-title")}>Rewatched</span>
             <span className={cx("watch-number")}>{statusData.num_times_rewatched}</span>
           </div>
-          <div className={cx("watch-wrapper")}>
+          <div className={cx("watch-wrapper") + " lg-between:my-5"}>
             <span className={cx("watch-title")}>Episodes</span>
             <span className={cx("watch-number")}>{statusData.num_episodes}</span>
           </div>
@@ -81,7 +81,7 @@ function AnimeStatus({ statusData }) {
 
 function StatusNoteChild({ color, title, number }) {
   return (
-    <div className={cx("status-wrapper")}>
+    <div className={cx("status-wrapper") + " lg-between:my-5"}>
       <div className={cx("status-round")} style={{ backgroundColor: `${color}` }}></div>
       <div className={cx("status-text-wrapper")}>
         <p className={cx("status")}>{title}</p>
