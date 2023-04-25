@@ -35,7 +35,7 @@ export default function Settings({ myUserInfo }: { myUserInfo: UserInfo }) {
   ) : activeTab === 'notifications' ? (
     <NotificationsSettings />
   ) : activeTab === 'applications' ? (
-    <ApplicationsSettings />
+    <ApplicationsSettings id={myUserInfo.id} mal_connect={myUserInfo.mal_connect} />
   ) : (
     null
   )
