@@ -39,7 +39,7 @@ function ProfileHeader({ guess, admin }) {
   }, [admin.id, admin.username])
 
   return (
-    <div className={cx("wrapper")}>
+    <div className="flex flex-col item-center relative">
       <div
         className={cx("modal", {
           hidden: closeBox,
@@ -60,35 +60,37 @@ function ProfileHeader({ guess, admin }) {
           avatar={avatar}
         />
       </div>
-      <img
-        src={guess.wallpaper || currentImage}
-        alt="wallpaper"
-        className={cx("wallpaper")}
-        onError={({ currentTarget }) => {
-          currentTarget.onerror = null
-          currentTarget.src = "/wallpaper.png"
-        }}
-        onLoad={() => {
-          setLoad(false)
-        }}
-        width={1044}
-        height={281}
-      ></img>
-      {admin.username === guess.username && (
-        <Button
-          onClick={() => {
-            setOpen(!open)
+      <div className="relative">
+        <img
+          src={guess.wallpaper || currentImage}
+          alt="wallpaper"
+          className={cx("wallpaper")}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null
+            currentTarget.src = "/wallpaper.png"
           }}
-          leftIcon={<FontAwesomeIcon icon={faImage} />}
-          small
-          primary
-          className={cx("change-wallpaper")}
-        >
-          Change your wallpaper
-        </Button>
-      )}
+          onLoad={() => {
+            setLoad(false)
+          }}
+          width={1044}
+          height={281}
+        ></img>
+        {admin.username === guess.username && (
+          <Button
+            onClick={() => {
+              setOpen(!open)
+            }}
+            leftIcon={<FontAwesomeIcon icon={faImage} />}
+            small
+            primary
+            className="absolute bottom-[12%] right-5 !text-black bg-white opacity-70 outline-none border-none md-max:bottom-[40%]"
+          >
+            Change your wallpaper
+          </Button>
+        )}
+      </div>
       {open && (
-        <div className="px-2 absolute bottom-1/4 right-3 z-10 rounded-2xl overflow-hidden">
+        <div className="px-2 absolute bottom-14 right-3 z-10 rounded-2xl overflow-hidden">
           <input
             type="text"
             className="border border-gray-300 py-2 px-4 w-64 text-black outline-none"
@@ -119,25 +121,25 @@ function ProfileHeader({ guess, admin }) {
           </button>
         </div>
       )}
-      <div className={cx("user-display")}>
-        <div className={cx("avatar-wrapper")}>
+      <div className="w-full h-[120px] pr-5 pl-[30px] flex justify-end relative md-max:h-64 md-max:flex-col">
+        <div className="absolute flex flex-row left-9 -top-9 md-max:flex-col md-max:items-center md-max:left-0 md-max:-top-24 md-max:w-full">
           <img
             src={guess.image || "/bocchi.jpg"}
             alt="avatar"
-            className={cx("avatar")}
+            className="w-[160px] h-[160px] rounded-full object-cover border-4 border-solid border-ani-black mr-[14px] md-max:w-[180px] md-max:h-[180px] md-max:mr-0 md-max:mb-2"
             onError={({ currentTarget }) => {
               currentTarget.onerror = null
               currentTarget.src = "/bocchi.jpg"
             }}
           ></img>
-          <div className={cx("user-information")}>
-            <strong className={cx("user-name")}>{guess.name || guess.username}</strong>
+          <div className="flex flex-col justify-end pb-[10px] md-max:items-center">
+            <strong className="text-2xl md-max:text-3xl">{guess.name || guess.username}</strong>
             {!!guess.friend_list ? (
               <>
-                <div className={cx("friends-count")}>
+                <div className="text-base text-[#b19898] font-normal mb-1 md-max:font-xl md-max:font-bold">
                   <span>{guess.friend_list.length}</span> friends
                 </div>
-                <div className={cx("friends-information")}>
+                <div className="flex items-center">
                   {guess.friend_list.map((data, index) => {
                     if (index < 5) {
                       return (
@@ -146,7 +148,7 @@ function ProfileHeader({ guess, admin }) {
                             key={index}
                             src={data.image || "/bocchi.jpg"}
                             alt="avatar"
-                            className={cx("friends-avatar")}
+                            className={cx("friends-avatar") + " w-8 h-8 rounded-full object-cover"}
                             onClick={() => {
                               window.location.href = getProductionBaseUrl() + "/user/" + data.username
                             }}

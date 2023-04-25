@@ -49,7 +49,7 @@ async function Profile({ params }: { params: { user_name: string } }) {
   return (
     <div className={cx("profile-wrapper")}>
       <ContextProvider myUserInfo={myUserInfo}>
-        <div className={cx("profile-content")}>
+        <div className='w-[81%] xl-max:w-full'>
           <ProfileHeader guess={guessData} admin={adminData} />
           <div className={cx("profile-body-wrapper")}>
             <div className={cx("status-section")}>
@@ -82,7 +82,7 @@ async function Profile({ params }: { params: { user_name: string } }) {
                   />
                 </div>
               )}
-              <ProfilePosts className={cx('post-profile-container')} myUserInfo={adminData} profileUsername={guessData.username} />
+              {/* <ProfilePosts className={cx('post-profile-container')} myUserInfo={adminData} profileUsername={guessData.username} /> */}
             </div>
           </div>
         </div>

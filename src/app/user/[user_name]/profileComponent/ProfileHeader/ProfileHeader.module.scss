@@ -1,10 +1,3 @@
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-}
-
 .wallpaper {
   width: 100%;
   height: 281px;
@@ -14,29 +7,11 @@
   border-bottom-left-radius: 7px;
 }
 
-.user-display {
-  width: 100%;
-  height: 120px;
-  padding: 0 20px 0 30px;
-  display: flex;
-  justify-content: flex-end;
-  position: relative;
-}
-
 .avatar-wrapper {
   position: absolute;
   display: flex;
   left: 30px;
   top: -30px;
-}
-
-.avatar {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid var(--primary-color);
-  margin-right: 14px;
 }
 
 .user-information {
@@ -50,27 +25,15 @@
   font-size: 24px;
 }
 
-.friends-count {
-  font-size: 16px;
-  color: #b19898;
-  font-weight: 400;
-  margin-bottom: 4px;
-}
-
-.friends-information {
-  display: flex;
-  align-items: center;
-}
-
-.friends-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
 .friends-avatar:not(:first-child) {
   margin-left: -7.5px;
+}
+
+// if max-width <= 767px then margin-left -10px;
+@media (max-width: 767px) {
+  .friends-avatar:not(:first-child) {
+    margin-left: -4px;
+  }
 }
 
 .profile-interact {
@@ -82,7 +45,7 @@
 
 .change-wallpaper {
   position: absolute;
-  bottom: 37%;
+  bottom: 12%;
   right: 20px;
   color: black !important;
   background-color: white !important;
@@ -108,9 +71,6 @@
   height: 40px;
   background-color: #377dff;
   color: white;
-}
-
-.friend-info {
 }
 
 .modal {

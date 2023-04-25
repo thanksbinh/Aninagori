@@ -25,11 +25,11 @@
 }
 
 .profile-content {
-  width: 1044px;
+  width: 77%;
 }
 
 .profile-body-wrapper {
-  width: 1040px;
+  width: calc(100% - 4px);
   display: flex;
   // min-height: 2000px; // for developer state
   margin-top: 24px;

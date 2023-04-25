@@ -11,7 +11,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: (theme) => ({
-        'login-bg': "url('/wallpaper.png')",
+        'login-bg': "url('/wallpaper.png')"
       }),
       colors: {
         'ani-black': '#191c21',
@@ -19,6 +19,12 @@ module.exports = {
         'ani-gray': '#212733',
         'ani-text-main': '#ffffff'
       },
+      screens: {
+        'sm-max': { max: '639px' },
+        'md-max': { max: '767px' },
+        'lg-max': { max: '1023px' },
+        'xl-max': { max: '1279px' }
+      }
     },
   },
   plugins: [],
