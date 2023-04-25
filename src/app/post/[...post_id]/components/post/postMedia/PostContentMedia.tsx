@@ -73,7 +73,7 @@ function PostContentMedia({
                       src={data}
                       alt={""}
                       onClick={() => {
-                        //TODO: handle view image in full screen
+                        console.log('Toggle Full Screen');
                       }}
                       className={`cursor-pointer object-cover object-center rounded-2xl ${cx("post-image", {
                         "blur-2xl": spoiler,
@@ -112,9 +112,7 @@ function PostContentMedia({
             />
           </>
         )}
-        {!!videoUrl.slug ?
-          <iframe className={cx('rounded-2xl w-full h-[280px]', { "blur-2xl": spoiler })} src={"https://short.ink/" + videoUrl.slug} allowFullScreen ></iframe>
-          : (videoUrl && <VideoComponent videoUrl={videoUrl} className={cx({ "blur-2xl": spoiler })} />)}
+        {!!videoUrl && <VideoComponent videoUrl={videoUrl} className={cx({ "blur-2xl": spoiler })} />}
       </div>
     </>
   )

@@ -165,38 +165,28 @@ export async function handleSubmitForm(
     postAnimeData.watching_progress,
     parseInt(totalEps) === parseInt(episodesData),
   )
-  // upload video to Abyss.to and image to firebase
+  // // upload media to firebase storage
   const uploadArray = <any>[]
   let uploadImageUrl = <any>[]
   let downloadMediaUrl = <any>[]
-  if (mediaType === "video" && mediaUrl.length > 0) {
-    var formData = new FormData()
-    formData.append("file", mediaUrl[0])
-
-    const body = await fetch(getProductionBaseUrl() + "/api/uploadvideo", {
-      method: "POST",
-      body: formData,
-    }).then((res) => res.json())
-    downloadMediaUrl = [{ slug: body.slug }]
-  } else if (mediaType === "image") {
-    mediaUrl.forEach((data: any, index: any) => {
-      if (!haveUploadedImage[index]) {
-        uploadArray.push(mediaUrl[index])
-      }
-    })
-    if (uploadArray.length !== 0) {
-      uploadImageUrl = await uploadMedia(uploadArray)
-      var uploadIndex = 0
-      downloadMediaUrl = mediaUrl.map((data: any, index: any) => {
-        if (haveUploadedImage[index]) {
-          return data
-        }
-        return uploadImageUrl[uploadIndex++]
-      })
-    } else {
-      downloadMediaUrl = mediaUrl
+  mediaUrl.forEach((data: any, index: any) => {
+    if (!haveUploadedImage[index]) {
+      uploadArray.push(mediaUrl[index])
     }
+  })
+  if (uploadArray.length !== 0) {
+    uploadImageUrl = await uploadMedia(uploadArray)
+    var uploadIndex = 0
+    downloadMediaUrl = mediaUrl.map((data: any, index: any) => {
+      if (haveUploadedImage[index]) {
+        return data
+      }
+      return uploadImageUrl[uploadIndex++]
+    })
+  } else {
+    downloadMediaUrl = mediaUrl
   }
+  console.log(downloadMediaUrl)
 
   // // post info to firestore
   const promisePost = [] as any
