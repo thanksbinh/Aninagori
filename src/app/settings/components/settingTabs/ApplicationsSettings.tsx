@@ -1,32 +1,15 @@
 'use client'
 
-import { get } from "@/app/api/apiServices/httpRequest";
-import { generateCodeChallenge, generateCodeVerifier } from "@/app/api/auth/route";
-import getProductionBaseUrl from "@/components/utils/getProductionBaseURL";
-import { setCookie } from "cookies-next";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import RemoveMALPopup from "../MALSettings/RemoveMALPopup";
+import onConnectMAL from "../MALSettings/connectMAL";
+import SyncMALPopup from "../MALSettings/SyncMALPopup";
 
-export default function ApplicationsSettings({ id, mal_connect }: { id: string, mal_connect: any }) {
-  const onConnectMAL = async () => {
-    try {
-      const codeChallenge = generateCodeChallenge(generateCodeVerifier())
-      setCookie("codechallenge", codeChallenge)
-      const result = await get(getProductionBaseUrl() + "/api/auth", {
-        headers: {
-          codeChallenge: codeChallenge,
-          userID: id,
-        },
-      })
-      window.location.href = result.url
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  const onRemoveMAL = async () => {
-    console.log("remove MAL")
-  }
+export default function ApplicationsSettings({ id, username, mal_connect }: { id: string, username: string, mal_connect: any }) {
+  const [openMalRemovePopup, setOpenMalRemovePopup] = useState(false)
+  const [openSyncRemovePopup, setOpenSyncRemovePopup] = useState(false)
 
   return (
     <div className="w-full">
@@ -53,22 +36,24 @@ export default function ApplicationsSettings({ id, mal_connect }: { id: string, 
 
             <div className="flex-1 flex justify-center">
               <Link href={`https://myanimelist.net/profile/${mal_connect.myAnimeList_username}`} target="_blank" className="flex flex-col items-center gap-2">
-                <Image src="/bocchi.jpg" alt="MyAnimeList_Logo" width={100} height={100} />
+                <Image src="/bocchi.jpg" alt="MyAnimeList Profile Picture" width={100} height={100} />
                 <div className="text-ani-text-white font-bold text-lg">{mal_connect.myAnimeList_username}</div>
               </Link>
             </div>
           </div>
 
-          <button onClick={onRemoveMAL} className="my-4 py-2 px-4 rounded-md bg-blue-500 font-semibold mr-4">
+          <button onClick={() => { setOpenSyncRemovePopup(true) }} className="my-4 py-2 px-4 rounded-md bg-blue-500 font-semibold mr-4">
             Synchronize anime list
           </button>
+          <SyncMALPopup username={username} mal_connect={mal_connect} isOpen={openSyncRemovePopup} onClose={() => setOpenSyncRemovePopup(false)} />
 
-          <button onClick={onRemoveMAL} className="my-4 py-2 px-4 rounded-md bg-red-500 font-semibold">
+          <button onClick={() => { setOpenMalRemovePopup(true) }} className="my-4 py-2 px-4 rounded-md bg-red-500 font-semibold">
             Remove MAL connection
           </button>
+          <RemoveMALPopup id={id} isOpen={openMalRemovePopup} onClose={() => setOpenMalRemovePopup(false)} />
         </>
       ) : (
-        <button onClick={onConnectMAL} className="my-4 py-2 px-4 rounded-md bg-blue-500 font-semibold">
+        <button onClick={() => { onConnectMAL(id) }} className="my-4 py-2 px-4 rounded-md bg-blue-500 font-semibold">
           Connect with MAL
         </button>
       )}

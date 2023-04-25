@@ -1,8 +1,12 @@
 export default function loading() {
   return (
     <div className="flex">
-      <div className="flex justify-center pt-10 h-screen">
-        <h2>Loading</h2>
+      <div className="hidden sm:block w-[360px] h-screen py-20 px-2 bg-ani-gray border-r-[1px] border-ani-light-gray">
+        Loading...
+      </div>
+
+      <div className="flex-1 pt-20 mx-14">
+        Loading...
       </div>
     </div>
   )

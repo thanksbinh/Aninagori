@@ -13,9 +13,9 @@ export async function GET(request: Request, { params }: { params: any }) {
     const is_rewatching = request.headers.get("is_rewatching")
     const rewatch_time = request.headers.get("rewatch_time")
     const tags = request.headers.get("tags")
-    console.log("line1", tags)
-    console.log("line2", anime_id, status, episode, score)
-    console.log("line3", start_date, end_date, is_rewatching, rewatch_time)
+    // console.log("line1", tags)
+    // console.log("line2", anime_id, status, episode, score)
+    // console.log("line3", start_date, end_date, is_rewatching, rewatch_time)
     const urlParamsOauth =
       parseInt(score as any) > 0
         ? {
@@ -33,7 +33,7 @@ export async function GET(request: Request, { params }: { params: any }) {
     if (!!rewatch_time) (urlParamsOauth as any).num_times_rewatched = parseInt(rewatch_time)
     if (!!tags) (urlParamsOauth as any).tags = tags
     const urlEncodedParams = qs.stringify(urlParamsOauth)
-    console.log(urlEncodedParams)
+    // console.log(urlEncodedParams)
 
     const result = await fetch("https://api.myanimelist.net/v2/anime/" + anime_id + "/my_list_status", {
       method: "PUT",

@@ -34,15 +34,19 @@ export default function Login() {
   //Handle Login API Integration here
   const authenticateUser = async () => {
     setLoading(true);
-    let res = await signIn('credentials', {
-      email: loginState.email_username,
-      password: loginState.password,
-      redirect: false
-    });
+    let res
 
-    if (!res?.ok) {
-      const usersRef = collection(db, "users")
-      const usernameQuery = query(usersRef, where("username", "==", loginState.email_username))
+    if (loginState.email_username.includes('@')) {
+      // Email Login
+      res = await signIn('credentials', {
+        email: loginState.email_username,
+        password: loginState.password,
+        redirect: false
+      });
+    }
+    else {
+      // Username Login
+      const usernameQuery = query(collection(db, "users"), where("username", "==", loginState.email_username))
       const querySnapshot = await getDocs(usernameQuery)
 
       if (querySnapshot.docs.length) {
@@ -54,12 +58,13 @@ export default function Login() {
       }
     }
 
-    setLoading(false)
     if (res?.ok) {
       setLoginFail(false)
       router.push("/")
       router.refresh()
-    } else {
+    }
+    else {
+      setLoading(false)
       setLoginFail(true)
       setTimeout(() => {
         setLoginFail(false)
