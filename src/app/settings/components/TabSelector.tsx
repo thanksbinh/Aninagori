@@ -1,9 +1,9 @@
 'use client'
 
-import { AiFillBell } from "@react-icons/all-files/ai/AiFillBell";
+import { BiBell } from "@react-icons/all-files/bi/BiBell";
 import { AiFillSetting } from "@react-icons/all-files/ai/AiFillSetting";
 import { BsFillShieldLockFill } from "@react-icons/all-files/bs/BsFillShieldLockFill";
-import { FaLock } from "@react-icons/all-files/fa/FaLock";
+import { BiLock } from "@react-icons/all-files/bi/BiLock";
 import { GiWireframeGlobe } from "@react-icons/all-files/gi/GiWireframeGlobe";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -61,7 +61,7 @@ export default function TabSelector() {
         </TabBtn>
 
         <TabBtn tab="privacy">
-          <FaLock className="w-7 h-7" />
+          <BiLock className="w-7 h-7" />
           <span className="px-4">Privacy</span>
         </TabBtn>
 
@@ -71,7 +71,7 @@ export default function TabSelector() {
         </TabBtn>
 
         <TabBtn tab="notifications">
-          <AiFillBell className="w-7 h-7" />
+          <BiBell className="w-7 h-7" />
           <span className="px-4">Notifications</span>
         </TabBtn>
 

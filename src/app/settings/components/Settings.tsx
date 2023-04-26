@@ -5,11 +5,11 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { settings } from "../constants/settingTabNames";
 import AccountSettings from "./settingTabs/AccountSettings";
-import SecuritySettings from "./settingTabs/SecuritySettings";
-import PrivacySettings from "./settingTabs/PrivacySettings";
+import ApplicationsSettings from "./settingTabs/ApplicationsSettings";
 import LanguageSettings from "./settingTabs/LanguageSettings";
 import NotificationsSettings from "./settingTabs/NotificationsSettings";
-import ApplicationsSettings from "./settingTabs/ApplicationsSettings";
+import PrivacySettings from "./settingTabs/PrivacySettings";
+import SecuritySettings from "./settingTabs/SecuritySettings";
 
 export default function Settings({ myUserInfo }: { myUserInfo: UserInfo }) {
   const searchParams = useSearchParams()!;
@@ -25,7 +25,7 @@ export default function Settings({ myUserInfo }: { myUserInfo: UserInfo }) {
   }, [searchParams])
 
   return activeTab === 'account' ? (
-    <AccountSettings name={myUserInfo.name || ""} username={myUserInfo.username} email={myUserInfo.email} />
+    <AccountSettings id={myUserInfo.id} name={myUserInfo.name || ""} username={myUserInfo.username} email={myUserInfo.email} />
   ) : activeTab === 'security' ? (
     <SecuritySettings />
   ) : activeTab === 'privacy' ? (
