@@ -14,15 +14,22 @@ export default function loading() {
         </div>
       </div>
 
-      <div className="lg:w-2/5 md:w-3/5 sm:w-4/5 w-full">
-        <div className="flex flex-col pt-10">
-          <PostForm />
-          <div className="animate-pulse mb-4">
-            <PostContent />
-            <PostAction />
+      <div className="xl:w-[55%] lg:w-3/5 md:w-4/5 w-full">
+        <div className="h-screen flex flex-col items-center pt-10">
+          <div className="w-[72%]">
+            <PostForm />
+          </div>
+          <div className="mb-4 w-full">
+            <div className="flex justify-center animate-pulse mb-4">
+              <div className="w-[72%] relative">
+                <PostContent />
+                <PostAction />
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
       <div className="lg:block lg:flex-1 flex-shrink max-w-[320px]">
         <div className="hidden lg:block w-[320px] pt-16 px-2 h-screen fixed right-0 z-20 bg-ani-black">
           {/* @ts-expect-error Server Component */}

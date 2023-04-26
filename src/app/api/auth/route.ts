@@ -1,7 +1,6 @@
-import { createHash } from "crypto"
+import { db } from "@/firebase/firebase-admin-app"
+import { FieldValue } from "firebase-admin/firestore"
 import { NextResponse } from "next/server"
-import { db } from "@/firebase/firebase-app"
-import { doc, serverTimestamp, updateDoc } from "firebase/firestore"
 import qs from "qs"
 
 const MYANIMELIST_CLIENT_ID = process.env.X_MAL_CLIENT_ID + ""
@@ -49,7 +48,6 @@ export async function GET(request: Request, { params }: { params: any }) {
     const result = await res.json()
 
     //4: Save Access Token and RefreshToken
-    const docRef = doc(db, "users", obj.userID)
     //5: Get User information and saved info to firebase
     const accessToken = result.access_token
     const url = "https://api.myanimelist.net/v2/users/@me?fields=anime_statistics"
@@ -60,15 +58,16 @@ export async function GET(request: Request, { params }: { params: any }) {
     })
       .then((response) => response.json())
       .then(async (data) => {
-        const res = await updateDoc(docRef, {
+        await db.doc(`users/${obj.userID}`).update({
           mal_connect: {
             myAnimeList_username: data.name,
             accessToken: result.access_token,
             refreshToken: result.refresh_token,
             expiresIn: result.expires_in,
-            createDate: serverTimestamp(),
+            createDate: FieldValue.serverTimestamp(),
           },
         })
+
         return NextResponse.redirect(`${origin}`)
       })
       .catch((error) => console.error(error))
@@ -76,34 +75,4 @@ export async function GET(request: Request, { params }: { params: any }) {
   } catch (error) {
     console.log(error)
   }
-}
-
-export const getServerSideProps = ({ req, res }: { req: any; res: any }) => {
-  return { props: {} }
-}
-
-export function generateCodeVerifier() {
-  const codeVerifier = generateRandomString(128)
-  return codeVerifier
-}
-
-export function generateCodeChallenge(codeVerifier: string) {
-  const hashed = createHash("sha256")
-    .update(codeVerifier)
-    .digest("base64")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=/g, "")
-  return hashed
-}
-
-function generateRandomString(length: number) {
-  let text = ""
-  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
-
-  for (let i = 0; i < length; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length))
-  }
-
-  return text
 }

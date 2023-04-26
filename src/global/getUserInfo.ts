@@ -15,8 +15,13 @@ async function getUserInfo(userId: string | undefined): Promise<UserInfo | undef
       id: docSnap.id,
       username: docSnap.data().username,
       image: docSnap.data().image,
+
+      name: docSnap.data().name,
+      email: docSnap.data().email,
+
       is_admin: docSnap.data().is_admin,
       is_banned: docSnap.data().is_banned,
+
       mal_connect: malConnect ? JSON.parse(JSON.stringify(malConnect)) : undefined,
     }
   } else {

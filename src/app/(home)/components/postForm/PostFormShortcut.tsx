@@ -1,6 +1,6 @@
 'use client'
 
-import { shortenString } from "@/components/utils/format"
+import { shortenString } from "@/components/utils/formatData"
 import { useContext, FC } from "react"
 import { PostFormContext } from "./PostFormContext"
 
@@ -12,7 +12,11 @@ const PostFormShortcut: FC<Props> = ({ openFormPopup }) => {
   const { recentAnimeList, setRecentAnimeList } = useContext(PostFormContext)
 
   const onClick = (index: number) => {
-    setRecentAnimeList([recentAnimeList[index], ...recentAnimeList.slice(0, index), ...recentAnimeList.slice(index + 1)])
+    setRecentAnimeList([
+      recentAnimeList[index],
+      ...recentAnimeList.slice(0, index),
+      ...recentAnimeList.slice(index + 1)
+    ])
 
     openFormPopup()
   }

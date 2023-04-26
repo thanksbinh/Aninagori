@@ -20,7 +20,7 @@ const FriendList = ({ myFriendList, myUserInfo }: { myFriendList: Friend[] | und
   return (
     <div className="h-full relative">
       <div className="flex justify-between items-center pr-2 mb-4">
-        <h2 className="text-ani-text-main font-semibold text-xl">Friends</h2>
+        <h2 className="text-ani-text-white font-semibold text-xl">Friends</h2>
         <div className="hover:cursor-pointer rounded-full p-2">
           <BsThreeDots className="h-5 w-5" aria-hidden="true" />
         </div>

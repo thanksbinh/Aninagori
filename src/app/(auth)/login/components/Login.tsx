@@ -17,7 +17,6 @@ fields.forEach(field => fieldsState[field.id] = '');
 
 export default function Login() {
   const [loginState, setLoginState] = useState(fieldsState);
-
   const [loginFail, setLoginFail] = useState(false)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -34,33 +33,31 @@ export default function Login() {
   //Handle Login API Integration here
   const authenticateUser = async () => {
     setLoading(true);
-    let res = await signIn('credentials', {
-      email: loginState.email_username,
+    let userEmail = loginState.email_username;
+
+    if (!loginState.email_username.includes('@')) {
+      const usernameQuery = query(collection(db, "users"), where("username", "==", loginState.email_username))
+      const querySnapshot = await getDocs(usernameQuery)
+
+      if (!querySnapshot.empty) userEmail = querySnapshot.docs[0].data().email
+    }
+
+    const res = await signIn('credentials', {
+      email: userEmail,
       password: loginState.password,
       redirect: false
     });
 
-    if (!res?.ok) {
-      const usersRef = collection(db, "users")
-      const usernameQuery = query(usersRef, where("username", "==", loginState.email_username))
-      const querySnapshot = await getDocs(usernameQuery)
-
-      if (querySnapshot.docs.length) {
-        res = await signIn('credentials', {
-          email: querySnapshot.docs[0].data().email,
-          password: loginState.password,
-          redirect: false
-        });
-      }
-    }
-
-    setLoading(false)
     if (res?.ok) {
       setLoginFail(false)
-      router.push("/")
+
       router.refresh()
-    } else {
+      router.push("/")
+    }
+    else {
+      setLoading(false)
       setLoginFail(true)
+
       setTimeout(() => {
         setLoginFail(false)
       }, 500)

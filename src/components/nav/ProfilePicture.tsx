@@ -1,16 +1,12 @@
 'use client'
 
 import { useFirebaseSession } from '@/app/SessionProvider';
+import { auth } from '@/firebase/firebase-app';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { UserInfo } from "../../global/UserInfo.types";
-import UsernamePopup from '../profilePictureMenu/UsernamePopup';
-import getProductionBaseUrl from '../utils/getProductionBaseURL';
-import { doc, setDoc } from 'firebase/firestore';
-import { auth, db } from '@/firebase/firebase-app';
-import { useRouter } from 'next/navigation';
-import SyncFromMALBtn from '../profilePictureMenu/SyncFromMALBtn';
+import UsernamePopup from '../utils/UsernamePopup';
 
 interface Props {
     myUserInfo: UserInfo | undefined
@@ -21,7 +17,6 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
     const ref = useRef<HTMLDivElement>(null);
     const [isOpen, setIsOpen] = useState(false);
     const [openUsernamePopup, setOpenUsernamePopup] = useState(false)
-    const router = useRouter();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -40,21 +35,6 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
         if (myUserInfo?.username === "guess")
             setOpenUsernamePopup(true)
     }, [myUserInfo])
-
-    const onSyncFromMAL = async () => {
-        if (!myUserInfo || !myUserInfo.mal_connect) return;
-
-        setIsOpen(false);
-
-        const userUpdate = await fetch(getProductionBaseUrl() + "/api/user_anime_list_full/" + myUserInfo.mal_connect.myAnimeList_username).then(res => res.json());
-        await setDoc(doc(db, "myAnimeList", myUserInfo.username), {
-            animeList: userUpdate.data,
-            last_updated: userUpdate.data[0].list_status.updated_at,
-        }, { merge: true })
-
-        console.log("Synced anime list completed")
-        router.refresh()
-    };
 
     const handleLogout = async () => {
         try {
@@ -83,25 +63,30 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
             {isOpen &&
                 <div className="absolute top-14 right-8 z-40 w-56 py-2 bg-ani-gray rounded-md shadow-lg">
                     {myUserInfo?.username === "guess" ?
-                        <button onClick={() => setOpenUsernamePopup(true)} className="px-4 py-2 text-ani-text-main hover:bg-slate-50/25 w-full text-left">Set username</button> :
-                        <div className="px-4 py-2 text-ani-text-main">{myUserInfo?.username}</div>
+                        <button onClick={() => setOpenUsernamePopup(true)} className="px-4 py-2 text-ani-text-white hover:bg-slate-50/25 w-full text-left">Set username</button> :
+                        <div className="px-4 py-2 text-ani-text-white">{myUserInfo?.username}</div>
                     }
                     <div className="border-t border-gray-700"></div>
 
                     <Link
-                        className="block px-4 py-2 text-ani-text-main hover:bg-slate-50/25 w-full text-left rounded-md"
                         href={`/user/${myUserInfo?.username}`}
                         onClick={() => setIsOpen(false)}
+                        className="block px-4 py-2 text-ani-text-white hover:bg-slate-50/25 w-full text-left rounded-md"
                     >
                         View Profile
                     </Link>
 
-                    {/* Todo: add loading effect */}
-                    <SyncFromMALBtn myUserInfo={myUserInfo} onClose={() => setIsOpen(false)} />
+                    <Link
+                        href={`/settings?tab=account`}
+                        onClick={() => setIsOpen(false)}
+                        className="block px-4 py-2 text-ani-text-white hover:bg-slate-50/25 w-full text-left rounded-md"
+                    >
+                        Settings
+                    </Link>
 
                     <button
-                        className="block px-4 py-2 text-ani-text-main hover:bg-slate-50/25 w-full text-left rounded-md"
                         onClick={handleLogout}
+                        className="block px-4 py-2 text-ani-text-white hover:bg-slate-50/25 w-full text-left rounded-md"
                     >
                         Logout
                     </button>

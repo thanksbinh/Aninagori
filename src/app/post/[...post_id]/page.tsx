@@ -1,4 +1,4 @@
-import { formatDuration } from "@/components/utils/format";
+import { formatDuration } from "@/components/utils/formatData";
 import { db } from "@/firebase/firebase-app";
 import { getUserInfo } from "@/global/getUserInfo";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
