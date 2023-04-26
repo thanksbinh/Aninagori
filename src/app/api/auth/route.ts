@@ -1,5 +1,5 @@
-import { db } from "@/firebase/firebase-app"
-import { doc, serverTimestamp, updateDoc } from "firebase/firestore"
+import { db } from "@/firebase/firebase-admin-app"
+import { FieldValue } from "firebase-admin/firestore"
 import { NextResponse } from "next/server"
 import qs from "qs"
 
@@ -48,7 +48,6 @@ export async function GET(request: Request, { params }: { params: any }) {
     const result = await res.json()
 
     //4: Save Access Token and RefreshToken
-    const docRef = doc(db, "users", obj.userID)
     //5: Get User information and saved info to firebase
     const accessToken = result.access_token
     const url = "https://api.myanimelist.net/v2/users/@me?fields=anime_statistics"
@@ -59,15 +58,16 @@ export async function GET(request: Request, { params }: { params: any }) {
     })
       .then((response) => response.json())
       .then(async (data) => {
-        const res = await updateDoc(docRef, {
+        await db.doc(`users/${obj.userID}`).update({
           mal_connect: {
             myAnimeList_username: data.name,
             accessToken: result.access_token,
             refreshToken: result.refresh_token,
             expiresIn: result.expires_in,
-            createDate: serverTimestamp(),
+            createDate: FieldValue.serverTimestamp(),
           },
         })
+
         return NextResponse.redirect(`${origin}`)
       })
       .catch((error) => console.error(error))
