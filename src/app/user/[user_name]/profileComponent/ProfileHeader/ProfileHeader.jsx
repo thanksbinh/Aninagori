@@ -17,6 +17,7 @@ import "tippy.js/dist/tippy.css"
 import ProfilEditPopUp from "../ProfileEditPopUp/ProfileEditPopUp"
 import AddFriendBtn from "./AddFriendBtn"
 import styles from "./ProfileHeader.module.scss"
+import { useRouter } from "next/navigation"
 
 const cx = classNames.bind(styles)
 
@@ -32,6 +33,7 @@ function ProfileHeader({ guess, admin }) {
   const editBoxWrapper = useRef()
   const { data: session } = useFirebaseSession()
   const [closeBox, setCloseBox] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     setCookie("username", admin.username)
@@ -110,7 +112,7 @@ function ProfileHeader({ guess, admin }) {
                     wallpaper: link,
                   })
                   setLink("")
-                  location.reload()
+                  router.refresh()
                 }
               }
             }}
@@ -150,7 +152,7 @@ function ProfileHeader({ guess, admin }) {
                             alt="avatar"
                             className={cx("friends-avatar") + " w-8 h-8 rounded-full object-cover"}
                             onClick={() => {
-                              window.location.href = getProductionBaseUrl() + "/user/" + data.username
+                              router.push("/user/" + data.username)
                             }}
                             onError={({ currentTarget }) => {
                               currentTarget.onerror = null
@@ -174,7 +176,7 @@ function ProfileHeader({ guess, admin }) {
                     alt="avatar"
                     className={cx("friends-avatar")}
                     onClick={() => {
-                      window.location.href = getProductionBaseUrl() + "/user/" + guess.username
+                      router.push("/user/" + guess.username)
                     }}
                   ></img>
                 </div>
@@ -230,7 +232,7 @@ function ProfileHeader({ guess, admin }) {
           ) : (
             <>
               <Button
-                onClick={() => { }}
+                onClick={() => {}}
                 small
                 gradient
                 href={
