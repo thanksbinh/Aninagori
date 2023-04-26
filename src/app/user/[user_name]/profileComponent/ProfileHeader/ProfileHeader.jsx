@@ -2,7 +2,7 @@
 "use client"
 import { useFirebaseSession } from "@/app/SessionProvider"
 import { get } from "@/app/api/apiServices/httpRequest"
-import { generateCodeChallenge, generateCodeVerifier } from "@/app/api/auth/route"
+import { generateCodeChallenge, generateCodeVerifier } from "@/components/utils/generateCode"
 import Button from "@/components/button/Button"
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 import { db } from "@/firebase/firebase-app"

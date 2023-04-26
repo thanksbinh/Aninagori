@@ -1,5 +1,5 @@
 import { get } from "@/app/api/apiServices/httpRequest"
-import { generateCodeChallenge, generateCodeVerifier } from "@/app/api/auth/route"
+import { generateCodeChallenge, generateCodeVerifier } from "@/components/utils/generateCode"
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 import { setCookie } from "cookies-next"
 
