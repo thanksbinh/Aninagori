@@ -29,7 +29,7 @@ export default function Settings({ myUserInfo }: { myUserInfo?: UserInfo }) {
     setActiveTab(searchParams.get('tab')!);
   }, [searchParams])
 
-  if (!myUserInfo) return <div>You're not logged in, redirecting...</div>;
+  if (!myUserInfo) return <div>You&apos;re not logged in, redirecting...</div>;
 
   return activeTab === 'account' ? (
     <AccountSettings id={myUserInfo.id} name={myUserInfo.name || ""} username={myUserInfo.username} email={myUserInfo.email || ""} />
