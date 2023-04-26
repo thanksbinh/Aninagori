@@ -76,7 +76,3 @@ export async function GET(request: Request, { params }: { params: any }) {
     console.log(error)
   }
 }
-
-export const getServerSideProps = ({ req, res }: { req: any; res: any }) => {
-  return { props: {} }
-}
