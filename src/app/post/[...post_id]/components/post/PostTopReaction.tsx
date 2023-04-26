@@ -10,14 +10,12 @@ interface ReactionCount {
 }
 
 interface PostTopReactionProps {
-    reactions?: Object[];
+    reactions?: any;
 }
 
 const PostTopReaction: FC<PostTopReactionProps> = ({
-    reactions: reactions0 = [],
+    reactions,
 }) => {
-    const [reactions, setReactions] = useState(reactions0)
-
     const [reactionList, setReactionList] = useState<ReactionCount[]>([
         { id: 1, type: "Naisu", image: "/reactions/Naisu.png", count: 0 },
         { id: 2, type: "Kawaii", image: "/reactions/Kawaii.png", count: 0 },
@@ -27,40 +25,39 @@ const PostTopReaction: FC<PostTopReactionProps> = ({
         { id: 6, type: "Nani", image: "/reactions/Nani.png", count: 0 },
     ]);
 
-    function updateReactionList(reactions: any) {
-        setReactionList(prevReactionList => {
-            const updatedReactionList = [...prevReactionList];
-            reactions.forEach((reaction: any) => {
-                const index = updatedReactionList.findIndex((item) => item.type === reaction.type);
-                if (index >= 0) {
-                    updatedReactionList[index] = {
-                        ...updatedReactionList[index],
-                        count: updatedReactionList[index].count + 1,
-                    };
-                } else {
-                    updatedReactionList[0] = {
-                        ...updatedReactionList[0],
-                        count: updatedReactionList[0].count + 1,
-                    };
-                }
-            });
-            const sortedReactionList = [...updatedReactionList].sort((a, b) => b.count - a.count);
-            return sortedReactionList;
+    function updateReactionList() {
+        const updatedReactionList = [
+            { id: 1, type: "Naisu", image: "/reactions/Naisu.png", count: 0 },
+            { id: 2, type: "Kawaii", image: "/reactions/Kawaii.png", count: 0 },
+            { id: 3, type: "Haha", image: "/reactions/Uwooaaghh.png", count: 0 },
+            { id: 4, type: "Wow", image: "/reactions/Wow.png", count: 0 },
+            { id: 5, type: "Kakkoii", image: "/reactions/Kakkoii.png", count: 0 },
+            { id: 6, type: "Nani", image: "/reactions/Nani.png", count: 0 },
+        ];
+        reactions.forEach((reaction: any) => {
+            const index = updatedReactionList.findIndex((item) => item.type === reaction.type);
+            if (index >= 0) {
+                updatedReactionList[index] = {
+                    ...updatedReactionList[index],
+                    count: updatedReactionList[index].count + 1,
+                };
+            } else {
+                updatedReactionList[0] = {
+                    ...updatedReactionList[0],
+                    count: updatedReactionList[0].count + 1,
+                };
+            }
         });
+        const sortedReactionList = [...updatedReactionList].sort((a, b) => b.count - a.count);
+        setReactionList(sortedReactionList);
     }
 
     useEffect(() => {
-        updateReactionList(reactions);
+        updateReactionList();
     }, [reactions])
 
-    useEffect(() => {
-        if (reactions0.length !== reactions.length) {
-            setReactions(reactions0);
-        }
-    }, [reactions0]);
-
     return (
-        <div className={`${reactionList[0].count > 0 ? "w-20 h-auto max-h-[15.5rem] flex flex-col rounded-2xl p-2 bg-[#212733] mr-1" : "hidden"}`}>
+        <div className={`${reactionList[0].count > 0 ? "w-[4.5rem] h-auto max-h-[15.5rem] flex flex-col rounded-2xl p-2 bg-[#212733] mr-1" : "hidden"}`}>
             <div className={`${reactionList[0].count > 0 ? "" : "hidden"} flex flex-col items-center px-2 py-1 bg-[#191c21] rounded-2xl`}>
                 <div className="w-10 h-10 rounded-full flex justify center item center">
                     <img className="w-full h-auto" src={reactionList[0].image} alt={"type"} />

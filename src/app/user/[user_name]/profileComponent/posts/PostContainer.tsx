@@ -112,6 +112,7 @@ export default function ProfilePosts({ myUserInfo, profileUsername, className }:
               reactions={post.reactions}
               commentCountPromise={fetchCommentCount(post.id)}
               comments={post.lastComment ? [post.lastComment] : []}
+              showTopReaction={false}
             />
           </div>
         </ContextProvider>
