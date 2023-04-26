@@ -1,15 +1,15 @@
 'use client'
 
-import { BiBell } from "@react-icons/all-files/bi/BiBell";
 import { AiFillSetting } from "@react-icons/all-files/ai/AiFillSetting";
-import { BsFillShieldLockFill } from "@react-icons/all-files/bs/BsFillShieldLockFill";
+import { AiOutlineAppstore } from "@react-icons/all-files/ai/AiOutlineAppstore";
+import { BiBell } from "@react-icons/all-files/bi/BiBell";
 import { BiLock } from "@react-icons/all-files/bi/BiLock";
+import { BsFillShieldLockFill } from "@react-icons/all-files/bs/BsFillShieldLockFill";
 import { GiWireframeGlobe } from "@react-icons/all-files/gi/GiWireframeGlobe";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { settings } from "../constants/settingTabNames";
 import { createQueryString } from "./createQueryString";
-import { AiOutlineAppstore } from "@react-icons/all-files/ai/AiOutlineAppstore";
 
 type TabBtnProps = {
   tab: string;
@@ -20,6 +20,15 @@ export default function TabSelector() {
   const router = useRouter();
   const searchParams = useSearchParams()!;
   const [activeTab, setActiveTab] = useState('');
+
+  useEffect(() => {
+    router.prefetch('/settings?' + createQueryString(searchParams, 'tab', 'account'));
+    router.prefetch('/settings?' + createQueryString(searchParams, 'tab', 'security'));
+    router.prefetch('/settings?' + createQueryString(searchParams, 'tab', 'privacy'));
+    router.prefetch('/settings?' + createQueryString(searchParams, 'tab', 'language'));
+    router.prefetch('/settings?' + createQueryString(searchParams, 'tab', 'notifications'));
+    router.prefetch('/settings?' + createQueryString(searchParams, 'tab', 'applications'));
+  }, [])
 
   useEffect(() => {
     if (!searchParams?.has('tab') || !settings.includes(searchParams.get('tab')!)) {

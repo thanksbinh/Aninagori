@@ -5,12 +5,19 @@ import { AnimeInfo } from "@/global/AnimeInfo.types";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 
-// If array2 has more, different items than array1, return the differences
-function getArrayDiff(arr1: AnimeInfo[], arr2: AnimeInfo[]) {
+function checkIfNewerDateString(date1: string, date2: string) {
+  const date1Obj = new Date(date1);
+  const date2Obj = new Date(date2);
+
+  return (date1Obj.getTime() > date2Obj.getTime()) ? true : false;
+}
+
+function getAnimeUpdates(arr1: AnimeInfo[], arr2: AnimeInfo[]) {
   const differences: AnimeInfo[] = [];
   arr2.forEach((obj2: AnimeInfo) => {
     const match = arr1.find((obj1) => obj1.node.id === obj2.node.id);
-    if (!match) {
+    // If obj2 is newly added or updated 
+    if (!match || checkIfNewerDateString(obj2.list_status.updated_at, match.list_status.updated_at)) {
       differences.push(obj2);
     }
   });
@@ -57,14 +64,19 @@ const SyncMALPopup = ({ username, mal_connect, isOpen, onClose }: { username: st
       fetch(getProductionBaseUrl() + "/api/user_anime_list_full/" + malUsername).then(res => res.json())
     ])
 
-    const animeListDiff = getArrayDiff(malAnimeList.data, firebaseAnimeList?.animeList || [])
-    const mergedAnimeList = [...malAnimeList.data, ...animeListDiff]
+    const animeUpdates = getAnimeUpdates(malAnimeList.data, firebaseAnimeList?.animeList || [])
+
+    const mergedAnimeList = [
+      // malAnimeList.data with old anime data removed
+      ...malAnimeList.data.filter((anime: AnimeInfo) => !animeUpdates.find((animeUpdate: AnimeInfo) => anime.node.id === animeUpdate.node.id)),
+      ...animeUpdates,
+    ]
 
     await updateFirebaseAnimeList(mergedAnimeList)
-    setLog("Firebase's anime list updated, now updating MAL's anime list...")
+    setLog("Aninagori's anime list updated, now updating MAL's anime list...")
 
-    await updateMALAnimeList(animeListDiff)
-    setLog("MAL's anime list updated, sync anime list completed")
+    await updateMALAnimeList(animeUpdates)
+    setLog("MAL's anime list updated, sync anime list completed.")
 
     setTimeout(() => {
       onClose()
@@ -79,7 +91,7 @@ const SyncMALPopup = ({ username, mal_connect, isOpen, onClose }: { username: st
 
         <div className="p-4 border-b-[1px] border-ani-light-gray">
           <p className="text-ani-text-white">This will merge your anime lists on MyAnimeList and Aninagori, then update it to both platforms.</p><br />
-          <p className="text-ani-text-white">Note: if there&apos;re differences in details (tags, score, ...) from one of two lists, data from MyAnimeList is kept in the merged list.</p>
+          <p className="text-ani-text-white">Note: if there&apos;re differences in details (tags, score, ...), ones with newer updates will be kept.</p>
           {log && (
             <>
               <br />

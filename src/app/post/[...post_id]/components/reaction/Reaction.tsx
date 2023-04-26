@@ -3,6 +3,7 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { HiOutlineHeart } from "@react-icons/all-files/hi/HiOutlineHeart"
 import { PostContext } from "../../PostContext"
 import { sentReactionOnPost, updateAnimePreference } from "./doReaction"
+import { auth } from "@/firebase/firebase-app"
 
 interface ReactionItem {
   id: number;
@@ -60,7 +61,7 @@ const Reaction = ({ reactions, setReactions }: { reactions: any, setReactions: a
   }, [reactions])
 
   useEffect(() => {
-    if (!postId) return;
+    if (!postId || !auth.currentUser) return;
 
     if (visible && !read) {
       setRead(true)

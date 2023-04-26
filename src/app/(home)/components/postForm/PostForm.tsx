@@ -33,7 +33,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
       else if (anime.list_status.status === "plan_to_watch" && anime.node.num_episodes != 0) p2wList.push(anime)
     })
 
-    watchingList.sort((a: AnimeInfo, b: AnimeInfo) => a.list_status.updated_at > b.list_status.updated_at ? -1 : 1)
+    watchingList.sort((a: AnimeInfo, b: AnimeInfo) => new Date(a.list_status.updated_at).getTime() < new Date(b.list_status.updated_at).getTime() ? 1 : -1)
 
     setRecentAnimeList([...watchingList, ...p2wList])
   }, [myAnimeList])

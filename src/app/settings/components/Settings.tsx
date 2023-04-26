@@ -1,7 +1,7 @@
 'use client'
 
 import { UserInfo } from "@/global/UserInfo.types";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { settings } from "../constants/settingTabNames";
 import AccountSettings from "./settingTabs/AccountSettings";
@@ -11,9 +11,14 @@ import NotificationsSettings from "./settingTabs/NotificationsSettings";
 import PrivacySettings from "./settingTabs/PrivacySettings";
 import SecuritySettings from "./settingTabs/SecuritySettings";
 
-export default function Settings({ myUserInfo }: { myUserInfo: UserInfo }) {
+export default function Settings({ myUserInfo }: { myUserInfo?: UserInfo }) {
+  const router = useRouter();
   const searchParams = useSearchParams()!;
   const [activeTab, setActiveTab] = useState('');
+
+  useEffect(() => {
+    !myUserInfo && router.push('/login')
+  }, [myUserInfo])
 
   useEffect(() => {
     if (!searchParams?.has('tab') || !settings.includes(searchParams.get('tab')!)) {
@@ -23,6 +28,8 @@ export default function Settings({ myUserInfo }: { myUserInfo: UserInfo }) {
 
     setActiveTab(searchParams.get('tab')!);
   }, [searchParams])
+
+  if (!myUserInfo) return <div>You're not logged in, redirecting...</div>;
 
   return activeTab === 'account' ? (
     <AccountSettings id={myUserInfo.id} name={myUserInfo.name || ""} username={myUserInfo.username} email={myUserInfo.email || ""} />
@@ -37,6 +44,6 @@ export default function Settings({ myUserInfo }: { myUserInfo: UserInfo }) {
   ) : activeTab === 'applications' ? (
     <ApplicationsSettings id={myUserInfo.id} username={myUserInfo.username} mal_connect={myUserInfo.mal_connect} />
   ) : (
-    null
+    <div>404 Not found</div>
   )
 }
