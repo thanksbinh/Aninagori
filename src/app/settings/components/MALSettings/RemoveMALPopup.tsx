@@ -22,7 +22,7 @@ const RemoveMALPopup = ({ id, isOpen, onClose }: { id: string, isOpen: boolean, 
         <div className="p-4 border-b-[1px] border-ani-light-gray">
           <p className="text-ani-text-white">This will remove your connection between Aninagori and MyAnimeList.</p><br />
           <p className="text-ani-text-white">Once removed, Aninagori will no longer be able to synchronize anime status and other information with MyAnimeList.</p><br />
-          <p className="text-ani-text-white">Your data on both platforms won't be affected and you can still reconnect to MyAnimeList afterward.</p>
+          <p className="text-ani-text-white">Your data on both platforms won&apos;t be affected and you can still reconnect to MyAnimeList afterward.</p>
         </div>
 
         <div className="flex justify-end px-6 py-4">

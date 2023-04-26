@@ -79,7 +79,7 @@ const SyncMALPopup = ({ username, mal_connect, isOpen, onClose }: { username: st
 
         <div className="p-4 border-b-[1px] border-ani-light-gray">
           <p className="text-ani-text-white">This will merge your anime lists on MyAnimeList and Aninagori, then update it to both platforms.</p><br />
-          <p className="text-ani-text-white">Note: if there're differences in details (tags, score, ...) from one of two lists, data from MyAnimeList is kept in the merged list.</p>
+          <p className="text-ani-text-white">Note: if there&apos;re differences in details (tags, score, ...) from one of two lists, data from MyAnimeList is kept in the merged list.</p>
           {log && (
             <>
               <br />

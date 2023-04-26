@@ -25,7 +25,7 @@ export default function Settings({ myUserInfo }: { myUserInfo: UserInfo }) {
   }, [searchParams])
 
   return activeTab === 'account' ? (
-    <AccountSettings id={myUserInfo.id} name={myUserInfo.name || ""} username={myUserInfo.username} email={myUserInfo.email} />
+    <AccountSettings id={myUserInfo.id} name={myUserInfo.name || ""} username={myUserInfo.username} email={myUserInfo.email || ""} />
   ) : activeTab === 'security' ? (
     <SecuritySettings />
   ) : activeTab === 'privacy' ? (

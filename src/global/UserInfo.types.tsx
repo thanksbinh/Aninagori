@@ -4,7 +4,7 @@ export interface UserInfo {
   image: string
 
   name?: string
-  email: string
+  email?: string
 
   friend_list?: Object[]
 
