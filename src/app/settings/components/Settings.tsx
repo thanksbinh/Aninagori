@@ -44,6 +44,6 @@ export default function Settings({ myUserInfo }: { myUserInfo?: UserInfo }) {
   ) : activeTab === 'applications' ? (
     <ApplicationsSettings id={myUserInfo.id} username={myUserInfo.username} mal_connect={myUserInfo.mal_connect} />
   ) : (
-    <div>404 Not found</div>
+    <div>Loading...</div>
   )
 }

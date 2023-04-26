@@ -39,7 +39,7 @@ export default function AccountSettings({ id, name, username, email }: { id: str
               <input type="text" className="bg-inherit text-ani-text-white font-semibold" autoFocus value={nameInput} onChange={(e) => { setNameInput(e.target.value) }} />
             </form>
           ) : (
-            <div className="text-ani-text-gray font-semibold flex-1">{nameInput || ""}</div>
+            <div className="text-ani-text-gray font-semibold flex-1">{nameInput || name}</div>
           )}
           <div onClick={onEditName} className="text-blue-500 hover:underline cursor-pointer">Edit</div>
         </div>
