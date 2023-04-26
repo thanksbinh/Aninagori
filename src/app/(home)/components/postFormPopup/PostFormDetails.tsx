@@ -211,7 +211,7 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
               }}
               className="ml-4 underline text-gray-400 text-xs cursor-pointer"
             >
-              Remove tate
+              Remove date
             </p>
           </div>
         </div>

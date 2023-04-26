@@ -18,18 +18,23 @@ async function AnimeUpdate({ data }) {
       switch (status) {
         case "completed":
           status = "Completed"
+          data.list_status.color = "#377dff"
           break
         case "plan_to_watch":
           status = "Plan To Watch"
+          data.list_status.color = "#999"
           break
         case "watching":
           status = "Watching"
+          data.list_status.color = "#1CE318"
           break
         case "on_hold":
           status = "On Hold"
+          data.list_status.color = "#DBDE22"
           break
         case "dropped":
           status = "Dropped"
+          data.list_status.color = "#E93030"
           break
         default:
           status = "Unknow Status"
@@ -43,6 +48,7 @@ async function AnimeUpdate({ data }) {
     })
     data = newUpdateArr
   }
+
   return (
     <StatusWrapper title="Last Anime Updates">
       {!!data &&
@@ -67,15 +73,20 @@ async function AnimeUpdate({ data }) {
                   </a>
                   <div className={cx("progress-bar")}>
                     <ProgressChild
+                      color={anime.list_status.color}
                       className={cx("progress-percent")}
                       percent={convertToPercent(anime.list_status.num_episodes_watched, anime.node.num_episodes)}
                     ></ProgressChild>
                   </div>
                   <div className={cx("status-wrapper")}>
                     {anime.list_status.status}{" "}
-                    <span className={cx("highlight")}>{anime.list_status.num_episodes_watched}</span>/
-                    {anime.node.num_episodes} - Scored{" "}
-                    <span className={cx("highlight")}>{anime.list_status.score}</span>
+                    <span className="font-bold" style={{ color: anime.list_status.color }}>
+                      {anime.list_status.num_episodes_watched}
+                    </span>{" "}
+                    / {anime.node.num_episodes} - Scored{" "}
+                    <span className="font-bold" style={{ color: anime.list_status.color }}>
+                      {anime.list_status.score}
+                    </span>
                   </div>
                 </div>
               </div>

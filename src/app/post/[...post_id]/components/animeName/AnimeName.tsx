@@ -28,7 +28,7 @@ function AnimeName({
         onClick={() => {
           window.open("https://myanimelist.net/anime/" + animeID)
         }}
-        className={cx("anime-name")}
+        className={cx("anime-name") + ' max-w-[45%] sm-max:!max-w-[30%]'}
         style={
           seen !== 0
             ? {

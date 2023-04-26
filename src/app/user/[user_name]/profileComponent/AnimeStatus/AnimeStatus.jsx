@@ -36,7 +36,7 @@ function AnimeStatus({ statusData }) {
             className={cx("note-child")}
           />
           <StatusNoteChild
-            color="#1C4CF2"
+            color="#377dff"
             title="Completed"
             number={statusData.num_items_completed}
             className={cx("note-child")}
@@ -60,7 +60,7 @@ function AnimeStatus({ statusData }) {
             className={cx("note-child")}
           />
         </div>
-        <div className="w-43%] lg-between:w-[47%]">
+        <div className="w-[43%] lg-between:w-[47%]">
           <div className={cx("watch-wrapper") + " lg-between:my-5"}>
             <span className={cx("watch-title")}>Total Entries</span>
             <span className={cx("watch-number")}>{statusData.num_items}</span>

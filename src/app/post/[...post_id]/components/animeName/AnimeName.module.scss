@@ -15,6 +15,7 @@
   white-space: nowrap;
   position: relative;
   cursor: pointer;
+  transform: translateY(3px);
 
   & > .progress-name {
     text-overflow: ellipsis;
