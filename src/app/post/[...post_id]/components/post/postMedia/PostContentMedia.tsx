@@ -46,27 +46,31 @@ function PostContentMedia({
     }
   }, [])
 
+  const removeSpoiler = () => {
+    setSpoiler(false)
+    const parentPostElement = document.querySelector(`[id="${postId}"]`)
+    if (!!parentPostElement) {
+      parentPostElement.querySelector('[aria-roledescription="carousel"]')?.classList.remove("blur-2xl")
+      const navElements = parentPostElement.querySelectorAll(".nav.default-nav")
+      navElements.forEach((navElement: any) => {
+        navElement.style = "z-index: 1 !important;"
+      })
+    }
+  }
+
   return (
     <>
       {spoiler && (
         <>
-          <div
-            className={cx("spoiler-button")}
-            onClick={() => {
-              setSpoiler(false)
-              const parentPostElement = document.querySelector(`[id="${postId}"]`)
-              if (!!parentPostElement) {
-                parentPostElement.querySelector('[aria-roledescription="carousel"]')?.classList.remove("blur-2xl")
-                const navElements = parentPostElement.querySelectorAll(".nav.default-nav")
-                navElements.forEach((navElement: any) => {
-                  navElement.style = "z-index: 1 !important;"
-                })
-              }
-            }}
-          >
-            {tag.some((a: string) => a === "NSFW") ? "NSFW" : "Spoiler"}
+          <div className="bg-transparent absolute top-[9px] left-0 w-full h-full z-50" onClick={removeSpoiler}>
+            <div
+              className={cx("spoiler-button")}
+              onClick={removeSpoiler}
+            >
+              {tag.some((a: string) => a === "NSFW") ? "NSFW" : "Spoiler"}
+            </div>
           </div>
-          <div className={cx("spoiler-overlay")}></div>
+          <div className={cx("spoiler-overlay")}> </div>
         </>
       )}
       <div className="mt-4 mx-2 relative px-4">

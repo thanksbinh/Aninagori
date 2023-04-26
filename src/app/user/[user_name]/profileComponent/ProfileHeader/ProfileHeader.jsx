@@ -92,10 +92,10 @@ function ProfileHeader({ guess, admin }) {
         )}
       </div>
       {open && (
-        <div className="px-2 absolute bottom-24 right-3 z-10 rounded-2xl overflow-hidden">
+        <div className="px-2 absolute bottom-24 right-3 z-10 rounded-2xl overflow-hidden md-max:bottom-80 md-max:-right-16">
           <input
             type="text"
-            className="border border-gray-300 py-2 px-4 w-64 text-black outline-none"
+            className="border border-gray-300 py-2 px-4 w-64 text-black outline-none md-max:w-[52%]"
             placeholder="Enter wallpaper link here"
             onChange={(e) => {
               setLink(e.target.value)

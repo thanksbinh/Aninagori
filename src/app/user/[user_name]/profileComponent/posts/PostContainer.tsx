@@ -70,7 +70,7 @@ export default function ProfilePosts({ myUserInfo, profileUsername, className }:
       hasMore={hasMore}
       loader={
         <div key={0} className="animate-pulse mb-4">
-          <PostContent />
+          <PostContent authorName={myUserInfo.username} avatarUrl={myUserInfo.image} />
           <PostAction />
         </div>
       }

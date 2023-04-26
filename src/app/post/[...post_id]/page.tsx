@@ -66,7 +66,7 @@ async function Post({ params }: { params: { post_id: string[] } }) {
 
   return (
     <div className='flex justify-center pt-10'>
-      <div className="flex flex-col lg:w-2/5 w-3/5 mt-8 mb-2">
+      <div className="flex flex-col sm:w-5/6 w-3/5 mt-8 mb-2">
         <ContextProvider
           postData={fetchedPost}
           myUserInfo={myUserInfo}
