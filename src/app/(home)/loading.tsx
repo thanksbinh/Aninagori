@@ -1,4 +1,4 @@
-import PostAction from "../post/[...post_id]/components/post/PostAction";
+import PostActions from "../post/[...post_id]/components/actions/PostActions";
 import PostContent from "../post/[...post_id]/components/post/PostContent";
 import PostForm from "./components/postForm/PostForm";
 import AnimeRecommendList from "./components/leftsidebar/AnimeRecommendList";
@@ -23,7 +23,7 @@ export default function loading() {
             <div className="flex justify-center animate-pulse mb-4">
               <div className="w-[72%] relative">
                 <PostContent />
-                <PostAction />
+                <PostActions />
               </div>
             </div>
           </div>

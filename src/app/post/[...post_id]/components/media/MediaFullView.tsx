@@ -1,7 +1,6 @@
 "use client"
 
 import { Dispatch, SetStateAction } from "react";
-
 import Modal from "@/components/utils/Modal";
 import MediaSlider from "./MediaSlider";
 

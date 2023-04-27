@@ -5,10 +5,10 @@ import classNames from "classnames/bind"
 import styles from "./PostContent.module.scss"
 import "tippy.js/dist/tippy.css"
 import Avatar from "@/components/avatar/Avatar"
-import PostOptions from "../option/PostOptionsPopup"
+import PostOptions from "../options/PostOptionsPopup"
 import "react-slideshow-image/dist/styles.css"
 import AnimeName from "../animeName/AnimeName"
-import PostContentMedia from "./postMedia/PostContentMedia"
+import PostContentMedia from "../media/PostContentMedia"
 const cx = classNames.bind(styles)
 
 type PostStaticProps = {

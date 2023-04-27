@@ -2,7 +2,7 @@ import Avatar from "@/components/avatar/Avatar";
 import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
 import { PostContext } from "../../PostContext";
-import { sentReaction, sentReactionReply } from "../reaction/doReaction";
+import { sentReaction, sentReactionReply } from "../actions/doReaction";
 import { CommentProps } from "./Comment.types";
 import CommentForm from "./CommentForm";
 

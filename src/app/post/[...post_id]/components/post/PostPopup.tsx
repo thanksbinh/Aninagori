@@ -4,7 +4,7 @@ import { getDocs, collection, query, orderBy, getDoc, doc } from "firebase/fires
 import { useContext, useEffect, useState } from "react"
 
 import { db } from "@/firebase/firebase-app"
-import PostAction from "./PostAction"
+import PostActions from "../actions/PostActions"
 import { PostContext } from "../../PostContext";
 import { formatDuration } from "@/components/utils/formatData";
 import Modal from "@/components/utils/Modal";
@@ -76,7 +76,7 @@ export default function PostPopup({ isOpen, onClose }: { isOpen: boolean; onClos
           tag={post?.post_anime_data?.tag}
           postId={post.id}
         />
-        <PostAction
+        <PostActions
           reactions={post.reactions}
           commentCountPromise={post.commentCount}
           comments={post.comments}

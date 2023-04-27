@@ -2,7 +2,7 @@
 
 import PostFormPopUp from "@/app/(home)/components/postFormPopup/PostFormPopUp";
 import ContextProvider from "@/app/post/[...post_id]/PostContext";
-import PostAction from "@/app/post/[...post_id]/components/post/PostAction";
+import PostActions from "@/app/post/[...post_id]/components/actions/PostActions";
 import PostContent from "@/app/post/[...post_id]/components/post/PostContent";
 import { formatDuration } from "@/components/utils/formatData";
 import { db } from "@/firebase/firebase-app";
@@ -72,7 +72,7 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
       loader={
         <div key={0} className="animate-pulse mb-4">
           <PostContent />
-          <PostAction />
+          <PostActions />
         </div>
       }
       refreshFunction={() => console.log("refresh")}
@@ -106,7 +106,7 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
               score={post?.post_anime_data?.score}
               postId={post.id}
             />
-            <PostAction
+            <PostActions
               myUserInfo={myUserInfo}
               malAuthCode={myUserInfo?.mal_connect?.accessToken}
               animeID={post?.post_anime_data?.anime_id}

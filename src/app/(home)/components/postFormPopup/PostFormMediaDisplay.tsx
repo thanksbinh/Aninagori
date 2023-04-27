@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames/bind"
 import styles from "../postForm/PostForm.module.scss"
 import { memo } from "react";
-import { deleteMediaFiles } from "@/app/post/[...post_id]/components/option/postOptions";
+import { deleteMediaFiles } from "@/app/post/[...post_id]/components/options/postOptions";
 
 const cx = classNames.bind(styles)
 

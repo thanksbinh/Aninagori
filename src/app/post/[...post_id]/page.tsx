@@ -5,7 +5,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { collection, doc, getDoc, getDocs, orderBy, query } from "firebase/firestore";
 import { getServerSession } from "next-auth";
 import ContextProvider from "./PostContext";
-import PostAction from "./components/post/PostAction";
+import PostActions from "./components/actions/PostActions";
 import PostContent from "./components/post/PostContent";
 
 async function fetchPost(postId: string) {
@@ -92,7 +92,7 @@ async function Post({ params }: { params: { post_id: string[] } }) {
               tag={!!fetchedPost?.post_anime_data?.tag ? fetchedPost?.post_anime_data?.tag : fetchedPost?.tag}
               postId={fetchedPost.id}
             />
-            <PostAction
+            <PostActions
               reactions={fetchedPost.reactions}
               commentCountPromise={fetchedComments.length}
               comments={fetchedComments}
