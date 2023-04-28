@@ -24,8 +24,8 @@ interface PostFormPopUpProps {
   setOpen: any,
   title: string,
   isEditPost: boolean,
-  editPostID: string,
-  postData: any,
+  editPostID?: string,
+  postData?: any,
 }
 
 const PostFormPopUp = ({ setOpen, title, isEditPost, editPostID, postData }: PostFormPopUpProps, ref: any) => {
