@@ -1,9 +1,10 @@
 'use client'
 
+import { UserInfo } from "@/global/UserInfo.types"
 import { AnimeComponent } from "./Anime"
 import { useState } from "react"
 
-export function AnimeExtend({ animeDetails, myUserInfo }: { animeDetails: any, myUserInfo: any }) {
+export function AnimeExtend({ animeDetails, myUserInfo }: { animeDetails: any, myUserInfo: UserInfo }) {
   const [extend, setExtend] = useState(false)
 
   return (

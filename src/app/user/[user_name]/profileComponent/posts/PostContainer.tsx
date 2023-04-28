@@ -5,6 +5,8 @@ import PostActions from "@/app/post/[...post_id]/components/actions/PostActions"
 import PostContent from "@/app/post/[...post_id]/components/post/PostContent";
 import { formatDuration } from "@/components/utils/formatData";
 import { db } from "@/firebase/firebase-app";
+import { AnimeInfo } from "@/global/AnimeInfo.types";
+import { PostInfo } from "@/global/Post.types";
 import { UserInfo } from "@/global/UserInfo.types";
 import { collection, doc, getCountFromServer, getDoc, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -23,7 +25,7 @@ async function fetchProfilePosts(profileUsername: string, lastKey: any) {
       },
       timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
       id: doc.id
-    } as any
+    }
   });
 
   return {
@@ -40,7 +42,7 @@ async function fetchCommentCount(postId: string) {
 }
 
 export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserInfo: UserInfo, profileUsername?: string }) {
-  const [posts, setPosts] = useState<any>([])
+  const [posts, setPosts] = useState<PostInfo[]>([])
   const [hasMore, setHasMore] = useState(true)
   const [lastKey, setLastKey] = useState<any>({})
 
@@ -48,11 +50,13 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
     fetchPosts()
   }, [])
 
-  async function addMyAnimeStatus(posts: any) {
-    const myAnimeList = await getDoc(doc(db, "myAnimeList", myUserInfo.username)).then(doc => doc.data()?.animeList)
+  async function addMyAnimeStatus(posts: PostInfo[]) {
+    const myAnimeList: AnimeInfo[] = await getDoc(doc(db, "myAnimeList", myUserInfo.username)).then(doc => doc.data()?.animeList)
 
-    posts.forEach((post: any) => {
-      const anime = myAnimeList?.find((anime: any) => anime.node.id === post.post_anime_data?.anime_id)
+    posts.forEach((post) => {
+      if (!post.post_anime_data) return;
+
+      const anime = myAnimeList?.find((anime) => anime.node.id === post.post_anime_data?.anime_id)
       if (anime) post.post_anime_data.my_status = anime.list_status.status
     })
   }
@@ -86,7 +90,7 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
       pullDownToRefresh={true}
       className="flex flex-col"
     >
-      {posts.map((post: any) => (
+      {posts.map((post) => (
         <ContextProvider
           key={post.id}
           myUserInfo={myUserInfo}

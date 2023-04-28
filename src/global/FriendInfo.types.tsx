@@ -9,3 +9,13 @@ export interface FriendInfoRaw {
     updated_at: Timestamp
   }
 }
+
+export interface FriendInfo {
+  username: string
+  image: string
+  anime_status?: {
+    status: string
+    updated_at: Date
+    title: string
+  }
+}

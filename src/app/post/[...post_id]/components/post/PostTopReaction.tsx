@@ -1,5 +1,6 @@
 'use client';
 
+import { ReactionInfo } from '@/global/Post.types';
 import { FC, useEffect, useState } from 'react';
 
 interface ReactionCount {
@@ -10,7 +11,7 @@ interface ReactionCount {
 }
 
 interface PostTopReactionProps {
-    reactions?: any;
+    reactions?: ReactionInfo[];
 }
 
 const PostTopReaction: FC<PostTopReactionProps> = ({
@@ -34,7 +35,7 @@ const PostTopReaction: FC<PostTopReactionProps> = ({
             { id: 5, type: "Kakkoii", image: "/reactions/Kakkoii.png", count: 0 },
             { id: 6, type: "Nani", image: "/reactions/Nani.png", count: 0 },
         ];
-        reactions.forEach((reaction: any) => {
+        reactions?.forEach((reaction) => {
             const index = updatedReactionList.findIndex((item) => item.type === reaction.type);
             if (index >= 0) {
                 updatedReactionList[index] = {

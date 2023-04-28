@@ -1,5 +1,6 @@
 import { formatDuration } from "@/components/utils/formatData"
 import { db } from "@/firebase/firebase-app"
+import { AnimeInfo } from "@/global/AnimeInfo.types"
 import { UserInfo } from "@/global/UserInfo.types"
 import { collection, getDocs, limit, orderBy, query, startAfter, Timestamp, where } from "firebase/firestore"
 
@@ -75,15 +76,15 @@ async function fetchAllPosts(friendPostIds: string[], lastKey: any) {
   }
 }
 
-function getAnimePreferenceScore(myAnimeList: any, animePreference: any, anime_id: string): number {
-  const anime = myAnimeList?.find((anime: any) => anime.node.id === anime_id)
+function getAnimePreferenceScore(myAnimeList: AnimeInfo[], animePreference: any, anime_id: number): number {
+  const anime = myAnimeList?.find((anime: AnimeInfo) => anime.node.id === anime_id)
 
   // Anime in myAnimeList
   if (anime?.list_status.status === "watching") return 0
   if (anime?.list_status.status === "dropped") return 2.5
   if (anime?.list_status.status === "completed") {
-    if (anime?.list_status.score >= 8) return 10
-    if (anime?.list_status.score >= 6) return 5
+    if (anime?.list_status.score! >= 8) return 10
+    if (anime?.list_status.score! >= 6) return 5
     return 2
   }
 

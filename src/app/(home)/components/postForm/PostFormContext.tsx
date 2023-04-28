@@ -1,7 +1,8 @@
+import { AnimeInfo } from '@/global/AnimeInfo.types';
 import React from 'react';
 
 interface PostFormContextType {
-  recentAnimeList: any
+  recentAnimeList: AnimeInfo[]
   setRecentAnimeList: any
 }
 

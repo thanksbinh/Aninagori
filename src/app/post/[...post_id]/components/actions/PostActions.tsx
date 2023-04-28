@@ -6,18 +6,18 @@ import { doc, onSnapshot } from "firebase/firestore"
 import { useRouter } from "next/navigation"
 import { FC, useContext, useEffect, useRef, useState } from "react"
 import { PostContext } from "../../PostContext"
-import { CommentProps } from "../comment/Comment.types"
 import CommentForm from "../comment/CommentForm"
 import Comments from "../comment/Comments"
 import PostPopup from "../post/PostPopup"
 import Comment from "./CommentBtn"
 import PlanToWatch from "./PlanToWatchBtn"
 import Reaction from "./ReactionBtn"
+import { CommentInfo, ReactionInfo } from "@/global/Post.types"
 
 interface PostDynamicProps {
-  reactions?: Object[]
+  reactions?: ReactionInfo[]
   commentCountPromise?: Promise<number> | number
-  comments?: CommentProps[]
+  comments?: CommentInfo[]
   focusedComment?: string
   showTopReaction?: boolean
   animeStatus?: string
@@ -34,8 +34,8 @@ const PostActions: FC<PostDynamicProps> = ({
   const { postId } = useContext(PostContext)
   const [reactions, setReactions] = useState(reactions0)
   const [commentCount, setCommentCount] = useState(0)
-  const [comments, setComments] = useState<CommentProps[]>([])
-  const [lastComment, setLastComment] = useState<CommentProps>()
+  const [comments, setComments] = useState<CommentInfo[]>([])
+  const [lastComment, setLastComment] = useState<CommentInfo>()
   const [postExpand, setPostExpand] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
@@ -79,13 +79,13 @@ const PostActions: FC<PostDynamicProps> = ({
       <div className="flex my-4 mx-2">
         {(reactions.length > 2 ? reactions.slice(reactions.length - 3) : reactions.slice(0))
           .reverse()
-          .map((user: any) => (
+          .map((user: ReactionInfo) => (
             <Avatar
-              className="liked-avatar"
-              imageUrl={user.image}
+              imageUrl={user.image || ""}
               altText={user.username}
               size={5}
               key={user.username}
+              className="liked-avatar"
             />
           ))}
       </div>
@@ -108,6 +108,7 @@ const PostActions: FC<PostDynamicProps> = ({
         </div>
       )}
       {postExpand && (
+        // Todo: Very outdated and buggy, need to fix
         <PostPopup
           isOpen={postExpand}
           onClose={() => {

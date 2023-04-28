@@ -5,7 +5,7 @@ import { useContext, FC } from "react"
 import { PostFormContext } from "./PostFormContext"
 
 type Props = {
-  openFormPopup?: any
+  openFormPopup: () => void
 }
 
 const PostFormShortcut: FC<Props> = ({ openFormPopup }) => {

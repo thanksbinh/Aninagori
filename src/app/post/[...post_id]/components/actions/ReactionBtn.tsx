@@ -5,6 +5,7 @@ import { PostContext } from "../../PostContext"
 import { sentReactionOnPost, updateAnimePreference } from "./doReaction"
 import { auth } from "@/firebase/firebase-app"
 import PostTopReaction from "../post/PostTopReaction"
+import { ReactionInfo } from "@/global/Post.types"
 
 interface ReactionItem {
   id: number;
@@ -21,11 +22,11 @@ const reactionList: ReactionItem[] = [
   { id: 6, name: "Nani", image: "/reactions/Nani.png" },
 ];
 
-const Reaction = ({ reactions, setReactions, showTopReaction }: { reactions: any, setReactions: any, showTopReaction: boolean }) => {
+const Reaction = ({ reactions, setReactions, showTopReaction }: { reactions: ReactionInfo[], setReactions: any, showTopReaction: boolean }) => {
   const { myUserInfo, content, authorName, animeID, postId } = useContext(PostContext)
 
-  const [reactionToggle, setReactionToggle] = useState(reactions.some((e: any) => e.username === myUserInfo.username))
-  const [reactionType, setReactionType] = useState(reactions.find((e: any) => e.username === myUserInfo.username)?.type)
+  const [reactionToggle, setReactionToggle] = useState(reactions.some((e) => e.username === myUserInfo.username))
+  const [reactionType, setReactionType] = useState(reactions.find((e) => e.username === myUserInfo.username)?.type)
 
   const [showReactions, setShowReactions] = useState(false);
   const [hoveredReaction, setHoveredReaction] = useState<ReactionItem | null>(null);
@@ -57,8 +58,8 @@ const Reaction = ({ reactions, setReactions, showTopReaction }: { reactions: any
   useEffect(() => {
     if (!reactions) return;
 
-    setReactionToggle(reactions.some((e: any) => e.username === myUserInfo.username))
-    setReactionType(reactions.find((e: any) => e.username === myUserInfo.username)?.type)
+    setReactionToggle(reactions.some((e) => e.username === myUserInfo.username))
+    setReactionType(reactions.find((e) => e.username === myUserInfo.username)?.type)
   }, [reactions])
 
   useEffect(() => {
@@ -82,7 +83,7 @@ const Reaction = ({ reactions, setReactions, showTopReaction }: { reactions: any
     sentReactionOnPost(myUserInfo, myReaction, reactionToggle, authorName, content, postId, reactions)
     updateAnimePreference(myUserInfo, animeID, !reactionToggle)
 
-    let newReactions = reactions.filter((e: any) => e.username !== myUserInfo.username);
+    let newReactions = reactions.filter((e) => e.username !== myUserInfo.username);
     (!reactionToggle || (reactionType != type)) && (newReactions = [...newReactions, myReaction])
     setReactions(newReactions)
   }
@@ -101,7 +102,7 @@ const Reaction = ({ reactions, setReactions, showTopReaction }: { reactions: any
             {reactionToggle
               ? (
                 <div className="w-12 h-12 rounded-full flex justify center item center">
-                  <img className="w-full h-auto" src={reactionList.find((e: any) => e.name == reactionType)?.image || "/reactions/Naisu.png"} alt={"type"} />
+                  <img className="w-full h-auto" src={reactionList.find((e) => e.name == reactionType)?.image || "/reactions/Naisu.png"} alt={"type"} />
                 </div>
               )
               : <HiOutlineHeart className="w-5 h-5" />}

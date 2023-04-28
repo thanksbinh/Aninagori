@@ -8,12 +8,13 @@ import { FocusEvent, forwardRef, useContext, useEffect, useImperativeHandle, use
 import "tippy.js/dist/tippy.css"
 import { PostFormContext } from "../../../postForm/PostFormContext"
 import styles from "./AnimeSearch.module.scss"
+import { AnimeInfo } from "@/global/AnimeInfo.types"
 const cx = classNames.bind(styles)
 
 function AnimeSearch({ animeEpsRef }: any, ref: any) {
   const { recentAnimeList, setRecentAnimeList } = useContext(PostFormContext)
 
-  const [searchResult, setSearchResult] = useState([])
+  const [searchResult, setSearchResult] = useState<AnimeInfo[]>([])
   const [loading, setLoading] = useState(false)
   const [animePic, setAnimePic] = useState("")
   const [animeData, setAnimeData] = useState({ animeName: "", animeID: "" })
@@ -81,7 +82,7 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
 
   // set recent anime list and select the first anime as default
   useEffect(() => {
-    if (!recentAnimeList.length || recentAnimeList[0].node.id == animeData.animeID) return;
+    if (!recentAnimeList.length || recentAnimeList[0].node.id == (animeData.animeID as any)) return;
 
     setSearchResult(recentAnimeList)
     onSelectAnime(recentAnimeList[0])

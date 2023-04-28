@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { UserInfo } from "../../global/UserInfo.types";
-import { removeFriendRequest, beFriends } from "@/components/friend/friendAction";
+import { removeFriendRequest, beFriends } from "@/components/utils/friendAction";
 import { formatDuration } from "@/components/utils/formatData";
 import { useContext, useState } from "react";
 import { Notification } from "./Notification.types";

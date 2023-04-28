@@ -1,6 +1,6 @@
 import { getUserInfo } from "@/components/utils/getUserInfo";
 import { db } from "@/firebase/firebase-admin-app";
-import { FriendInfoRaw } from "@/global/FriendInfo.types";
+import { FriendInfo, FriendInfoRaw } from "@/global/FriendInfo.types";
 import { UserInfo } from "@/global/UserInfo.types";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { FieldValue } from "firebase-admin/firestore";
@@ -11,7 +11,6 @@ import Posts from "./components/PostContainer";
 import AnimeRecommendList from "./components/leftsidebar/AnimeRecommendList";
 import PostForm from './components/postForm/PostForm';
 import FriendList from "./components/rightsidebar/FriendList";
-import { FriendInfo } from "./components/rightsidebar/Friend";
 
 async function getFriendList(myUserInfo: UserInfo): Promise<FriendInfo[]> {
   const userRef = db.doc(`users/${myUserInfo.id}`)

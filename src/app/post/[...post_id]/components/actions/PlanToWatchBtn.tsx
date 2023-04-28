@@ -6,6 +6,7 @@ import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from "firebase/firest
 import { useRouter } from "next/navigation"
 import { useContext, useState } from "react"
 import { PostContext } from "../../PostContext"
+import { AnimeInfo } from "@/global/AnimeInfo.types"
 
 const PlanToWatch = ({ animeStatus }: { animeStatus: string }) => {
   const { myUserInfo, animeID } = useContext(PostContext)
@@ -41,7 +42,7 @@ const PlanToWatch = ({ animeStatus }: { animeStatus: string }) => {
   }
 
   const onRemovePlanToWatch = async () => {
-    const animeData = await getDoc(doc(db, "myAnimeList", myUserInfo?.username)).then((res) => res.data()?.animeList.find((anime: any) => anime.node.id === animeID))
+    const animeData = await getDoc(doc(db, "myAnimeList", myUserInfo?.username)).then((res) => res.data()?.animeList.find((anime: AnimeInfo) => anime.node.id === animeID))
 
     if (!animeData) {
       alert("too fast")

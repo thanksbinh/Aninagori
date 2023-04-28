@@ -3,17 +3,17 @@ import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
 import { PostContext } from "../../PostContext";
 import { sentReaction, sentReactionReply } from "../actions/doReaction";
-import { CommentProps } from "./Comment.types";
 import CommentForm from "./CommentForm";
+import { CommentInfo } from "@/global/Post.types";
 
-const Comment = ({ comment, focused, onParentReply }: { comment: CommentProps, focused?: string, onParentReply?: any }) => {
+const Comment = ({ comment, focused, onParentReply }: { comment: CommentInfo, focused?: string, onParentReply?: any }) => {
   const { myUserInfo, postId } = useContext(PostContext)
 
   const [reactionToggle, setReactionToggle] = useState(false)
   const [reactions, setReactions] = useState(comment.reactions || [])
 
-  const [replies, setReplies] = useState<CommentProps[]>([])
-  const [lastReply, setLastReply] = useState<CommentProps>()
+  const [replies, setReplies] = useState<CommentInfo[]>([])
+  const [lastReply, setLastReply] = useState<CommentInfo>()
 
   const [openReplyForm, setOpenReplyForm] = useState(false)
   const [taggedUser, setTaggedUser] = useState("")
@@ -37,7 +37,7 @@ const Comment = ({ comment, focused, onParentReply }: { comment: CommentProps, f
   useEffect(() => {
     if (!comment.reactions) return;
 
-    setReactionToggle(comment.reactions.some((e: any) => e.username === myUserInfo.username))
+    setReactionToggle(comment.reactions.some((e) => e.username === myUserInfo.username))
     setReactions(comment.reactions)
   }, [comment.reactions])
 

@@ -3,19 +3,10 @@
 import { findOldLastMessage, updateStatus } from "@/components/chat/ChatNoti";
 import { formatDuration } from "@/components/utils/formatData";
 import { db } from "@/firebase/firebase-app";
+import { FriendInfo } from "@/global/FriendInfo.types";
 import { UserInfo } from "@/global/UserInfo.types";
 import { collection, doc, getDoc } from "firebase/firestore";
 import { Dispatch, SetStateAction } from "react";
-
-export interface FriendInfo {
-  username: string
-  image: string
-  anime_status?: {
-    status: string
-    updated_at: Date
-    title: string
-  }
-}
 
 const statusTextColor = new Map([
   ['completed', 'text-blue-400'],

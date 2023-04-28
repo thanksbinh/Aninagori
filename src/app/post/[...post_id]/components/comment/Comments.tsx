@@ -1,9 +1,9 @@
 import { FC } from "react";
 import Comment from "./Comment";
-import { CommentProps } from "./Comment.types";
+import { CommentInfo } from "@/global/Post.types";
 
 interface Props {
-  comments: CommentProps[];
+  comments: CommentInfo[];
   focusedComment?: string;
 };
 

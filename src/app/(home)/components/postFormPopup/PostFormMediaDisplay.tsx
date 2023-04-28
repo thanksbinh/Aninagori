@@ -10,11 +10,11 @@ const cx = classNames.bind(styles)
 
 interface PostFormMediaDisplayProps {
     mediaUrl: any,
-    mediaType: any,
+    mediaType: string,
     handleDeleteMedia: any,
     handleMediaChange: any,
     setMediaUrl: any,
-    isEditPost: any,
+    isEditPost: boolean,
     haveUploadedImage: any,
     setHaveUploadedImage: any,
 }

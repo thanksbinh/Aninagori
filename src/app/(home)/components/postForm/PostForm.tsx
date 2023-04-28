@@ -13,22 +13,22 @@ import { BannedPostForm } from "./BannedPostForm"
 import { AnimeInfo } from "@/global/AnimeInfo.types"
 
 type PostFormProps = {
-  myAnimeList?: any
+  myAnimeList?: AnimeInfo[]
 }
 
 const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
   const { myUserInfo } = useContext(HomeContext)
 
   const [open, setOpen] = useState(false)
-  const [recentAnimeList, setRecentAnimeList] = useState<any>([])
+  const [recentAnimeList, setRecentAnimeList] = useState<AnimeInfo[]>([])
 
   useEffect(() => {
     if (!myAnimeList) return;
 
-    const watchingList = [] as any
-    const p2wList = [] as any
+    const watchingList: AnimeInfo[] = []
+    const p2wList: AnimeInfo[] = []
 
-    myAnimeList.forEach((anime: any) => {
+    myAnimeList.forEach((anime: AnimeInfo) => {
       if (anime.list_status.status === "watching") watchingList.push(anime)
       else if (anime.list_status.status === "plan_to_watch" && anime.node.num_episodes != 0) p2wList.push(anime)
     })

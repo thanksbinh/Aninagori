@@ -1,6 +1,7 @@
 'use client'
 
-import FriendComponent, { FriendInfo } from '../rightsidebar/Friend';
+import { FriendInfo } from '@/global/FriendInfo.types';
+import FriendComponent from '../rightsidebar/Friend';
 import ChatPopup from '@/components/chat/ChatPopup';
 import { UserInfo } from '@/global/UserInfo.types';
 import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
