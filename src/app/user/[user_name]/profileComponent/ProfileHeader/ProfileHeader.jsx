@@ -95,7 +95,7 @@ function ProfileHeader({ guess, admin }) {
         <div className="px-2 absolute bottom-24 right-3 z-10 rounded-2xl overflow-hidden md-max:bottom-80 md-max:-right-16">
           <input
             type="text"
-            className="border border-gray-300 py-2 px-4 w-64 text-black outline-none md-max:w-[52%]"
+            className="border border-[#373C47] py-2 px-4 w-64 text-white bg-ani-light-gray outline-none md-max:w-[52%]"
             placeholder="Enter wallpaper link here"
             onChange={(e) => {
               setLink(e.target.value)
@@ -117,7 +117,7 @@ function ProfileHeader({ guess, admin }) {
               }
             }}
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 h-[42.17px]"
+            className=" bg-gray-600 hover:bg-gray-800 text-white font-bold py-2 px-4 h-[42.17px]"
           >
             Save
           </button>
