@@ -153,104 +153,108 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
   }))
 
   return (
-    <div ref={ref} className={`flex-col`}>
-      <div className="flex items-center justify-between my-4">
-        <div className="flex items-center min-w-[142px]">
-          <FontAwesomeIcon icon={faCalendarDays} className="text-blue-400 text-2xl mx-3" />
+    <div ref={ref}>
+      <div className="flex items-center justify-between my-4 sm2-max:flex-wrap sm2-max:justify-start">
+        <div className="flex items-center min-w-[142px] sm2-max:min-w-[109px]">
+          <FontAwesomeIcon icon={faCalendarDays} className="text-blue-400 text-2xl mx-3 sm2-max:ml-0" />
           <p className="font-semibold text-sm">Start Date</p>
         </div>
-        <div className="flex flex-1 items-center justify-end">
+        <div className="flex flex-1 items-center justify-end sm2-max:justify-between sm2-max:mt-2 sm2-max:mb-2 sm2-max:order-3">
           <ChooseDate data={day} setData={setDay} type={"Day"} progress="start" />
           <ChooseDate data={month} setData={setMonth} type={"Month"} progress="start" />
           <ChooseDate data={year} setData={setYear} type={"Year"} progress="start" />
-          <div className="flex flex-col justify-between h-10">
-            <p
-              onClick={() => {
-                setToday("start")
-              }}
-              className="ml-4 underline text-green-400 text-xs cursor-pointer"
-            >
-              Insert today
-            </p>
-            <p
-              onClick={() => {
-                setDay({ ...day, start: 0 })
-                setMonth({ ...month, start: 0 })
-                setYear({ ...year, start: 0 })
-              }}
-              className="ml-4 underline text-gray-400 text-xs cursor-pointer"
-            >
-              Remove date
-            </p>
-          </div>
+        </div>
+        <div className="flex flex-col justify-between h-10 sm2-max:flex-row sm2-max:order-2 sm2-max:items-center">
+          <p
+            onClick={() => {
+              setToday("start")
+            }}
+            className="ml-4 underline text-green-400 text-xs cursor-pointer sm2-max:text-sm"
+          >
+            Insert today
+          </p>
+          <p
+            onClick={() => {
+              setDay({ ...day, start: 0 })
+              setMonth({ ...month, start: 0 })
+              setYear({ ...year, start: 0 })
+            }}
+            className="ml-4 underline text-gray-400 text-xs cursor-pointer sm2-max:text-sm"
+          >
+            Remove date
+          </p>
         </div>
       </div>
-      <div className="flex items-center justify-between my-4">
-        <div className="flex items-center min-w-[142px]">
-          <FontAwesomeIcon icon={faCalendarCheck} className="text-green-500 text-2xl mx-3" />
+      <div className="flex items-center justify-between my-4 sm2-max:flex-wrap sm2-max:justify-start ">
+        <div className="flex items-center min-w-[142px] sm2-max:min-w-0">
+          <FontAwesomeIcon icon={faCalendarCheck} className="text-green-500 text-2xl mx-3 sm2-max:ml-0" />
           <p className="font-semibold text-sm">Finish Date</p>
         </div>
-        <div className="flex flex-1 items-center justify-end">
+        <div className="flex flex-1 items-center justify-end sm2-max:mt-2 sm2-max:mb-2 sm2-max:order-3 sm2-max:justify-between">
           <ChooseDate data={day} setData={setDay} type={"Day"} progress="finish" />
           <ChooseDate data={month} setData={setMonth} type={"Month"} progress="finish" />
           <ChooseDate data={year} setData={setYear} type={"Year"} progress="finish" />
-          <div className="flex flex-col justify-between h-10">
-            <p
-              onClick={() => {
-                setToday("start")
+        </div>
+        <div className="flex flex-col justify-between h-10 sm2-max:flex-row sm2-max:order-2 sm2-max:items-center">
+          <p
+            onClick={() => {
+              setToday("end")
+            }}
+            className="ml-4 underline text-green-400 text-xs cursor-pointer sm2-max:text-sm"
+          >
+            Insert today
+          </p>
+          <p
+            onClick={() => {
+              setDay({ ...day, end: 0 })
+              setMonth({ ...month, end: 0 })
+              setYear({ ...year, end: 0 })
+            }}
+            className="ml-4 underline text-gray-400 text-xs cursor-pointer sm2-max:text-sm"
+          >
+            Remove date
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-col sm2-max:flex-row sm2-max:justify-between sm2-max:flex-1">
+        <div className="flex items-center mb-4 mt-2 min-w-[145px] sm2-max:min-w-0 sm2-max:flex-col sm2-max:items-start">
+          <div className="flex items-center">
+            <FontAwesomeIcon icon={faTv} className="text-yellow-500 text-xl ml-3 mr-2 sm2-max:ml-0" />
+            <p className="font-semibold text-sm mr-4">Re-watching</p>
+          </div>
+          <div className="flex-1 flex justify-center items-center mr-11 sm2-max:justify-start sm2-max:mt-4">
+            <p className="text-sm mr-3 sm2-max:mr-10">Total: </p>
+            <input
+              type="text"
+              className="w-[83px] h-10 rounded-lg bg-[#4e5d78] text-white text-center outline-none"
+              value={rewatchTime}
+              onChange={(e) => {
+                const regex = /^\d+$/
+                if ((regex.test(e.target.value) && parseInt(e.target.value) <= 255) || e.target.value === "") {
+                  setRewatchTime(e.target.value)
+                }
               }}
-              className="ml-4 underline text-green-400 text-xs cursor-pointer"
-            >
-              Insert today
-            </p>
-            <p
-              onClick={() => {
-                setDay({ ...day, end: 0 })
-                setMonth({ ...month, end: 0 })
-                setYear({ ...year, end: 0 })
-              }}
-              className="ml-4 underline text-gray-400 text-xs cursor-pointer"
-            >
-              Remove date
-            </p>
+            />
+            <p className="text-sm ml-3">times</p>
           </div>
         </div>
-      </div>
-      <div className="flex items-center my-4 min-w-[145px]">
-        <FontAwesomeIcon icon={faTv} className="text-yellow-500 text-xl ml-3 mr-2" />
-        <p className="font-semibold text-sm mr-4">Re-watching</p>
-        <div className="flex-1 flex justify-center items-center mr-8">
-          <p className="text-sm mr-3">Total: </p>
-          <input
-            type="text"
-            className="w-[83px] h-10 rounded-lg bg-[#4e5d78] text-white text-center outline-none"
-            value={rewatchTime}
-            onChange={(e) => {
-              const regex = /^\d+$/
-              if ((regex.test(e.target.value) && parseInt(e.target.value) <= 255) || e.target.value === "") {
-                setRewatchTime(e.target.value)
-              }
-            }}
-          />
-          <p className="text-sm ml-3">times</p>
-        </div>
-      </div>
-      <div className="flex items-center justify-between mt-2 mb-4">
-        <div className="flex items-center min-w-[145px]">
-          <FontAwesomeIcon icon={faTags} className="text-red-500 text-2xl ml-3 mr-2" />
-          <p className="font-semibold text-sm">Anime Tags</p>
-        </div>
-        <div className="flex flex-1 justify-center">
-          <div className={cx("container")}>
-            <div className={cx("input-tag-wrapper")}>
-              <div className={cx("input-text-wrapper")}>
-                <input
-                  placeholder='Each tag follow by ","'
-                  value={nowTag}
-                  onChange={handleInputTag}
-                  type="text"
-                  className={cx("input-text")}
-                ></input>
+        <div className="flex items-center justify-between mt-2 mb-4 sm2-max:flex-col sm2-max:items-start">
+          <div className="flex items-center min-w-[145px] sm2-max:min-w-0">
+            <FontAwesomeIcon icon={faTags} className="text-red-500 text-2xl ml-3 mr-2 sm2-max:ml-0" />
+            <p className="font-semibold text-sm">Anime Tags</p>
+          </div>
+          <div className="flex flex-1 justify-center sm2-max:justify-start sm2-max:mt-4 sm2-max:w-full">
+            <div className={cx("container")}>
+              <div className={cx("input-tag-wrapper")}>
+                <div className={cx("input-text-wrapper")}>
+                  <input
+                    placeholder='Each tag follow by ","'
+                    value={nowTag}
+                    onChange={handleInputTag}
+                    type="text"
+                    className={cx("input-text")}
+                  ></input>
+                </div>
               </div>
             </div>
           </div>
@@ -272,7 +276,7 @@ function ChooseDate({ data, setData, type, progress }: { data: any; setData: any
 
   return (
     <>
-      <p className="text-sm mx-3">{type}: </p>
+      <p className={cx({ 'sm2-max:ml-0': type === 'Day' }) + " text-sm mx-3"}>{type}: </p>
       <HeadlessTippy
         visible={progress === "start" ? data.openStart : data.openEnd}
         appendTo={() => document.body}

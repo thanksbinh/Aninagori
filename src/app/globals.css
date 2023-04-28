@@ -174,3 +174,9 @@ body {
     opacity: 1;
   }
 }
+
+@media (max-width: 639px) {
+  [data-tippy-root] {
+    width: calc(100% - 32px);
+  }
+}

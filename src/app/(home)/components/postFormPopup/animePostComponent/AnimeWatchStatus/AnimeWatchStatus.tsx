@@ -38,7 +38,7 @@ function AnimeWatchStatus({ setShowScore }: any, ref: any) {
   }
 
   return (
-    <div ref={ref} style={{ width: '24%' }}>
+    <div ref={ref} className="w-[24%] sm-max:w-[49%]">
       <HeadlessTippy
         visible={boxOpen && isInputFocus}
         appendTo={() => document.body}

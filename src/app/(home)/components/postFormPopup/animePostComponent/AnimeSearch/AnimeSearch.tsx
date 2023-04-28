@@ -128,12 +128,12 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
       onClickOutside={() => {
         setResultBoxOpen(false)
       }}
-      appendTo={() => document.body}
       placement="bottom-start"
+      className="tippy-test"
       interactive={true}
       render={() => {
         return (
-          <div className={cx("result-wrapper")} ref={ref}>
+          <div className='w-4/5 h-[225px] overflow-y-auto rounded-xl sm-max:w-full' ref={ref}>
             {searchResult.map((ele: any, index: number) => {
               return (
                 <div
@@ -152,7 +152,7 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
         )
       }}
     >
-      <div className={cx("anime-search-wrapper")}>
+      <div className={cx("anime-search-wrapper") + ' w-1/2 sm-max:!w-full sm-max:mt-6 sm-max:order-3'}>
         <div>
           <input
             value={animeData.animeName}

@@ -18,7 +18,7 @@ function AnimeScore(props: any, ref: any) {
   }))
 
   return (
-    <div style={props.style} className={cx("status-component")} ref={ref}>
+    <div style={props.style} className='w-[24%] px-2 py-1 h-10 bg-[#4e5d78] rounded-[18px] flex justify-between items-center sm-max:order-1 sm-max:w-[49%]' ref={ref}>
       <div className={cx("title")}>Score:</div>
       <input
         type="text"

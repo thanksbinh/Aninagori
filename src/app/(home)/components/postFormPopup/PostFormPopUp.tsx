@@ -116,7 +116,7 @@ const PostFormPopUp = (props: any, ref: any) => {
       <form
         onClick={(e) => e.stopPropagation()}
         onSubmit={(e) => !loadPosting && handleSubmit(e)}
-        className="relative flex flex-col bg-[#191c21] rounded-2xl my-4 min-w-[710px] font-normal"
+        className="relative flex flex-col bg-[#191c21] rounded-2xl my-4 min-w-[710px] md-max:w-full md-max:min-w-0 font-normal"
       >
         <FontAwesomeIcon
           onClick={() => !loadPosting && setOpen(false)}
@@ -130,7 +130,7 @@ const PostFormPopUp = (props: any, ref: any) => {
           <h4 className="text-base font-bold ml-4">{myUserInfo.username}</h4>
         </div>
         <div className={`flex flex-col px-4 max-h-[78vh] overflow-y-auto ${cx("scroll-custom")}`}>
-          <div className={cx("status-wrapper")}>
+          <div className='flex flex-row justify-between mb-4 mt-1 sm-max:flex-wrap'>
             <AnimeWatchStatus ref={animeStatusRef} setShowScore={setShowScore} />
             <AnimeSearch ref={animeSearchRef} animeEpsRef={animeEpisodesRef} />
             <AnimeEpisodes ref={animeEpisodesRef} style={!showScore ? { display: "flex" } : { display: "none" }} />

@@ -25,7 +25,7 @@ function AnimeEpisodes(props: any, ref: any) {
   }))
 
   return (
-    <div style={props.style} className={cx("status-component")} ref={ref}>
+    <div style={props.style} className='w-[24%] px-2 py-1 h-10 bg-[#4e5d78] rounded-2xl flex justify-between sm-max:w-[49%] sm-max:order-1' ref={ref}>
       <div className={cx("wrapper")}>
         <input
           onChange={(e) => {

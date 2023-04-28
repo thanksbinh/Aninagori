@@ -3,7 +3,6 @@
   height: 40px;
   background-color: #4e5d78;
   border-radius: 18px;
-  width: 50% !important;
   display: flex;
   padding: 4px 8px 4px 38px;
   position: relative;
@@ -21,13 +20,6 @@
     border: none;
     color: #ffffff;
   }
-}
-
-.result-wrapper {
-  width: 338px;
-  height: 225px;
-  overflow-y: auto;
-  border-radius: 10px;
 }
 
 .result-children {
