@@ -1,6 +1,6 @@
 import { formatDuration } from "@/components/utils/formatData";
 import { db } from "@/firebase/firebase-app";
-import { getUserInfo } from "@/global/getUserInfo";
+import { getUserInfo } from "@/components/utils/getUserInfo";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { collection, doc, getDoc, getDocs, orderBy, query } from "firebase/firestore";
 import { getServerSession } from "next-auth";
@@ -59,9 +59,10 @@ async function Post({ params }: { params: { post_id: string[] } }) {
   const myUserId = (session as any)?.user?.id
   const myUserInfo = await getUserInfo(myUserId) || { username: "", id: "", image: "" }
 
-  const [fetchedPost, fetchedComments] = await Promise.all([
+  const [fetchedPost, fetchedComments, myAnimeList] = await Promise.all([
     fetchPost(params.post_id[0]),
-    fetchComments(params.post_id[0])
+    fetchComments(params.post_id[0]),
+    getDoc(doc(db, "myAnimeList", myUserInfo.username)).then(doc => doc.data()?.animeList)
   ])
 
   return (
@@ -96,11 +97,9 @@ async function Post({ params }: { params: { post_id: string[] } }) {
               reactions={fetchedPost.reactions}
               commentCountPromise={fetchedComments.length}
               comments={fetchedComments}
-              myUserInfo={myUserInfo}
-              malAuthCode={myUserInfo?.mal_connect?.accessToken}
-              animeID={fetchedPost?.post_anime_data?.anime_id}
               focusedComment={(params.post_id.length > 1) ? params.post_id[2] : undefined}
               showTopReaction={true}
+              animeStatus={myAnimeList?.find((anime: any) => anime.node.id === fetchedPost?.post_anime_data?.anime_id)?.list_status.status}
             />
           </div>
         </ContextProvider>

@@ -9,6 +9,20 @@ import ContextProvider from "../../post/[...post_id]/PostContext"
 import PostActions from "../../post/[...post_id]/components/actions/PostActions"
 import { HomeContext } from "../HomeContext"
 import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "../functions/recommendPost"
+import { FriendInfo } from "./rightsidebar/Friend"
+import { AnimeInfo } from "@/global/AnimeInfo.types"
+
+type PostsProps = {
+  myFriendList: FriendInfo[]
+  myAnimeList: AnimeInfo[]
+  postPreference: {
+    animeList: {
+      id: number
+      potential: number
+    },
+    last_view: any
+  }
+}
 
 async function fetchCommentCount(postId: string) {
   const commentsRef = collection(db, "posts", postId, "comments")
@@ -17,7 +31,7 @@ async function fetchCommentCount(postId: string) {
   return commentCount
 }
 
-export default function Posts({ myFriendList, myAnimeList, postPreference }: any) {
+export default function Posts({ myFriendList, myAnimeList, postPreference }: PostsProps) {
   const { myUserInfo } = useContext(HomeContext)
 
   const [posts, setPosts] = useState<any>([])
@@ -72,7 +86,6 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
     posts.forEach((post: any) => {
       const anime = myAnimeList?.find((anime: any) => anime.node.id === post.post_anime_data?.anime_id)
       if (anime) post.post_anime_data.my_status = anime.list_status.status
-      console.log(post, anime)
     })
   }
 

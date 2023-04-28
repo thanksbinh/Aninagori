@@ -1,6 +1,7 @@
+import { getUserInfo } from "@/components/utils/getUserInfo";
 import { db } from "@/firebase/firebase-admin-app";
+import { FriendInfoRaw } from "@/global/FriendInfo.types";
 import { UserInfo } from "@/global/UserInfo.types";
-import { getUserInfo } from "@/global/getUserInfo";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { FieldValue } from "firebase-admin/firestore";
 import { getServerSession } from "next-auth";
@@ -10,36 +11,41 @@ import Posts from "./components/PostContainer";
 import AnimeRecommendList from "./components/leftsidebar/AnimeRecommendList";
 import PostForm from './components/postForm/PostForm';
 import FriendList from "./components/rightsidebar/FriendList";
+import { FriendInfo } from "./components/rightsidebar/Friend";
 
-async function getFriendList(myUserInfo: UserInfo): Promise<string[]> {
+async function getFriendList(myUserInfo: UserInfo): Promise<FriendInfo[]> {
   const userRef = db.doc(`users/${myUserInfo.id}`)
   const user = await userRef.get()
   const friendList = user.data()?.friend_list?.reverse()
-  return friendList ? JSON.parse(JSON.stringify(friendList)) : []
+  return friendList.map((friend: FriendInfoRaw) => {
+    return {
+      ...friend,
+      anime_status: friend.anime_status ? {
+        ...friend.anime_status,
+        updated_at: friend.anime_status.updated_at.toDate()
+      } : null
+    }
+  })
 }
 
 async function fetchMyAnimeList(myUserInfo: UserInfo) {
   const malRef = db.doc(`myAnimeList/${myUserInfo.username}`)
   const mal = await malRef.get()
 
-  if (!mal.exists) initMyAnimeList(malRef)
+  if (!mal.exists) { // init myAnimeList
+    malRef.set({ last_updated: null }, { merge: true })
+  }
   return mal.data();
-}
-
-async function initMyAnimeList(malRef: any) {
-  malRef.set({ last_updated: null }, { merge: true })
 }
 
 async function fetchPostPreference(myUserInfo: UserInfo) {
   const postPrefRef = db.doc(`postPreferences/${myUserInfo.username}`)
   const postPref = await postPrefRef.get()
 
-  updateLastView(postPrefRef)
-  return postPref ? JSON.parse(JSON.stringify(postPref.data())) : { last_view: 1 };
-}
-
-async function updateLastView(postPrefRef: any) {
+  // updateLastView
   postPrefRef.set({ last_view: FieldValue.serverTimestamp() }, { merge: true })
+
+  return postPref ? JSON.parse(JSON.stringify(postPref.data())) : { last_view: 1 };
 }
 
 export default async function Home() {
@@ -53,7 +59,7 @@ export default async function Home() {
     getFriendList(myUserInfo),
     fetchPostPreference(myUserInfo),
     fetchMyAnimeList(myUserInfo)
-  ]) as any
+  ])
 
   return (
     <div className="flex justify-between pt-4">

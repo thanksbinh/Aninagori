@@ -1,4 +1,4 @@
-import { getUserInfo } from "@/global/getUserInfo";
+import { getUserInfo } from "@/components/utils/getUserInfo";
 import Button from "../button/Button";
 import ChatBtn from "./ChatBtn";
 import Logo from "./Logo";

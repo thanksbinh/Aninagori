@@ -1,6 +1,6 @@
 import { db } from "@/firebase/firebase-app"
 import { doc, getDoc } from "firebase/firestore"
-import { UserInfo } from "./UserInfo.types"
+import { UserInfo } from "../../global/UserInfo.types"
 
 async function getUserInfo(userId: string | undefined): Promise<UserInfo | undefined> {
   if (!userId) return

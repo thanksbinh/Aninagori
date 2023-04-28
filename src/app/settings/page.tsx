@@ -1,4 +1,4 @@
-import { getUserInfo } from "@/global/getUserInfo";
+import { getUserInfo } from "@/components/utils/getUserInfo";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import Settings from "./components/Settings";
