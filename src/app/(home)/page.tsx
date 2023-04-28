@@ -16,7 +16,7 @@ async function getFriendList(myUserInfo: UserInfo): Promise<FriendInfo[]> {
   const userRef = db.doc(`users/${myUserInfo.id}`)
   const user = await userRef.get()
   const friendList = user.data()?.friend_list?.reverse()
-  return friendList.map((friend: FriendInfoRaw) => {
+  return friendList?.map((friend: FriendInfoRaw) => {
     return {
       ...friend,
       anime_status: friend.anime_status ? {

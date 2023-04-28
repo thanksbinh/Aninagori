@@ -99,7 +99,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
 
   async function fetchPosts() {
     // fetch posts from friends
-    if (myFriendList.length && hasMoreFriendPosts) {
+    if (myFriendList?.length && hasMoreFriendPosts) {
       const fetchedPosts = await fetchFriendPosts(myUserInfo, myFriendList.map((friend: FriendInfo) => friend.username), postPreference.last_view)
 
       if (fetchedPosts.posts.length) {
