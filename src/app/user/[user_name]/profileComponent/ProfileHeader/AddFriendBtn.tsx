@@ -2,7 +2,7 @@ import { db } from '@/firebase/firebase-app';
 import { doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState, useRef } from 'react';
 import { UserInfo } from "@/global/UserInfo.types";
-import { beFriends, makeFriendRequest, removeFriendRequest, unfriend } from "@/components/friend/friendAction";
+import { beFriends, makeFriendRequest, removeFriendRequest, unfriend } from "@/components/utils/friendAction";
 import Button from '@/components/button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserCheck, faUserMinus, faUserPlus } from '@fortawesome/free-solid-svg-icons';
@@ -42,7 +42,7 @@ export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: Use
         return;
       }
       // If friend
-      if ((userInfo as any)?.friend_list?.some((acc: any) => acc.username === myUserInfo.username)) {
+      if (userInfo?.friend_list?.some((acc) => acc.username === myUserInfo.username)) {
         setContent({ content: 'Friend', icon: faUser });
         return;
       }
@@ -99,7 +99,7 @@ export default function AddFriendBtn({ myUserInfo, userInfo }: { myUserInfo: Use
       <Button
         small
         primary
-        leftIcon={<FontAwesomeIcon icon={content.icon as any} />}
+        leftIcon={<FontAwesomeIcon icon={content.icon} />}
         onClick={handleAddFriend}
         disabled={content.content === "Requesting..."}
         to={undefined}

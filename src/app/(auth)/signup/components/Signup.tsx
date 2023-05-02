@@ -13,7 +13,7 @@ import FormAction from '../../login/components/FormAction';
 import SignInWithGoogle from '../../login/components/SignInWithGoogle';
 
 const fields = signupFields;
-let fieldsState = {} as any;
+let fieldsState: any = {};
 
 fields.forEach(field => fieldsState[field.id] = '');
 

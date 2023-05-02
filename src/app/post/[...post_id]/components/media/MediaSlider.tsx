@@ -1,9 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TiArrowLeft } from "@react-icons/all-files/ti/TiArrowLeft";
 import { TiArrowRight } from "@react-icons/all-files/ti/TiArrowRight";
-import classNames from "classnames/bind"
-import styles from "../PostContent.module.scss"
-const cx = classNames.bind(styles)
 
 interface ImageSliderProps {
     images: string[];

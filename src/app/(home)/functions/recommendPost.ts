@@ -1,5 +1,6 @@
 import { formatDuration } from "@/components/utils/formatData"
 import { db } from "@/firebase/firebase-app"
+import { AnimeInfo } from "@/global/AnimeInfo.types"
 import { UserInfo } from "@/global/UserInfo.types"
 import { collection, getDocs, limit, orderBy, query, startAfter, Timestamp, where } from "firebase/firestore"
 
@@ -24,7 +25,7 @@ function formatPostData(querySnapshot: any) {
   }
 }
 
-async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], lastView: any, lastKey: any) {
+async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], lastView: any) {
   const usernameList1 = [myUserInfo.username, ...friendList.slice(0, 9)]
   const usernameList2 = friendList.slice(9)
 
@@ -35,8 +36,6 @@ async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], last
     where("authorName", "in", usernameList1),
     where("timestamp", ">=", lastViewTimestamp),
     orderBy("timestamp", "desc"),
-    startAfter(lastKey),
-    limit(1),
   )
   let querySnapshot = await getDocs(postQuery)
 
@@ -46,8 +45,6 @@ async function fetchFriendPosts(myUserInfo: UserInfo, friendList: string[], last
       where("authorName", "in", usernameList2),
       where("timestamp", ">=", lastViewTimestamp),
       orderBy("timestamp", "desc"),
-      startAfter(lastKey),
-      limit(1),
     )
     querySnapshot = await getDocs(postQuery)
   }
@@ -79,15 +76,15 @@ async function fetchAllPosts(friendPostIds: string[], lastKey: any) {
   }
 }
 
-function getAnimePreferenceScore(myAnimeList: any, animePreference: any, anime_id: string): number {
-  const anime = myAnimeList?.find((anime: any) => anime.node.id === anime_id)
+function getAnimePreferenceScore(myAnimeList: AnimeInfo[], animePreference: any, anime_id: number): number {
+  const anime = myAnimeList?.find((anime: AnimeInfo) => anime.node.id === anime_id)
 
   // Anime in myAnimeList
   if (anime?.list_status.status === "watching") return 0
-  if (anime?.list_status.status === "dropped") return 4
+  if (anime?.list_status.status === "dropped") return 2.5
   if (anime?.list_status.status === "completed") {
-    if (anime?.list_status.score >= 8) return 10
-    if (anime?.list_status.score >= 6) return 5
+    if (anime?.list_status.score! >= 8) return 10
+    if (anime?.list_status.score! >= 6) return 5
     return 2
   }
 

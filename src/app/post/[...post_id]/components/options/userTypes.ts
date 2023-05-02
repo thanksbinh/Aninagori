@@ -22,7 +22,7 @@ const authorOptions = [
   },
   {
     name: "Edit post",
-    action: (postId: string, authorName: any, setOpenEditForm: any) => {
+    action: (postId: string, authorName: string, setOpenEditForm: any) => {
       setOpenEditForm(true)
     },
   },

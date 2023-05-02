@@ -1,6 +1,7 @@
 import { UserInfo } from '@/global/UserInfo.types';
 import { AnimeComponent } from './Anime';
 import { AnimeExtend } from './AnimeExtend';
+import { AnimeInfo } from '@/global/AnimeInfo.types';
 
 async function getAnimeDetail(animeId: string, potential: number) {
   try {
@@ -18,7 +19,7 @@ async function getAnimeDetail(animeId: string, potential: number) {
 }
 
 export default async function AnimeRecommendList({ myUserInfo, potentialAnimes, myAnimeList }: { myUserInfo: UserInfo, potentialAnimes: any, myAnimeList: any }) {
-  const myAnimeIds = myAnimeList?.animeList?.map((anime: any) => {
+  const myAnimeIds = myAnimeList?.animeList?.map((anime: AnimeInfo) => {
     if (["completed", "watching", "plan_to_watch"].includes(anime.list_status.status)) return anime.node.id
   }) || []
 

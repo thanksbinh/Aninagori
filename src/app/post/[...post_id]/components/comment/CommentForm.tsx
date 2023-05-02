@@ -1,5 +1,5 @@
 import Avatar from "@/components/avatar/Avatar";
-import { FC, useContext, useState } from "react";
+import { FC, useContext, useState, FormEvent } from "react";
 import { PostContext } from "../../PostContext";
 import { sendComment, sendReply } from "./doComment";
 
@@ -16,7 +16,7 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
 
   const [myComment, setMyComment] = useState("")
 
-  const onComment = async (e: any) => {
+  const onComment = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (!myUserInfo.username) return alert("You need to login to comment")
@@ -28,7 +28,7 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
     setMyComment("")
   }
 
-  const onReply = async (e: any) => {
+  const onReply = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (!myUserInfo.username) return alert("You need to login to reply")

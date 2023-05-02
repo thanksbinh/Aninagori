@@ -9,6 +9,7 @@ import { arrayRemove, arrayUnion, doc, writeBatch } from "firebase/firestore"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { AnimeOptions } from "./AnimeOptions"
+import { UserInfo } from "@/global/UserInfo.types"
 
 function formatMediaType(media_type: string) {
   if (media_type === "tv") return "TV"
@@ -25,7 +26,7 @@ function formatNumber(num_list_users: number) {
   return num_list_users.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
 
-export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: any }) {
+export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: UserInfo }) {
   const [loading, setLoading] = useState(false)
   const [donePlanToWatch, setDonePLanToWatch] = useState(false)
   const [hide, setHide] = useState(false)
@@ -35,7 +36,7 @@ export function AnimeComponent({ anime, myUserInfo }: { anime: any; myUserInfo: 
     setLoading(true)
     // user have connected to MAL
     const dateNow = getDateNow()
-    const myAnimeListRef = doc(db, "myAnimeList", myUserInfo?.username as any)
+    const myAnimeListRef = doc(db, "myAnimeList", myUserInfo?.username)
     const animeData = {
       list_status: {
         is_rewatching: false,

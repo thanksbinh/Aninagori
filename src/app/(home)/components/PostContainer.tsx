@@ -2,13 +2,28 @@
 
 import PostContent from "@/app/post/[...post_id]/components/post/PostContent"
 import { db } from "@/firebase/firebase-app"
+import { AnimeInfo } from "@/global/AnimeInfo.types"
 import { collection, getCountFromServer } from "firebase/firestore"
 import { useContext, useEffect, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import ContextProvider from "../../post/[...post_id]/PostContext"
-import PostAction from "../../post/[...post_id]/components/post/PostAction"
-import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "../functions/recommendPost"
+import PostActions from "../../post/[...post_id]/components/actions/PostActions"
 import { HomeContext } from "../HomeContext"
+import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "../functions/recommendPost"
+import { FriendInfo } from "@/global/FriendInfo.types"
+import { PostInfo } from "@/global/Post.types"
+
+type PostsProps = {
+  myFriendList: FriendInfo[]
+  myAnimeList: AnimeInfo[]
+  postPreference: {
+    animeList: {
+      id: number
+      potential: number
+    },
+    last_view: any
+  }
+}
 
 async function fetchCommentCount(postId: string) {
   const commentsRef = collection(db, "posts", postId, "comments")
@@ -17,14 +32,14 @@ async function fetchCommentCount(postId: string) {
   return commentCount
 }
 
-export default function Posts({ myFriendList, myAnimeList, postPreference }: any) {
-  const [posts, setPosts] = useState<any>([])
+export default function Posts({ myFriendList, myAnimeList, postPreference }: PostsProps) {
+  const { myUserInfo } = useContext(HomeContext)
+
+  const [posts, setPosts] = useState<PostInfo[]>([])
   const [hasMore, setHasMore] = useState(true)
   const [lastKey, setLastKey] = useState<any>({})
   const [friendPostIds, setFriendPostIds] = useState<string[]>(["0"])
-  const [myFriendUsernameList, setMyFriendUsernameList] = useState<string[]>([])
   const [hasMoreFriendPosts, setHasMoreFriendPosts] = useState(myFriendList?.length > 0)
-  const { myUserInfo } = useContext(HomeContext)
 
   useEffect(() => {
     const logo = document.getElementById("logo")
@@ -42,11 +57,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
 
   // Refresh posts when router.refresh() is called
   useEffect(() => {
-    if (myFriendUsernameList.length == myFriendList.length) {
-      refreshPosts()
-    } else {
-      setMyFriendUsernameList(myFriendList.map((friend: any) => friend.username))
-    }
+    refreshPosts()
   }, [myFriendList])
 
   async function refreshPosts() {
@@ -57,12 +68,17 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
     setFriendPostIds(["0"])
   }
 
-  function filterPosts(fetchedPosts: any) {
+  function filterPosts(fetchedPosts: PostInfo[]) {
     if (!postPreference) return fetchedPosts
 
-    return fetchedPosts.filter((post: any) => {
+    return fetchedPosts.filter((post: PostInfo) => {
       // isFromMe or isFromMyFriend
-      if (post.authorName === myUserInfo.username || myFriendUsernameList?.includes(post.authorName)) {
+      if (post.authorName === myUserInfo.username || myFriendList?.find((friend: FriendInfo) => friend.username === post.authorName)) {
+        return true
+      }
+
+      // Todo: more options on post with no anime reference
+      if (!post.post_anime_data?.anime_id) {
         return true
       }
 
@@ -72,26 +88,33 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
     })
   }
 
-  async function fetchFriendsPosts() {
-    const fetchedPosts = await fetchFriendPosts(myUserInfo, myFriendUsernameList, postPreference.last_view, lastKey)
+  function addMyAnimeStatus(posts: PostInfo[]) {
+    posts.forEach((post: PostInfo) => {
+      if (!post.post_anime_data) return
 
-    if (fetchedPosts.posts.length) {
-      setFriendPostIds([...friendPostIds, ...fetchedPosts.posts.map((post: any) => post.id)])
-      setLastKey(fetchedPosts.lastKey)
-      setPosts([...posts, ...fetchedPosts.posts])
-      return;
-    }
-    else {
-      setHasMoreFriendPosts(false)
-    }
+      const anime = myAnimeList?.find((anime: AnimeInfo) => anime.node.id === post.post_anime_data?.anime_id)
+      if (anime) post.post_anime_data.my_status = anime.list_status.status
+    })
   }
 
   async function fetchPosts() {
     // fetch posts from friends
-    if (hasMoreFriendPosts) fetchFriendsPosts()
+    if (myFriendList?.length && hasMoreFriendPosts) {
+      const fetchedPosts = await fetchFriendPosts(myUserInfo, myFriendList.map((friend: FriendInfo) => friend.username), postPreference.last_view)
+
+      if (fetchedPosts.posts.length) {
+        setFriendPostIds([...friendPostIds, ...fetchedPosts.posts.map((post: PostInfo) => post.id)])
+        addMyAnimeStatus(fetchedPosts.posts)
+        setPosts(fetchedPosts.posts)
+        return;
+      }
+      else {
+        setHasMoreFriendPosts(false)
+      }
+    }
 
     // fetch posts from other users
-    let copyLastKey = lastKey
+    let copyLastKey = lastKey || {}
     while (true) {
       const fetchedPosts = await fetchAllPosts(friendPostIds, copyLastKey)
 
@@ -104,6 +127,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
       setLastKey(fetchedPosts.lastKey)
 
       fetchedPosts.posts = filterPosts(fetchedPosts.posts)
+      addMyAnimeStatus(fetchedPosts.posts)
       setPosts([...posts, ...fetchedPosts.posts])
 
       if (fetchedPosts.posts.length) break;
@@ -120,7 +144,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
           <div key={0} className="flex justify-center animate-pulse mb-4">
             <div className="w-[72%] relative">
               <PostContent />
-              <PostAction />
+              <PostActions />
             </div>
           </div>
         }
@@ -128,9 +152,9 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
         pullDownToRefresh={true}
         className="flex flex-col"
       >
-        {posts.map((post: any) => {
+        {posts.map((post: PostInfo) => {
           return (
-            <div className="flex justify-center mb-4" key={post.id}>
+            <div key={post.id} className="flex justify-center mb-4">
               <ContextProvider
                 myUserInfo={myUserInfo}
                 content={post.content}
@@ -156,14 +180,12 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: any
                     tag={!!post?.post_anime_data?.tag ? post?.post_anime_data?.tag : post?.tag}
                     postId={post.id}
                   />
-                  <PostAction
+                  <PostActions
                     reactions={post.reactions}
-                    myUserInfo={myUserInfo}
-                    malAuthCode={myUserInfo?.mal_connect?.accessToken}
-                    animeID={post?.post_anime_data?.anime_id}
                     commentCountPromise={fetchCommentCount(post.id)}
                     comments={post.lastComment ? [post.lastComment] : []}
                     showTopReaction={true}
+                    animeStatus={post?.post_anime_data?.my_status}
                   />
                 </div>
               </ContextProvider>

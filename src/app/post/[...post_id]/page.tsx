@@ -1,33 +1,37 @@
 import { formatDuration } from "@/components/utils/formatData";
 import { db } from "@/firebase/firebase-app";
-import { getUserInfo } from "@/global/getUserInfo";
+import { getUserInfo } from "@/components/utils/getUserInfo";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { collection, doc, getDoc, getDocs, orderBy, query } from "firebase/firestore";
 import { getServerSession } from "next-auth";
 import ContextProvider from "./PostContext";
-import PostAction from "./components/post/PostAction";
+import PostActions from "./components/actions/PostActions";
 import PostContent from "./components/post/PostContent";
+import { CommentInfo, PostInfo } from "@/global/Post.types";
+import { notFound } from "next/navigation";
+import { AnimeInfo } from "@/global/AnimeInfo.types";
 
-async function fetchPost(postId: string) {
-  if (!postId) return {};
-
+async function fetchPost(postId: string): Promise<PostInfo> {
   const postRef = doc(db, "posts", postId)
   const postDoc = await getDoc(postRef)
-  if (!postDoc.exists()) return;
+  if (!postDoc.exists()) {
+    notFound()
+  }
+
   const fetchedPost = {
-    ...postDoc.data(),
+    ...postDoc.data() as any,
     lastComment: postDoc.data().lastComment && {
       ...postDoc.data().lastComment,
       timestamp: formatDuration(new Date().getTime() - postDoc.data().lastComment.timestamp.toDate().getTime()),
     },
     timestamp: formatDuration(new Date().getTime() - postDoc.data().timestamp.toDate().getTime()),
     id: postDoc.id
-  } as any
+  }
 
   return fetchedPost;
 }
 
-async function fetchComments(postId: string) {
+async function fetchComments(postId: string): Promise<CommentInfo[]> {
   if (!postId) return [];
 
   const commentsRef = collection(db, "posts", postId, "comments")
@@ -37,7 +41,7 @@ async function fetchComments(postId: string) {
 
   const comments = commentsDocs.map(doc => {
     return {
-      ...doc.data(),
+      ...doc.data() as any,
       replies: doc.data().replies?.sort((a: any, b: any) => a.timestamp - b.timestamp).map((reply: any) => {
         return {
           ...reply,
@@ -48,7 +52,7 @@ async function fetchComments(postId: string) {
       }),
       timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
       id: doc.id
-    } as any
+    }
   })
 
   return comments;
@@ -59,9 +63,10 @@ async function Post({ params }: { params: { post_id: string[] } }) {
   const myUserId = (session as any)?.user?.id
   const myUserInfo = await getUserInfo(myUserId) || { username: "", id: "", image: "" }
 
-  const [fetchedPost, fetchedComments] = await Promise.all([
+  const [fetchedPost, fetchedComments, myAnimeList] = await Promise.all([
     fetchPost(params.post_id[0]),
-    fetchComments(params.post_id[0])
+    fetchComments(params.post_id[0]),
+    getDoc(doc(db, "myAnimeList", myUserInfo.username)).then(doc => doc.data()?.animeList)
   ])
 
   return (
@@ -70,9 +75,9 @@ async function Post({ params }: { params: { post_id: string[] } }) {
         <ContextProvider
           postData={fetchedPost}
           myUserInfo={myUserInfo}
-          content={fetchedPost?.content || ""}
+          content={fetchedPost.content || ""}
           authorName={fetchedPost.authorName}
-          animeID={fetchedPost?.post_anime_data?.anime_id}
+          animeID={fetchedPost.post_anime_data?.anime_id}
           postId={fetchedPost.id}
         >
           <div className="w-full relative">
@@ -83,24 +88,22 @@ async function Post({ params }: { params: { post_id: string[] } }) {
               content={fetchedPost.content}
               imageUrl={fetchedPost.imageUrl}
               videoUrl={fetchedPost.videoUrl}
-              animeID={fetchedPost?.post_anime_data?.anime_id}
-              animeName={fetchedPost?.post_anime_data?.anime_name}
-              watchingProgress={fetchedPost?.post_anime_data?.watching_progress}
-              episodesSeen={fetchedPost?.post_anime_data?.episodes_seen}
-              episodesTotal={fetchedPost?.post_anime_data?.total_episodes}
-              score={fetchedPost?.post_anime_data?.score}
-              tag={!!fetchedPost?.post_anime_data?.tag ? fetchedPost?.post_anime_data?.tag : fetchedPost?.tag}
+              animeID={fetchedPost.post_anime_data?.anime_id}
+              animeName={fetchedPost.post_anime_data?.anime_name}
+              watchingProgress={fetchedPost.post_anime_data?.watching_progress}
+              episodesSeen={fetchedPost.post_anime_data?.episodes_seen}
+              episodesTotal={fetchedPost.post_anime_data?.total_episodes}
+              score={fetchedPost.post_anime_data?.score}
+              tag={!!fetchedPost.post_anime_data?.tag ? fetchedPost.post_anime_data?.tag : fetchedPost.tag}
               postId={fetchedPost.id}
             />
-            <PostAction
+            <PostActions
               reactions={fetchedPost.reactions}
               commentCountPromise={fetchedComments.length}
               comments={fetchedComments}
-              myUserInfo={myUserInfo}
-              malAuthCode={myUserInfo?.mal_connect?.accessToken}
-              animeID={fetchedPost?.post_anime_data?.anime_id}
               focusedComment={(params.post_id.length > 1) ? params.post_id[2] : undefined}
               showTopReaction={true}
+              animeStatus={myAnimeList?.find((anime: AnimeInfo) => anime.node.id === fetchedPost.post_anime_data?.anime_id)?.list_status.status}
             />
           </div>
         </ContextProvider>

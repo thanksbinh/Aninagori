@@ -4,7 +4,7 @@ type AvatarProps = {
   imageUrl: string;
   altText: string;
   size?: number;
-  className?: any
+  className?: string
 };
 
 const Avatar: FC<AvatarProps> = ({ imageUrl, altText, size, className = '' }) => {

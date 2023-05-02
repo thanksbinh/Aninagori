@@ -1,14 +1,15 @@
 'use client'
 
-import PostFormPopUp from "@/app/(home)/components/postFormPopup/PostFormPopUp";
 import ContextProvider from "@/app/post/[...post_id]/PostContext";
-import PostAction from "@/app/post/[...post_id]/components/post/PostAction";
+import PostActions from "@/app/post/[...post_id]/components/actions/PostActions";
 import PostContent from "@/app/post/[...post_id]/components/post/PostContent";
 import { formatDuration } from "@/components/utils/formatData";
 import { db } from "@/firebase/firebase-app";
+import { AnimeInfo } from "@/global/AnimeInfo.types";
+import { PostInfo } from "@/global/Post.types";
 import { UserInfo } from "@/global/UserInfo.types";
-import { collection, getCountFromServer, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
-import { useEffect, useRef, useState } from "react";
+import { collection, doc, getCountFromServer, getDoc, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 async function fetchProfilePosts(profileUsername: string, lastKey: any) {
@@ -24,7 +25,7 @@ async function fetchProfilePosts(profileUsername: string, lastKey: any) {
       },
       timestamp: formatDuration(new Date().getTime() - doc.data().timestamp.toDate().getTime()),
       id: doc.id
-    } as any
+    }
   });
 
   return {
@@ -41,15 +42,24 @@ async function fetchCommentCount(postId: string) {
 }
 
 export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserInfo: UserInfo, profileUsername?: string }) {
-  const [posts, setPosts] = useState<any>([])
+  const [posts, setPosts] = useState<PostInfo[]>([])
   const [hasMore, setHasMore] = useState(true)
   const [lastKey, setLastKey] = useState<any>({})
-
-  const inputRef = useRef()
 
   useEffect(() => {
     fetchPosts()
   }, [])
+
+  async function addMyAnimeStatus(posts: PostInfo[]) {
+    const myAnimeList: AnimeInfo[] = await getDoc(doc(db, "myAnimeList", myUserInfo.username)).then(doc => doc.data()?.animeList)
+
+    posts.forEach((post) => {
+      if (!post.post_anime_data) return;
+
+      const anime = myAnimeList?.find((anime) => anime.node.id === post.post_anime_data?.anime_id)
+      if (anime) post.post_anime_data.my_status = anime.list_status.status
+    })
+  }
 
   async function fetchPosts() {
     if (!profileUsername) return;
@@ -58,6 +68,7 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
 
     if (fetchedPosts.lastKey) {
       setPosts([...posts, ...fetchedPosts.posts]);
+      addMyAnimeStatus(fetchedPosts.posts)
       setLastKey(fetchedPosts.lastKey)
     } else {
       setHasMore(false)
@@ -72,14 +83,14 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
       loader={
         <div key={0} className="animate-pulse mb-4">
           <PostContent />
-          <PostAction />
+          <PostActions />
         </div>
       }
       refreshFunction={() => console.log("refresh")}
       pullDownToRefresh={true}
       className="flex flex-col"
     >
-      {posts.map((post: any) => (
+      {posts.map((post) => (
         <ContextProvider
           key={post.id}
           myUserInfo={myUserInfo}
@@ -106,14 +117,12 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
               score={post?.post_anime_data?.score}
               postId={post.id}
             />
-            <PostAction
-              myUserInfo={myUserInfo}
-              malAuthCode={myUserInfo?.mal_connect?.accessToken}
-              animeID={post?.post_anime_data?.anime_id}
+            <PostActions
               reactions={post.reactions}
               commentCountPromise={fetchCommentCount(post.id)}
               comments={post.lastComment ? [post.lastComment] : []}
               showTopReaction={false}
+              animeStatus={post?.post_anime_data?.my_status}
             />
           </div>
         </ContextProvider>

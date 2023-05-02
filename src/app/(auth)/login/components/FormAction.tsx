@@ -1,9 +1,18 @@
+import React from "react"
+
+type FormActionProps = {
+  handleSubmit?: (e: any) => void,
+  type?: string,
+  action?: "submit" | "reset" | "button" | undefined,
+  children: React.ReactNode
+}
+
 export default function FormAction({
   handleSubmit,
   type = 'Button',
   action = 'submit',
   children
-}: any) {
+}: FormActionProps) {
   return (
     <>
       {type === 'Button' &&

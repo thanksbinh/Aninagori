@@ -2,10 +2,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCalendarCheck, faCalendarDays, faCaretDown, faTags, faTv } from "@fortawesome/free-solid-svg-icons"
 import HeadlessTippy from "@tippyjs/react/headless"
 import "tippy.js/dist/tippy.css"
-import { forwardRef, useState, useImperativeHandle, useEffect, useContext } from "react"
+import { forwardRef, useState, useImperativeHandle, useEffect, useContext, ChangeEvent } from "react"
 import classNames from "classnames/bind"
 import styles from "./PostFormDetails.module.scss"
 import { PostFormContext } from "../postForm/PostFormContext"
+import { AnimeInfo } from "@/global/AnimeInfo.types"
 
 const cx = classNames.bind(styles)
 const nowYear = new Date().getFullYear()
@@ -13,7 +14,7 @@ const days = Array.from(Array(31).keys()).map((i) => i + 1)
 const months = Array.from(Array(12).keys()).map((i) => i + 1)
 const years = Array.from(Array(20).keys()).map((i) => nowYear - i)
 
-function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, isEditPost: any }, ref: any) {
+function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, isEditPost: boolean }, ref: any) {
   const { recentAnimeList } = useContext(PostFormContext)
 
   // Why can't this just be startDate and endDate?
@@ -83,7 +84,7 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
     }
   }
 
-  function handleInputTag(e: any) {
+  function handleInputTag(e: ChangeEvent<HTMLInputElement>) {
     setNowTag(e.target.value)
   }
 
@@ -109,9 +110,9 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
     },
     getAnimeTag: () => {
       const animeTagArray = nowTag.split(",");
-      const newArray = animeTagArray.map((e: any) => {
+      const newArray = animeTagArray.map((e: string) => {
         return e.trim()
-      }).filter((e: any) => e !== "")
+      }).filter((e: string) => e !== "")
       return newArray
     },
     resetAdditionalPost: () => {
@@ -121,7 +122,7 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
       setMonth({ start: 0, end: 0, openStart: false, openEnd: false })
       setYear({ start: 0, end: 0, openStart: false, openEnd: false })
     },
-    setData: (animeData: any) => {
+    setData: (animeData: AnimeInfo) => {
 
       if (!!animeData?.list_status?.start_date) {
         const dateStartArray = animeData?.list_status?.start_date.split("-").map((i: string) => parseInt(i))

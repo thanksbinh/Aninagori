@@ -1,3 +1,5 @@
+import { FriendInfo } from "./FriendInfo.types"
+
 export interface UserInfo {
   id: string
   username: string
@@ -6,7 +8,7 @@ export interface UserInfo {
   name?: string
   email?: string
 
-  friend_list?: Object[]
+  friend_list?: FriendInfo[]
 
   is_admin?: boolean
   is_banned?: boolean

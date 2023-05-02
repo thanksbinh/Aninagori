@@ -2,9 +2,9 @@
 
 /* eslint-disable @next/next/no-img-element */
 import { useState, useEffect, useRef } from "react"
-import { VideoComponent } from "../Video"
+import { VideoComponent } from "./Video"
 import classNames from "classnames/bind"
-import styles from "../PostContent.module.scss"
+import styles from "../post/PostContent.module.scss"
 import MediaFullView from "./MediaFullView"
 import { Slide, SlideshowRef } from "react-slideshow-image"
 import { TiArrowLeft } from "@react-icons/all-files/ti/TiArrowLeft"

@@ -1,21 +1,12 @@
 'use client'
 
-import { Dispatch, SetStateAction } from "react";
-import { formatDuration } from "@/components/utils/formatData";
-import { collection, doc, getDoc, Timestamp } from "firebase/firestore";
-import { db } from "@/firebase/firebase-app";
 import { findOldLastMessage, updateStatus } from "@/components/chat/ChatNoti";
+import { formatDuration } from "@/components/utils/formatData";
+import { db } from "@/firebase/firebase-app";
+import { FriendInfo } from "@/global/FriendInfo.types";
 import { UserInfo } from "@/global/UserInfo.types";
-
-export interface Friend {
-  username: string
-  image: string
-  anime_status?: {
-    status: string
-    updated_at: Timestamp
-    title: string
-  }
-}
+import { collection, doc, getDoc } from "firebase/firestore";
+import { Dispatch, SetStateAction } from "react";
 
 const statusTextColor = new Map([
   ['completed', 'text-blue-400'],
@@ -26,7 +17,7 @@ const statusTextColor = new Map([
 
 const FriendComponent = ({ friendInfo, openChat, setCurrentChat, myUserInfo }:
   {
-    friendInfo: Friend,
+    friendInfo: FriendInfo,
     openChat: () => void,
     setCurrentChat: Dispatch<SetStateAction<{
       username: string;
@@ -90,7 +81,7 @@ const FriendComponent = ({ friendInfo, openChat, setCurrentChat, myUserInfo }:
           {!!friendInfo.anime_status &&
             <p className={`flex gap-1 text-sm ${statusTextColor.get(friendInfo.anime_status.status)}`}>
               <span className="max-w-[180px] truncate block"> {friendInfo.anime_status.title} </span>
-              <span className="text-gray-400 flex-shrink-0"> — {formatDuration(new Date().getTime() - new Date(friendInfo.anime_status.updated_at.seconds * 1000).getTime(), true)} </span>
+              <span className="text-gray-400 flex-shrink-0"> — {formatDuration(new Date().getTime() - friendInfo.anime_status.updated_at.getTime(), true)} </span>
             </p>
           }
         </div>

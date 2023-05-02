@@ -1,10 +1,10 @@
 'use client'
 
 import { db } from '@/firebase/firebase-app';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { loginFields } from "../constants/formFields";
 import FormAction from "./FormAction";
 import FormExtra from "./FormExtra";
@@ -12,7 +12,7 @@ import Input from "./Input";
 import SignInWithGoogle from './SignInWithGoogle';
 
 const fields = loginFields;
-let fieldsState = {} as any;
+let fieldsState: any = {};
 fields.forEach(field => fieldsState[field.id] = '');
 
 export default function Login() {
@@ -21,11 +21,11 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLoginState({ ...loginState, [e.target.id]: e.target.value })
   }
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     authenticateUser();
   }

@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import PostForm from "@/app/(home)/components/postForm/PostForm"
 import * as apiServices from "@/app/api/apiServices/apiServicesConfig"
 import AnimeFavorite from "@/app/user/[user_name]/profileComponent/AnimeFavorite/AnimeFavorite"
 import AnimeStatus from "@/app/user/[user_name]/profileComponent/AnimeStatus/AnimeStatus"
@@ -70,16 +69,6 @@ async function Profile({ params }: { params: { user_name: string } }) {
             )}
           </div>
           <div className={cx("post-section")}>
-            {/* {isAdmin && (
-              <div className="-mt-4">
-                <PostForm
-                  avatarUrl={adminData.image}
-                  username={guessData.name || guessData.username}
-                  isBanned={!!adminData.is_banned}
-                  malAuthCode={adminData?.mal_connect?.accessToken}
-                />
-              </div>
-            )} */}
             <ProfilePosts myUserInfo={adminData} profileUsername={guessData.username} />
           </div>
         </div>

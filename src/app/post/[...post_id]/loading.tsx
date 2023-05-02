@@ -1,4 +1,4 @@
-import PostAction from "./components/post/PostAction";
+import PostActions from "./components/actions/PostActions";
 import PostContent from "./components/post/PostContent";
 
 export default function loading() {
@@ -7,7 +7,7 @@ export default function loading() {
       <div className="flex flex-col lg:w-2/5 w-3/5 mt-8 mb-2">
         <div className="animate-pulse mb-4">
           <PostContent />
-          <PostAction />
+          <PostActions />
         </div>
       </div>
     </div>

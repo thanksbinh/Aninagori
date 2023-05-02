@@ -1,12 +1,13 @@
 'use client'
 
-import FriendComponent, { Friend } from '../rightsidebar/Friend';
+import { FriendInfo } from '@/global/FriendInfo.types';
+import FriendComponent from '../rightsidebar/Friend';
 import ChatPopup from '@/components/chat/ChatPopup';
 import { UserInfo } from '@/global/UserInfo.types';
 import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
 import { useState } from 'react';
 
-const FriendList = ({ myFriendList, myUserInfo }: { myFriendList: Friend[] | undefined, myUserInfo: UserInfo | undefined }) => {
+const FriendList = ({ myFriendList, myUserInfo }: { myFriendList: FriendInfo[] | undefined, myUserInfo: UserInfo | undefined }) => {
   const [showChat, setShowChat] = useState(false)
   const [currentChat, setCurrentChat] = useState({
     username: "",

@@ -7,7 +7,7 @@ interface PostContextType {
   myUserInfo: UserInfo
   content: string
   authorName: string
-  animeID?: string
+  animeID?: number
   postId: string,
   postData: any,
 }
@@ -20,7 +20,7 @@ export const PostContext = React.createContext<PostContextType>({
   },
   content: "",
   authorName: "",
-  animeID: "",
+  animeID: 0,
   postId: "",
   postData: {}
 })
@@ -37,12 +37,14 @@ export default function ContextProvider({
   myUserInfo: UserInfo
   content: string
   authorName: string
-  animeID?: string
+  animeID?: number
   postId: string
   children: React.ReactNode,
   postData: any,
 }) {
   return (
-    <PostContext.Provider value={{ myUserInfo, content, authorName, animeID, postId, postData }}>{children}</PostContext.Provider>
+    <PostContext.Provider value={{ myUserInfo, content, authorName, animeID, postId, postData }}>
+      {children}
+    </PostContext.Provider>
   )
 }
