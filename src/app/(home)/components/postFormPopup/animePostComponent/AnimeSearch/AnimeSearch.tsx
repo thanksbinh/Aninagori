@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
+import { AnimeInfo } from "@/global/AnimeInfo.types"
 import { faCaretDown, faSpinner } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import HeadlessTippy from "@tippyjs/react/headless"
@@ -8,7 +9,6 @@ import { FocusEvent, forwardRef, useContext, useEffect, useImperativeHandle, use
 import "tippy.js/dist/tippy.css"
 import { PostFormContext } from "../../../postForm/PostFormContext"
 import styles from "./AnimeSearch.module.scss"
-import { AnimeInfo } from "@/global/AnimeInfo.types"
 const cx = classNames.bind(styles)
 
 function AnimeSearch({ animeEpsRef }: any, ref: any) {
@@ -72,13 +72,20 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
     }
     setLoading(true)
 
-    if (animeData.animeID === "") {
+    if (!animeData.animeID) {
       searchAnimeName()
     } else {
       setLoading(false)
     }
 
   }, [animeData.animeID, debouncedValue])
+
+  useEffect(() => {
+    if (recentAnimeList.length && animeData.animeName != recentAnimeList[0].node.title) {
+      setAnimeDataSent({ animeName: "", animeID: "" })
+      setAnimePic("")
+    }
+  }, [animeData.animeName])
 
   // set recent anime list and select the first anime as default
   useEffect(() => {
@@ -107,7 +114,7 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
       animeID: (ele as any).node.id
     }
 
-    setAnimePic((ele as any).node.main_picture.medium)
+    setAnimePic((ele as any)?.node?.main_picture?.medium)
     setAnimeData(animeInfo)
     setAnimeDataSent(animeInfo)
     setResultBoxOpen(false)

@@ -44,7 +44,7 @@ async function fetchPostPreference(myUserInfo: UserInfo) {
   // updateLastView
   postPrefRef.set({ last_view: FieldValue.serverTimestamp() }, { merge: true })
 
-  return postPref ? JSON.parse(JSON.stringify(postPref.data())) : { last_view: 1 };
+  return postPref.exists ? JSON.parse(JSON.stringify(postPref.data())) : { last_view: 1 };
 }
 
 export default async function Home() {

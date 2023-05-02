@@ -3,15 +3,14 @@ import { FriendInfo } from "@/global/FriendInfo.types";
 import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
 
 async function updateAvatarUrl(userId: string, avatarUrl: string) {
-  const docRef = doc(db, "users", userId)
+  const userRef = doc(db, "users", userId)
+  await updateDoc(userRef, { image: avatarUrl })
 
-  const oldDoc = await getDoc(docRef)
-  const friendList = oldDoc.data()?.friend_list.map((friend: FriendInfo) => friend.username)
-
-  await Promise.all([
-    updateDoc(docRef, { image: avatarUrl }),
-    updateAvatarFriendList(oldDoc.data()?.username, friendList, avatarUrl)
-  ])
+  const userDoc = await getDoc(userRef)
+  if (userDoc.data()?.friend_list?.length) {
+    const friendList = userDoc.data()?.friend_list.map((friend: FriendInfo) => friend.username)
+    await updateAvatarFriendList(userDoc.data()?.username, friendList, avatarUrl)
+  }
 }
 
 async function updateAvatarFriendList(myUsername: string, friendList: string[], avatarUrl: string) {

@@ -26,7 +26,7 @@
 
 .result-wrapper {
   width: 322px;
-  height: 225px;
+  max-height: 225px;
   overflow-y: scroll;
   border-radius: 10px;
 }

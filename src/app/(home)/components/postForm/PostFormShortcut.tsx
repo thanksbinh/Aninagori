@@ -4,11 +4,7 @@ import { shortenString } from "@/components/utils/formatData"
 import { useContext, FC } from "react"
 import { PostFormContext } from "./PostFormContext"
 
-type Props = {
-  openFormPopup: () => void
-}
-
-const PostFormShortcut: FC<Props> = ({ openFormPopup }) => {
+const PostFormShortcut = ({ openFormPopup }: { openFormPopup: () => void }) => {
   const { recentAnimeList, setRecentAnimeList } = useContext(PostFormContext)
 
   const onClick = (index: number) => {
