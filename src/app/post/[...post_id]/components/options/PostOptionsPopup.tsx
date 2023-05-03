@@ -1,12 +1,12 @@
 'use client'
 
+import PostFormPopUp from "@/app/(home)/components/postFormPopup/PostFormPopUp";
 import { Menu, Transition } from "@headlessui/react";
-import { useRouter } from "next/navigation";
-import { useContext, useEffect, useRef, useState, Suspense } from "react";
 import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useRef, useState } from "react";
 import { PostContext } from "../../PostContext";
 import { adminOptions, authorOptions, guestOptions } from "./userTypes";
-import PostFormPopUp from "@/app/(home)/components/postFormPopup/PostFormPopUp";
 
 interface option {
   name: string,
@@ -15,9 +15,7 @@ interface option {
 
 const PostOptions = ({ editPostID }: { editPostID: any, }) => {
   const { myUserInfo, authorName, postId, postData } = useContext(PostContext)
-
   const [openEditForm, setOpenEditForm] = useState(false);
-
   const editPostRef = useRef();
 
   const ref = useRef<HTMLDivElement>(null);
@@ -53,13 +51,15 @@ const PostOptions = ({ editPostID }: { editPostID: any, }) => {
     if (option.name !== "Edit post") {
       router.refresh()
     }
-
   }
 
   return (
     <>
-      {openEditForm &&
-        <PostFormPopUp title='Save' isEditPost={true} postData={postData} ref={editPostRef} setOpen={setOpenEditForm} editPostID={editPostID} />}
+      {openEditForm && (
+        <div className="z-[35]">
+          <PostFormPopUp title='Save' postData={postData} ref={editPostRef} setOpen={setOpenEditForm} editPostID={editPostID} />
+        </div>
+      )}
 
       <Menu as="div" ref={ref} className="relative inline-block text-left z-30">
         <Menu.Button onClick={() => setIsOpen(!isOpen)}>

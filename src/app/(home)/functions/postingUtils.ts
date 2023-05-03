@@ -139,7 +139,6 @@ export async function handleSubmitForm(
   mediaType: any,
   myUserInfo: any,
   postAdditional: any,
-  isEditForm?: any,
   postID?: any,
   haveUploadedImage?: any,
 ): Promise<void> {
@@ -194,7 +193,7 @@ export async function handleSubmitForm(
   const promisePost = [] as any
 
   if (textInput || mediaUrl.length || statusConverted === "completed") {
-    if (!isEditForm) {
+    if (!postID) {
       promisePost.push(
         addDoc(collection(db, "posts"), {
           authorName: myUserInfo.username,

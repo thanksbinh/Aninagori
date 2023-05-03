@@ -15,6 +15,7 @@ export default async function NavBar({ myUserId }: { myUserId: string | undefine
         <Logo />
         <SearchBar />
       </div>
+
       {!myUserInfo ?
         <div>
           <Button small primary leftIcon={undefined} onClick={undefined} to={undefined} href={"/"} rightIcon={undefined}>
