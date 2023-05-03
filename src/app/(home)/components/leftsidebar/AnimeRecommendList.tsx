@@ -1,7 +1,6 @@
-import { UserInfo } from '@/global/UserInfo.types';
+import { AnimeInfo } from '@/global/AnimeInfo.types';
 import { AnimeComponent } from './Anime';
 import { AnimeExtend } from './AnimeExtend';
-import { AnimeInfo } from '@/global/AnimeInfo.types';
 
 async function getAnimeDetail(animeId: string, potential: number) {
   try {
@@ -18,7 +17,7 @@ async function getAnimeDetail(animeId: string, potential: number) {
   }
 }
 
-export default async function AnimeRecommendList({ myUserInfo, potentialAnimes, myAnimeList }: { myUserInfo: UserInfo, potentialAnimes: any, myAnimeList: any }) {
+export default async function AnimeRecommendList({ potentialAnimes, myAnimeList }: { potentialAnimes: any, myAnimeList: any }) {
   const myAnimeIds = myAnimeList?.animeList?.map((anime: AnimeInfo) => {
     if (["completed", "watching", "plan_to_watch"].includes(anime.list_status.status)) return anime.node.id
   }) || []
@@ -38,8 +37,8 @@ export default async function AnimeRecommendList({ myUserInfo, potentialAnimes, 
       <div className="h-full overflow-y-auto flex flex-col flex-wrap">
         {!!recommendAnimeDetails && recommendAnimeDetails.length ? (
           <div>
-            <AnimeComponent myUserInfo={myUserInfo} anime={recommendAnimeDetails[0]} />
-            <AnimeExtend myUserInfo={myUserInfo} animeDetails={recommendAnimeDetails.slice(1)} />
+            <AnimeComponent anime={recommendAnimeDetails[0]} />
+            <AnimeExtend animeDetails={recommendAnimeDetails.slice(1)} />
           </div>
         ) : (
           <div>

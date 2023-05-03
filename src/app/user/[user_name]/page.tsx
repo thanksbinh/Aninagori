@@ -88,7 +88,7 @@ async function AnimeComponent({ mal_username, access_token }: { mal_username: st
       {/* @ts-expect-error Server Component */}
       <AnimeUpdate data={data.data} />
       <AnimeStatus statusData={anime_status.anime_statistics} />
-      <AnimeFavorite favorite_data={user_favorite.data.data.favorites} />
+      <AnimeFavorite favorite_data={user_favorite.data.data?.favorites} />
     </>
   )
 }

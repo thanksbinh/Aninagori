@@ -66,7 +66,7 @@ export default async function Home() {
         <div className="xl:block xl:flex-1 flex-shrink max-w-[320px]">
           <div className="hidden xl:block w-[320px] py-16 px-2 h-full fixed left-0 z-20 bg-ani-black">
             {/* @ts-expect-error Server Component */}
-            <AnimeRecommendList myUserInfo={myUserInfo} potentialAnimes={postPreference.animeList} myAnimeList={myAnimeList} />
+            <AnimeRecommendList potentialAnimes={postPreference.animeList} myAnimeList={myAnimeList} />
           </div>
         </div>
 
