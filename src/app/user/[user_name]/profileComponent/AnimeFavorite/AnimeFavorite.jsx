@@ -5,7 +5,7 @@ import styles from "./AnimeFavorite.module.scss"
 const cx = classNames.bind(styles)
 
 function AnimeFavorite({ favorite_data }) {
-  return (
+  return favorite_data && (
     <StatusWrapper title="Favourite">
       {!!favorite_data.anime && (
         <>
