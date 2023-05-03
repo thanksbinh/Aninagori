@@ -10,14 +10,21 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: (theme) => ({
-        'login-bg': "url('/wallpaper.png')",
-      }),
+      keyframes: {
+        wiggle: {
+          "0%, 100%": { transform: "translateY(0) rotate(2deg)" },
+          "50%": { transform: "translateY(-40%) rotate(-2deg)" }
+        }
+      },
+      animation: {
+        wiggle: "wiggle 200ms ease-in-out"
+      },
       colors: {
         'ani-black': '#191c21',
         'ani-light-gray': '#373c47',
         'ani-gray': '#212733',
-        'ani-text-main': '#ffffff'
+        'ani-text-white': '#ffffff',
+        'ani-text-gray': '#9ca3af',
       },
     },
   },

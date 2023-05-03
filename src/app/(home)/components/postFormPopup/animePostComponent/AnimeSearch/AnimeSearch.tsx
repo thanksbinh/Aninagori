@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
+import { AnimeInfo } from "@/global/AnimeInfo.types"
 import { faCaretDown, faSpinner } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import HeadlessTippy from "@tippyjs/react/headless"
@@ -13,7 +14,7 @@ const cx = classNames.bind(styles)
 function AnimeSearch({ animeEpsRef }: any, ref: any) {
   const { recentAnimeList, setRecentAnimeList } = useContext(PostFormContext)
 
-  const [searchResult, setSearchResult] = useState([])
+  const [searchResult, setSearchResult] = useState<AnimeInfo[]>([])
   const [loading, setLoading] = useState(false)
   const [animePic, setAnimePic] = useState("")
   const [animeData, setAnimeData] = useState({ animeName: "", animeID: "" })
@@ -71,7 +72,7 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
     }
     setLoading(true)
 
-    if (animeData.animeID === "") {
+    if (!animeData.animeID) {
       searchAnimeName()
     } else {
       setLoading(false)
@@ -79,9 +80,16 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
 
   }, [animeData.animeID, debouncedValue])
 
+  useEffect(() => {
+    if (recentAnimeList.length && animeData.animeName != recentAnimeList[0].node.title) {
+      setAnimeDataSent({ animeName: "", animeID: "" })
+      setAnimePic("")
+    }
+  }, [animeData.animeName])
+
   // set recent anime list and select the first anime as default
   useEffect(() => {
-    if (!recentAnimeList.length || recentAnimeList[0].node.id == animeData.animeID) return;
+    if (!recentAnimeList.length || recentAnimeList[0].node.id == (animeData.animeID as any)) return;
 
     setSearchResult(recentAnimeList)
     onSelectAnime(recentAnimeList[0])
@@ -106,7 +114,7 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
       animeID: (ele as any).node.id
     }
 
-    setAnimePic((ele as any).node.main_picture.medium)
+    setAnimePic((ele as any)?.node?.main_picture?.medium)
     setAnimeData(animeInfo)
     setAnimeDataSent(animeInfo)
     setResultBoxOpen(false)

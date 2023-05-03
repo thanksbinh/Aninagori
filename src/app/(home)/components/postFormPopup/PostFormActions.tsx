@@ -14,7 +14,7 @@ function PostFormActions({
     loadPosting: boolean
     setBasicPostingInfo: any
     isUpdatePost: boolean,
-    title: any,
+    title: string,
     haveUploadedImage: any,
     setHaveUploadedImage: any,
 }) {

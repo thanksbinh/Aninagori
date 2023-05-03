@@ -1,14 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
+import Avatar from "@/components/avatar/Avatar"
+import classNames from "classnames/bind"
 import Link from "next/link"
 import { FC } from "react"
-import classNames from "classnames/bind"
-import styles from "./PostContent.module.scss"
-import "tippy.js/dist/tippy.css"
-import Avatar from "@/components/avatar/Avatar"
-import PostOptions from "../option/PostOptionsPopup"
 import "react-slideshow-image/dist/styles.css"
+import "tippy.js/dist/tippy.css"
 import AnimeName from "../animeName/AnimeName"
-import PostContentMedia from "./postMedia/PostContentMedia"
+import PostContentMedia from "../media/PostContentMedia"
+import PostOptions from "../options/PostOptionsPopup"
+import styles from "./PostContent.module.scss"
 const cx = classNames.bind(styles)
 
 type PostStaticProps = {
@@ -16,7 +16,7 @@ type PostStaticProps = {
   avatarUrl?: string
   timestamp?: string
   content?: string
-  imageUrl?: string
+  imageUrl?: string | string[]
   videoUrl?: string
   animeID?: number
   animeName?: string
@@ -58,7 +58,7 @@ const PostContent: FC<PostStaticProps> = ({
                 {authorName}
               </Link>
               <p className={cx("watch-status")}>{watchingProgress}</p>
-              <AnimeName animeName={animeName} animeID={animeID as any} seen={episodesSeen} total={episodesTotal} />
+              <AnimeName animeName={animeName} animeID={animeID as string} seen={episodesSeen} total={episodesTotal} />
               <div className={cx("post-option")}>
                 <PostOptions editPostID={postId} />
               </div>
@@ -90,7 +90,7 @@ const PostContent: FC<PostStaticProps> = ({
   )
 }
 
-function PostTag({ children }: { children: any }) {
+function PostTag({ children }: { children: React.ReactNode }) {
   return <div className={cx("tag")}>{children}</div>
 }
 

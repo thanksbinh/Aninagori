@@ -1,38 +1,154 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 
-## Getting Started
+<a name="readme-top"></a>
 
-First, run the development server:
+<!--
+*** Thanks for checking out the Best-README-Template. If you have a suggestion
+*** that would make this better, please fork the repo and create a pull request
+*** or simply open an issue with the tag "enhancement".
+*** Don't forget to give the project a star!
+*** Thanks again! Now go create something AMAZING! :D
+-->
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+<!-- PROJECT SHIELDS -->
+<!--
+*** I'm using markdown "reference style" links for readability.
+*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+*** See the bottom of this document for the declaration of the reference variables
+*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
+*** https://www.markdownguide.org/basic-syntax/#reference-style-links
+-->
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/lethanksbinh/Aninagori">
+    <img src="public/favicon.ico" alt="Logo" width="80" height="80">
+  </a>
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+<h3 align="center">Aninagori</h3>
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+  <p align="center">
+    Share your favorite Animemory with friends!
+    <br />
+    <a href="https://github.com/lethanksbinh/Aninagori"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://aninagori.vercel.app/">View Demo</a>
+    ·
+    <a href="https://github.com/lethanksbinh/Aninagori/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/lethanksbinh/Aninagori/issues">Request Feature</a>
+  </p>
+</div>
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <!-- <li><a href="#usage">Usage</a></li> -->
+    <!-- <li><a href="#roadmap">Roadmap</a></li> -->
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
 
-## Learn More
+<!-- ABOUT THE PROJECT -->
 
-To learn more about Next.js, take a look at the following resources:
+## About The Project
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Aninagori is an innovative platform designed for anime enthusiasts to store and share their cherished moments in anime, as well as to discover new anime titles to watch. Our community welcomes everyone to join and explore the world of anime together.
 
-## Deploy on Vercel
+### Built With
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+- ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+- ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+- ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
+- ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+<!-- USAGE EXAMPLES -->
+
+<!-- ## Usage
+
+Use this space to show useful examples of how a project can be used.
+
+_For more examples, please refer to the [Documentation](https://example.com)_
+
+<!-- ROADMAP -->
+
+<!-- ## Roadmap
+
+- [ ] Feature 1
+- [ ] Feature 2
+- [ ] Feature 3
+  - [ ] Nested Feature
+
+See the [open issues](https://github.com/lethanksbinh/Aninagori/issues) for a full list of proposed features (and known issues).
+
+<!-- CONTRIBUTING -->
+
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<!-- LICENSE -->
+
+## License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+<!-- CONTACT -->
+
+## Contact
+
+Stix Helix Team: 
+- Lê Thanh Bình - lethanhbinh6203@gmail.com
+- Nguyễn Thành Dũng - dungln1234@daibee.edu.vn
+- Trần Tuấn Anh - tuananhniichan@gmail.com
+
+Project Link: [https://github.com/lethanksbinh/Aninagori](https://github.com/lethanksbinh/Aninagori)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[contributors-shield]: https://img.shields.io/github/contributors/lethanksbinh/Aninagori.svg?style=for-the-badge
+[contributors-url]: https://github.com/lethanksbinh/Aninagori/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/lethanksbinh/Aninagori.svg?style=for-the-badge
+[forks-url]: https://github.com/lethanksbinh/Aninagori/network/members
+[stars-shield]: https://img.shields.io/github/stars/lethanksbinh/Aninagori.svg?style=for-the-badge
+[stars-url]: https://github.com/lethanksbinh/Aninagori/stargazers
+[issues-shield]: https://img.shields.io/github/issues/lethanksbinh/Aninagori.svg?style=for-the-badge
+[issues-url]: https://github.com/lethanksbinh/Aninagori/issues
+[license-shield]: https://img.shields.io/github/license/lethanksbinh/Aninagori.svg?style=for-the-badge
+[license-url]: https://github.com/lethanksbinh/Aninagori/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/bình-lê-42b40a251
+[product-screenshot]: images/screenshot.png

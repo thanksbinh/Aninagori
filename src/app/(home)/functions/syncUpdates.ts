@@ -1,20 +1,10 @@
 import { db } from "@/firebase/firebase-app"
+import { FriendInfo } from "@/global/FriendInfo.types"
 import { UserInfo } from "@/global/UserInfo.types"
-import {
-  arrayRemove,
-  arrayUnion,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-  writeBatch
-} from "firebase/firestore"
+import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, query, where, writeBatch } from "firebase/firestore"
 
-async function getFriendList(myUserInfo: UserInfo): Promise<string[]> {
-  const userDoc = doc(db, "users", myUserInfo.id)
-  const snapshot = await getDoc(userDoc)
+async function getFriendList(myUserInfo: UserInfo): Promise<FriendInfo[]> {
+  const snapshot = await getDoc(doc(db, "users", myUserInfo.id))
   const friendList = snapshot.data()?.friend_list?.reverse()
   return friendList ? JSON.parse(JSON.stringify(friendList)) : []
 }
@@ -24,7 +14,7 @@ export async function updateStatusOnFriendLists(myUserInfo: UserInfo, postAnimeD
 
   const myFriendList = await getFriendList(myUserInfo)
 
-  const friendsDocsPromises = myFriendList.map((friend: any) => {
+  const friendsDocsPromises = myFriendList.map((friend: FriendInfo) => {
     const docQuery = query(collection(db, "users"), where("username", "==", friend.username))
     return getDocs(docQuery)
   })
@@ -33,7 +23,7 @@ export async function updateStatusOnFriendLists(myUserInfo: UserInfo, postAnimeD
   const updatePromises = friendsDocs.map((friendDoc: any) => {
     if (!friendDoc.empty) {
       const docRef = friendDoc.docs[0].ref
-      const oldInfo = friendDoc.docs[0].data().friend_list?.find((info: any) => info.username === myUserInfo.username)
+      const oldInfo = friendDoc.docs[0].data().friend_list?.find((info: FriendInfo) => info.username === myUserInfo.username)
 
       if (!oldInfo) return
       const batch = writeBatch(db)

@@ -1,9 +1,9 @@
 'use client'
 
-import { AnimeComponent } from "./Anime"
 import { useState } from "react"
+import { AnimeComponent } from "./Anime"
 
-export function AnimeExtend({ animeDetails, myUserInfo }: { animeDetails: any, myUserInfo: any }) {
+export function AnimeExtend({ animeDetails }: { animeDetails: any }) {
   const [extend, setExtend] = useState(false)
 
   return (
@@ -17,7 +17,7 @@ export function AnimeExtend({ animeDetails, myUserInfo }: { animeDetails: any, m
       {extend && animeDetails.map((anime: any) =>
         anime.id && (
           <div key={anime.id}>
-            <AnimeComponent myUserInfo={myUserInfo} anime={anime} />
+            <AnimeComponent anime={anime} />
           </div>
         )
       )}

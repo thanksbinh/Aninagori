@@ -2,18 +2,18 @@ import Avatar from "@/components/avatar/Avatar";
 import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
 import { PostContext } from "../../PostContext";
-import { sentReaction, sentReactionReply } from "../reaction/doReaction";
-import { CommentProps } from "./Comment.types";
+import { sentReaction, sentReactionReply } from "../actions/doReaction";
 import CommentForm from "./CommentForm";
+import { CommentInfo } from "@/global/Post.types";
 
-const Comment = ({ comment, focused, onParentReply }: { comment: CommentProps, focused?: string, onParentReply?: any }) => {
+const Comment = ({ comment, focused, onParentReply }: { comment: CommentInfo, focused?: string, onParentReply?: any }) => {
   const { myUserInfo, postId } = useContext(PostContext)
 
   const [reactionToggle, setReactionToggle] = useState(false)
   const [reactions, setReactions] = useState(comment.reactions || [])
 
-  const [replies, setReplies] = useState<CommentProps[]>([])
-  const [lastReply, setLastReply] = useState<CommentProps>()
+  const [replies, setReplies] = useState<CommentInfo[]>([])
+  const [lastReply, setLastReply] = useState<CommentInfo>()
 
   const [openReplyForm, setOpenReplyForm] = useState(false)
   const [taggedUser, setTaggedUser] = useState("")
@@ -37,7 +37,7 @@ const Comment = ({ comment, focused, onParentReply }: { comment: CommentProps, f
   useEffect(() => {
     if (!comment.reactions) return;
 
-    setReactionToggle(comment.reactions.some((e: any) => e.username === myUserInfo.username))
+    setReactionToggle(comment.reactions.some((e) => e.username === myUserInfo.username))
     setReactions(comment.reactions)
   }, [comment.reactions])
 
@@ -108,7 +108,7 @@ const Comment = ({ comment, focused, onParentReply }: { comment: CommentProps, f
   return (
     <div ref={ref} className="flex flex-col mt-4">
       {/* Comment content */}
-      <div className="flex justify-between text-ani-text-main">
+      <div className="flex justify-between text-ani-text-white">
         <Link href={"/user/" + comment!.username} className="min-w-fit"><Avatar imageUrl={comment!.avatarUrl} altText={comment!.username} size={8} /></Link>
         <div className={`rounded-2xl py-2 px-4 ml-2 w-full focus:outline-none caret-white transition-colors duration-300 ease-out ${focusingType === "comment" ? "bg-gray-600" : "bg-ani-light-gray"}`}>
           <Link href={"/user/" + comment!.username} className="text-sm font-bold">{comment!.username}</Link>

@@ -4,7 +4,7 @@ import { signIn } from 'next-auth/react';
 import { loginFields } from "../constants/formFields";
 
 const fields = loginFields;
-let fieldsState = {} as any;
+let fieldsState: any = {};
 fields.forEach(field => fieldsState[field.id] = '');
 
 export default function SignInWithGoogle() {

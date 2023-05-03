@@ -1,10 +1,10 @@
 'use client'
 
 import { db } from '@/firebase/firebase-app';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { loginFields } from "../constants/formFields";
 import FormAction from "./FormAction";
 import FormExtra from "./FormExtra";
@@ -12,21 +12,20 @@ import Input from "./Input";
 import SignInWithGoogle from './SignInWithGoogle';
 
 const fields = loginFields;
-let fieldsState = {} as any;
+let fieldsState: any = {};
 fields.forEach(field => fieldsState[field.id] = '');
 
 export default function Login() {
   const [loginState, setLoginState] = useState(fieldsState);
-
   const [loginFail, setLoginFail] = useState(false)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLoginState({ ...loginState, [e.target.id]: e.target.value })
   }
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     authenticateUser();
   }
@@ -34,33 +33,31 @@ export default function Login() {
   //Handle Login API Integration here
   const authenticateUser = async () => {
     setLoading(true);
-    let res = await signIn('credentials', {
-      email: loginState.email_username,
+    let userEmail = loginState.email_username;
+
+    if (!loginState.email_username.includes('@')) {
+      const usernameQuery = query(collection(db, "users"), where("username", "==", loginState.email_username))
+      const querySnapshot = await getDocs(usernameQuery)
+
+      if (!querySnapshot.empty) userEmail = querySnapshot.docs[0].data().email
+    }
+
+    const res = await signIn('credentials', {
+      email: userEmail,
       password: loginState.password,
       redirect: false
     });
 
-    if (!res?.ok) {
-      const usersRef = collection(db, "users")
-      const usernameQuery = query(usersRef, where("username", "==", loginState.email_username))
-      const querySnapshot = await getDocs(usernameQuery)
-
-      if (querySnapshot.docs.length) {
-        res = await signIn('credentials', {
-          email: querySnapshot.docs[0].data().email,
-          password: loginState.password,
-          redirect: false
-        });
-      }
-    }
-
-    setLoading(false)
     if (res?.ok) {
       setLoginFail(false)
-      router.push("/")
+
       router.refresh()
-    } else {
+      router.push("/")
+    }
+    else {
+      setLoading(false)
       setLoginFail(true)
+
       setTimeout(() => {
         setLoginFail(false)
       }, 500)

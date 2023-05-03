@@ -2,7 +2,7 @@
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import classNames from "classnames/bind"
-import { useCallback, forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState, memo } from "react"
+import { useCallback, forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState, memo, FormEvent } from "react"
 import styles from "../postForm/PostForm.module.scss"
 
 import { handleDeleteMedia, handleMediaChange, handlePaste, handleSubmitForm, showEditInformation } from "@/app/(home)/functions/postingUtils"
@@ -20,9 +20,16 @@ import PostFormMediaDisplay from "./PostFormMediaDisplay"
 
 const cx = classNames.bind(styles)
 
-const PostFormPopUp = (props: any, ref: any) => {
+interface PostFormPopUpProps {
+  setOpen: any,
+  title: string,
+  isEditPost: boolean,
+  editPostID?: string,
+  postData?: any,
+}
+
+const PostFormPopUp = ({ setOpen, title, isEditPost, editPostID, postData }: PostFormPopUpProps, ref: any) => {
   const { myUserInfo } = useContext(HomeContext)
-  const { setOpen, title, isEditPost, editPostID, postData } = props
 
   const [mediaUrl, setMediaUrl] = useState<any>([])
   const [mediaType, setMediaType] = useState<string>("")
@@ -91,7 +98,7 @@ const PostFormPopUp = (props: any, ref: any) => {
     setOpen(false)
   }
 
-  async function handleSubmit(e: any) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoadPosting(true)
 
@@ -157,7 +164,7 @@ const PostFormPopUp = (props: any, ref: any) => {
           <AnimeTag ref={animeTagRef} />
 
           <div>
-            <div onClick={() => { setBasicPostingInfo(!basicPostingInfo) }} className="whitespace-nowrap ml-2 my-3 text-ani-text-main cursor-pointer font-bold underline text-sm opacity-80 hover:opacity-100">
+            <div onClick={() => { setBasicPostingInfo(!basicPostingInfo) }} className="whitespace-nowrap ml-2 my-3 text-ani-text-white cursor-pointer font-bold underline text-sm opacity-80 hover:opacity-100">
               {basicPostingInfo ? "More details..." : "Fewer details..."}
             </div>
             <div className={basicPostingInfo ? "hidden" : "flex"}>

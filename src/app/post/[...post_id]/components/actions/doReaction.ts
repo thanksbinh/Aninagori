@@ -1,9 +1,11 @@
-import { shortenString } from '@/components/utils/format';
+import { shortenString } from '@/components/utils/formatData';
 import { db } from '@/firebase/firebase-app';
+import { CommentInfo } from '@/global/Post.types';
+import { ReactionInfo } from '@/global/Post.types';
 import { UserInfo } from '@/global/UserInfo.types';
 import { doc, updateDoc, arrayUnion, arrayRemove, Timestamp, getDoc } from 'firebase/firestore';
 
-async function updateAnimePreference(myUserInfo: UserInfo, animeID: string | undefined, hasReaction: boolean) {
+async function updateAnimePreference(myUserInfo: UserInfo, animeID: number | undefined, hasReaction: boolean) {
   if (!animeID || !myUserInfo.id) return;
 
   const docRef = doc(db, 'postPreferences', myUserInfo.username);
@@ -39,7 +41,7 @@ async function updateAnimePreference(myUserInfo: UserInfo, animeID: string | und
   }
 }
 
-async function sentReactionOnPost(myUserInfo: UserInfo, myReaction: any, reactionToggle: boolean, authorName: string, content: string, postId: string, reactions2: Object[], commentId?: string) {
+async function sentReactionOnPost(myUserInfo: UserInfo, myReaction: ReactionInfo, reactionToggle: boolean, authorName: string, content: string, postId: string, reactions2: ReactionInfo[], commentId?: string) {
   const docRef = commentId ?
     doc(db, 'posts', postId, 'comments', commentId) :
     doc(db, 'posts', postId)
@@ -51,7 +53,7 @@ async function sentReactionOnPost(myUserInfo: UserInfo, myReaction: any, reactio
     if (myUserInfo.username != authorName)
       notifyReaction(myUserInfo, authorName, content, postId, commentId)
   } else {
-    const currentReaction = reactions2.find((e: any) => e.username === myUserInfo.username) as any
+    const currentReaction = reactions2.find((e) => e.username === myUserInfo.username) as ReactionInfo
 
     if (currentReaction?.type === myReaction.type) {
       await updateDoc(docRef, {
@@ -69,7 +71,7 @@ async function sentReactionOnPost(myUserInfo: UserInfo, myReaction: any, reactio
   }
 }
 
-async function sentReaction(myUserInfo: UserInfo, myReaction: any, reactionToggle: boolean, authorName: string, content: string, postId: string, commentId?: string) {
+async function sentReaction(myUserInfo: UserInfo, myReaction: ReactionInfo, reactionToggle: boolean, authorName: string, content: string, postId: string, commentId?: string) {
   const docRef = commentId ?
     doc(db, 'posts', postId, 'comments', commentId) :
     doc(db, 'posts', postId)
@@ -87,7 +89,7 @@ async function sentReaction(myUserInfo: UserInfo, myReaction: any, reactionToggl
   }
 }
 
-async function sentReactionReply(myUserInfo: UserInfo, replyReactions: Object[], reactionToggle: boolean, reply: any, postId: string) {
+async function sentReactionReply(myUserInfo: UserInfo, replyReactions: Object[], reactionToggle: boolean, reply: CommentInfo, postId: string) {
   let oldReply = {
     avatarUrl: reply.avatarUrl,
     content: reply.content,
@@ -98,7 +100,7 @@ async function sentReactionReply(myUserInfo: UserInfo, replyReactions: Object[],
   if (reply.reactions)
     oldReply = { ...oldReply, reactions: reply.reactions }
 
-  const docRef = doc(db, 'posts', postId, 'comments', reply.parentId)
+  const docRef = doc(db, 'posts', postId, 'comments', reply.parentId!)
 
   if (!reactionToggle) {
     updateDoc(docRef, {
