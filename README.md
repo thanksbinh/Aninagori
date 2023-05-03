@@ -41,7 +41,7 @@
     <a href="https://github.com/lethanksbinh/Aninagori"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/lethanksbinh/Aninagori">View Demo</a>
+    <a href="https://aninagori.vercel.app/">View Demo</a>
     ·
     <a href="https://github.com/lethanksbinh/Aninagori/issues">Report Bug</a>
     ·
@@ -71,11 +71,9 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+<!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
 Aninagori is an innovative platform designed for anime enthusiasts to store and share their cherished moments in anime, as well as to discover new anime titles to watch. Our community welcomes everyone to join and explore the world of anime together.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
 
@@ -85,8 +83,6 @@ Aninagori is an innovative platform designed for anime enthusiasts to store and 
 - ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
 - ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- USAGE EXAMPLES -->
 
 <!-- ## Usage
@@ -94,8 +90,6 @@ Aninagori is an innovative platform designed for anime enthusiasts to store and 
 Use this space to show useful examples of how a project can be used.
 
 _For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p> -->
 
 <!-- ROADMAP -->
 
@@ -107,8 +101,6 @@ _For more examples, please refer to the [Documentation](https://example.com)_
   - [ ] Nested Feature
 
 See the [open issues](https://github.com/lethanksbinh/Aninagori/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p> -->
 
 <!-- CONTRIBUTING -->
 
@@ -125,21 +117,20 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- LICENSE -->
 
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- CONTACT -->
 
 ## Contact
 
-Project Lead - lethanhbinh6203@gmail.com
+Stix Helix Team: 
+- Lê Thanh Bình - lethanhbinh6203@gmail.com
+- Nguyễn Thành Dũng - dungln1234@daibee.edu.vn
+- Trần Tuấn Anh - tuananhniichan@gmail.com
 
 Project Link: [https://github.com/lethanksbinh/Aninagori](https://github.com/lethanksbinh/Aninagori)
 
