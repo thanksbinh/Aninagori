@@ -1,3 +1,4 @@
+import { AnimeInfo } from "./AnimeInfo.types"
 import { FriendInfo } from "./FriendInfo.types"
 
 export interface UserInfo {
@@ -9,6 +10,7 @@ export interface UserInfo {
   email?: string
 
   friend_list?: FriendInfo[]
+  myAnimeList?: AnimeInfo[]
 
   is_admin?: boolean
   is_banned?: boolean

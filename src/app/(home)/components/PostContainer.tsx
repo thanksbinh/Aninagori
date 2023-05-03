@@ -177,7 +177,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
                     episodesSeen={post?.post_anime_data?.episodes_seen}
                     episodesTotal={post?.post_anime_data?.total_episodes}
                     score={post?.post_anime_data?.score}
-                    tag={!!post?.post_anime_data?.tag ? post?.post_anime_data?.tag : post?.tag}
+                    tag={post?.tag?.filter((tag: string) => !(post?.post_anime_data?.my_status === "completed" && tag === "Spoiler"))}
                     postId={post.id}
                   />
                   <PostActions

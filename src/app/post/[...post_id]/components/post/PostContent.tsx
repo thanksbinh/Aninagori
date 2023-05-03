@@ -76,11 +76,13 @@ const PostContent: FC<PostStaticProps> = ({
           <PostOptions editPostID={postId} />
         </div>
       </div>
+
       <div className={cx("tag-wrapper")}>
         {tag.map((data: any, indexTag: any) => {
           return <PostTag key={indexTag}>#{data}</PostTag>
         })}
       </div>
+
       <div className="relative flex flex-col -mx-4">
         {!!content && <p className="text-lg mx-2 mt-3 mb-2 text-[#dddede] px-4">{content}</p>}
         {(!!imageUrl || !!videoUrl) && <PostContentMedia postId={postId} tag={tag} imageUrl={imageUrl} videoUrl={videoUrl} />}
