@@ -61,15 +61,18 @@ async function fetchComments(postId: string): Promise<CommentInfo[]> {
 async function Post({ params }: { params: { post_id: string[] } }) {
   const session = await getServerSession(authOptions)
   const myUserId = (session as any)?.user?.id
-  const myUserInfo = await getUserInfo(myUserId) || { username: "", id: "", image: "" }
+  const myUserInfo = await getUserInfo(myUserId) || { username: "guess", id: "", image: "" }
 
-  const [post, fetchedComments, myAnimeList] = await Promise.all([
+  const [post, fetchedComments, myAnimeStatus] = await Promise.all([
     fetchPost(params.post_id[0]),
     fetchComments(params.post_id[0]),
-    getDoc(doc(db, "myAnimeList", myUserInfo.username)).then(doc => doc.data()?.animeList)
+    getDoc(doc(db, "myAnimeList", myUserInfo.username))
+      .then(doc =>
+        doc.data()?.myAnimeList?.find((anime: AnimeInfo) =>
+          anime.node.id === post.post_anime_data?.anime_id
+        )?.list_status.status
+      )
   ])
-
-  const myAnimeStatus = myAnimeList?.find((anime: AnimeInfo) => anime.node.id === post.post_anime_data?.anime_id)?.list_status.status
 
   return (
     <div className='flex justify-center pt-10'>
