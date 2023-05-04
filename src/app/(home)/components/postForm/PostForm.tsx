@@ -48,7 +48,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
 
   return (
     <PostFormContext.Provider value={{ recentAnimeList, setRecentAnimeList }} >
-      {open && <PostFormPopUp isEditPost={false} title='Share' setOpen={setOpen} />}
+      {open && <PostFormPopUp title='Share' setOpen={setOpen} />}
       <div className="flex flex-col flex-shrink-0 bg-ani-gray rounded-2xl px-4 my-4">
         <div className="flex justify-between items-center mt-4">
           <Avatar imageUrl={myUserInfo.image} altText={myUserInfo.username} size={8} />
