@@ -23,7 +23,7 @@ const reactionList: ReactionItem[] = [
 ];
 
 const Reaction = ({ reactions, setReactions, showTopReaction }: { reactions: ReactionInfo[], setReactions: any, showTopReaction: boolean }) => {
-  const { myUserInfo, content, authorName, animeID, postId } = useContext(PostContext)
+  const { myUserInfo, postData } = useContext(PostContext)
 
   const [reactionToggle, setReactionToggle] = useState(reactions.some((e) => e.username === myUserInfo.username))
   const [reactionType, setReactionType] = useState(reactions.find((e) => e.username === myUserInfo.username)?.type)
@@ -63,11 +63,11 @@ const Reaction = ({ reactions, setReactions, showTopReaction }: { reactions: Rea
   }, [reactions])
 
   useEffect(() => {
-    if (!postId || !auth.currentUser) return;
+    if (!postData?.id || !auth.currentUser) return;
 
     if (visible && !read) {
       setRead(true)
-      updateAnimePreference(myUserInfo, animeID, reactionToggle)
+      updateAnimePreference(myUserInfo, postData?.post_anime_data?.anime_id, reactionToggle)
     }
   }, [visible])
 
@@ -80,8 +80,8 @@ const Reaction = ({ reactions, setReactions, showTopReaction }: { reactions: Rea
       type: type
     }
 
-    sentReactionOnPost(myUserInfo, myReaction, reactionToggle, authorName, content, postId, reactions)
-    updateAnimePreference(myUserInfo, animeID, !reactionToggle)
+    sentReactionOnPost(myUserInfo, myReaction, reactionToggle, postData?.authorName, postData?.content, postData?.id, reactions)
+    updateAnimePreference(myUserInfo, postData?.post_anime_data?.anime_id, !reactionToggle)
 
     let newReactions = reactions.filter((e) => e.username !== myUserInfo.username);
     (!reactionToggle || (reactionType != type)) && (newReactions = [...newReactions, myReaction])

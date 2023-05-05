@@ -1,8 +1,16 @@
 import { db } from "@/firebase/firebase-app"
-import { deleteDoc, doc, getDoc, writeBatch, collection } from "firebase/firestore"
+import { deleteDoc, doc, getDoc, writeBatch, collection, arrayUnion } from "firebase/firestore"
 import { getDocs, limit, query, updateDoc, where } from "firebase/firestore"
 import { storage } from "@/firebase/firebase-app"
 import { deleteObject, ref } from "firebase/storage"
+
+export async function hidePost(postId: string, username: string) {
+  await updateDoc(doc(db, "postPreferences", username), {
+    hiddenPosts: arrayUnion(postId)
+  })
+
+  console.log("Post hidden", postId)
+}
 
 export async function moveToTrash(postId: string) {
   const postRef = doc(db, "posts", postId)

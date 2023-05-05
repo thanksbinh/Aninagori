@@ -1,15 +1,13 @@
 "use client"
 
+import { PostInfo } from "@/global/Post.types"
 import { UserInfo } from "@/global/UserInfo.types"
 import React from "react"
 
 interface PostContextType {
   myUserInfo: UserInfo
-  content: string
-  authorName: string
-  animeID?: number
-  postId: string,
   postData: any,
+  hidePost?: (postId: string) => void,
 }
 
 export const PostContext = React.createContext<PostContextType>({
@@ -18,32 +16,23 @@ export const PostContext = React.createContext<PostContextType>({
     image: "",
     id: "",
   },
-  content: "",
-  authorName: "",
-  animeID: 0,
-  postId: "",
-  postData: {}
+  postData: {},
+  hidePost: (postId: string) => { console.log("hidePost", postId) },
 })
 
 export default function ContextProvider({
   myUserInfo,
-  content,
-  authorName,
-  animeID,
-  postId,
   children,
   postData,
+  hidePost,
 }: {
   myUserInfo: UserInfo
-  content: string
-  authorName: string
-  animeID?: number
-  postId: string
   children: React.ReactNode,
-  postData: any,
+  postData: PostInfo,
+  hidePost?: (postId: string) => void,
 }) {
   return (
-    <PostContext.Provider value={{ myUserInfo, content, authorName, animeID, postId, postData }}>
+    <PostContext.Provider value={{ myUserInfo, postData, hidePost }}>
       {children}
     </PostContext.Provider>
   )

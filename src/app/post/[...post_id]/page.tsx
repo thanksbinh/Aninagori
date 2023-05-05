@@ -63,16 +63,14 @@ async function Post({ params }: { params: { post_id: string[] } }) {
   const myUserId = (session as any)?.user?.id
   const myUserInfo = await getUserInfo(myUserId) || { username: "guess", id: "", image: "" }
 
-  const [post, fetchedComments, myAnimeStatus] = await Promise.all([
+  const [post, fetchedComments, myAnimeList] = await Promise.all([
     fetchPost(params.post_id[0]),
     fetchComments(params.post_id[0]),
     getDoc(doc(db, "myAnimeList", myUserInfo.username))
-      .then(doc =>
-        doc.data()?.myAnimeList?.find((anime: AnimeInfo) =>
-          anime.node.id === post.post_anime_data?.anime_id
-        )?.list_status.status
-      )
+      .then(doc => doc.data()?.animeList)
   ])
+
+  const myAnimeStatus = myAnimeList?.find((anime: AnimeInfo) => anime.node.id === post.post_anime_data?.anime_id)?.list_status.status
 
   return (
     <div className='flex justify-center pt-10'>
@@ -80,10 +78,6 @@ async function Post({ params }: { params: { post_id: string[] } }) {
         <ContextProvider
           postData={post}
           myUserInfo={myUserInfo}
-          content={post.content || ""}
-          authorName={post.authorName}
-          animeID={post.post_anime_data?.anime_id}
-          postId={post.id}
         >
           <div className="w-full relative">
             <PostContent
@@ -103,7 +97,6 @@ async function Post({ params }: { params: { post_id: string[] } }) {
               postId={post.id}
             />
             <PostActions
-              reactions={post.reactions}
               commentCountPromise={fetchedComments.length}
               comments={fetchedComments}
               focusedComment={(params.post_id.length > 1) ? params.post_id[2] : undefined}

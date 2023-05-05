@@ -91,10 +91,6 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
         <ContextProvider
           key={post.id}
           myUserInfo={myUserInfo}
-          content={post.content}
-          authorName={post.authorName}
-          animeID={post.post_anime_data?.anime_id}
-          postId={post.id}
           postData={post}
         >
           <div className="mb-4">
@@ -115,7 +111,6 @@ export default function ProfilePosts({ myUserInfo, profileUsername }: { myUserIn
               postId={post.id}
             />
             <PostActions
-              reactions={post.reactions}
               commentCountPromise={fetchCommentCount(post.id)}
               comments={post.lastComment ? [post.lastComment] : []}
               showTopReaction={false}

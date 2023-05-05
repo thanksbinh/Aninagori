@@ -7,7 +7,7 @@ import "react-slideshow-image/dist/styles.css"
 import "tippy.js/dist/tippy.css"
 import AnimeName from "../animeName/AnimeName"
 import PostContentMedia from "../media/PostContentMedia"
-import PostOptions from "../options/PostOptionsPopup"
+import PostOptions from "../options/PostOptionsMenu"
 import styles from "./PostContent.module.scss"
 const cx = classNames.bind(styles)
 

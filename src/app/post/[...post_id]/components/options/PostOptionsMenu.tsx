@@ -14,7 +14,7 @@ interface option {
 }
 
 const PostOptions = ({ editPostID }: { editPostID: any, }) => {
-  const { myUserInfo, authorName, postId, postData } = useContext(PostContext)
+  const { myUserInfo, postData, hidePost } = useContext(PostContext)
   const [openEditForm, setOpenEditForm] = useState(false);
   const editPostRef = useRef();
 
@@ -23,7 +23,7 @@ const PostOptions = ({ editPostID }: { editPostID: any, }) => {
   const router = useRouter();
 
   const postOptions = []
-  if (myUserInfo?.username === authorName) {
+  if (myUserInfo?.username === postData?.authorName) {
     postOptions.push(...authorOptions);
   } else if (myUserInfo.is_admin) {
     postOptions.push(...adminOptions);
@@ -45,12 +45,18 @@ const PostOptions = ({ editPostID }: { editPostID: any, }) => {
   }, []);
 
   const handleOption = async (option: option) => {
-    await option.action(postId, authorName, setOpenEditForm)
+    await option.action({
+      postId: postData?.id,
+      username: myUserInfo?.username,
+      authorName: postData?.authorName,
+      setOpenEditForm
+    })
 
-    // TODO: if option is edit => not refresh
-    if (option.name !== "Edit post") {
-      router.refresh()
+    if (option.name === "Move to trash" || option.name === "Hide post") {
+      hidePost && hidePost(postData?.id)
     }
+
+    setIsOpen(false)
   }
 
   return (

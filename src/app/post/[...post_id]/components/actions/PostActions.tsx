@@ -1,8 +1,7 @@
 "use client"
 
 import Avatar from "@/components/avatar/Avatar"
-import { db } from "@/firebase/firebase-app"
-import { doc, onSnapshot } from "firebase/firestore"
+import { CommentInfo, ReactionInfo } from "@/global/Post.types"
 import { useRouter } from "next/navigation"
 import { FC, useContext, useEffect, useRef, useState } from "react"
 import { PostContext } from "../../PostContext"
@@ -12,10 +11,8 @@ import PostPopup from "../post/PostPopup"
 import Comment from "./CommentBtn"
 import PlanToWatch from "./PlanToWatchBtn"
 import Reaction from "./ReactionBtn"
-import { CommentInfo, ReactionInfo } from "@/global/Post.types"
 
 interface PostDynamicProps {
-  reactions?: ReactionInfo[]
   commentCountPromise?: Promise<number> | number
   comments?: CommentInfo[]
   focusedComment?: string
@@ -24,35 +21,21 @@ interface PostDynamicProps {
 }
 
 const PostActions: FC<PostDynamicProps> = ({
-  reactions: reactions0 = [],
   commentCountPromise = 0,
   comments: comments0 = [],
   focusedComment,
   showTopReaction,
   animeStatus
 }) => {
-  const { postId } = useContext(PostContext)
-  const [reactions, setReactions] = useState(reactions0)
+  const { postData } = useContext(PostContext)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
+
+  const [reactions, setReactions] = useState(postData?.reactions || [])
   const [commentCount, setCommentCount] = useState(0)
   const [comments, setComments] = useState<CommentInfo[]>([])
   const [lastComment, setLastComment] = useState<CommentInfo>()
   const [postExpand, setPostExpand] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const router = useRouter()
-
-  // Update post's reaction realtime
-  useEffect(() => {
-    if (!postId) return
-
-    const postRef = doc(db, "posts", postId)
-    const unsubscribe = onSnapshot(postRef, (docSnap) => {
-      setReactions(docSnap?.data()?.reactions || [])
-    })
-
-    return () => {
-      unsubscribe && unsubscribe()
-    }
-  }, [])
 
   useEffect(() => {
     async function fetchData() {

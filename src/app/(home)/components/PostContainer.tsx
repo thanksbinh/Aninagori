@@ -12,17 +12,12 @@ import { HomeContext } from "../HomeContext"
 import { fetchAllPosts, fetchFriendPosts, getAnimePreferenceScore } from "../functions/recommendPost"
 import { FriendInfo } from "@/global/FriendInfo.types"
 import { PostInfo } from "@/global/Post.types"
+import { postPreference } from "@/global/PostPreference.types"
 
 type PostsProps = {
   myFriendList: FriendInfo[]
   myAnimeList: AnimeInfo[]
-  postPreference: {
-    animeList: {
-      id: number
-      potential: number
-    },
-    last_view: any
-  }
+  postPreference: postPreference
 }
 
 async function fetchCommentCount(postId: string) {
@@ -40,6 +35,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
   const [lastKey, setLastKey] = useState<any>({})
   const [friendPostIds, setFriendPostIds] = useState<string[]>(["0"])
   const [hasMoreFriendPosts, setHasMoreFriendPosts] = useState(myFriendList?.length > 0)
+  const [hiddenPosts, setHiddenPosts] = useState<string[]>(postPreference?.hiddenPosts || [])
 
   useEffect(() => {
     const logo = document.getElementById("logo")
@@ -72,6 +68,10 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
     if (!postPreference) return fetchedPosts
 
     return fetchedPosts.filter((post: PostInfo) => {
+      if (postPreference?.hiddenPosts?.includes(post.id)) {
+        return false
+      }
+
       // isFromMe or isFromMyFriend
       if (post.authorName === myUserInfo.username || myFriendList?.find((friend: FriendInfo) => friend.username === post.authorName)) {
         return true
@@ -152,46 +152,44 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
         pullDownToRefresh={true}
         className="flex flex-col"
       >
-        {posts.map((post: PostInfo) => {
-          return (
-            <div key={post.id} className="flex justify-center mb-4">
-              <ContextProvider
-                myUserInfo={myUserInfo}
-                content={post.content}
-                authorName={post.authorName}
-                animeID={post.post_anime_data?.anime_id}
-                postId={post.id}
-                postData={post}
-              >
-                <div className="w-[72%] relative">
-                  <PostContent
-                    authorName={post.authorName}
-                    avatarUrl={post.avatarUrl}
-                    timestamp={post.timestamp}
-                    content={post.content}
-                    imageUrl={post.imageUrl}
-                    videoUrl={post.videoUrl}
-                    animeID={post?.post_anime_data?.anime_id}
-                    animeName={post?.post_anime_data?.anime_name}
-                    watchingProgress={post?.post_anime_data?.watching_progress}
-                    episodesSeen={post?.post_anime_data?.episodes_seen}
-                    episodesTotal={post?.post_anime_data?.total_episodes}
-                    score={post?.post_anime_data?.score}
-                    tag={post?.tag?.filter((tag: string) => !(post?.post_anime_data?.my_status === "completed" && tag === "Spoiler"))}
-                    postId={post.id}
-                  />
-                  <PostActions
-                    reactions={post.reactions}
-                    commentCountPromise={fetchCommentCount(post.id)}
-                    comments={post.lastComment ? [post.lastComment] : []}
-                    showTopReaction={true}
-                    animeStatus={post?.post_anime_data?.my_status}
-                  />
-                </div>
-              </ContextProvider>
-            </div>
-          )
-        })}
+        {posts
+          .filter((post: PostInfo) => !hiddenPosts.includes(post.id))
+          .map((post: PostInfo) => {
+            return (
+              <div key={post.id} className={`flex justify-center mb-4`}>
+                <ContextProvider
+                  myUserInfo={myUserInfo}
+                  postData={post}
+                  hidePost={(postId: string) => setHiddenPosts([...hiddenPosts, postId])}
+                >
+                  <div className="w-[72%] relative">
+                    <PostContent
+                      authorName={post.authorName}
+                      avatarUrl={post.avatarUrl}
+                      timestamp={post.timestamp}
+                      content={post.content}
+                      imageUrl={post.imageUrl}
+                      videoUrl={post.videoUrl}
+                      animeID={post?.post_anime_data?.anime_id}
+                      animeName={post?.post_anime_data?.anime_name}
+                      watchingProgress={post?.post_anime_data?.watching_progress}
+                      episodesSeen={post?.post_anime_data?.episodes_seen}
+                      episodesTotal={post?.post_anime_data?.total_episodes}
+                      score={post?.post_anime_data?.score}
+                      tag={post?.tag?.filter((tag: string) => !(post?.post_anime_data?.my_status === "completed" && tag === "Spoiler"))}
+                      postId={post.id}
+                    />
+                    <PostActions
+                      commentCountPromise={fetchCommentCount(post.id)}
+                      comments={post.lastComment ? [post.lastComment] : []}
+                      showTopReaction={true}
+                      animeStatus={post?.post_anime_data?.my_status}
+                    />
+                  </div>
+                </ContextProvider>
+              </div>
+            )
+          })}
       </InfiniteScroll>
     </>
   )
