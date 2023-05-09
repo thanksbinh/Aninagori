@@ -49,7 +49,7 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
     };
 
     return (
-        <div ref={ref}>
+        <div ref={ref} className='flex-shrink-0'>
             <img
                 src={myUserInfo?.image ?? '/bocchi.jpg'}
                 onError={({ currentTarget }) => {

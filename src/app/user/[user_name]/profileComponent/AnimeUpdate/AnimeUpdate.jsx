@@ -8,6 +8,7 @@ import { Img } from "../AnimeFavorite/AnimeFavorite"
 const cx = classNames.bind(styles)
 
 async function AnimeUpdate({ data }) {
+  if (!data) return null
   if (data.length !== 0) {
     const updateArr = data
     const id = updateArr.map((e) => {

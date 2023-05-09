@@ -7,7 +7,7 @@ import CommentForm from "./CommentForm";
 import { CommentInfo } from "@/global/Post.types";
 
 const Comment = ({ comment, focused, onParentReply }: { comment: CommentInfo, focused?: string, onParentReply?: any }) => {
-  const { myUserInfo, postId } = useContext(PostContext)
+  const { myUserInfo, postData } = useContext(PostContext)
 
   const [reactionToggle, setReactionToggle] = useState(false)
   const [reactions, setReactions] = useState(comment.reactions || [])
@@ -66,7 +66,7 @@ const Comment = ({ comment, focused, onParentReply }: { comment: CommentInfo, fo
       setReactions(reactions.filter(reaction => reaction.username !== myUserInfo.username))
     }
 
-    sentReaction(myUserInfo, myReaction, reactionToggle, comment.username, comment.content, postId, comment.id!)
+    sentReaction(myUserInfo, myReaction, reactionToggle, comment.username, comment.content, postData?.id, comment.id!)
     setReactionToggle(!reactionToggle)
   }
 
@@ -86,7 +86,7 @@ const Comment = ({ comment, focused, onParentReply }: { comment: CommentInfo, fo
       setReactions(replyReactions)
     }
 
-    sentReactionReply(myUserInfo, replyReactions, reactionToggle, comment, postId)
+    sentReactionReply(myUserInfo, replyReactions, reactionToggle, comment, postData?.id)
     setReactionToggle(!reactionToggle)
   }
 
@@ -126,7 +126,7 @@ const Comment = ({ comment, focused, onParentReply }: { comment: CommentInfo, fo
 
         <div onClick={() => onReplyClick(comment.username)} className="font-bold text-gray-400 hover:cursor-pointer hover:underline">Reply</div>
 
-        <Link href={"/post/" + postId + "/comment/" + (comment.id || comment.parentId + "&replies")} className="text-gray-400 hover:cursor-pointer hover:underline">{comment!.timestamp}</Link>
+        <Link href={"/post/" + postData?.id + "/comment/" + (comment.id || comment.parentId + "&replies")} className="text-gray-400 hover:cursor-pointer hover:underline">{comment!.timestamp}</Link>
       </div>
 
       {/* Replies and reply's form */}

@@ -5,7 +5,7 @@ import { convertToPercent } from "../AnimeUpdate/AnimeUpdate"
 const cx = classNames.bind(styles)
 
 function AnimeStatus({ statusData }) {
-  return (
+  return statusData && (
     <StatusWrapper title="Anime Stats">
       <div className={cx("stats-number")}>
         <p>

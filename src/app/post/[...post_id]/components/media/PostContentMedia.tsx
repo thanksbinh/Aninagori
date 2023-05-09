@@ -50,7 +50,7 @@ function PostContentMedia({
     <>
       {spoiler && (
         <>
-          <div
+          <button
             className={cx("spoiler-button")}
             onClick={() => {
               setSpoiler(false)
@@ -65,7 +65,7 @@ function PostContentMedia({
             }}
           >
             {tag.some((a: string) => a === "NSFW") ? "NSFW" : "Spoiler"}
-          </div>
+          </button>
           <div className={cx("spoiler-overlay")}></div>
         </>
       )}

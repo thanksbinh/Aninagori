@@ -9,7 +9,7 @@ import { PostContext } from "../../PostContext"
 import { AnimeInfo } from "@/global/AnimeInfo.types"
 
 const PlanToWatch = ({ animeStatus }: { animeStatus: string }) => {
-  const { myUserInfo, animeID } = useContext(PostContext)
+  const { myUserInfo, postData } = useContext(PostContext)
   const router = useRouter()
 
   const [newAnimeStatus, setNewAnimeStatus] = useState(animeStatus)
@@ -19,7 +19,7 @@ const PlanToWatch = ({ animeStatus }: { animeStatus: string }) => {
     setEffect(true)
     setNewAnimeStatus('plan_to_watch')
 
-    const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + animeID).then((res) => res.json())
+    const animeInformation = await fetch(getProductionBaseUrl() + "/api/anime/" + postData?.post_anime_data?.anime_id).then((res) => res.json())
     const animeData = {
       list_status: {
         num_episodes_watched: 0,
@@ -29,7 +29,7 @@ const PlanToWatch = ({ animeStatus }: { animeStatus: string }) => {
         is_rewatching: false,
       },
       node: {
-        id: animeID,
+        id: postData?.post_anime_data?.anime_id,
         main_picture: animeInformation.main_picture,
         title: animeInformation.title,
         num_episodes: animeInformation.num_episodes,
@@ -42,7 +42,7 @@ const PlanToWatch = ({ animeStatus }: { animeStatus: string }) => {
   }
 
   const onRemovePlanToWatch = async () => {
-    const animeData = await getDoc(doc(db, "myAnimeList", myUserInfo?.username)).then((res) => res.data()?.animeList.find((anime: AnimeInfo) => anime.node.id === animeID))
+    const animeData = await getDoc(doc(db, "myAnimeList", myUserInfo?.username)).then((res) => res.data()?.animeList.find((anime: AnimeInfo) => anime.node.id === postData?.post_anime_data?.anime_id))
 
     if (!animeData) {
       alert("too fast")
@@ -59,7 +59,7 @@ const PlanToWatch = ({ animeStatus }: { animeStatus: string }) => {
     })
   }
 
-  return !animeID ? (
+  return !postData?.post_anime_data?.anime_id ? (
     <button title="can't find this anime" className={`flex items-center space-x-1 text-gray-600 hover:cursor-default`}>
       <RiAddCircleLine className="w-5 h-5" />
       <span>Plan to Watch</span>

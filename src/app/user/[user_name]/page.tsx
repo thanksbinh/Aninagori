@@ -17,17 +17,15 @@ const cx = classNames.bind(styles)
 
 async function Profile({ params }: { params: { user_name: string } }) {
   const session = await getServerSession(authOptions)
-  // const myUserId = (session as any)?.user?.id
-  // const myUserInfo = await getUserInfo(myUserId)
-
-  // get admin information
   let adminData = {} as any
 
   if (session && !!session.user) {
     const docRef = doc(db, "users", (session.user as any).id)
     const docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
-      adminData = { ...docSnap.data(), joined_date: "", id: docSnap.id }
+      const myAnimeList = await getDoc(doc(db, "myAnimeList", docSnap.data().username))
+      const animeList = myAnimeList?.data()?.animeList
+      adminData = { ...docSnap.data(), joined_date: "", id: docSnap.id, myAnimeList: animeList }
     }
   }
 

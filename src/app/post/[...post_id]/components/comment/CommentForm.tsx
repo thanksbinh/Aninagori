@@ -11,7 +11,7 @@ interface Props {
 
 // It's actually a comment/reply form!!!
 const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
-  const { myUserInfo, authorName, content, postId } = useContext(PostContext)
+  const { myUserInfo, postData } = useContext(PostContext)
   const isReply = commentId ? true : false
 
   const [myComment, setMyComment] = useState("")
@@ -22,7 +22,7 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
     if (!myUserInfo.username) return alert("You need to login to comment")
     if (!myComment.trim()) return;
 
-    const lastComment = await sendComment(myUserInfo, myComment, authorName, content, postId)
+    const lastComment = await sendComment(myUserInfo, myComment, postData?.authorName, postData?.content, postData?.id)
     setLastComment(lastComment)
 
     setMyComment("")
@@ -34,7 +34,7 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
     if (!myUserInfo.username) return alert("You need to login to reply")
     if (!myComment.trim()) return;
 
-    const lastComment = await sendReply(myUserInfo, myComment, postId, commentId!)
+    const lastComment = await sendReply(myUserInfo, myComment, postData?.id, commentId!)
     setLastComment(lastComment)
 
     setMyComment("")

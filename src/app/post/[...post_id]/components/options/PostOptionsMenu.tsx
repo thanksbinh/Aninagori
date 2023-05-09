@@ -1,12 +1,12 @@
 'use client'
 
+import PostFormPopUp from "@/app/(home)/components/postFormPopup/PostFormPopUp";
 import { Menu, Transition } from "@headlessui/react";
-import { useRouter } from "next/navigation";
-import { useContext, useEffect, useRef, useState, Suspense } from "react";
 import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useRef, useState } from "react";
 import { PostContext } from "../../PostContext";
 import { adminOptions, authorOptions, guestOptions } from "./userTypes";
-import PostFormPopUp from "@/app/(home)/components/postFormPopup/PostFormPopUp";
 
 interface option {
   name: string,
@@ -14,10 +14,8 @@ interface option {
 }
 
 const PostOptions = ({ editPostID }: { editPostID: any, }) => {
-  const { myUserInfo, authorName, postId, postData } = useContext(PostContext)
-
+  const { myUserInfo, postData, hidePost } = useContext(PostContext)
   const [openEditForm, setOpenEditForm] = useState(false);
-
   const editPostRef = useRef();
 
   const ref = useRef<HTMLDivElement>(null);
@@ -25,7 +23,7 @@ const PostOptions = ({ editPostID }: { editPostID: any, }) => {
   const router = useRouter();
 
   const postOptions = []
-  if (myUserInfo?.username === authorName) {
+  if (myUserInfo?.username === postData?.authorName) {
     postOptions.push(...authorOptions);
   } else if (myUserInfo.is_admin) {
     postOptions.push(...adminOptions);
@@ -47,19 +45,27 @@ const PostOptions = ({ editPostID }: { editPostID: any, }) => {
   }, []);
 
   const handleOption = async (option: option) => {
-    await option.action(postId, authorName, setOpenEditForm)
+    await option.action({
+      postId: postData?.id,
+      username: myUserInfo?.username,
+      authorName: postData?.authorName,
+      setOpenEditForm
+    })
 
-    // TODO: if option is edit => not refresh
-    if (option.name !== "Edit post") {
-      router.refresh()
+    if (option.name === "Move to trash" || option.name === "Hide post") {
+      hidePost && hidePost(postData?.id)
     }
 
+    setIsOpen(false)
   }
 
   return (
     <>
-      {openEditForm &&
-        <PostFormPopUp title='Save' isEditPost={true} postData={postData} ref={editPostRef} setOpen={setOpenEditForm} editPostID={editPostID} />}
+      {openEditForm && (
+        <div className="z-[35]">
+          <PostFormPopUp title='Save' postData={postData} ref={editPostRef} setOpen={setOpenEditForm} editPostID={editPostID} />
+        </div>
+      )}
 
       <Menu as="div" ref={ref} className="relative inline-block text-left z-30">
         <Menu.Button onClick={() => setIsOpen(!isOpen)}>

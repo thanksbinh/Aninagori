@@ -2,7 +2,6 @@
 
 import { collection, getDocs, orderBy, query } from "firebase/firestore"
 import { useContext, useEffect, useState } from "react"
-
 import Modal from "@/components/utils/Modal"
 import { formatDuration } from "@/components/utils/formatData"
 import { db } from "@/firebase/firebase-app"
@@ -63,11 +62,10 @@ export default function PostPopup({ isOpen, onClose }: { isOpen: boolean; onClos
           watchingProgress={postData?.post_anime_data?.watching_progress}
           episodesSeen={postData?.post_anime_data?.episodes_seen}
           episodesTotal={postData?.post_anime_data?.total_episodes}
-          tag={postData?.post_anime_data?.tag}
+          tag={postData?.tag?.filter((tag: string) => !(postData?.post_anime_data?.my_status === "completed" && tag === "Spoiler"))}
           postId={postData.id}
         />
         <PostActions
-          reactions={postData.reactions}
           commentCountPromise={comments.length}
           comments={comments}
           showTopReaction={true}
