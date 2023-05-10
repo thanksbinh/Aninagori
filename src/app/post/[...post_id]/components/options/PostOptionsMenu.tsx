@@ -67,7 +67,7 @@ const PostOptions = ({ editPostID }: { editPostID: any, }) => {
         </div>
       )}
 
-      <Menu as="div" ref={ref} className="relative inline-block text-left z-30">
+      <Menu as="div" ref={ref} className="relative inline-block text-left z-10">
         <Menu.Button onClick={() => setIsOpen(!isOpen)}>
           <BsThreeDots className="h-5 w-5" aria-hidden="true" />
         </Menu.Button>
