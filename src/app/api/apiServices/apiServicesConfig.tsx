@@ -1,13 +1,16 @@
 import axios from "axios"
 
+const JIKAN_ANIME_API_URL = 'https://api.jikan.moe/v4/'
+const MAL_API_URL = 'https://api.myanimelist.net/v2/'
+
 // config API call from backend => MAL or Jikan API
 export const MALRequest = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_MAL_API_URL,
+  baseURL: MAL_API_URL,
   headers: {
     "X-MAL-Client-ID": process.env.X_MAL_CLIENT_ID,
   },
 })
 
 export const jikanRequest = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_JIKAN_ANIME_API_URL,
+  baseURL: JIKAN_ANIME_API_URL,
 })
