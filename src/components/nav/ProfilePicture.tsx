@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { UserInfo } from "../../global/UserInfo.types";
 import UsernamePopup from '../utils/UsernamePopup';
+import { signOut as firebaseSignOut } from "firebase/auth";
 
 interface Props {
     myUserInfo: UserInfo | undefined
@@ -39,10 +40,8 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
     const handleLogout = async () => {
         try {
             setIsOpen(false);
-            await Promise.all([
-                auth.signOut(),
-                signOut()
-            ]);
+            await firebaseSignOut(auth);
+            await signOut();
         } catch (error) {
             console.error(error);
         }

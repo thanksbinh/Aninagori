@@ -8,7 +8,7 @@ import { UserInfo } from "../../global/UserInfo.types";
 import FriendRequestComponent from "./FriendRequest";
 import NotificationComponent from "./Notification";
 import { Notification } from "./Notification.types";
-import { noticationFilter } from "./notificationFilter";
+import { notificationFilter } from "./notificationFilter";
 
 interface Props {
   myUserInfo: UserInfo
@@ -50,7 +50,7 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, sho
       if (!docSnap.exists()) {
         setDoc(notificationsRef, {}, { merge: true })
       } else {
-        docSnap.data().recentNotifications && setNotification(noticationFilter(docSnap.data().recentNotifications))
+        docSnap.data().recentNotifications && setNotification(notificationFilter(docSnap.data().recentNotifications))
         setLastRead(docSnap.data().lastRead)
       }
     })

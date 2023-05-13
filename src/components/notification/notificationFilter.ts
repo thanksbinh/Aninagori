@@ -1,7 +1,7 @@
 import { Notification } from "./Notification.types"
 
 // Todo: Optimization
-export function noticationFilter(notiArray: Notification[]) {
+export function notificationFilter(notiArray: Notification[]) {
   const sortedArray = notiArray.sort((a: any, b: any) => b.timestamp - a.timestamp)
 
   const notiMap = new Map()
