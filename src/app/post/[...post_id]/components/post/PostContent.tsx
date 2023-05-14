@@ -46,7 +46,7 @@ const PostContent: FC<PostStaticProps> = ({
   score,
 }) => {
   return (
-    <div id={postId} className="flex flex-col flex-1 bg-ani-gray relative rounded-2xl p-4 pb-0 rounded-b-none">
+    <div id={postId} className="flex flex-col flex-1 bg-ani-gray rounded-2xl p-4 pb-0 rounded-b-none">
       <div className="flex justify-between items-center gap-4 mx-2">
         <Link href={"/user/" + authorName} className="flex-shrink-0">
           <Avatar imageUrl={avatarUrl} altText={authorName} size={10} />

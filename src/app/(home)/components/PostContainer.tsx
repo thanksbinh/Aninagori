@@ -47,6 +47,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
   // Init first posts
   useEffect(() => {
     if (posts.length < 2) {
+      console.log("Init posts")
       fetchPosts()
     }
   }, [posts])
@@ -54,7 +55,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
   // Refresh posts when router.refresh() is called
   useEffect(() => {
     refreshPosts()
-  }, [myFriendList])
+  }, [postPreference])
 
   async function refreshPosts() {
     setPosts([])
