@@ -2,8 +2,8 @@
 "use client"
 import { useFirebaseSession } from "@/app/SessionProvider"
 import { get } from "@/app/api/apiServices/httpRequest"
-import { generateCodeChallenge, generateCodeVerifier } from "@/components/utils/generateCode"
 import Button from "@/components/button/Button"
+import { generateCodeChallenge, generateCodeVerifier } from "@/components/utils/generateCode"
 import getProductionBaseUrl from "@/components/utils/getProductionBaseURL"
 import { db } from "@/firebase/firebase-app"
 import { faCheck, faImage, faPenToSquare, faPlug } from "@fortawesome/free-solid-svg-icons"
@@ -14,7 +14,7 @@ import { setCookie } from "cookies-next"
 import { doc, updateDoc } from "firebase/firestore"
 import { useEffect, useRef, useState } from "react"
 import "tippy.js/dist/tippy.css"
-import ProfilEditPopUp from "../ProfileEditPopUp/ProfileEditPopUp"
+import ProfileEditPopUp from "../ProfileEditPopUp/ProfileEditPopUp"
 import AddFriendBtn from "./AddFriendBtn"
 import styles from "./ProfileHeader.module.scss"
 
@@ -34,9 +34,9 @@ function ProfileHeader({ guess, admin }) {
   const [closeBox, setCloseBox] = useState(true)
 
   useEffect(() => {
-    setCookie("username", admin.username)
-    setCookie("userID", admin.id)
-  }, [admin.id, admin.username])
+    setCookie("username", admin?.username)
+    setCookie("userID", admin?.id)
+  }, [admin?.id, admin?.username])
 
   return (
     <div className={cx("wrapper")}>
@@ -48,7 +48,7 @@ function ProfileHeader({ guess, admin }) {
         ref={editBoxWrapper}
       >
         <div className={cx("modal_overlay")}></div>
-        <ProfilEditPopUp
+        <ProfileEditPopUp
           ref={editBox}
           setUserName={setUserName}
           setAvatar={setAvatar}
@@ -61,7 +61,7 @@ function ProfileHeader({ guess, admin }) {
         />
       </div>
       <img
-        src={guess.wallpaper || currentImage}
+        src={guess?.wallpaper || currentImage}
         alt="wallpaper"
         className={cx("wallpaper")}
         onError={({ currentTarget }) => {
@@ -74,7 +74,7 @@ function ProfileHeader({ guess, admin }) {
         width={1044}
         height={281}
       ></img>
-      {admin.username === guess.username && (
+      {admin?.username && admin?.username === guess?.username && (
         <Button
           onClick={() => {
             setOpen(!open)
@@ -102,7 +102,7 @@ function ProfileHeader({ guess, admin }) {
             onClick={async () => {
               if (!load) {
                 setCurrentImage(link)
-                const docRef = doc(db, "users", admin.id)
+                const docRef = doc(db, "users", admin?.id)
                 if (link !== "") {
                   await updateDoc(docRef, {
                     wallpaper: link,
@@ -122,7 +122,7 @@ function ProfileHeader({ guess, admin }) {
       <div className={cx("user-display")}>
         <div className={cx("avatar-wrapper")}>
           <img
-            src={guess.image || "/bocchi.jpg"}
+            src={guess?.image || "/bocchi.jpg"}
             alt="avatar"
             className={cx("avatar")}
             onError={({ currentTarget }) => {
@@ -131,14 +131,14 @@ function ProfileHeader({ guess, admin }) {
             }}
           ></img>
           <div className={cx("user-information")}>
-            <strong className={cx("user-name")}>{guess.name || guess.username}</strong>
-            {!!guess.friend_list ? (
+            <strong className={cx("user-name")}>{guess?.name || guess?.username}</strong>
+            {!!guess?.friend_list ? (
               <>
                 <div className={cx("friends-count")}>
-                  <span>{guess.friend_list.length}</span> friends
+                  <span>{guess?.friend_list.length}</span> friends
                 </div>
                 <div className={cx("friends-information")}>
-                  {guess.friend_list.map((data, index) => {
+                  {guess?.friend_list.map((data, index) => {
                     if (index < 5) {
                       return (
                         <Tippy placement="bottom" key={index} content={data.username} delay={[250, 0]}>
@@ -168,11 +168,11 @@ function ProfileHeader({ guess, admin }) {
                 </div>
                 <div className={cx("friends-information")}>
                   <img
-                    src={guess.image}
+                    src={guess?.image}
                     alt="avatar"
                     className={cx("friends-avatar")}
                     onClick={() => {
-                      window.location.href = getProductionBaseUrl() + "/user/" + guess.username
+                      window.location.href = getProductionBaseUrl() + "/user/" + guess?.username
                     }}
                   ></img>
                 </div>
@@ -181,7 +181,7 @@ function ProfileHeader({ guess, admin }) {
           </div>
         </div>
         <div className={cx("profile-interact")}>
-          {admin.username === guess.username ? (
+          {admin?.username === guess?.username ? (
             <>
               <Button
                 onClick={async () => {

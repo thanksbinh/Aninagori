@@ -54,7 +54,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
   // Refresh posts when router.refresh() is called
   useEffect(() => {
     refreshPosts()
-  }, [myFriendList])
+  }, [postPreference])
 
   async function refreshPosts() {
     setPosts([])

@@ -27,7 +27,11 @@ const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) =>
 
   const handleClickNoti = () => {
     setShowNotification(false)
-    router.push(notification.url + "/timestamp=" + new Date().getTime())
+
+    if (notification.url.includes("/user"))
+      router.push(notification.url)
+    else
+      router.push(notification.url + "/timestamp=" + new Date().getTime())
 
     if (!notification.read)
       markAsRead(myUserInfo.username, notification)

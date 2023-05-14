@@ -7,7 +7,7 @@ const guestOptions = [
   },
   {
     name: "Hide post",
-    action: async ({ postId, username }: { postId: string, username: string }) => await hidePost(postId, username),
+    action: async ({ postId, username }: { postId: string; username: string }) => await hidePost(postId, username),
   },
   {
     name: "Report post",
@@ -24,6 +24,9 @@ const authorOptions = [
     name: "Edit post",
     action: ({ setOpenEditForm }: { setOpenEditForm: any }) => {
       setOpenEditForm(true)
+      if (document.documentElement.scrollTop === 0 || document.body.scrollTop === 0) {
+        window.scrollBy(0, 1)
+      }
     },
   },
   {

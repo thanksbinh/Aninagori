@@ -3,7 +3,6 @@
 import PostFormPopUp from "@/app/(home)/components/postFormPopup/PostFormPopUp";
 import { Menu, Transition } from "@headlessui/react";
 import { BsThreeDots } from '@react-icons/all-files/bs/BsThreeDots';
-import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import { PostContext } from "../../PostContext";
 import { adminOptions, authorOptions, guestOptions } from "./userTypes";
@@ -16,11 +15,9 @@ interface option {
 const PostOptions = ({ editPostID }: { editPostID: any, }) => {
   const { myUserInfo, postData, hidePost } = useContext(PostContext)
   const [openEditForm, setOpenEditForm] = useState(false);
-  const editPostRef = useRef();
 
   const ref = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
 
   const postOptions = []
   if (myUserInfo?.username === postData?.authorName) {
@@ -44,6 +41,14 @@ const PostOptions = ({ editPostID }: { editPostID: any, }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (openEditForm) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "visible"
+    }
+  }, [openEditForm])
+
   const handleOption = async (option: option) => {
     await option.action({
       postId: postData?.id,
@@ -63,11 +68,11 @@ const PostOptions = ({ editPostID }: { editPostID: any, }) => {
     <>
       {openEditForm && (
         <div className="z-[35]">
-          <PostFormPopUp title='Save' postData={postData} ref={editPostRef} setOpen={setOpenEditForm} editPostID={editPostID} />
+          <PostFormPopUp title='Save' postData={postData} setOpen={setOpenEditForm} editPostID={editPostID} />
         </div>
       )}
 
-      <Menu as="div" ref={ref} className="relative inline-block text-left z-30">
+      <Menu as="div" ref={ref} className="relative inline-block text-left z-10">
         <Menu.Button onClick={() => setIsOpen(!isOpen)}>
           <BsThreeDots className="h-5 w-5" aria-hidden="true" />
         </Menu.Button>

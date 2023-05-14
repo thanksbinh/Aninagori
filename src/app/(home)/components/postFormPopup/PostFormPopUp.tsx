@@ -121,7 +121,7 @@ const PostFormPopUp = ({ setOpen, title, editPostID, postData }: PostFormPopUpPr
         className="relative flex flex-col bg-[#191c21] rounded-2xl my-4 transition ease-in-out duration-200"
       >
         <FontAwesomeIcon
-          onClick={() => (!loadPosting) && setOpen(false)}
+          onClick={() => { (!loadPosting) && setOpen(false) }}
           icon={faCircleXmark as any}
           fill="white"
           stroke="white"

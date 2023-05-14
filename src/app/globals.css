@@ -59,12 +59,14 @@ body {
   line-height: 22px;
 }
 
-.tippy-box[data-placement^="bottom"] > .tippy-arrow {
+.tippy-box[data-placement^="bottom"]>.tippy-arrow {
   top: -1px;
 }
 
 .react-slideshow-container {
-  border-radius: 1rem /* 16px */;
+  border-radius: 1rem
+    /* 16px */
+  ;
   overflow: hidden;
 }
 
@@ -83,7 +85,7 @@ body {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 .anime-recommend-list ::-webkit-scrollbar {
