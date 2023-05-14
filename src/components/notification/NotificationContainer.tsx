@@ -63,7 +63,7 @@ const NotificationContainer: React.FC<Props> = ({ myUserInfo, setUnreadNoti, sho
   useEffect(() => {
     if (showNotification) return;
 
-    lastRead && setUnreadNoti(notification.filter((noti) => noti.timestamp.seconds > lastRead.seconds).length)
+    setUnreadNoti(notification.filter((noti) => !lastRead?.seconds || noti.timestamp.seconds > lastRead.seconds).length)
   }, [notification, lastRead])
 
   useEffect(() => {
