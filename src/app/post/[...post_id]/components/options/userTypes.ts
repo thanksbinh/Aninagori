@@ -27,7 +27,6 @@ const authorOptions = [
       if (document.documentElement.scrollTop === 0 || document.body.scrollTop === 0) {
         window.scrollBy(0, 1)
       }
-      disableScroll()
     },
   },
   {
@@ -51,16 +50,4 @@ const adminOptions = [
   },
 ]
 
-function disableScroll() {
-  var TopScroll = window.pageYOffset || document.documentElement.scrollTop
-  var LeftScroll = window.pageXOffset || document.documentElement.scrollLeft
-  window.onscroll = function () {
-    window.scrollTo(LeftScroll, TopScroll)
-  }
-}
-
-function enableScroll() {
-  window.onscroll = function () {}
-}
-
-export { guestOptions, authorOptions, adminOptions, disableScroll, enableScroll }
+export { guestOptions, authorOptions, adminOptions }

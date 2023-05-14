@@ -17,7 +17,6 @@ import AnimeScore from "./animePostComponent/AnimeScore/AnimeScore"
 import AnimeSearch from "./animePostComponent/AnimeSearch/AnimeSearch"
 import AnimeTag from "./animePostComponent/AnimeTag/AnimeTag"
 import AnimeWatchStatus from "./animePostComponent/AnimeWatchStatus/AnimeWatchStatus"
-import { enableScroll } from "@/app/post/[...post_id]/components/options/userTypes"
 
 const cx = classNames.bind(styles)
 
@@ -114,14 +113,7 @@ const PostFormPopUp = ({ setOpen, title, editPostID, postData }: PostFormPopUpPr
   }
 
   return (
-    <div ref={ref} onClick={() => {
-      if (!loadPosting) {
-        setOpen(false);
-      }
-      if (!!editPostID) {
-        enableScroll();
-      }
-    }} className={cx("modal")}>
+    <div ref={ref} onClick={() => { (!loadPosting) && setOpen(false) }} className={cx("modal")}>
       <div className={cx("modal_overlay")}></div>
       <form
         onClick={(e) => e.stopPropagation()}
@@ -129,14 +121,7 @@ const PostFormPopUp = ({ setOpen, title, editPostID, postData }: PostFormPopUpPr
         className="relative flex flex-col bg-[#191c21] rounded-2xl my-4 transition ease-in-out duration-200"
       >
         <FontAwesomeIcon
-          onClick={() => {
-            if (!loadPosting) {
-              setOpen(false);
-            }
-            if (!!editPostID) {
-              enableScroll();
-            }
-          }}
+          onClick={() => { (!loadPosting) && setOpen(false) }}
           icon={faCircleXmark as any}
           fill="white"
           stroke="white"

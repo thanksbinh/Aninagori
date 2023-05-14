@@ -41,6 +41,14 @@ const PostOptions = ({ editPostID }: { editPostID: any, }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (openEditForm) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "auto"
+    }
+  }, [openEditForm])
+
   const handleOption = async (option: option) => {
     await option.action({
       postId: postData?.id,
