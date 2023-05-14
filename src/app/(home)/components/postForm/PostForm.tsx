@@ -23,6 +23,14 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
   const [recentAnimeList, setRecentAnimeList] = useState<AnimeInfo[]>([])
 
   useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "visible"
+    }
+  }, [open])
+
+  useEffect(() => {
     if (!myAnimeList) return;
 
     const watchingList: AnimeInfo[] = []

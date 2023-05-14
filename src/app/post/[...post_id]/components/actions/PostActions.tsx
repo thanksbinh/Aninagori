@@ -96,7 +96,7 @@ const PostActions: FC<PostDynamicProps> = ({
           isOpen={postExpand}
           onClose={() => {
             setPostExpand(false)
-            router.refresh()
+            // router.refresh()
           }}
         />
       )}
