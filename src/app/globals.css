@@ -21,6 +21,12 @@
   background-image: url(https://cdn.dribbble.com/users/1026512/screenshots/10130839/waifu_laifu_404_copia_4x.png);
 }
 
+[data-tippy-root] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .header-fixed {
   z-index: 50;
   position: fixed;

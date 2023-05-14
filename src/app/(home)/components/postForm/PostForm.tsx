@@ -35,9 +35,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
   }, [myAnimeList])
 
   function openForm() {
-    setTimeout(() => {
-      setOpen(true)
-    }, 90)
+    setOpen(true);
   }
 
   if (!!myUserInfo.is_banned) return <BannedPostForm avatarUrl={myUserInfo.image} />
