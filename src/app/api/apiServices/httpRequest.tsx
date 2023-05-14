@@ -4,10 +4,9 @@ import axios from "axios"
 
 // Custom fetch GET method using axios
 export const get = async (apiPath: string, option = {}) => {
-  // apiPath = process.env.NEXT_PUBLIC_BASE_URL + "/" + apiPath
   const res = await axios.get(apiPath, option)
   return res.data
 }
 
 // Cusom fetch POST method using axios
-export const post = async (apiPath: string, option = {}) => {}
+export const post = async (apiPath: string, option = {}) => { }

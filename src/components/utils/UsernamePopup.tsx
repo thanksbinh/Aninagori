@@ -37,6 +37,7 @@ const UsernamePopup = ({ isOpen, onClose, session }: { isOpen: boolean; onClose:
 				.max(15, "Maximum 15 characters")
 				.required("Required!")
 				.test("username-exists", "Username exists, try different name!", async (value) => {
+					if (value === "guess") return true;
 					const usersRef = collection(db, "users")
 					const usernameQuery = query(usersRef, where("username", "==", value))
 					const querySnapshot = await getDocs(usernameQuery)

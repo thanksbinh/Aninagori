@@ -3,7 +3,6 @@
 }
 
 .anime-name {
-  max-width: 45%;
   font-size: 13.5px;
   text-align: center;
   padding: 4px 8px;
@@ -13,8 +12,6 @@
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  position: relative;
-  cursor: pointer;
 
   & > .progress-name {
     text-overflow: ellipsis;

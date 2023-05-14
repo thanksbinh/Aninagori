@@ -23,6 +23,14 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
   const [recentAnimeList, setRecentAnimeList] = useState<AnimeInfo[]>([])
 
   useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "visible"
+    }
+  }, [open])
+
+  useEffect(() => {
     if (!myAnimeList) return;
 
     const watchingList: AnimeInfo[] = []
@@ -48,7 +56,7 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
 
   return (
     <PostFormContext.Provider value={{ recentAnimeList, setRecentAnimeList }} >
-      {open && <PostFormPopUp isEditPost={false} title='Share' setOpen={setOpen} />}
+      {open && <PostFormPopUp title='Share' setOpen={setOpen} />}
       <div className="flex flex-col flex-shrink-0 bg-ani-gray rounded-2xl px-4 my-4">
         <div className="flex justify-between items-center mt-4">
           <Avatar imageUrl={myUserInfo.image} altText={myUserInfo.username} size={8} />

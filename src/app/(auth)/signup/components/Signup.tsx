@@ -38,6 +38,9 @@ export default function Signup() {
       errors.username = 'Username exists, try different name!';
     }
 
+    if (values.username === "guess")
+      errors.username = 'Username exists, try different name!';
+
     return errors;
   };
 

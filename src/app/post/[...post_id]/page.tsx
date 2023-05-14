@@ -1,15 +1,15 @@
 import { formatDuration } from "@/components/utils/formatData";
-import { db } from "@/firebase/firebase-app";
 import { getUserInfo } from "@/components/utils/getUserInfo";
+import { db } from "@/firebase/firebase-app";
+import { AnimeInfo } from "@/global/AnimeInfo.types";
+import { CommentInfo, PostInfo } from "@/global/Post.types";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { collection, doc, getDoc, getDocs, orderBy, query } from "firebase/firestore";
 import { getServerSession } from "next-auth";
+import { notFound } from "next/navigation";
 import ContextProvider from "./PostContext";
 import PostActions from "./components/actions/PostActions";
 import PostContent from "./components/post/PostContent";
-import { CommentInfo, PostInfo } from "@/global/Post.types";
-import { notFound } from "next/navigation";
-import { AnimeInfo } from "@/global/AnimeInfo.types";
 
 async function fetchPost(postId: string): Promise<PostInfo> {
   const postRef = doc(db, "posts", postId)
@@ -61,49 +61,47 @@ async function fetchComments(postId: string): Promise<CommentInfo[]> {
 async function Post({ params }: { params: { post_id: string[] } }) {
   const session = await getServerSession(authOptions)
   const myUserId = (session as any)?.user?.id
-  const myUserInfo = await getUserInfo(myUserId) || { username: "", id: "", image: "" }
+  const myUserInfo = await getUserInfo(myUserId) || { username: "guess", id: "", image: "" }
 
-  const [fetchedPost, fetchedComments, myAnimeList] = await Promise.all([
+  const [post, fetchedComments, myAnimeList] = await Promise.all([
     fetchPost(params.post_id[0]),
     fetchComments(params.post_id[0]),
-    getDoc(doc(db, "myAnimeList", myUserInfo.username)).then(doc => doc.data()?.animeList)
+    getDoc(doc(db, "myAnimeList", myUserInfo.username))
+      .then(doc => doc.data()?.animeList)
   ])
+
+  const myAnimeStatus = myAnimeList?.find((anime: AnimeInfo) => anime.node.id === post.post_anime_data?.anime_id)?.list_status.status
 
   return (
     <div className='flex justify-center pt-10'>
       <div className="flex flex-col lg:w-2/5 w-3/5 mt-8 mb-2">
         <ContextProvider
-          postData={fetchedPost}
+          postData={post}
           myUserInfo={myUserInfo}
-          content={fetchedPost.content || ""}
-          authorName={fetchedPost.authorName}
-          animeID={fetchedPost.post_anime_data?.anime_id}
-          postId={fetchedPost.id}
         >
           <div className="w-full relative">
             <PostContent
-              authorName={fetchedPost.authorName}
-              avatarUrl={fetchedPost.avatarUrl}
-              timestamp={fetchedPost.timestamp}
-              content={fetchedPost.content}
-              imageUrl={fetchedPost.imageUrl}
-              videoUrl={fetchedPost.videoUrl}
-              animeID={fetchedPost.post_anime_data?.anime_id}
-              animeName={fetchedPost.post_anime_data?.anime_name}
-              watchingProgress={fetchedPost.post_anime_data?.watching_progress}
-              episodesSeen={fetchedPost.post_anime_data?.episodes_seen}
-              episodesTotal={fetchedPost.post_anime_data?.total_episodes}
-              score={fetchedPost.post_anime_data?.score}
-              tag={!!fetchedPost.post_anime_data?.tag ? fetchedPost.post_anime_data?.tag : fetchedPost.tag}
-              postId={fetchedPost.id}
+              authorName={post.authorName}
+              avatarUrl={post.avatarUrl}
+              timestamp={post.timestamp}
+              content={post.content}
+              imageUrl={post.imageUrl}
+              videoUrl={post.videoUrl}
+              animeID={post.post_anime_data?.anime_id}
+              animeName={post.post_anime_data?.anime_name}
+              watchingProgress={post.post_anime_data?.watching_progress}
+              episodesSeen={post.post_anime_data?.episodes_seen}
+              episodesTotal={post.post_anime_data?.total_episodes}
+              score={post.post_anime_data?.score}
+              tag={post?.tag?.filter((tag: string) => !(myAnimeStatus === "completed" && tag === "Spoiler"))}
+              postId={post.id}
             />
             <PostActions
-              reactions={fetchedPost.reactions}
               commentCountPromise={fetchedComments.length}
               comments={fetchedComments}
               focusedComment={(params.post_id.length > 1) ? params.post_id[2] : undefined}
               showTopReaction={true}
-              animeStatus={myAnimeList?.find((anime: AnimeInfo) => anime.node.id === fetchedPost.post_anime_data?.anime_id)?.list_status.status}
+              animeStatus={myAnimeStatus}
             />
           </div>
         </ContextProvider>

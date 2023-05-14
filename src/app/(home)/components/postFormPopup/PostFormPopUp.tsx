@@ -2,33 +2,32 @@
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import classNames from "classnames/bind"
-import { useCallback, forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState, memo, FormEvent } from "react"
+import { FormEvent, forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useRef, useState } from "react"
 import styles from "../postForm/PostForm.module.scss"
 
 import { handleDeleteMedia, handleMediaChange, handlePaste, handleSubmitForm, showEditInformation } from "@/app/(home)/functions/postingUtils"
 import Avatar from "@/components/avatar/Avatar"
 import { useRouter } from "next/navigation"
 import { HomeContext } from "../../HomeContext"
+import PostFormActions from "./PostFormActions"
+import PostFormDetails from "./PostFormDetails"
+import PostFormMediaDisplay from "./PostFormMediaDisplay"
 import AnimeEpisodes from "./animePostComponent/AnimeEpisodes/AnimeEpisodes"
 import AnimeScore from "./animePostComponent/AnimeScore/AnimeScore"
 import AnimeSearch from "./animePostComponent/AnimeSearch/AnimeSearch"
 import AnimeTag from "./animePostComponent/AnimeTag/AnimeTag"
 import AnimeWatchStatus from "./animePostComponent/AnimeWatchStatus/AnimeWatchStatus"
-import PostFormActions from "./PostFormActions"
-import PostFormDetails from "./PostFormDetails"
-import PostFormMediaDisplay from "./PostFormMediaDisplay"
 
 const cx = classNames.bind(styles)
 
 interface PostFormPopUpProps {
   setOpen: any,
   title: string,
-  isEditPost: boolean,
   editPostID?: string,
   postData?: any,
 }
 
-const PostFormPopUp = ({ setOpen, title, isEditPost, editPostID, postData }: PostFormPopUpProps, ref: any) => {
+const PostFormPopUp = ({ setOpen, title, editPostID, postData }: PostFormPopUpProps, ref: any) => {
   const { myUserInfo } = useContext(HomeContext)
 
   const [mediaUrl, setMediaUrl] = useState<any>([])
@@ -72,7 +71,7 @@ const PostFormPopUp = ({ setOpen, title, isEditPost, editPostID, postData }: Pos
   }
 
   useEffect(() => {
-    if (isEditPost) {
+    if (!!editPostID) {
       getInfo().catch((err) => console.log(err));
     } else {
       (inputRef.current as any).focus()
@@ -105,7 +104,7 @@ const PostFormPopUp = ({ setOpen, title, isEditPost, editPostID, postData }: Pos
     await handleSubmitForm(
       animeStatusRef, animeSearchRef, animeEpisodesRef, animeTagRef,
       animeScoreRef, textInput, mediaUrl,
-      mediaType, myUserInfo, postAdditionalRef, isEditPost,
+      mediaType, myUserInfo, postAdditionalRef,
       editPostID, haveUploadedImage
     )
     setLoadPosting(false)
@@ -114,7 +113,7 @@ const PostFormPopUp = ({ setOpen, title, isEditPost, editPostID, postData }: Pos
   }
 
   return (
-    <div ref={ref} onClick={() => { !loadPosting && setOpen(false) }} className={cx("modal")}>
+    <div ref={ref} onClick={() => { (!loadPosting) && setOpen(false) }} className={cx("modal")}>
       <div className={cx("modal_overlay")}></div>
       <form
         onClick={(e) => e.stopPropagation()}
@@ -122,7 +121,7 @@ const PostFormPopUp = ({ setOpen, title, isEditPost, editPostID, postData }: Pos
         className="relative flex flex-col bg-[#191c21] rounded-2xl my-4 transition ease-in-out duration-200"
       >
         <FontAwesomeIcon
-          onClick={() => !loadPosting && setOpen(false)}
+          onClick={() => { (!loadPosting) && setOpen(false) }}
           icon={faCircleXmark as any}
           fill="white"
           stroke="white"
@@ -157,7 +156,7 @@ const PostFormPopUp = ({ setOpen, title, isEditPost, editPostID, postData }: Pos
             handleDeleteMedia={handleDeleteMediaOnce}
             handleMediaChange={handleMediaChangeOnce}
             setMediaUrl={setMediaUrl}
-            isEditPost={isEditPost}
+            isEditPost={!!editPostID}
             haveUploadedImage={haveUploadedImage}
             setHaveUploadedImage={setHaveUploadedImage}
           />
@@ -168,7 +167,7 @@ const PostFormPopUp = ({ setOpen, title, isEditPost, editPostID, postData }: Pos
               {basicPostingInfo ? "More details..." : "Fewer details..."}
             </div>
             <div className={basicPostingInfo ? "hidden" : "flex"}>
-              <PostFormDetails isEditPost={isEditPost} ref={postAdditionalRef} animeStatusRef={animeStatusRef} />
+              <PostFormDetails isEditPost={!!editPostID} ref={postAdditionalRef} animeStatusRef={animeStatusRef} />
             </div>
           </div>
 

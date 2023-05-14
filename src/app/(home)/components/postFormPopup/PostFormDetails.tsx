@@ -23,7 +23,7 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
   const [year, setYear] = useState({ start: 0, end: 0, openStart: false, openEnd: false })
 
   const [rewatchTime, setRewatchTime] = useState("")
-  const [nowTag, setNowTag] = useState("")
+  const [nowTag, setNowTag] = useState<string>("")
 
   // Set default values with the most recent anime (selected)
   useEffect(() => {
@@ -67,7 +67,7 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
       }
 
       setRewatchTime(recentAnimeList[0]?.list_status?.num_times_rewatched?.toString())
-      setNowTag(recentAnimeList[0]?.list_status?.tags?.join(', ') || "")
+      recentAnimeList[0]?.list_status?.tags && setNowTag(recentAnimeList[0].list_status.tags.join(', '))
     }
   }, [recentAnimeList, animeStatusRef?.current])
 
@@ -82,10 +82,6 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
       setMonth({ ...month, end: today.getMonth() + 1 })
       setYear({ ...year, end: today.getFullYear() })
     }
-  }
-
-  function handleInputTag(e: ChangeEvent<HTMLInputElement>) {
-    setNowTag(e.target.value)
   }
 
   useImperativeHandle(ref, () => ({
@@ -223,11 +219,11 @@ function PostFormDetails({ animeStatusRef, isEditPost }: { animeStatusRef: any, 
               <div className={cx("input-text-wrapper")}>
                 <input
                   placeholder='Each tag follow by ","'
+                  onChange={(e) => setNowTag(e.target.value)}
                   value={nowTag}
-                  onChange={handleInputTag}
                   type="text"
                   className={cx("input-text")}
-                ></input>
+                />
               </div>
             </div>
           </div>

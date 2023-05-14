@@ -9,6 +9,7 @@ import { FocusEvent, forwardRef, useContext, useEffect, useImperativeHandle, use
 import "tippy.js/dist/tippy.css"
 import { PostFormContext } from "../../../postForm/PostFormContext"
 import styles from "./AnimeSearch.module.scss"
+import Link from "next/link"
 const cx = classNames.bind(styles)
 
 function AnimeSearch({ animeEpsRef }: any, ref: any) {
@@ -149,7 +150,7 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
                   key={index}
                   className={cx("result-children")}
                 >
-                  <img alt="anime-name" src={(ele as any).node.main_picture.medium}></img>
+                  <img alt="anime-name" src={(ele as any).node.main_picture.medium} />
                   <div>
                     <p>{(ele as any).node.title}</p>
                   </div>
@@ -190,11 +191,13 @@ function AnimeSearch({ animeEpsRef }: any, ref: any) {
         ) : (
           <FontAwesomeIcon className={cx("loading-icon")} icon={faSpinner as any}></FontAwesomeIcon>
         )}
-        <img
-          className={cx("anime-preview")}
-          src={animePic !== "" ? animePic : "https://static.thenounproject.com/png/660317-200.png"}
-          alt="anime-preview"
-        ></img>
+        <Link href={`https://myanimelist.net/anime/${animeData?.animeID}`} target="_blank">
+          <img
+            className={cx("anime-preview")}
+            src={animePic !== "" ? animePic : "https://static.thenounproject.com/png/660317-200.png"}
+            alt="anime-preview"
+          />
+        </Link>
       </div>
     </HeadlessTippy>
   )

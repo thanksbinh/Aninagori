@@ -17,17 +17,15 @@ const cx = classNames.bind(styles)
 
 async function Profile({ params }: { params: { user_name: string } }) {
   const session = await getServerSession(authOptions)
-  // const myUserId = (session as any)?.user?.id
-  // const myUserInfo = await getUserInfo(myUserId)
-
-  // get admin information
   let adminData = {} as any
 
   if (session && !!session.user) {
     const docRef = doc(db, "users", (session.user as any).id)
     const docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
-      adminData = { ...docSnap.data(), joined_date: "", id: docSnap.id }
+      const myAnimeList = await getDoc(doc(db, "myAnimeList", docSnap.data().username))
+      const animeList = myAnimeList?.data()?.animeList
+      adminData = { ...docSnap.data(), joined_date: "", id: docSnap.id, myAnimeList: animeList }
     }
   }
 
@@ -78,43 +76,49 @@ async function Profile({ params }: { params: { user_name: string } }) {
 }
 
 async function AnimeComponent({ mal_username, access_token }: { mal_username: string; access_token: string }) {
-  const animeData = getUserAnimeUpdate(access_token, mal_username)
-  const animeStatus = getAnimeStatus(access_token)
-  const userFavorite = getAnimeFavorite(mal_username)
-  const [data, anime_status, user_favorite] = await Promise.all([animeData, animeStatus, userFavorite])
+  const [animeData, animeStatus, userFavorite] = await Promise.all([
+    getUserAnimeUpdate(access_token, mal_username),
+    getAnimeStatus(access_token),
+    getAnimeFavorite(mal_username)
+  ])
 
   return (
     <>
       {/* @ts-expect-error Server Component */}
-      <AnimeUpdate data={data.data} />
-      <AnimeStatus statusData={anime_status.anime_statistics} />
-      <AnimeFavorite favorite_data={user_favorite.data.data?.favorites} />
+      <AnimeUpdate data={animeData?.data} />
+      <AnimeStatus statusData={animeStatus?.anime_statistics} />
+      <AnimeFavorite favorite_data={userFavorite?.data.data?.favorites} />
     </>
   )
 }
 
-function getAnimeStatus(access_token: any) {
+async function getAnimeStatus(access_token: any) {
   try {
     const url = "https://api.myanimelist.net/v2/users/@me?fields=anime_statistics"
-    return fetch(url, {
+    const animeStatus = await fetch(url, {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
     }).then((res) => res.json())
+    return animeStatus
   } catch (error) {
     console.log(error)
   }
 }
 
-function getAnimeFavorite(mal_username: any) {
-  return apiServices.jikanRequest.get(`/users/${mal_username}/full`)
+async function getAnimeFavorite(mal_username: any) {
+  try {
+    return await apiServices.jikanRequest.get(`/users/${mal_username}/full`)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 async function getUserAnimeUpdate(access_token: any, mal_username: any) {
   try {
     const url =
       "https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status,num_episodes&limit=3&sort=list_updated_at"
-    const userUpdate = fetch(url, {
+    const userUpdate = await fetch(url, {
       cache: "no-store",
       headers: {
         Authorization: `Bearer ${access_token}`,
