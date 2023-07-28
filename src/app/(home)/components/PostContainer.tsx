@@ -4,7 +4,7 @@ import PostContent from "@/app/post/[...post_id]/components/post/PostContent"
 import { db } from "@/firebase/firebase-app"
 import { AnimeInfo } from "@/global/AnimeInfo.types"
 import { collection, getCountFromServer } from "firebase/firestore"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import ContextProvider from "../../post/[...post_id]/PostContext"
 import PostActions from "../../post/[...post_id]/components/actions/PostActions"
@@ -32,7 +32,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
 
   const [posts, setPosts] = useState<PostInfo[]>([])
   const [hasMore, setHasMore] = useState(true)
-  const [lastKey, setLastKey] = useState<any>({})
+  const lastKey = useRef<any>({})
   const [friendPostIds, setFriendPostIds] = useState<string[]>(["0"])
   const [hasMoreFriendPosts, setHasMoreFriendPosts] = useState(myFriendList?.length > 0)
   const [hiddenPosts, setHiddenPosts] = useState<string[]>(postPreference?.hiddenPosts || [])
@@ -58,7 +58,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
 
   async function refreshPosts() {
     setPosts([])
-    setLastKey({})
+    lastKey.current = {}
     setHasMore(true)
     setHasMoreFriendPosts(true)
     setFriendPostIds(["0"])
@@ -114,7 +114,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
     }
 
     // fetch posts from other users
-    let copyLastKey = lastKey || {}
+    let copyLastKey = lastKey.current || {}
     while (true) {
       const fetchedPosts = await fetchAllPosts(friendPostIds, copyLastKey)
 
@@ -124,7 +124,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
       }
 
       copyLastKey = fetchedPosts.lastKey
-      setLastKey(fetchedPosts.lastKey)
+      lastKey.current = fetchedPosts.lastKey
 
       fetchedPosts.posts = filterPosts(fetchedPosts.posts)
       addMyAnimeStatus(fetchedPosts.posts)
