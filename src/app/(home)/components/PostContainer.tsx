@@ -99,19 +99,19 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
 
   async function fetchPosts() {
     // fetch posts from friends
-    if (myFriendList?.length && hasMoreFriendPosts) {
-      const fetchedPosts = await fetchFriendPosts(myUserInfo, myFriendList.map((friend: FriendInfo) => friend.username), postPreference.last_view)
+    // if (myFriendList?.length && hasMoreFriendPosts) {
+    //   const fetchedPosts = await fetchFriendPosts(myUserInfo, myFriendList.map((friend: FriendInfo) => friend.username), postPreference.last_view)
 
-      if (fetchedPosts.posts.length) {
-        setFriendPostIds([...friendPostIds, ...fetchedPosts.posts.map((post: PostInfo) => post.id)])
-        addMyAnimeStatus(fetchedPosts.posts)
-        setPosts(fetchedPosts.posts)
-        return;
-      }
-      else {
-        setHasMoreFriendPosts(false)
-      }
-    }
+    //   if (fetchedPosts.posts.length) {
+    //     setFriendPostIds([...friendPostIds, ...fetchedPosts.posts.map((post: PostInfo) => post.id)])
+    //     addMyAnimeStatus(fetchedPosts.posts)
+    //     setPosts(fetchedPosts.posts)
+    //     return;
+    //   }
+    //   else {
+    //     setHasMoreFriendPosts(false)
+    //   }
+    // }
 
     // fetch posts from other users
     let copyLastKey = lastKey.current || {}
