@@ -2,6 +2,7 @@ import { getUserInfo } from "@/components/utils/getUserInfo";
 import Button from "../button/Button";
 import ChatBtn from "./ChatBtn";
 import Logo from "./Logo";
+import MyAnimeListBtn from "./MyAnimeListBtn";
 import NotificationBtn from "./NotificationBtn";
 import ProfilePicture from "./ProfilePicture";
 import SearchBar from "./SearchBar";
@@ -10,7 +11,7 @@ export default async function NavBar({ myUserId }: { myUserId: string | undefine
   const myUserInfo = await getUserInfo(myUserId)
 
   return (
-    <nav className="flex justify-between items-center px-8 fixed top-0 z-40 w-full h-14 header-fixed bg-ani-gray shadow-md border-b-[1px] border-ani-light-gray">
+    <nav className="flex justify-between items-center px-6 py-2 fixed top-0 z-40 w-full header-fixed bg-ani-gray shadow-md border-b-[1px] border-ani-light-gray">
       <div className="flex items-center gap-5">
         <Logo />
         <SearchBar />
@@ -26,6 +27,7 @@ export default async function NavBar({ myUserId }: { myUserId: string | undefine
         <div className="flex items-center gap-3">
           <ChatBtn myUserInfo={myUserInfo} />
           <NotificationBtn myUserInfo={myUserInfo} />
+          <MyAnimeListBtn myAnimeList_username={myUserInfo?.mal_connect?.myAnimeList_username} />
           <ProfilePicture myUserInfo={myUserInfo} />
         </div>
       }

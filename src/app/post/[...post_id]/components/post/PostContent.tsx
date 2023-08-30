@@ -46,45 +46,46 @@ const PostContent: FC<PostStaticProps> = ({
   score,
 }) => {
   return (
-    <div id={postId} className="flex flex-col flex-1 bg-ani-gray rounded-2xl p-4 pb-0 rounded-b-none">
-      <div className="flex justify-between items-center gap-4 mx-2">
-        <Link href={"/user/" + authorName} className="flex-shrink-0">
-          <Avatar imageUrl={avatarUrl} altText={authorName} size={10} />
-        </Link>
+    <div id={postId} className="flex flex-col gap-3 flex-1 bg-ani-gray rounded-2xl p-4 pb-0 rounded-b-none">
+      <div className="flex justify-between gap-4 mx-2">
+        <div className="flex justify-between items-center gap-4">
+          <Link href={"/user/" + authorName} className="flex-shrink-0">
+            <Avatar imageUrl={avatarUrl} altText={authorName} size={10} />
+          </Link>
 
-        <div className="flex-1 flex flex-col w-3/4">
-          <div className="flex gap-2 items-center font-bold text-[#dddede]">
-            <Link href={"/user/" + authorName}>{authorName}</Link>
-            <div className="hidden sm:block font-bold text-sm text-[#ada9a9] my-0 flex-shrink-0">{watchingProgress}</div>
-            <AnimeName animeName={animeName} animeID={animeID as string} seen={episodesSeen} total={episodesTotal} />
-          </div>
+          <div className="flex-1 flex flex-col w-3/4">
+            <div className="flex gap-2 items-center font-bold text-[#dddede]">
+              <Link href={"/user/" + authorName}>{authorName}</Link>
+              <div className="hidden sm:block font-bold text-sm text-[#ada9a9] my-0 flex-shrink-0">{watchingProgress}</div>
+              <AnimeName animeName={animeName} animeID={animeID as string} seen={episodesSeen} total={episodesTotal} />
+            </div>
 
-          <div className="flex">
-            <Link href={"/post/" + postId} className="flex-shrink-0 text-gray-500 text-sm hover:underline mr-2">
-              {timestamp}
-            </Link>
-            {score && (
-              <div className="flex-shrink-0 text-gray-500 text-sm">
-                {" "}
-                - score: <span className="text-green-500">{score} / 10</span>
-              </div>
-            )}
+            <div className="flex">
+              <Link href={"/post/" + postId} className="flex-shrink-0 text-gray-500 text-sm hover:underline mr-2">
+                {timestamp}
+              </Link>
+            </div>
           </div>
         </div>
 
-        <div className="flex-shrink-0 text-[#dddede] font-bold">
+        <div className="flex-shrink-0 text-[#dddede] font-bold pt-2">
           <PostOptions editPostID={postId} />
         </div>
       </div>
 
-      <div className={cx("tag-wrapper")}>
-        {tag.map((data: any, indexTag: any) => {
-          return <PostTag key={indexTag}>#{data}</PostTag>
-        })}
-      </div>
+      {(tag?.length || score) && (
+        <div className="flex mx-2">
+          {tag.map((data: any, indexTag: any) => {
+            return <PostTag key={indexTag}>#{data}</PostTag>
+          })}
+          {score && (
+            <PostTag key={"score"}>{`Score ${score} / 10`}</PostTag>
+          )}
+        </div>
+      )}
 
-      <div className="relative flex flex-col -mx-4">
-        {!!content && <p className="text-lg mx-2 mt-3 mb-2 text-[#dddede] px-4">{content}</p>}
+      <div className="relative flex flex-col gap-3 -mx-4">
+        {!!content && <p className="text-lg mx-2 text-[#dddede] px-4">{content}</p>}
         {(!!imageUrl || !!videoUrl) && <PostContentMedia postId={postId} tag={tag} imageUrl={imageUrl} videoUrl={videoUrl} />}
       </div>
     </div>

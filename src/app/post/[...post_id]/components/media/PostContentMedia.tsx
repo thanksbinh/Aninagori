@@ -69,7 +69,7 @@ function PostContentMedia({
           <div className={cx("spoiler-overlay")}></div>
         </>
       )}
-      <div className="mt-4 mx-2 relative px-4">
+      <div className="mx-2 relative px-4">
         {typeof imageUrl === "object" ? (
           (imageUrl as any).length > 1 ? (
             <>

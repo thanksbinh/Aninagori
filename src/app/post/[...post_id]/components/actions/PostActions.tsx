@@ -59,7 +59,7 @@ const PostActions: FC<PostDynamicProps> = ({
   return (
     <div className="flex flex-col flex-1 bg-ani-gray rounded-2xl p-4 pt-0 rounded-t-none">
       {/* Recent reactions */}
-      <div className="flex my-4 mx-2">
+      <div className="flex my-3 mx-2">
         {(reactions.length > 2 ? reactions.slice(reactions.length - 3) : reactions.slice(0))
           .reverse()
           .map((user: ReactionInfo) => (

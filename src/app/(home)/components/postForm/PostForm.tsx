@@ -57,18 +57,18 @@ const PostForm: FC<PostFormProps> = ({ myAnimeList }) => {
   return (
     <PostFormContext.Provider value={{ recentAnimeList, setRecentAnimeList }} >
       {open && <PostFormPopUp title='Share' setOpen={setOpen} />}
-      <div className="flex flex-col flex-shrink-0 bg-ani-gray rounded-2xl px-4 my-4">
-        <div className="flex justify-between items-center mt-4">
+      <div className="flex flex-col gap-3 flex-shrink-0 bg-ani-gray rounded-2xl p-4 my-4">
+        <div className="flex gap-2 justify-between items-center mx-2">
           <Avatar imageUrl={myUserInfo.image} altText={myUserInfo.username} size={8} />
           <div
             onClick={openForm}
-            className="cursor-default flex rounded-3xl py-3 px-4 mx-2 w-full focus:outline-none bg-ani-light-gray hover:bg-[#4e5d78] hover:cursor-pointer caret-white"
+            className="cursor-default flex rounded-3xl py-3 px-4 w-full focus:outline-none bg-ani-light-gray hover:bg-[#4e5d78] hover:cursor-pointer caret-white"
           >
             Share your favourite Animemory now!
           </div>
         </div>
 
-        <div className="flex items-center justify-between py-2 mt-4 mx-2 border-t border-ani-light-gray">
+        <div className="flex items-center justify-between pt-2 mx-2 border-t border-ani-light-gray">
           <label
             onClick={openForm}
             className="flex flex-1 items-center justify-center space-x-1 text-[#fff] hover:bg-[#4e5d78] py-2 px-4 rounded-lg mt-1 mx-1 hover:cursor-pointer"

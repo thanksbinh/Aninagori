@@ -52,7 +52,7 @@ const CommentForm: FC<Props> = ({ setLastComment, inputRef, commentId }) => {
   }
 
   return (
-    <div className="flex items-center mt-4">
+    <div className="flex items-center mt-3">
       <Avatar imageUrl={myUserInfo.image} altText={myUserInfo.username} size={8} />
       <form onSubmit={isReply ? onReply : onComment} className="rounded-2xl py-2 px-4 ml-2 w-full bg-ani-light-gray caret-white" >
         <input

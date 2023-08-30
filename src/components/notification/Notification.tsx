@@ -7,6 +7,7 @@ import { UserInfo } from "../../global/UserInfo.types";
 import { Notification } from "./Notification.types";
 import { NotiContext } from "../nav/NotificationBtn";
 import { markAsRead } from "./NotificationContainer";
+import Avatar from "../avatar/Avatar";
 
 interface Props {
   notification: Notification;
@@ -40,12 +41,9 @@ const NotificationComponent: React.FC<Props> = ({ notification, myUserInfo }) =>
   return (
     <>
       <div className="flex items-center bg-ani-gray rounded-lg mx-2 px-3 py-4 hover:cursor-pointer hover:bg-slate-50/25">
-        <img
-          src={notification.sender.image || '/bocchi.jpg'}
-          alt={`${notification.sender.username}'s avatar`}
-          onClick={handleClickProfile}
-          className="h-10 w-10 rounded-full mr-4"
-        />
+        <div onClick={handleClickProfile} className="mr-4 flex-shrink-0">
+          <Avatar imageUrl={notification.sender.image} altText={notification.sender.username} size={10} />
+        </div>
         <div onClick={handleClickNoti}>
           <p className={`text-sm font-medium ${notification.read ? "text-[#a5a5a5]" : "text-white"}`}>
             {notification.title}

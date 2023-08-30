@@ -27,7 +27,7 @@ function ProfileHeader({ guess, admin }) {
   const [userName, setUserName] = useState("")
   const [avatar, setAvatar] = useState("")
   const [wallpaper, setWallpaper] = useState("")
-  const [currentImage, setCurrentImage] = useState("/wallpaper.png")
+  const [currentImage, setCurrentImage] = useState("/ibasho.jpg")
   const editBox = useRef()
   const editBoxWrapper = useRef()
   const { data: session } = useFirebaseSession()
@@ -66,13 +66,13 @@ function ProfileHeader({ guess, admin }) {
         className={cx("wallpaper")}
         onError={({ currentTarget }) => {
           currentTarget.onerror = null
-          currentTarget.src = "/wallpaper.png"
+          currentTarget.src = "/ibasho.jpg"
         }}
         onLoad={() => {
           setLoad(false)
         }}
-        width={1044}
-        height={281}
+        width={2854}
+        height={1605}
       ></img>
       {admin?.username && admin?.username === guess?.username && (
         <Button
@@ -129,7 +129,7 @@ function ProfileHeader({ guess, admin }) {
               currentTarget.onerror = null
               currentTarget.src = "/bocchi.jpg"
             }}
-          ></img>
+          />
           <div className={cx("user-information")}>
             <strong className={cx("user-name")}>{guess?.name || guess?.username}</strong>
             {!!guess?.friend_list ? (
