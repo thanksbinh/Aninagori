@@ -2,7 +2,6 @@
 
 import Avatar from "@/components/avatar/Avatar"
 import { CommentInfo, ReactionInfo } from "@/global/Post.types"
-import { useRouter } from "next/navigation"
 import { FC, useContext, useEffect, useRef, useState } from "react"
 import { PostContext } from "../../PostContext"
 import CommentForm from "../comment/CommentForm"
@@ -29,7 +28,6 @@ const PostActions: FC<PostDynamicProps> = ({
 }) => {
   const { postData } = useContext(PostContext)
   const inputRef = useRef<HTMLInputElement>(null)
-  const router = useRouter()
 
   const [reactions, setReactions] = useState(postData?.reactions || [])
   const [commentCount, setCommentCount] = useState(0)
@@ -59,19 +57,23 @@ const PostActions: FC<PostDynamicProps> = ({
   return (
     <div className="flex flex-col flex-1 bg-ani-gray rounded-2xl p-4 pt-0 rounded-t-none">
       {/* Recent reactions */}
-      <div className="flex my-3 mx-2">
-        {(reactions.length > 2 ? reactions.slice(reactions.length - 3) : reactions.slice(0))
-          .reverse()
-          .map((user: ReactionInfo) => (
-            <Avatar
-              imageUrl={user.image || ""}
-              altText={user.username}
-              size={5}
-              key={user.username}
-              className="liked-avatar"
-            />
-          ))}
-      </div>
+      {reactions.length > 0 ? (
+        <div className="flex my-3 mx-2">
+          {(reactions.length > 2 ? reactions.slice(reactions.length - 3) : reactions.slice(0))
+            .reverse()
+            .map((user: ReactionInfo) => (
+              <Avatar
+                imageUrl={user.image || ""}
+                altText={user.username}
+                size={5}
+                key={user.username}
+                className="liked-avatar"
+              />
+            ))}
+        </div>
+      ) : (
+        <div className="mb-3" />
+      )}
 
       <div className="flex items-center justify-between border-t border-b border-ani-light-gray mx-2">
         <Reaction reactions={reactions} setReactions={setReactions} showTopReaction={!!showTopReaction} />

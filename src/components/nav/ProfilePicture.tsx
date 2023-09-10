@@ -54,7 +54,7 @@ const ProfilePicture: React.FC<Props> = ({ myUserInfo }) => {
 				<Avatar imageUrl={myUserInfo?.image || '/bocchi.jpg'} altText="My profile" size={10} />
 			</button>
 			{isOpen &&
-				<div className="absolute top-14 right-8 z-40 w-56 py-2 bg-ani-gray rounded-md shadow-lg">
+				<div className="absolute top-14 right-6 z-40 w-56 py-2 bg-ani-gray rounded-md shadow-lg">
 					{myUserInfo?.username === "guess" ?
 						<button onClick={() => setOpenUsernamePopup(true)} className="px-4 py-2 text-ani-text-white hover:bg-slate-50/25 w-full text-left">Set username</button> :
 						<div className="px-4 py-2 text-ani-text-white">{myUserInfo?.username}</div>

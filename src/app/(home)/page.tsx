@@ -5,12 +5,15 @@ import { UserInfo } from "@/global/UserInfo.types";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { FieldValue } from "firebase-admin/firestore";
 import { getServerSession } from "next-auth";
+import { Suspense } from 'react';
 import '../globals.css';
 import ContextProvider from "./HomeContext";
-import Posts from "./components/PostContainer";
 import AnimeRecommendList from "./components/leftsidebar/AnimeRecommendList";
 import PostForm from './components/postForm/PostForm';
 import FriendList from "./components/rightsidebar/FriendList";
+import Posts from "./components/PostContainer";
+import PostContent from "../post/[...post_id]/components/post/PostContent";
+import PostActions from "../post/[...post_id]/components/actions/PostActions";
 
 async function getFriendList(myUserInfo: UserInfo): Promise<FriendInfo[]> {
   const userRef = db.doc(`users/${myUserInfo.id}`)
@@ -72,17 +75,26 @@ export default async function Home() {
 
         <div className="xl:w-[55%] lg:w-3/5 md:w-4/5 w-full">
           <div className="h-screen flex flex-col items-center pt-10">
-            <div className="w-[72%]">
+            <div className="w-full sm:w-[72%]">
               <PostForm
                 myAnimeList={myAnimeList?.animeList}
               />
             </div>
             <div className="mb-4 w-full">
-              <Posts
-                myFriendList={myFriendList}
-                myAnimeList={myAnimeList?.animeList}
-                postPreference={postPreference}
-              />
+              <Suspense fallback={
+                <div className="flex justify-center animate-pulse mb-4">
+                  <div className="w-full sm:w-[72%] relative">
+                    <PostContent />
+                    <PostActions />
+                  </div>
+                </div>
+              }>
+                <Posts
+                  myFriendList={myFriendList}
+                  myAnimeList={myAnimeList?.animeList}
+                  postPreference={postPreference}
+                />
+              </Suspense>
             </div>
           </div>
         </div >

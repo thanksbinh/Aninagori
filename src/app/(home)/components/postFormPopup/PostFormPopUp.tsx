@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import classNames from "classnames/bind"
 import { FormEvent, forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useRef, useState } from "react"
 import styles from "../postForm/PostForm.module.scss"
+import TextareaAutosize from "react-textarea-autosize";
 
 import { handleDeleteMedia, handleMediaChange, handlePaste, handleSubmitForm, showEditInformation } from "@/app/(home)/functions/postingUtils"
 import Avatar from "@/components/avatar/Avatar"
@@ -139,10 +140,9 @@ const PostFormPopUp = ({ setOpen, title, editPostID, postData }: PostFormPopUpPr
             <AnimeScore ref={animeScoreRef} style={showScore ? { display: "flex" } : { display: "none" }} />
           </div>
 
-          <input
+          <TextareaAutosize
             onChange={(e) => setTextInput(e.target.value)}
             value={textInput}
-            type="text"
             ref={inputRef}
             onPaste={(e: any) => {
               handlePaste(e, setMediaUrl, setMediaType, mediaUrl, setHaveUploadedImage)

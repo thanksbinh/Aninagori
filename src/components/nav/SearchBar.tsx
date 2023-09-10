@@ -71,7 +71,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="hidden sm:block relative">
       <input
         type="text"
         placeholder="Search"

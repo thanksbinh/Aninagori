@@ -101,7 +101,7 @@ function PostContentMedia({
               </div>
               <div
                 style={spoiler ? { zIndex: "-1" } : {}}
-                className="absolute m-auto leading-6 text-center opacity-40 rounded-tr-2xl top-0 right-4 w-12 h-6 bg-slate-700 text-white"
+                className="absolute leading-6 text-center opacity-50 rounded-xl top-2 right-6 w-12 h-6 bg-slate-700 text-white"
               >
                 {index}/{(imageUrl as any).length}
               </div>

@@ -92,7 +92,7 @@ const Reaction = ({ reactions, setReactions, showTopReaction }: { reactions: Rea
     <>
       {showTopReaction && (
         <div className={`absolute top-0 -left-[5rem]`}>
-          <PostTopReaction reactions={reactions} />
+          <PostTopReaction reactions={reactions} onReaction={onReaction} />
         </div>
       )}
 

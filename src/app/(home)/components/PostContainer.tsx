@@ -142,7 +142,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
         hasMore={hasMore}
         loader={
           <div key={0} className="flex justify-center animate-pulse mb-4">
-            <div className="w-[72%] relative">
+            <div className="w-full sm:w-[72%] relative">
               <PostContent />
               <PostActions />
             </div>
@@ -162,7 +162,7 @@ export default function Posts({ myFriendList, myAnimeList, postPreference }: Pos
                   postData={post}
                   hidePost={(postId: string) => setHiddenPosts([...hiddenPosts, postId])}
                 >
-                  <div className="w-[72%] relative">
+                  <div className="w-full sm:w-[72%] relative">
                     <PostContent
                       authorName={post.authorName}
                       avatarUrl={post.avatarUrl}

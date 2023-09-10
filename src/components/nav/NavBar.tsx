@@ -1,11 +1,12 @@
 import { getUserInfo } from "@/components/utils/getUserInfo";
 import Button from "../button/Button";
-import ChatBtn from "./ChatBtn";
 import Logo from "./Logo";
+import dynamic from "next/dynamic";
 import MyAnimeListBtn from "./MyAnimeListBtn";
-import NotificationBtn from "./NotificationBtn";
-import ProfilePicture from "./ProfilePicture";
-import SearchBar from "./SearchBar";
+const ChatBtn = dynamic(() => import("./ChatBtn"))
+const NotificationBtn = dynamic(() => import("./NotificationBtn"))
+const ProfilePicture = dynamic(() => import("./ProfilePicture"))
+const SearchBar = dynamic(() => import("./SearchBar"))
 
 export default async function NavBar({ myUserId }: { myUserId: string | undefined }) {
   const myUserInfo = await getUserInfo(myUserId)

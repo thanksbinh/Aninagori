@@ -1,5 +1,6 @@
+import dynamic from "next/dynamic"
 import "../globals.css"
-import TabSelector from "./components/TabSelector"
+const TabSelector = dynamic(() => import("./components/TabSelector"))
 
 export default async function SettingLayout({ children }: { children: React.ReactNode }) {
   return (
